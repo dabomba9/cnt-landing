@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+/* Override Webflow global a { font-style: italic; font-weight: 700 } */
+:host a {
+  font-style: normal;
+  font-weight: 400;
+}

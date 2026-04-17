@@ -1,0 +1,1959 @@
+
+> @cnt-workspace/source@0.0.0 start
+> nx serve --port=4200
+
+
+> nx run cnt-workspace:serve:development --port=4200
+
+(node:16745) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m                                    [2m | [22m[1mNames[22m                     [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mvendor.js[39m[37m                                              [2m | [22mvendor                    [2m | [22m  [96m5.73 MB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mstyles.css, styles.js[39m[37m                                  [2m | [22mstyles                    [2m | [22m[96m727.50 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mpolyfills.js[39m[37m                                           [2m | [22mpolyfills                 [2m | [22m[96m265.03 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mmain.js[39m[37m                                                [2m | [22mmain                      [2m | [22m[96m206.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m                                             [2m | [22mruntime                   [2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m[1m [22m                                                      [2m | [22m[1mInitial Total[22m             [2m | [22m  [1m6.91 MB[22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m[1mLazy Chunk Files[22m                                       [2m | [22m[1mNames[22m                     [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mnode_modules_angular_animations_fesm2022_browser_mjs.js[39m[37m[2m | [22mangular-animations-browser[2m | [22m[96m224.90 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mnode_modules_ionic_core_components_input-shims_js.js[39m[37m   [2m | [22minput-shims-js            [2m | [22m [96m26.95 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mnode_modules_ionic_core_components_index9_js.js[39m[37m        [2m | [22mindex9-js                 [2m | [22m  [96m6.69 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mnode_modules_ionic_core_components_swipe-back_js.js[39m[37m    [2m | [22mswipe-back-js             [2m | [22m  [96m3.43 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mnode_modules_ionic_core_components_status-tap_js.js[39m[37m    [2m | [22mstatus-tap-js             [2m | [22m  [96m2.88 kB[3[39m[37m9m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:32:21.802Z[39m[37m[22m - Hash: [1m[37m31ac30a3effad840[39m[37m[22m - Time: [1m[37m2165[39m[37m[22mms[0m[39m
+[37m[39m
+[37m** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **[39m
+[37m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(9095:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11356:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11428:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  place-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:40:53.145Z[39m[37m[22m - Hash: [1m[37m17b5c59356508a30[39m[37m[22m - Time: [1m[37m1086[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.46 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:45:02.122Z[39m[37m[22m - Hash: [1m[37mb77d8246e65a1af2[39m[37m[22m - Time: [1m[37m1026[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.41 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:45:38.354Z[39m[37m[22m - Hash: [1m[37md04597c9412c770e[39m[37m[22m - Time: [1m[37m950[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.41 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:47:27.253Z[39m[37m[22m - Hash: [1m[37m2e256383470171ba[39m[37m[22m - Time: [1m[37m1003[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T00:47:36.932Z[39m[37m[22m - Hash: [1m[37m003b9966142ab468[39m[37m[22m - Time: [1m[37m912[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m204.32 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:01:26.927Z[39m[37m[22m - Hash: [1m[37m18f28827d18d962f[39m[37m[22m - Time: [1m[37m903[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m203.76 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:01:35.429Z[39m[37m[22m - Hash: [1m[37mdbd35756e5cbc7f8[39m[37m[22m - Time: [1m[37m837[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m203.65 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:02:22.356Z[39m[37m[22m - Hash: [1m[37md89da2f6f492a5b3[39m[37m[22m - Time: [1m[37m860[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m204.61 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:08:31.109Z[39m[37m[22m - Hash: [1m[37m8bb401936abe2313[39m[37m[22m - Time: [1m[37m1004[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m204.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:08:51.688Z[39m[37m[22m - Hash: [1m[37m9134052cb7a02866[39m[37m[22m - Time: [1m[37m866[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m204.68 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:18:48.065Z[39m[37m[22m - Hash: [1m[37mc9706fb0a6c84969[39m[37m[22m - Time: [1m[37m995[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m204.73 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:33:02.236Z[39m[37m[22m - Hash: [1m[37mf8b00e4ad8f2e13e[39m[37m[22m - Time: [1m[37m971[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.08 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T01:34:25.716Z[39m[37m[22m - Hash: [1m[37madbc5e80e7bd22a7[39m[37m[22m - Time: [1m[37m891[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m206.56 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T02:20:31.102Z[39m[37m[22m - Hash: [1m[37m5aecf372f22b5bc5[39m[37m[22m - Time: [1m[37m1006[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m208.97 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:18:23.463Z[39m[37m[22m - Hash: [1m[37m5344f0c822209e32[39m[37m[22m - Time: [1m[37m1057[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:18:50.204Z[39m[37m[22m - Hash: [1m[37m0fbd39a65827c07e[39m[37m[22m - Time: [1m[37m880[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:21:18.299Z[39m[37m[22m - Hash: [1m[37mbff0787960c39cde[39m[37m[22m - Time: [1m[37m1323[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(9095:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11356:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11428:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  place-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:27:42.658Z[39m[37m[22m - Hash: [1m[37ma7a30d71b6cd9755[39m[37m[22m - Time: [1m[37m1007[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:33:17.966Z[39m[37m[22m - Hash: [1m[37mb012fa7ca7592122[39m[37m[22m - Time: [1m[37m999[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:43:15.370Z[39m[37m[22m - Hash: [1m[37mc041b7ce7feb2400[39m[37m[22m - Time: [1m[37m999[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:56:14.806Z[39m[37m[22m - Hash: [1m[37m90a9b2885dfdb6b1[39m[37m[22m - Time: [1m[37m989[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T14:56:51.046Z[39m[37m[22m - Hash: [1m[37m4d4617a3e70cdc2d[39m[37m[22m - Time: [1m[37m920[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T15:01:53.070Z[39m[37m[22m - Hash: [1m[37m90c68c81559b514d[39m[37m[22m - Time: [1m[37m989[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T15:31:12.351Z[39m[37m[22m - Hash: [1m[37m6d4ca05d7b72d73d[39m[37m[22m - Time: [1m[37m973[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m208.43 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T15:39:13.624Z[39m[37m[22m - Hash: [1m[37m2d3ab3322b7bbccf[39m[37m[22m - Time: [1m[37m1016[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m209.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T15:42:07.975Z[39m[37m[22m - Hash: [1m[37mba62ea323adff1de[39m[37m[22m - Time: [1m[37m900[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T16:02:04.239Z[39m[37m[22m - Hash: [1m[37mba62ea323adff1de[39m[37m[22m - Time: [1m[37m787[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m212.02 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T16:02:37.535Z[39m[37m[22m - Hash: [1m[37m9fcc83fbc2027679[39m[37m[22m - Time: [1m[37m825[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m212.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T17:17:32.663Z[39m[37m[22m - Hash: [1m[37ma775f944759bc907[39m[37m[22m - Time: [1m[37m1017[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m212.73 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T17:20:15.468Z[39m[37m[22m - Hash: [1m[37me0e7732f2f15a674[39m[37m[22m - Time: [1m[37m933[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m212.77 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T17:35:31.570Z[39m[37m[22m - Hash: [1m[37m68d7966af9099df4[39m[37m[22m - Time: [1m[37m1036[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m213.29 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T17:37:58.994Z[39m[37m[22m - Hash: [1m[37me04d6c91591c1676[39m[37m[22m - Time: [1m[37m1004[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m214.23 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T17:41:23.314Z[39m[37m[22m - Hash: [1m[37m0a391de2ec1760fc[39m[37m[22m - Time: [1m[37m1001[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m223.89 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T18:59:25.051Z[39m[37m[22m - Hash: [1m[37mac0b6cb418875340[39m[37m[22m - Time: [1m[37m1021[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m226.58 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T18:59:57.317Z[39m[37m[22m - Hash: [1m[37m5ee867a056e4b061[39m[37m[22m - Time: [1m[37m895[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m228.21 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:00:11.125Z[39m[37m[22m - Hash: [1m[37m14108a552402b432[39m[37m[22m - Time: [1m[37m896[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m228.21 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:02:54.179Z[39m[37m[22m - Hash: [1m[37mef2aa3efa987b755[39m[37m[22m - Time: [1m[37m983[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m228.25 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:07:08.680Z[39m[37m[22m - Hash: [1m[37m88050cf7eb247431[39m[37m[22m - Time: [1m[37m940[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m225.31 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:15:05.227Z[39m[37m[22m - Hash: [1m[37m8650ddd26d181a76[39m[37m[22m - Time: [1m[37m944[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:31:59.361Z[39m[37m[22m - Hash: [1m[37m8650ddd26d181a76[39m[37m[22m - Time: [1m[37m865[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m229.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:32:50.331Z[39m[37m[22m - Hash: [1m[37m09e32c2b64888ce9[39m[37m[22m - Time: [1m[37m905[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m230.90 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:33:08.504Z[39m[37m[22m - Hash: [1m[37mce81e2312dc5aeb3[39m[37m[22m - Time: [1m[37m882[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m231.04 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:39:53.235Z[39m[37m[22m - Hash: [1m[37mb93ec4179a287771[39m[37m[22m - Time: [1m[37m1025[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m231.50 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:40:12.524Z[39m[37m[22m - Hash: [1m[37m306657c8f429de59[39m[37m[22m - Time: [1m[37m865[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m232.74 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:52:21.004Z[39m[37m[22m - Hash: [1m[37m87f8929dc85bb391[39m[37m[22m - Time: [1m[37m1008[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m232.74 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T19:55:47.941Z[39m[37m[22m - Hash: [1m[37m5ca05e522debf257[39m[37m[22m - Time: [1m[37m1000[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m232.20 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:03:55.810Z[39m[37m[22m - Hash: [1m[37mb1ba6104aa318948[39m[37m[22m - Time: [1m[37m962[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m232.20 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:08:01.138Z[39m[37m[22m - Hash: [1m[37m291fdbe32b1e3ac4[39m[37m[22m - Time: [1m[37m983[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m243.82 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:48:53.462Z[39m[37m[22m - Hash: [1m[37md3fb20595edd48b5[39m[37m[22m - Time: [1m[37m1002[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m244.79 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:49:09.542Z[39m[37m[22m - Hash: [1m[37mb046652f6c82be36[39m[37m[22m - Time: [1m[37m868[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:57:37.742Z[39m[37m[22m - Hash: [1m[37mb046652f6c82be36[39m[37m[22m - Time: [1m[37m857[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:57:38.424Z[39m[37m[22m - Hash: [1m[37mb046652f6c82be36[39m[37m[22m - Time: [1m[37m635[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m241.97 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T20:58:09.536Z[39m[37m[22m - Hash: [1m[37m02d3cd1faeccdc08[39m[37m[22m - Time: [1m[37m998[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m242.38 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:05:16.233Z[39m[37m[22m - Hash: [1m[37m8b9cc0edfb348e2a[39m[37m[22m - Time: [1m[37m1115[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m242.18 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:05:31.935Z[39m[37m[22m - Hash: [1m[37m3f2527b1a7f1ec73[39m[37m[22m - Time: [1m[37m953[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m222.71 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:08:40.159Z[39m[37m[22m - Hash: [1m[37m23e18742367b4d42[39m[37m[22m - Time: [1m[37m1018[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m242.11 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:11:05.354Z[39m[37m[22m - Hash: [1m[37m26c0472d4fd553fa[39m[37m[22m - Time: [1m[37m1025[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:32:00.868Z[39m[37m[22m - Hash: [1m[37m26c0472d4fd553fa[39m[37m[22m - Time: [1m[37m846[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m236.37 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:32:55.276Z[39m[37m[22m - Hash: [1m[37m6d99100465f15d16[39m[37m[22m - Time: [1m[37m827[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m236.52 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:46:51.764Z[39m[37m[22m - Hash: [1m[37m8dabd7721f302a36[39m[37m[22m - Time: [1m[37m1027[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m236.54 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:46:56.038Z[39m[37m[22m - Hash: [1m[37mc17f51665189b48f[39m[37m[22m - Time: [1m[37m825[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m52[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'initFaqSection' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m52[0m       this.initFaqSection();[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m237.19 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:47:04.594Z[39m[37m[22m - Hash: [1m[37me6ed80a7e63f76e7[39m[37m[22m - Time: [1m[37m853[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.76 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:47:37.755Z[39m[37m[22m - Hash: [1m[37mcc9a6859bca9b06a[39m[37m[22m - Time: [1m[37m945[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.76 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:56:49.826Z[39m[37m[22m - Hash: [1m[37m21a14502a2c17964[39m[37m[22m - Time: [1m[37m980[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.73 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:56:54.964Z[39m[37m[22m - Hash: [1m[37m7e91795b13674076[39m[37m[22m - Time: [1m[37m842[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.73 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:56:59.165Z[39m[37m[22m - Hash: [1m[37ma5b2fc3b09eb0ebf[39m[37m[22m - Time: [1m[37m800[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.73 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T21:57:03.363Z[39m[37m[22m - Hash: [1m[37m289f8c5760b4b6d1[39m[37m[22m - Time: [1m[37m772[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.74 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:00:48.620Z[39m[37m[22m - Hash: [1m[37m73e5abfdc327a95c[39m[37m[22m - Time: [1m[37m1022[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:35.691Z[39m[37m[22m - Hash: [1m[37m90fc5903962aeb1e[39m[37m[22m - Time: [1m[37m932[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.64 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:36.641Z[39m[37m[22m - Hash: [1m[37mc25fcc8be8e20bb5[39m[37m[22m - Time: [1m[37m827[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:37.658Z[39m[37m[22m - Hash: [1m[37ma3e3ed364c79e80f[39m[37m[22m - Time: [1m[37m827[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:46.748Z[39m[37m[22m - Hash: [1m[37mfdad45d37e82bae5[39m[37m[22m - Time: [1m[37m753[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.10 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:51.247Z[39m[37m[22m - Hash: [1m[37m431dfb9cde61866c[39m[37m[22m - Time: [1m[37m765[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.35 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:06:56.542Z[39m[37m[22m - Hash: [1m[37m2017a8ad3b8643ef[39m[37m[22m - Time: [1m[37m731[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.33 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:07:03.037Z[39m[37m[22m - Hash: [1m[37mf8d6b48f63ebe8dd[39m[37m[22m - Time: [1m[37m796[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.31 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:07:04.349Z[39m[37m[22m - Hash: [1m[37m4e99a87a277ec2cc[39m[37m[22m - Time: [1m[37m859[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.32 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:10:56.725Z[39m[37m[22m - Hash: [1m[37m4f5a7b27b2d35638[39m[37m[22m - Time: [1m[37m853[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m248.60 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:10:57.619Z[39m[37m[22m - Hash: [1m[37m93446e58b8a75cc3[39m[37m[22m - Time: [1m[37m729[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.17 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:17:17.071Z[39m[37m[22m - Hash: [1m[37mdb3383e1f3fc22e6[39m[37m[22m - Time: [1m[37m776[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.56 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:24:41.808Z[39m[37m[22m - Hash: [1m[37m1ecfa7694d3e2b3a[39m[37m[22m - Time: [1m[37m811[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m249.99 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:24:45.287Z[39m[37m[22m - Hash: [1m[37mac831371386f97bf[39m[37m[22m - Time: [1m[37m706[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:27:00.263Z[39m[37m[22m - Hash: [1m[37m9ccb49dd8481222d[39m[37m[22m - Time: [1m[37m810[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.33 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:33:07.881Z[39m[37m[22m - Hash: [1m[37me0e4c463bbbaabfd[39m[37m[22m - Time: [1m[37m851[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.34 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:33:13.723Z[39m[37m[22m - Hash: [1m[37m900173e92e986cb7[39m[37m[22m - Time: [1m[37m828[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.34 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:38:07.220Z[39m[37m[22m - Hash: [1m[37mbb3ce03e7fb7c402[39m[37m[22m - Time: [1m[37m929[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.33 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:38:12.139Z[39m[37m[22m - Hash: [1m[37ma3cd506ddf761ac0[39m[37m[22m - Time: [1m[37m821[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.16 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:39:23.816Z[39m[37m[22m - Hash: [1m[37m332c8824163cf71e[39m[37m[22m - Time: [1m[37m716[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.13 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T22:46:06.010Z[39m[37m[22m - Hash: [1m[37m089cdf6cfdd1fdce[39m[37m[22m - Time: [1m[37m835[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.38 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:01:50.735Z[39m[37m[22m - Hash: [1m[37m0ff571fb2fa868e5[39m[37m[22m - Time: [1m[37m840[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.39 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:08:12.609Z[39m[37m[22m - Hash: [1m[37m17a82ef95341e624[39m[37m[22m - Time: [1m[37m896[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:08:16.667Z[39m[37m[22m - Hash: [1m[37m49597286cbe58b70[39m[37m[22m - Time: [1m[37m862[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:08:29.360Z[39m[37m[22m - Hash: [1m[37mdd3aa96b03fe1876[39m[37m[22m - Time: [1m[37m675[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:08:36.561Z[39m[37m[22m - Hash: [1m[37mf673dc7b3e12794c[39m[37m[22m - Time: [1m[37m674[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.39 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:09:53.035Z[39m[37m[22m - Hash: [1m[37ma3e2274cccd2f4a2[39m[37m[22m - Time: [1m[37m673[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:09:58.381Z[39m[37m[22m - Hash: [1m[37maf0a95637a9b8eac[39m[37m[22m - Time: [1m[37m678[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:10:02.726Z[39m[37m[22m - Hash: [1m[37meeff3d651d695621[39m[37m[22m - Time: [1m[37m774[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.41 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:10:35.733Z[39m[37m[22m - Hash: [1m[37mc66b61a86efd9d85[39m[37m[22m - Time: [1m[37m766[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.43 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:10:42.918Z[39m[37m[22m - Hash: [1m[37m0c0fee363e864fd3[39m[37m[22m - Time: [1m[37m678[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.44 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-16T23:25:22.913Z[39m[37m[22m - Hash: [1m[37m88ea1ae3c3f52c0a[39m[37m[22m - Time: [1m[37m825[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.68 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T03:34:17.948Z[39m[37m[22m - Hash: [1m[37m7da81b13476eb9d8[39m[37m[22m - Time: [1m[37m837[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.66 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T03:34:21.678Z[39m[37m[22m - Hash: [1m[37mc0fc04e92cc3f914[39m[37m[22m - Time: [1m[37m695[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.76 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T03:44:46.547Z[39m[37m[22m - Hash: [1m[37mdb56a994c19fafc1[39m[37m[22m - Time: [1m[37m812[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.74 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T03:53:11.614Z[39m[37m[22m - Hash: [1m[37maf43edc9179b1f13[39m[37m[22m - Time: [1m[37m785[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m250.83 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T03:56:26.334Z[39m[37m[22m - Hash: [1m[37m3f3c5462d578be39[39m[37m[22m - Time: [1m[37m793[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m251.97 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:20:26.215Z[39m[37m[22m - Hash: [1m[37m2f41892b04de2558[39m[37m[22m - Time: [1m[37m824[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m252.02 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:20:42.647Z[39m[37m[22m - Hash: [1m[37me403446f094fb753[39m[37m[22m - Time: [1m[37m670[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m252.16 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:23:35.823Z[39m[37m[22m - Hash: [1m[37m3e55c0daa6e38b30[39m[37m[22m - Time: [1m[37m783[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m252.16 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:25:32.970Z[39m[37m[22m - Hash: [1m[37m6630e0709f42fca3[39m[37m[22m - Time: [1m[37m903[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m252.58 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:27:46.713Z[39m[37m[22m - Hash: [1m[37me8bf12ab521fb264[39m[37m[22m - Time: [1m[37m878[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m252.83 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:32:44.331Z[39m[37m[22m - Hash: [1m[37m8a0f4eb55083fbbd[39m[37m[22m - Time: [1m[37m884[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m253.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:42:15.585Z[39m[37m[22m - Hash: [1m[37mfa52b41e8e279bfe[39m[37m[22m - Time: [1m[37m914[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m256.06 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:42:24.337Z[39m[37m[22m - Hash: [1m[37mf2cf82b41310ed5b[39m[37m[22m - Time: [1m[37m813[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m256.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:42:29.263Z[39m[37m[22m - Hash: [1m[37m856c6419ee55c4fe[39m[37m[22m - Time: [1m[37m868[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m256.12 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:42:36.014Z[39m[37m[22m - Hash: [1m[37m3627bf698e4d4a7b[39m[37m[22m - Time: [1m[37m791[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'initCustomCursor' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m       this.initCustomCursor();[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m257.89 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:42:47.937Z[39m[37m[22m - Hash: [1m[37m49eaa3c8e244e0eb[39m[37m[22m - Time: [1m[37m895[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m257.80 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:46:07.507Z[39m[37m[22m - Hash: [1m[37m04cb53a7da67b2e7[39m[37m[22m - Time: [1m[37m938[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m257.77 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:51:56.088Z[39m[37m[22m - Hash: [1m[37mff221d403fc3232e[39m[37m[22m - Time: [1m[37m957[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m257.77 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:00.185Z[39m[37m[22m - Hash: [1m[37m6b7fb017f75941e4[39m[37m[22m - Time: [1m[37m826[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m255.68 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:07.807Z[39m[37m[22m - Hash: [1m[37mc0d5fbbf22f067a1[39m[37m[22m - Time: [1m[37m782[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.95 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:13.339Z[39m[37m[22m - Hash: [1m[37mdb713791089a6a47[39m[37m[22m - Time: [1m[37m859[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:18.783Z[39m[37m[22m - Hash: [1m[37mb559c14e5a2c74cd[39m[37m[22m - Time: [1m[37m771[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:23.581Z[39m[37m[22m - Hash: [1m[37mb559c14e5a2c74cd[39m[37m[22m - Time: [1m[37m624[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:26.379Z[39m[37m[22m - Hash: [1m[37mb559c14e5a2c74cd[39m[37m[22m - Time: [1m[37m620[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.66 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T04:52:38.134Z[39m[37m[22m - Hash: [1m[37m92ddf7763eaea8f8[39m[37m[22m - Time: [1m[37m754[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:13:57.774Z[39m[37m[22m - Hash: [1m[37mb360ac71a8c0775e[39m[37m[22m - Time: [1m[37m955[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:18:39.181Z[39m[37m[22m - Hash: [1m[37mf59cb69e0bcf70ce[39m[37m[22m - Time: [1m[37m895[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:34:39.573Z[39m[37m[22m - Hash: [1m[37m4bfc1e19e0cd6c30[39m[37m[22m - Time: [1m[37m864[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:34:58.943Z[39m[37m[22m - Hash: [1m[37mc2a716145ee04f99[39m[37m[22m - Time: [1m[37m684[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:35:31.077Z[39m[37m[22m - Hash: [1m[37mfaa342629daf4775[39m[37m[22m - Time: [1m[37m751[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m254.91 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:36:34.543Z[39m[37m[22m - Hash: [1m[37mdafdb265a839a1fd[39m[37m[22m - Time: [1m[37m694[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m255.02 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:46:07.210Z[39m[37m[22m - Hash: [1m[37m0bf186e6db7ee91e[39m[37m[22m - Time: [1m[37m912[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m255.06 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:46:13.460Z[39m[37m[22m - Hash: [1m[37mb021e677ee5f1685[39m[37m[22m - Time: [1m[37m791[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'initLocationsSection' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m       this.initLocationsSection();[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m255.61 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:46:28.842Z[39m[37m[22m - Hash: [1m[37m2f1e52113b65a26e[39m[37m[22m - Time: [1m[37m782[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.30 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:47:05.198Z[39m[37m[22m - Hash: [1m[37m278eb3c3431148fc[39m[37m[22m - Time: [1m[37m946[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.28 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:53:09.137Z[39m[37m[22m - Hash: [1m[37ma775fbd7ad6e3f11[39m[37m[22m - Time: [1m[37m1005[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.30 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:53:15.748Z[39m[37m[22m - Hash: [1m[37me9a6582c815d0d46[39m[37m[22m - Time: [1m[37m871[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:53:23.397Z[39m[37m[22m - Hash: [1m[37mfbde3d624cc390d1[39m[37m[22m - Time: [1m[37m806[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.63 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:56:24.926Z[39m[37m[22m - Hash: [1m[37mc7616108c395b8f6[39m[37m[22m - Time: [1m[37m997[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.60 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:59:04.612Z[39m[37m[22m - Hash: [1m[37m847b97a3b12264ee[39m[37m[22m - Time: [1m[37m966[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.05 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:59:19.179Z[39m[37m[22m - Hash: [1m[37m23aa773f09e89e99[39m[37m[22m - Time: [1m[37m883[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.08 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T13:59:24.954Z[39m[37m[22m - Hash: [1m[37m07853b0c5b41aedb[39m[37m[22m - Time: [1m[37m893[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.06 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:01:20.642Z[39m[37m[22m - Hash: [1m[37m67341d18c9d90395[39m[37m[22m - Time: [1m[37m1008[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.07 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:01:34.889Z[39m[37m[22m - Hash: [1m[37md7e159518c94c371[39m[37m[22m - Time: [1m[37m870[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.12 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:01:40.037Z[39m[37m[22m - Hash: [1m[37m7496d4438709bcc6[39m[37m[22m - Time: [1m[37m806[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.11 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:07:29.273Z[39m[37m[22m - Hash: [1m[37m5ed2dae2a2bb29f4[39m[37m[22m - Time: [1m[37m1018[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.11 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:07:34.269Z[39m[37m[22m - Hash: [1m[37m97c679fc9d7f681b[39m[37m[22m - Time: [1m[37m866[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.10 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:07:38.675Z[39m[37m[22m - Hash: [1m[37m9bf31d39d2eb42e8[39m[37m[22m - Time: [1m[37m693[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:12:54.057Z[39m[37m[22m - Hash: [1m[37m5d594cf474472447[39m[37m[22m - Time: [1m[37m900[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:23:09.249Z[39m[37m[22m - Hash: [1m[37ma94ac14b3174c56f[39m[37m[22m - Time: [1m[37m1058[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:23:29.113Z[39m[37m[22m - Hash: [1m[37m0edf83c9cb82645b[39m[37m[22m - Time: [1m[37m940[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.09 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:55:17.738Z[39m[37m[22m - Hash: [1m[37m2e70a5d6ffa7fc65[39m[37m[22m - Time: [1m[37m1053[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.33 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T14:58:22.733Z[39m[37m[22m - Hash: [1m[37m32789d8cf0c6d98d[39m[37m[22m - Time: [1m[37m942[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.65 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:08:31.868Z[39m[37m[22m - Hash: [1m[37me96b28bbef81e8d1[39m[37m[22m - Time: [1m[37m1041[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.15 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:15:43.123Z[39m[37m[22m - Hash: [1m[37m362bf7e918aa93de[39m[37m[22m - Time: [1m[37m1135[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.19 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:22:50.480Z[39m[37m[22m - Hash: [1m[37m0811b23f92672019[39m[37m[22m - Time: [1m[37m1159[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.24 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:26:07.642Z[39m[37m[22m - Hash: [1m[37m2bbdbc46487d0b88[39m[37m[22m - Time: [1m[37m1117[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.25 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:26:08.422Z[39m[37m[22m - Hash: [1m[37m2896f8ab114af18b[39m[37m[22m - Time: [1m[37m729[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.19 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:27:49.619Z[39m[37m[22m - Hash: [1m[37m2a264536e425aae2[39m[37m[22m - Time: [1m[37m917[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m276.19 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:27:51.466Z[39m[37m[22m - Hash: [1m[37ma1c91f73614aecd0[39m[37m[22m - Time: [1m[37m744[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.14 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:54:34.042Z[39m[37m[22m - Hash: [1m[37m6fd2f652902fee0c[39m[37m[22m - Time: [1m[37m1068[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:58:44.973Z[39m[37m[22m - Hash: [1m[37m6fd2f652902fee0c[39m[37m[22m - Time: [1m[37m841[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.13 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T15:58:54.114Z[39m[37m[22m - Hash: [1m[37mf3d40229aca428ba[39m[37m[22m - Time: [1m[37m1023[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m280.18 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:06:19.960Z[39m[37m[22m - Hash: [1m[37m6f7166a1c8302ba9[39m[37m[22m - Time: [1m[37m1089[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m280.05 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:08:06.677Z[39m[37m[22m - Hash: [1m[37me95b3fbf6046904b[39m[37m[22m - Time: [1m[37m996[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.15 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:14:00.996Z[39m[37m[22m - Hash: [1m[37m71db28897bef60e3[39m[37m[22m - Time: [1m[37m1125[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.24 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:17:09.052Z[39m[37m[22m - Hash: [1m[37m53c3b63033686fff[39m[37m[22m - Time: [1m[37m1114[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m  [2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mstyles.css, styles.js[39m[37m[2m | [22mstyles [2m | [22m[96m731.68 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m           [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:29:57.351Z[39m[37m[22m - Hash: [1m[37m08d4e55b55e57cf7[39m[37m[22m - Time: [1m[37m982[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:29:59.031Z[39m[37m[22m - Hash: [1m[37m08d4e55b55e57cf7[39m[37m[22m - Time: [1m[37m756[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.24 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T16:30:01.538Z[39m[37m[22m - Hash: [1m[37m6b21c089ce110d70[39m[37m[22m - Time: [1m[37m1295[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(9095:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11356:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11428:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  place-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.31 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T17:01:36.313Z[39m[37m[22m - Hash: [1m[37m4cccca76b10de76d[39m[37m[22m - Time: [1m[37m1112[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m

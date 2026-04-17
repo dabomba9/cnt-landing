@@ -1,0 +1,83 @@
+import sys
+
+with open('src/app/home/home.component.html', 'r') as f:
+    content = f.read()
+
+target_anchor = "<!-- Trust Signals Section (GSAP Color Shift Target) -->"
+idx = content.find(target_anchor)
+
+if idx != -1:
+    new_html = """
+<!-- ================= Community Masonry Grid ================= -->
+<section class="py-24 md:py-48 overflow-hidden bg-background">
+  <div class="max-w-[70rem] mx-auto px-4 md:px-8 text-center mb-16">
+    <h2 class="text-4xl md:text-5xl font-headline font-bold text-dark-text mb-6">The CurbNTurf Community</h2>
+    <p class="text-lg text-muted-text max-w-2xl mx-auto leading-relaxed">
+      The CurbNTurf community is full of thousands of like-minded RVers seeking unforgettable experiences and adventures while on the road!
+    </p>
+  </div>
+
+  <div class="max-w-[85rem] mx-auto px-4 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-5 auto-rows-[250px] md:auto-rows-[300px] gsap-masonry-grid-wrap">
+      
+      <!-- Airstream (Top Left Massive) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-2 md:row-span-2 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_1_airstream_1776367787612.png" alt="Airstream in Vineyard" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Pumpkins (Top Mid) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_2_pumpkins_1776367803908.png" alt="Pumpkins" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Vanlife (Top Right) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_3_vanlife_1776367816813.png" alt="Vanlife" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- RV Sunset (Bottom Mid Tower) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-2 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_6_rv_sunset_1776367867815.png" alt="RV Sunset" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Alpaca (Bottom Right Tower) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-2 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_7_alpaca_1776367902014.png" alt="Alpacas" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Cow (Bottom Left 1) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_4_cow_1776367840081.png" alt="Cow" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Beer Flights (Bottom Left 2) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item">
+        <div class="w-full h-full transform scale-[1.15] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_5_beer_1776367854031.png" alt="Beer Flights" class="w-full h-full object-cover">
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</section>
+
+"""
+    final_content = content[:idx] + new_html + content[idx:]
+    with open('src/app/home/home.component.html', 'w') as f:
+        f.write(final_content)
+    print("Injected perfectly!")
+else:
+    print("Could not find anchor!")
+

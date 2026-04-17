@@ -1,0 +1,76 @@
+// Google Stitch "CurbNTurf Redesign" Design Tokens
+
+// Colors
+$primary: #e3530d;
+$primary-container: #ce4700;
+$on-primary: #ffffff;
+
+$secondary: #295d42;
+$secondary-container: #b4ecc9;
+$on-secondary: #ffffff;
+
+$background: #fbf9f0;
+$on-background: #1b1c17;
+
+$surface: #fbf9f0;
+$surface-container-low: #f6f4eb;
+$surface-container: #f0eee5;
+$surface-container-high: #eae8df;
+$surface-container-highest: #e4e3da;
+$surface-container-lowest: #ffffff;
+$on-surface: #1b1c17;
+$on-surface-variant: #5a4138;
+
+$outline: #8e7166;
+$outline-variant: #e2bfb3;
+
+// Fonts
+$font-headline: 'rift-soft', sans-serif;
+$font-body: 'proxima-nova', sans-serif;
+$font-label: 'proxima-nova', sans-serif;
+
+// Border Radius
+$radius-sm: 0.5rem;
+$radius-md: 0.75rem;
+$radius-lg: 2rem;
+$radius-full: 9999px;
+
+// Shadows
+$shadow-ambient: 0px 20px 40px rgba(69, 69, 69, 0.06);
+$shadow-hover: 0px 24px 48px rgba(69, 69, 69, 0.08);
+
+// Mixins
+@mixin panel-card {
+  background-color: $surface-container-lowest;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(53, 104, 77, 0.15); // Secondary at 15% opacity
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-hover;
+  }
+}
+
+@mixin glass-pill {
+  background-color: rgba(251, 249, 240, 0.7); // Surface at 70%
+  backdrop-filter: blur(20px);
+  border-radius: $radius-full;
+}
+
+@mixin primary-button {
+  background: linear-gradient(135deg, $primary, $primary-container);
+  color: $on-primary;
+  border-radius: $radius-full;
+  padding: 0.75rem 2rem;
+  border: none;
+  font-family: $font-label;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  cursor: pointer;
+  
+  &:hover {
+    filter: brightness(1.1);
+  }
+}

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed-dim": "#ffb59a",
+              "tertiary-container": "#8d7129",
+              "tertiary": "#725811",
+              "background": "#fbf9f0",
+              "tertiary-fixed": "#ffdf98",
+              "inverse-primary": "#ffb59a",
+              "secondary-container": "#b4ecc9",
+              "on-primary-fixed-variant": "#802900",
+              "secondary-fixed": "#b7efcc",
+              "surface-tint": "#a83900",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed": "#ffdbcf",
+              "surface-container": "#f0eee5",
+              "primary-container": "#ce4700",
+              "outline": "#8e7166",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#9cd3b1",
+              "surface-container-high": "#eae8df",
+              "surface-dim": "#dcdad1",
+              "surface-container-highest": "#e4e3da",
+              "on-secondary-fixed": "#002112",
+              "secondary": "#35684d",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "outline-variant": "#e2bfb3",
+              "inverse-surface": "#30312b",
+              "on-background": "#1b1c17",
+              "surface-variant": "#e4e3da",
+              "on-surface-variant": "#5a4138",
+              "on-secondary-fixed-variant": "#1b5036",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed": "#251a00",
+              "primary": "#a43700",
+              "surface": "#fbf9f0",
+              "on-surface": "#1b1c17",
+              "on-primary-fixed": "#380d00",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "surface-bright": "#fbf9f0",
+              "on-secondary-container": "#396d51",
+              "surface-container-low": "#f6f4eb",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "tertiary-fixed-dim": "#e5c272",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#f3f1e8"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .bg-grid-subtle {
+        background-image: linear-gradient(to right, rgba(53, 104, 77, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(53, 104, 77, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+      .hero-gradient {
+        background: linear-gradient(180deg, rgba(27, 28, 23, 0) 0%, rgba(27, 28, 23, 0.6) 100%);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #a43700 0%, #ce4700 100%);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-fixed-dim">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center bg-white/70 dark:bg-stone-900/70 backdrop-blur-md rounded-full h-20 max-w-5xl mx-auto mt-6 px-8 shadow-[0px_20px_40px_rgba(27,28,23,0.06)] tonal-shift surface-container-low">
+<div class="text-xl font-bold tracking-tight text-stone-900 dark:text-stone-50 font-headline">CurbNTurf</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-orange-700 dark:text-orange-400 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Find Stays</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Host a Space</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Experiences</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="primary-gradient text-on-primary font-bold px-8 py-3 rounded-full scale-95 duration-200 ease-in-out hover:scale-100 shadow-lg">Sign Up</button>
+</div>
+</nav>
+<main class="bg-grid-subtle min-h-screen">
+<!-- Hero Section -->
+<section class="relative h-[921px] w-full px-6 pt-6 overflow-hidden">
+<div class="relative h-full w-full rounded-xl overflow-hidden shadow-2xl">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="luxury class-A motorhome parked in a rolling vineyard at sunset with golden light and rows of grapevines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPNvbfTd1P8HAUhmy6UbX_hv3DtzKJ7z_qqkJr-un_1dNeJ5stvqGB7UIyDOx3-cglM4w8zGsU2f2CaVgLIK55OGouhOyiingxtA9qeEyUrIOfva_eKM4xDEzVdCuMd6R0fOF9z-nzblm1aBGumHPHpHlpT8jm9m6aFTWrKGp3ZRgxVh-toJy-x7CoDjzjU4MxG7JnMVjC5wdk2EGTk0FLFNrWBrZqm7q6FaUjahkMUvfrOJB8JXPzDSKImfox5D0fzDfmckLOFMQ"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+<span class="text-tertiary-fixed font-label uppercase tracking-[0.3em] mb-4 text-sm font-bold">Curated RV Destinations</span>
+<h1 class="text-white font-headline text-5xl md:text-8xl font-bold tracking-tight leading-[0.9] max-w-4xl">
+                        The RV Freedom Experience
+                    </h1>
+</div>
+<!-- Floating Pill Search Bar -->
+<div class="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4">
+<div class="bg-white/90 backdrop-blur-xl rounded-full p-2 flex flex-col md:flex-row items-center gap-2 shadow-[0px_20px_40px_rgba(27,28,23,0.12)] border border-white/20">
+<div class="flex-1 flex items-center gap-4 px-6 py-3 border-r border-stone-200/50">
+<span class="material-symbols-outlined text-secondary" data-icon="location_on">location_on</span>
+<div class="flex flex-col text-left">
+<span class="text-[10px] uppercase tracking-widest font-bold text-stone-400">Where to?</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-stone-900 font-medium placeholder:text-stone-300 w-full" placeholder="Search destinations" type="text"/>
+</div>
+</div>
+<div class="flex-1 flex items-center gap-4 px-6 py-3 border-r border-stone-200/50">
+<span class="material-symbols-outlined text-secondary" data-icon="calendar_today">calendar_today</span>
+<div class="flex flex-col text-left">
+<span class="text-[10px] uppercase tracking-widest font-bold text-stone-400">When</span>
+<span class="text-stone-900 font-medium">Add dates</span>
+</div>
+</div>
+<div class="flex-1 flex items-center gap-4 px-6 py-3">
+<span class="material-symbols-outlined text-secondary" data-icon="rv_hookup">rv_hookup</span>
+<div class="flex flex-col text-left">
+<span class="text-[10px] uppercase tracking-widest font-bold text-stone-400">Your Rig</span>
+<span class="text-stone-900 font-medium">Type &amp; Length</span>
+</div>
+</div>
+<button class="primary-gradient text-white h-14 w-14 md:h-16 md:w-16 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform shrink-0">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Collections Module -->
+<section class="py-24 px-8 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="max-w-xl">
+<span class="text-secondary font-label uppercase tracking-widest text-xs font-extrabold mb-4 block">Hand-Picked Collections</span>
+<h2 class="text-4xl md:text-6xl font-headline font-bold text-on-surface leading-tight">Curated escapes for the refined nomad</h2>
+</div>
+<div class="flex gap-4">
+<button class="h-14 w-14 rounded-full border-2 border-outline-variant flex items-center justify-center text-stone-400 hover:text-secondary hover:border-secondary transition-all">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<button class="h-14 w-14 rounded-full border-2 border-secondary flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Collection Card 1 -->
+<div class="group relative h-[500px] rounded-lg overflow-hidden cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="dramatic aerial shot of a luxury RV parked next to a private vineyard with golden autumn leaves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNQVXAnqCVk0QuKhjNOYQC9yag9qN2PEoZF3GlrzKP7htCGez50XhAEnHvtJPcIP2QKwdQbWV2l8Jg4Z-u2uGuj7NxAW8csTBUUxbXwX24NVfd0g69BfFOXvrbKi_7gATYiXOUtDHlzlctxc0JSbJR7lq_QnizhR_1JV2Sewg8d7NdT2LLZmizbW78YoNRkLIcd1VpZwjwHpLBP94xu0LKMb0xQuWJYcRpUMKxoZDQ1fuuXMCo99oohLnnIH3976EO0Mw5r4W--_g"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+<div class="absolute bottom-6 left-6 right-6 p-6 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white">
+<h3 class="text-2xl font-headline font-bold mb-1">Vineyard Stays</h3>
+<p class="text-white/80 font-medium text-sm">Wake up to misty morning vines.</p>
+<div class="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+<span>Explore Collection</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</div>
+</div>
+</div>
+<!-- Collection Card 2 -->
+<div class="group relative h-[500px] rounded-lg overflow-hidden cursor-pointer mt-0 md:mt-12">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="high-end camper van parked on a remote mountain ridge with snowy peaks in the background at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrASg94OvWYZGpS7hZT-xXuqhAE-UseNQU_Wv-l8K-K2BVZnQkKnXBtIaoqH40kE9UGOM8_h65Q5xHO2a8FaKftV7fc7JnCUQyDMMG_De8EndUvGQHgn82VMcWFPclVCoGeq9e9oEfqX6hoCq1oQt9fglxaaX6BDD4X0i9N_lJHA2XV-bFgt7o8rxU1gJwXSqkpc-0yMTk9wuukrW3aDXZ_8GtpJ3hcdSaUmYUBFHUoqJz_2ov1_qivt86tEUHF37I-ljbi4Z8WaU"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+<div class="absolute bottom-6 left-6 right-6 p-6 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white">
+<h3 class="text-2xl font-headline font-bold mb-1">Off-Grid Gems</h3>
+<p class="text-white/80 font-medium text-sm">Where the map ends, freedom begins.</p>
+<div class="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+<span>Explore Collection</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</div>
+</div>
+</div>
+<!-- Collection Card 3 -->
+<div class="group relative h-[500px] rounded-lg overflow-hidden cursor-pointer mt-0 md:mt-24">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="luxury travel trailer parked in a dense pine forest with a campfire glowing nearby and soft morning mist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSZsu9rWRVQoetradWn9ikvBL2TQKPBjFOC1w-PNbYJ0_JBL_NoCxVbNnYnAfcoTtcN7cQnbR8Zxj_hxzAtGPfOsUfdwVcsAdctU021UzCm3gzRaHmlEM9mbvJM5pQH54YVJRmV89nIiAZU1-H74jO9ABshLSuV1Tl2FvYsOVuu0GO4IermDVt6b9DlmOix75-7fIkN8-l2n1Vpe2I84licXsnZQ_KmSRp1IOoTmrjt9GLmB3TswYoBGCtqiq9_a2eX85fekEBhzI"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+<div class="absolute bottom-6 left-6 right-6 p-6 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white">
+<h3 class="text-2xl font-headline font-bold mb-1">Mountain Escapes</h3>
+<p class="text-white/80 font-medium text-sm">High altitude luxury for explorers.</p>
+<div class="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+<span>Explore Collection</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Secondary Section: Trust Signals -->
+<section class="py-32 bg-surface-container-low overflow-hidden">
+<div class="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+<div>
+<span class="text-primary font-label uppercase tracking-widest text-xs font-extrabold mb-4 block">Quality &amp; Trust</span>
+<h2 class="text-5xl font-headline font-bold text-on-surface mb-8 leading-tight">The highest standard for the RV community</h2>
+<p class="text-stone-600 text-lg mb-12 max-w-lg leading-relaxed">
+                        We believe freedom shouldn't come with compromise. CurbNTurf partners only with hosts who meet our rigorous standards for accessibility and safety.
+                    </p>
+<div class="space-y-10">
+<div class="flex gap-6">
+<div class="h-16 w-16 rounded-2xl bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Verified Hosts</h4>
+<p class="text-stone-500">Every host and location is manually vetted by our team to ensure accurate listings and premium service.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<div class="h-16 w-16 rounded-2xl bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-3xl" data-icon="straighten">straighten</span>
+</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Rig-Compatible Guarantee</h4>
+<p class="text-stone-500">Precise measurements and access details so you can park with total confidence, no matter your size.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -top-12 -left-12 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-12 -right-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="relative bg-surface rounded-lg p-12 shadow-[0px_40px_80px_rgba(27,28,23,0.08)] border border-secondary/15">
+<div class="mb-8">
+<div class="flex gap-1 text-tertiary mb-4">
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+</div>
+<blockquote class="text-2xl font-headline font-medium text-stone-800 italic leading-snug">
+                                "CurbNTurf has completely changed how we travel. No more guessing if we'll fit or if the site is safe. It's premium freedom."
+                            </blockquote>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-full bg-stone-200 overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="portrait of a middle-aged man smiling outdoors with a warm sunlit background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhGCV17W1yhuxKY0zLKYnm7hrMFtE5_DSeC3z_Gp-yRlXg8yXp7ekOhpu43AK8T3F-RwHJj8Z_ZeV8-WP8CX8U5smoQi0l5uOkW5DG7mUhvdA5_6n2NpkKXAiQSgSPY_-BQ2_crGU4bxzbUvxbPz8bpXr67dYLG3GdTBmtUbcai510c4xDgK41kLKPaWliERxODidSi4qAhdgyp42Gta-u8PmX5-CqSkuifVOP8YhpVLqQXy42ZTn0MCu6rjv5lF0Yk35Rz0TQwuI"/>
+</div>
+<div>
+<div class="font-bold text-stone-900">Marcus Sterling</div>
+<div class="text-sm text-stone-500">Full-time Airstreamer</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-around items-center opacity-30 grayscale contrast-125">
+<span class="text-xl font-headline font-bold">NOMADIC</span>
+<span class="text-xl font-headline font-bold">WANDERLUST</span>
+<span class="text-xl font-headline font-bold">EXPEDITION</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="py-24 px-8 max-w-7xl mx-auto text-center">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+<div class="flex flex-col items-center">
+<span class="text-5xl md:text-7xl font-headline font-bold text-primary mb-2">1.2k+</span>
+<span class="h-1 w-16 bg-tertiary-fixed mb-4"></span>
+<span class="text-xs font-label uppercase tracking-widest font-bold text-stone-400">Unique Stays</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-5xl md:text-7xl font-headline font-bold text-primary mb-2">98%</span>
+<span class="h-1 w-16 bg-tertiary-fixed mb-4"></span>
+<span class="text-xs font-label uppercase tracking-widest font-bold text-stone-400">Happy Campers</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-5xl md:text-7xl font-headline font-bold text-primary mb-2">45</span>
+<span class="h-1 w-16 bg-tertiary-fixed mb-4"></span>
+<span class="text-xs font-label uppercase tracking-widest font-bold text-stone-400">States Covered</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-5xl md:text-7xl font-headline font-bold text-primary mb-2">24/7</span>
+<span class="h-1 w-16 bg-tertiary-fixed mb-4"></span>
+<span class="text-xs font-label uppercase tracking-widest font-bold text-stone-400">Concierge Support</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full flex flex-col items-center gap-8 bg-stone-50 dark:bg-stone-950 full-width pt-16 pb-8 px-8 border-t border-emerald-900/5 tonal-shift bg-surface-container-low flat no-shadows">
+<div class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-2">
+<div class="text-lg font-bold text-stone-900 dark:text-stone-50 mb-6 font-headline">CurbNTurf</div>
+<p class="text-stone-500 max-w-xs leading-relaxed mb-8">Elevating the nomadic lifestyle through curated spaces and seamless exploration. Join the refined outdoors.</p>
+<div class="flex gap-4">
+<a class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-stone-400 hover:text-secondary transition-colors shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="facebook">social_leaderboard</span>
+</a>
+<a class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-stone-400 hover:text-secondary transition-colors shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="photo_camera">photo_camera</span>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<span class="Labels: Manrope 0.75rem tracking-[0.05em] uppercase font-bold text-stone-900">Explore</span>
+<a class="text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-300 underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Vineyard Stays</a>
+<a class="text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-300 underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Off-Grid Gems</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="Labels: Manrope 0.75rem tracking-[0.05em] uppercase font-bold text-stone-900">Company</span>
+<a class="text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-300 underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Host Guarantee</a>
+<a class="text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-300 underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Safety</a>
+<a class="text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-300 underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Support</a>
+</div>
+</div>
+<div class="w-full pt-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="text-stone-500 text-xs font-medium">© 2024 CurbNTurf. The RV Freedom Experience.</span>
+<div class="flex gap-8 text-xs font-bold text-stone-400 uppercase tracking-widest">
+<a class="hover:text-stone-900 transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-stone-900 transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

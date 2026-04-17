@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>CurbNTurf | RV Camping, Parks, Campsites &amp; Resorts Near Me</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Open Graph -->
+    <meta property="og:url" content="https://www.curbnturf.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CurbNTurf">
+    <meta property="og:description" content="CurbNTurf allows you to stay on private land and avoid crowded RV parks and campgrounds.">
+    <meta property="og:image" content="https://www.curbnturf.com/img/CNT_Logo_V_Orange.svg">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  </head>
+  <body>
+    <cnt-workspace-root></cnt-workspace-root>
+
+    <!-- n8n Chat Widget -->
+    <div id="n8n-chat"></div>
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet">
+    <style>
+      :root {
+        --chat--color-primary: #e3530d;
+        --chat--color-primary-shade-50: #ffdede;
+        --chat--color-primary-shade-100: #e3890d;
+        --chat--color-secondary: #F6D5C4;
+        --chat--color-secondary-shade-50: #ffdede;
+        --chat--color-white: #ffffff;
+        --chat--color-light: #f7f5ec;
+        --chat--color-dark: #000;
+        --chat--window--width: 400px;
+        --chat--window--height: 600px;
+        --chat--window--border: solid 1px #000;
+        --chat--header--background: #F6D5C4;
+        --chat--header--color: #000;
+        --chat--message--user--background: var(--chat--color-secondary);
+        --chat--message--user--color: var(--chat--color-white);
+        --chat--toggle--background: var(--chat--color-primary);
+        --chat--toggle--color: var(--chat--color-white);
+        --chat--toggle--size: 64px;
+      }
+    </style>
+    <script type="module">
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+      createChat({
+        webhookUrl: 'https://thetinktank.app.n8n.cloud/webhook/53c136fe-3e77-4709-a143-fe82746dd8b6/chat',
+        webhookConfig: { method: 'POST', headers: {} },
+        target: '#n8n-chat',
+        mode: 'window',
+        chatInputKey: 'chatInput',
+        chatSessionKey: 'sessionId',
+        metadata: {},
+        showWelcomeScreen: false,
+        defaultLanguage: 'en',
+        initialMessages: [
+          'Hi there! 👋',
+          'My name is Ricky. How can I assist you today?'
+        ],
+        i18n: {
+          en: {
+            subtitle: "Start a chat. We're here to help you 24/7.",
+            footer: '',
+            getStarted: 'New Conversation',
+            inputPlaceholder: 'Type your question..',
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

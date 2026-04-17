@@ -1,0 +1,996 @@
+<div class="page-wrap bg-background text-on-background font-body selection:bg-primary-fixed-dim">
+
+<!-- Custom Cursor -->
+<div class="cnt-cursor-dot" id="cursorDot"></div>
+<div class="cnt-cursor-ring" id="cursorRing"></div>
+
+<div class="page-main">
+
+
+
+  <!-- Navbar -->
+  <div role="banner" class="cnt-navbar cnt-nav !z-[9990]" style="transition: transform 0.3s ease-in-out;" [style.transform]="!isNavbarVisible ? 'translateY(-150%)' : 'translateY(0)'">
+    <div class="block-navbar">
+      <div class="nav-search-wrap">
+        <a routerLink="/" class="brand cnt-nav-brand"><img src="images/CNT_Logo_V_Orange.svg" width="94" alt="CurbNTurf"></a>
+        <div class="form-block-search cnt-form">
+          <form id="search_form" name="search-form" method="get">
+            <div class="search-location-inner">
+              <a href="#" class="lb-search cnt-inline-block">
+                <div class="cnt-embed"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;">
+                  <style>.icon-search-location{fill-rule:evenodd;clip-rule:evenodd;fill:#000;}</style>
+                  <g id="Icon__x2F__Rounded__x2F__search">
+                    <path id="Vector" class="icon-search-location" d="M16.5,15.5h1.1l6,6c0.6,0.6,0.6,1.5,0,2.1s-1.5,0.6-2.1,0l-6-6v-1.1l-0.4-0.4c-2,1.7-4.7,2.6-7.5,2.1c-3.9-0.7-7-3.9-7.5-7.9c-0.7-6,4.3-11,10.2-10.2c3.9,0.5,7.2,3.6,7.9,7.5c0.5,2.9-0.4,5.5-2.1,7.5L16.5,15.5z M2.8,9.1c0,3.5,2.8,6.3,6.3,6.3s6.3-2.8,6.3-6.3s-2.8-6.3-6.3-6.3C5.6,2.8,2.8,5.6,2.8,9.1z"></path>
+                  </g>
+                </svg></div>
+              </a>
+              <input class="search-field cnt-input" maxlength="256" name="Location-2" placeholder="Search for locations or listings" type="text" id="Location-2">
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="menu">
+        <nav role="navigation" class="nav-menu cnt-nav-menu">
+          <a href="#" class="navigation-link cnt-nav-link">Be a guest</a>
+          <a href="#" class="navigation-link cnt-nav-link">Become a host</a>
+          <a href="#" class="navigation-link cnt-nav-link">Articles</a>
+          <a href="#" class="navigation-link cnt-inline-block">
+            <div class="login-wrap">
+              <div class="icon-login">
+                <div class="cnt-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C14.2091 14 16 12.2091 16 10C16 7.79086 14.2091 6 12 6C9.79086 6 8 7.79086 8 10C8 12.2091 9.79086 14 12 14ZM12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" fill="currentColor"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.9261 20.0557C20.397 18.235 22 15.3047 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 15.3047 3.60301 18.235 6.07388 20.0557C6.65997 20.4742 7.1363 20.7573 7.63587 21C8.95464 21.6407 10.4354 22 12 22C13.5646 22 15.0454 21.6407 16.3641 21C16.9657 20.7015 17.4613 20.3982 17.9261 20.0557ZM17.2287 18.055C18.926 16.588 20 14.4194 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 14.4194 5.07401 16.588 6.77128 18.055C7.80066 16.2313 9.75654 15 12 15C14.2435 15 16.1993 16.2313 17.2287 18.055ZM15.5567 19.1679C14.8921 17.8803 13.5488 17 12 17C10.4512 17 9.10792 17.8803 8.44332 19.1679C9.51467 19.7005 10.7224 20 12 20C13.2776 20 14.4853 19.7005 15.5567 19.1679Z" fill="currentColor"></path>
+                </svg></div>
+              </div>
+              <div>Log in</div>
+            </div>
+          </a>
+        </nav>
+        <div class="nav-menu-button cnt-nav-button" (click)="toggleMobileNav()">
+          <div class="cnt-icon-nav-menu"></div>
+        </div>
+      </div>
+    </div>
+    <div class="white-fill-navbar"></div>
+  </div>
+
+  <!-- Unified Grid Wrapper for Body and Footer -->
+  <div class="bg-grid-subtle bg-cream">
+    <!-- Page Body -->
+    <div class="container-body !bg-transparent !pb-0">
+    <!-- Hero Section -->
+    <div class="hero-wrap relative">
+
+      <div class="sticky-wrap-hero" (click)="toggleVideo($event)">
+        <div class="sticky-element">
+          <div class="sticky-content">
+            <div class="video-wrapper">
+              <div class="background-video cnt-background-video">
+                <video #heroVideo autoplay loop muted playsinline data-object-fit="cover"
+                  style="background-image:url('https://cdn.prod.website-files.com/5fbe83fe8b482568c9db3c4f/662c82d2c197518b9c6f47d4_watermarked_preview%20(1)-poster-00001.jpg');object-fit:cover;width:100%;height:100%;">
+                  <source src="https://cdn.prod.website-files.com/5fbe83fe8b482568c9db3c4f/662c82d2c197518b9c6f47d4_watermarked_preview%20(1)-transcode.mp4">
+                  <source src="https://cdn.prod.website-files.com/5fbe83fe8b482568c9db3c4f/662c82d2c197518b9c6f47d4_watermarked_preview%20(1)-transcode.webm">
+                </video>
+              </div>
+            </div>
+          </div>
+          <div class="sticky-bg">
+            <div class="search-hero-outer">
+              <div class="hero-preheading text-trinidad font-bold text-xs tracking-[0.2em] mb-4 text-left uppercase w-full">
+                The RV Freedom Experience
+              </div>
+              <div class="search-hero-inner w-full flex flex-col items-start">
+                <h1 data-stagger-list class="hero-heading text-trinidad relative z-10" style="font-size: clamp(10rem, 32vw, 440px) !important; line-height: 0.8 !important; font-weight: 800 !important; white-space: normal !important; text-align: left !important; width: 100% !important; margin-left: 0 !important;">
+                  <span style="display: block !important; width: 100% !important; overflow: hidden;"><span class="hero-span inline-block">Discover</span> <span class="hero-span inline-block">Your</span></span>
+                  <span style="display: block !important; width: 100% !important; overflow: hidden;"><span class="hero-span inline-block">Next</span> <span class="hero-span inline-block">Horizon</span></span>
+                </h1>
+                <div class="bg-white/95 backdrop-blur-xl rounded-full p-2 md:p-1 flex flex-col md:flex-row items-center gap-2 shadow-2xl border border-jungle-green/10 mt-8 w-full md:w-auto md:min-w-[850px] lg:min-w-[1000px]">
+                  <div class="flex-[2] w-full flex items-center gap-4 px-8 py-4 border-b md:border-b-0 md:border-r border-outline-gray/50">
+                    <span class="material-symbols-outlined text-jungle-green shrink-0" data-icon="location_on">location_on</span>
+                    <div class="flex flex-col text-left">
+                      <span class="text-[10px] uppercase tracking-widest font-bold text-muted-text">Where to?</span>
+                      <input class="bg-transparent border-none p-0 focus:ring-0 text-dark-text text-sm font-medium placeholder:text-outline-gray w-full" placeholder="Search destinations" type="text"/>
+                    </div>
+                  </div>
+                  <div class="flex-1 w-full flex items-center gap-4 px-8 py-4 border-b md:border-b-0 md:border-r border-outline-gray/50">
+                    <span class="material-symbols-outlined text-jungle-green shrink-0" data-icon="calendar_today">calendar_today</span>
+                    <div class="flex flex-col text-left">
+                       <span class="text-[10px] uppercase tracking-widest font-bold text-muted-text">When</span>
+                      <span class="text-dark-text text-sm font-medium">Add dates</span>
+                    </div>
+                  </div>
+                  <div class="flex-1 w-full flex items-center gap-4 px-8 py-4">
+                    <span class="material-symbols-outlined text-jungle-green shrink-0" data-icon="rv_hookup">rv_hookup</span>
+                    <div class="flex flex-col text-left">
+                      <span class="text-[10px] uppercase tracking-widest font-bold text-muted-text">Your Rig</span>
+                      <span class="text-dark-text text-sm font-medium">Type & Length</span>
+                    </div>
+                  </div>
+                  <div class="btn-3d-wrap shrink-0 ml-2 md:mr-2 h-16 w-16" (click)="toggleVideo($event)">
+                    <button class="btn-3d-inner relative w-full h-full rounded-full">
+                      <div class="btn-3d-front absolute inset-0 bg-trinidad text-white rounded-full flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined" data-icon="search">search</span>
+                      </div>
+                      <div class="btn-3d-back absolute inset-0 bg-jungle-green text-white rounded-full flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined" data-icon="search">search</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ================= Network Text Section ================= -->
+    <section class="network-animated-section bg-jungle-green text-white py-32 md:py-64 relative z-20 flex flex-col items-center justify-center min-h-[90vh] overflow-hidden full-bleed">
+      <!-- GSAP Text element -->
+      <div class="network-text-container text-center max-w-5xl text-3xl md:text-5xl lg:text-[3.25rem] font-headline font-bold leading-[2]" style="will-change: transform, opacity;">
+        <span class="block">CurbNTurf connects RVers with unique stays — no subscription required.</span>
+        <span class="block">
+          <span class="category-pill inline-flex items-center bg-[#DE5260] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="agriculture">agriculture</span>farms</span>
+          <span class="category-pill inline-flex items-center bg-[#A541A1] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="wine_bar">wine_bar</span>wineries</span>
+          <span class="category-pill inline-flex items-center bg-[#E8A23D] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-1 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="sports_bar">sports_bar</span>breweries</span>
+        </span>
+        <span class="block">
+          <span class="category-pill inline-flex items-center bg-[#83C53C] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-3 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="golf_course">golf_course</span>golf courses</span>
+          <span class="category-pill inline-flex items-center bg-[#42B0AF] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="home_work">home_work</span>community hosts</span>
+        </span>
+        <span class="block">Pay as you go. Stay somewhere unforgettable.</span>
+      </div>
+    </section>
+
+    <!-- Massive Breathing Gap -->
+    <div class="full-bleed bg-jungle-green h-[50vh]"></div>
+      
+    <!-- ================= Horizontal Cards Section ================= -->
+    <section class="horizontal-cards-section bg-jungle-green text-white relative z-20 h-screen full-bleed flex items-center overflow-hidden">
+
+      <!-- Card Stack Intro Headline -->
+      <div class="card-stack-intro absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+        <!-- Optional Pre-header if they want to keep "Where will you park next" -->
+        <p class="text-[#2DE889]/60 uppercase tracking-[0.2em] text-sm md:text-base font-bold mb-4 md:mb-8 font-headline">Where will you park next?</p>
+        
+        <h2 class="relative text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase" style="font-size: clamp(3.5rem, 7.5vw, 8rem);">
+          Park Somewhere<br>You'll Never Forget
+          
+          <!-- Accent Stickers simulating the MoMoney floating pixel art -->
+          <!-- Sticker 1 -->
+          <div class="absolute -left-[5%] md:-left-[10%] top-[40%] -translate-y-1/2 rotate-[-12deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
+            <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="park">park</span>
+          </div>
+          
+          <!-- Sticker 2 -->
+          <div class="absolute -right-[2%] md:-right-[5%] bottom-[10%] rotate-[18deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
+            <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="rv_hookup">rv_hookup</span>
+          </div>
+        </h2>
+      </div>
+
+      <!-- The Outro Reveal (Waiting beneath the scrolling cards) -->
+      <div class="mo-outro-reveal absolute inset-0 flex flex-col items-center justify-center z-20 opacity-0 pointer-events-none bg-jungle-green">
+        <h2 class="text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase mb-10" style="font-size: clamp(3.5rem, 7.5vw, 8rem);">
+          Plus More<br>(Lots More)
+        </h2>
+        
+        <!-- MoMoney Split Button -->
+        <div class="pointer-events-auto magnetic-btn group cursor-pointer inline-block">
+          <!-- Container expands gap on hover -->
+          <a href="#favorite-hosts" class="flex items-stretch gap-0 group-hover:gap-2 transition-all duration-300">
+            
+            <!-- Left Text Side -->
+            <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-l-[4px] group-hover:rounded-r-[4px] px-6 py-3 md:px-8 md:py-4 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase flex items-center shadow-2xl transition-all duration-300 origin-center">
+              Explore Our Listings
+            </div>
+            
+            <!-- Right Icon Side -->
+            <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-r-[4px] group-hover:rounded-l-[4px] px-4 py-3 md:px-5 md:py-4 border-l-2 border-dashed border-jungle-green/30 group-hover:border-l-transparent flex items-center justify-center shadow-2xl transition-all duration-300 origin-center">
+              <!-- Play / Triangle Icon -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+
+          </a>
+        </div>
+      </div>
+
+      <!-- Exhibit Cards Wrap Foreground (GSAP Horizontal Scroll) -->
+      <div class="exhibit-list-wrap w-max pr-[20vw] flex items-center flex-nowrap gap-8 md:gap-12 will-change-transform z-30" style="transform: translateX(100vw);">
+
+        <!-- Card 1 -->
+        <div class="exhibit-card-wrapper shrink-0 relative z-[60]" style="transform: rotate(-2deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/winery_category.png" alt="Winery" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Sip & Sleep</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Wake up among the vines. Enjoy exclusive tastings and a quiet night at top-tier wineries.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="exhibit-card-wrapper shrink-0 mt-16 relative z-[50]" style="transform: rotate(3deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/farm_category.png" alt="Farm Excursions" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Fresh from the Source</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Experience farm life. Pick fresh produce and park beside peaceful pastures.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="exhibit-card-wrapper shrink-0 relative z-[40]" style="transform: rotate(-1.5deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/brewery_category.png" alt="Breweries" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Craft Pints & Quiet Nights</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Park outside local breweries and distilleries after a perfect evening of craft tasting.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="exhibit-card-wrapper shrink-0 mt-8 relative z-[30]" style="transform: rotate(2deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/golf_category.png" alt="Golf Courses" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Tee Off & Tailgate</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Park your rig right next to the green. Play a round and relax at your mobile clubhouse.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="exhibit-card-wrapper shrink-0 relative z-[20]" style="transform: rotate(-1deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/community_category.png" alt="Community Hosts" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Meet the Locals</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Stay with welcoming community hosts on private properties away from crowded RV parks.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="exhibit-card-wrapper shrink-0 mt-12 relative z-[10]" style="transform: rotate(2.5deg);">
+          <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
+            <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
+              <img src="assets/images/unique_category.png" alt="Unique Stops" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-0 left-0 w-full p-5">
+                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Off the Beaten Path</h3>
+              </div>
+            </div>
+            <div class="px-5 pt-4 pb-5">
+              <p class="text-dark-text text-sm leading-relaxed">Discover unique attractions, historical sites, and museums that offer exclusive overnight parking.</p>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+
+<!-- ================= Content Overlap Wrapper ================= -->
+<div class="content-overlap-wrap relative z-40 bg-cream bg-grid-subtle w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden" style="box-shadow: 0 -20px 40px rgba(0,0,0,0.05);">
+
+<!-- How It Works Section -->
+<section class="py-24 md:py-40 relative z-50 border-y border-jungle-green/5">
+<div class="max-w-[90rem] mx-auto px-4 md:px-8">
+<div class="text-center mb-20">
+<span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The Journey</span>
+<h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight">How It Works</h2>
+</div>
+<div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 gsap-how-works-wrap">
+  <!-- UI Thread Desktop (Horizontal S-Curve) -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] hidden md:block" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <mask id="desktopJourneyMask">
+        <path class="journey-mask-path" d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+      </mask>
+    </defs>
+    <!-- Tracing dashed path visible only where mask allows -->
+    <path d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#desktopJourneyMask)" vector-effect="non-scaling-stroke" />
+  </svg>
+
+  <!-- UI Thread Mobile (Vertical Weaving Path) -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] md:hidden block" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <mask id="mobileJourneyMask">
+        <path class="journey-mask-path" d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+      </mask>
+    </defs>
+    <path d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#mobileJourneyMask)" vector-effect="non-scaling-stroke" />
+  </svg>
+<!-- Card 1 -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
+  <!-- Subtle Photo Texture -> Full Photo on Hover -->
+  <img src="assets/images/mountain_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <!-- Dark vignette for text legible contrast -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <!-- Watermark -->
+  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">01</div>
+  <div class="relative z-10 mt-auto pt-32 w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Discover</h4>
+    <p class="text-dark-text group-hover:text-white/90 text-base leading-relaxed font-body transition-colors duration-500">Enter your rig size and dates to find curated spaces perfectly compatible with your vehicle.</p>
+  </div>
+</div>
+<!-- Card 2 -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
+  <!-- Subtle Photo Texture -> Full Photo on Hover -->
+  <img src="assets/images/farm_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <!-- Dark vignette for text legible contrast -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <!-- Watermark -->
+  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">02</div>
+  <div class="relative z-10 mt-auto pt-32 w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Book with Confidence</h4>
+    <p class="text-dark-text group-hover:text-white/90 text-base leading-relaxed font-body transition-colors duration-500">Communicate directly with vetted hosts and effortlessly reserve your site with our Rig-Compatible Guarantee.</p>
+  </div>
+</div>
+<!-- Card 3 -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
+  <!-- Subtle Photo Texture -> Full Photo on Hover -->
+  <img src="assets/images/winery_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <!-- Dark vignette for text legible contrast -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <!-- Watermark -->
+  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">03</div>
+  <div class="relative z-10 mt-auto pt-32 w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Arrive &amp; Enjoy</h4>
+    <p class="text-dark-text group-hover:text-white/90 text-base leading-relaxed font-body transition-colors duration-500">Navigate smoothly to your premium destination and bask in the ultimate freedom of the open road.</p>
+  </div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ================= Network Scale Section ================= -->
+<section class="max-w-[90rem] mx-auto px-4 md:px-8 mb-24">
+  <div class="bg-[#F9F9F8] rounded-[3rem] py-16 md:py-24 px-6 md:px-12 flex flex-col items-center border border-black/5">
+    <h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
+    <p class="text-lg md:text-xl font-body text-muted-text text-center mb-16 max-w-2xl">From remote alpaca farms to historic vineyards, drop a pin and say hello to hundreds of incredible local hosts.</p>
+    
+    <div class="w-full max-w-5xl relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 group cursor-pointer">
+      <!-- High Res Map Visual -->
+      <img src="assets/images/network_map.png" alt="Map of North American Hosts" class="w-full h-auto object-cover md:aspect-[16/10] aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.03]">
+      
+      <!-- Overlay Vignette to slightly pull focus to button -->
+      <div class="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-500"></div>
+
+      <!-- Center Interactive Explore Button -->
+      <!-- Center Interactive Explore Button -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        
+        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl">
+          <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+            <!-- Invisible structure pusher to perfectly fit dynamic text sizes over absolute bounds -->
+            <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+            </div>
+
+            <div class="btn-3d-front bg-white text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+            </div>
+            <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- ================= Favorite Hosts Grid ================= -->
+    <div>
+      <section class="py-24 md:py-40 px-4 md:px-8 max-w-[90rem] mx-auto">
+        <div class="text-center mb-20">
+        <h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-16 gsap-favorite-hosts-wrap">
+        
+        <!-- Card 1 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_hops.png" alt="High Desert Hop Farm" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+              <span class="material-symbols-outlined text-[14px]" data-icon="dark_mode">dark_mode</span> Extra Nights
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">High Desert Hop Farm & Taphouse</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#E8A23D]">Brewery</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Bend, OR</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_vineyard.png" alt="Valley View Vineyards" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="wine_bar">wine_bar</span>
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Valley View Estate Vineyards</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#DE5260]">Winery</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Walla Walla, WA</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_alpaca.png" alt="Alpaca Ranch" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+              <span class="material-symbols-outlined text-[14px]" data-icon="dark_mode">dark_mode</span> Extra Nights
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Rustic Ridge Alpaca Ranch</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#A541A1]">Farm</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Bozeman, MT</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_farm.png" alt="Heritage Farm" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Whispering Pines Heritage Farm</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#A541A1]">Farm</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Burlington, VT</span>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_museum.png" alt="Auto Museum" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+              <span class="material-symbols-outlined text-[14px]" data-icon="dark_mode">dark_mode</span> Extra Nights
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Vintage Auto & Aviation Museum</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#42B0AF]">Attraction</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Kalamazoo, MI</span>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_brewery.png" alt="Riverfront Brewery" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Riverfront Barrel House & Gardens</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#E8A23D]">Brewery</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Fort Collins, CO</span>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_village.png" alt="Pioneer Village" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+              <span class="material-symbols-outlined text-[14px]" data-icon="dark_mode">dark_mode</span> Extra Nights
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Pioneer Village Historical Site</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#42B0AF]">Attraction</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Williamsburg, VA</span>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+          <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
+            <img src="assets/images/host_dairy.png" alt="Organic Dairy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Sunrise Creek Organic Dairy</h3>
+          <div class="text-sm mt-0.5">
+            <span class="font-bold text-[#A541A1]">Farm</span>
+            <span class="text-muted-text mx-1.5">•</span>
+            <span class="text-muted-text">Lancaster, PA</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    </div>
+
+    <!-- ================= Stitch Redesign Sections ================= -->
+
+
+
+<!-- ================= Community Masonry Grid ================= -->
+<section class="py-24 md:py-40 overflow-hidden bg-background">
+  <div class="max-w-[70rem] mx-auto px-4 md:px-8 text-center mb-20">
+    <h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight mb-6">The CurbNTurf Community</h2>
+    <p class="text-lg text-muted-text max-w-2xl mx-auto leading-relaxed">
+      The CurbNTurf community is full of thousands of like-minded RVers seeking unforgettable experiences and adventures while on the road!
+    </p>
+  </div>
+
+  <div class="max-w-[85rem] mx-auto px-4 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-5 auto-rows-[200px] md:auto-rows-[250px] gsap-masonry-grid-wrap">
+      
+      <!-- Airstream (Top Left Massive) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-2 md:row-span-2 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_1_airstream_1776367787612.png" alt="Airstream in Vineyard" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Pumpkins (Top Mid) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_2_pumpkins_1776367803908.png" alt="Pumpkins" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Vanlife (Top Right) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_3_vanlife_1776367816813.png" alt="Vanlife" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- RV Sunset (Merged Massive Right Block) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-2 md:row-span-2 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_6_rv_sunset_1776367867815.png" alt="RV Sunset" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Cow (Bottom Left 1) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_4_cow_1776367840081.png" alt="Cow" class="w-full h-full object-cover">
+        </div>
+      </div>
+
+      <!-- Beer Flights (Bottom Left 2) -->
+      <div class="rounded-2xl overflow-hidden md:col-span-1 md:row-span-1 relative group gsap-masonry-item isolate translate-z-0 style-mask-fix">
+        <div class="absolute inset-[-15%] w-[130%] h-[130%] gsap-masonry-parallax">
+          <img src="assets/images/masonry/masonry_5_beer_1776367854031.png" alt="Beer Flights" class="w-full h-full object-cover">
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</section>
+
+<!-- Trust Signals Section (GSAP Color Shift Target) -->
+<section class="trust-dynamic-section py-24 md:py-40 overflow-hidden relative transition-colors duration-700 w-full" style="background-color: transparent;">
+  <!-- We apply the GSAP color shift directly to this section's background and typography -->
+  <div class="max-w-[90rem] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
+    
+    <!-- Left Column (Typography & Badges) -->
+    <div class="lg:pr-8">
+      <span class="trust-label text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block transition-colors duration-700">
+        The Highest Standard
+      </span>
+      <h2 class="trust-heading text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight mb-8 transition-colors duration-700">
+        Professional, safe, and outdoorsy
+      </h2>
+      <p class="trust-desc text-muted-text text-lg mb-12 leading-relaxed max-w-xl transition-colors duration-700">
+        We believe freedom shouldn't come with compromise. CurbNTurf partners only with hosts who meet our rigorous standards for technical reliability and safety.
+      </p>
+
+      <!-- Glassmorphic Badges -->
+      <div class="flex flex-wrap gap-4 mb-16">
+        <div class="trust-badge flex items-center gap-2 px-6 py-3 rounded-full border border-black/10 transition-all duration-700 group hover:-translate-y-1 hover:shadow-lg">
+          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="verified_user">verified_user</span>
+          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-dark-text transition-colors duration-700">Verified Host</span>
+        </div>
+        <div class="trust-badge flex items-center gap-2 px-6 py-3 rounded-full border border-black/10 transition-all duration-700 group hover:-translate-y-1 hover:shadow-lg">
+          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="straighten">straighten</span>
+          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-dark-text transition-colors duration-700">Rig-Compatible Guarantee</span>
+        </div>
+        <div class="trust-badge flex items-center gap-2 px-6 py-3 rounded-full border border-black/10 transition-all duration-700 group hover:-translate-y-1 hover:shadow-lg">
+          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="lock">lock</span>
+          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-dark-text transition-colors duration-700">Secure Booking</span>
+        </div>
+      </div>
+
+      <!-- 3D CTA Button -->
+      <div class="btn-3d-wrap magnetic-btn">
+        <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+          <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+            Learn About Our Model
+          </div>
+          <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+            Learn About Our Model
+          </div>
+          <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+            Learn About Our Model
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column (3D Carousel Physics) -->
+    <div class="relative w-full h-[600px] md:h-[700px] perspective-[1500px] overflow-hidden rounded-[2rem] px-4 py-8 pointer-events-none" style="-webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);">
+      <!-- Inner rotated envelope -->
+      <div class="w-full h-full transform-style-3d rotate-y-[-5deg] rotate-x-[5deg] scale-[1.05]">
+        <!-- Vertical Marquee Track -->
+        <div class="trust-marquee-track flex flex-col gap-6 w-full max-w-md ml-auto mr-auto transform-style-3d will-change-transform">
+          
+          <!-- Card Suite Alpha -->
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">Marcus Sterling</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Full-time Airstreamer</div>
+          </div>
+
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">Elena Rostova</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Digital Nomad</div>
+          </div>
+
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">David & Sarah Kim</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Retiree Explorers</div>
+          </div>
+
+          <!-- Card Suite Beta (Duplicate for smooth infinite scrolling) -->
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">Marcus Sterling</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Full-time Airstreamer</div>
+          </div>
+
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">Elena Rostova</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Digital Nomad</div>
+          </div>
+
+          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-black/5 backdrop-blur-xl shadow-lg border transition-colors duration-700">
+            <div class="flex gap-1 text-gold mb-4 text-sm"><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span><span class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span></div>
+            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-dark-text transition-colors duration-700">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
+            <div class="font-bold text-sm trust-card-text text-dark-text transition-colors duration-700">David & Sarah Kim</div><div class="text-xs text-muted-text transition-colors duration-700 trust-muted-text">Retiree Explorers</div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+    <!-- ================= FAQ Section ================= -->
+    <div class="gsap-faq-section max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+      <h2 class="text-5xl md:text-6xl font-headline font-bold text-white tracking-tight leading-tight text-center mb-16">Frequently Asked Questions</h2>
+
+      <div class="max-w-[56rem] mx-auto">
+
+        <!-- FAQ Item 1 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(0)">
+            <span class="text-white font-headline font-semibold text-lg">How do I know if my RV will fit in the host's space?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 0 ? '300px' : '0'">
+            <p class="text-white/70 leading-relaxed pb-6 max-w-[48rem]">Each listing includes specific details about the maximum RV length, width, and ground type (e.g., gravel, grass, pavement). We recommend using our "My Garage" feature to save your rig's dimensions — our search filters will then automatically highlight sites that are a perfect match for your specific setup.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(1)">
+            <span class="text-white font-headline font-semibold text-lg">Are hookups (water, power, sewer) available at every site?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 1 ? '300px' : '0'">
+            <p class="text-white/70 leading-relaxed pb-6 max-w-[48rem]">Not necessarily. Sites range from "Boondocking" (dry camping with no hookups) to "Full Hookups" (water, electricity, and sewer). You can filter your search by the specific amenities you need. Each host's listing page clearly displays which services are provided.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(2)">
+            <span class="text-white font-headline font-semibold text-lg">How do I get the exact location and check-in instructions?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 2 ? '300px' : '0'">
+            <p class="text-white/70 leading-relaxed pb-6 max-w-[48rem]">To protect our hosts' privacy, the exact address is only shared once your booking is confirmed. After confirmation, you will receive GPS coordinates and turn-by-turn directions. You can also message the host directly through our platform for specific arrival instructions or gate codes.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(3)">
+            <span class="text-white font-headline font-semibold text-lg">Does CurbNTurf charge a membership or subscription fee?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 3 ? '300px' : '0'">
+            <p class="text-white/70 leading-relaxed pb-6 max-w-[48rem]">No! Unlike other RV sharing platforms, there are no annual membership or sign-up fees to browse or book. You only pay for the nights you stay, plus a small platform fee (typically 15% or a flat $5 for low-cost sites) that covers secure payment processing and support.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(4)">
+            <span class="text-white font-headline font-semibold text-lg">What happens if I need to cancel my reservation?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 4 ? '300px' : '0'">
+            <p class="text-white/70 leading-relaxed pb-6 max-w-[48rem]">Each host chooses their own cancellation policy (Flexible, Moderate, or Strict), which is clearly listed on the site's profile. You can view these details before you book. If you need to cancel, you can do so through your dashboard, and any applicable refunds will be processed based on that host's specific policy.</p>
+          </div>
+        </div>
+
+        <!-- Show More -->
+        <div class="text-center mt-12">
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    
+    <!-- ================= Host Promotion Section ================= -->
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        
+        <!-- Left: Pixelated Image Masking -->
+        <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square object-cover flex justify-center drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+          <!-- 3-step 8-bit geometric block cutout via pure CSS Calc Polygon -->
+          <img src="assets/images/host_opportunity.png" alt="Become a Host" 
+               class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 hover:scale-105 will-change-transform">
+        </div>
+
+        <!-- Right: Aggressive Typography & Data -->
+        <div class="flex flex-col py-12 lg:py-0">
+           
+           <div class="text-[#F1B434] font-bold tracking-wider uppercase text-sm mb-4">Have Extra Space?</div>
+           <h2 class="text-5xl md:text-6xl font-headline font-bold text-white tracking-tight leading-tight mb-6">
+             Turn Your Land Into Income.
+           </h2>
+           <p class="text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed">
+             Whether you have a scenic vineyard, a quiet farm, or a spacious driveway, there’s an RVer looking for a spot like yours. Listing is 100% free, and you stay in total control.
+           </p>
+           
+           <ul class="space-y-6 mb-12">
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="payments">payments</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Earn Extra Cash:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Set your own nightly rates and keep more of what you earn.</div>
+               </div>
+             </li>
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="event_available">event_available</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">You’re the Boss:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">You choose the dates, the guests, and the rules.</div>
+               </div>
+             </li>
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="verified_user">verified_user</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Secure & Simple:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">We handle the payments and identity verification for you.</div>
+               </div>
+             </li>
+           </ul>
+
+           <!-- Split Button Component -->
+           <!-- 3D Flip Button Component -->
+           <div>
+             <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block mt-4">
+               <a routerLink="/become-a-host" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                 <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   START HOSTING TODAY
+                 </div>
+                 <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   START HOSTING TODAY
+                 </div>
+                 <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   START HOSTING TODAY
+                 </div>
+               </a>
+             </div>
+           </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ================= App Download Section ================= -->
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+      <div class="bg-cream rounded-[2rem] overflow-hidden gsap-app-download-wrap">
+        <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
+
+          <!-- Left Column: Phones Mockup -->
+          <div class="gsap-app-left opacity-0 transform translate-y-10 flex items-end justify-center pt-10 px-8 lg:px-16">
+            <div class="gsap-app-phones will-change-transform">
+              <img src="assets/images/phone-triptych.png" alt="CurbNTurf Mobile App" class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
+            </div>
+          </div>
+
+          <!-- Right Column: Copy & CTA -->
+          <div class="gsap-app-right opacity-0 transform translate-y-10 py-12 px-8 lg:px-16 lg:py-20">
+            <div class="w-12 h-[2px] bg-trinidad mb-6"></div>
+            <h2 class="text-5xl md:text-6xl font-headline font-bold !text-dark-text tracking-tight leading-tight mb-5">
+              Download the<br>CurbNTurf App
+            </h2>
+            <p class="text-muted-text text-lg leading-relaxed mb-10 max-w-sm">
+              Search listings, book sites, and navigate to your next adventure — all from the palm of your hand.
+            </p>
+            <div class="flex flex-row flex-wrap gap-4">
+              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </a>
+              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+</section>
+
+
+  <!-- ================= Locations Section ================= -->
+  <section class="w-full border-t border-jungle-green/10 py-24 md:py-40">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <!-- Heading + chevron toggle -->
+      <button class="flex items-center gap-3 mb-8 cursor-pointer bg-transparent border-none p-0" (click)="toggleLocations()">
+        <span class="font-headline text-[1.4rem] !text-dark-text font-normal">Explore CurbNTurf Locations</span>
+        <span class="text-dark-text/50 transition-transform duration-300" [class.rotate-180]="!locationsExpanded">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Collapsible grid -->
+      <div class="overflow-hidden transition-all duration-500 ease-in-out" [style.max-height]="locationsExpanded ? '3000px' : '0'">
+        <div class="columns-2 md:columns-4 gap-x-8 gsap-locations-grid">
+          <a routerLink="/search" [queryParams]="{state: 'arizona'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Arizona</a>
+          <a routerLink="/search" [queryParams]="{state: 'arkansas'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Arkansas</a>
+          <a routerLink="/search" [queryParams]="{state: 'california'}"    class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">California</a>
+          <a routerLink="/search" [queryParams]="{state: 'colorado'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Colorado</a>
+          <a routerLink="/search" [queryParams]="{state: 'florida'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Florida</a>
+          <a routerLink="/search" [queryParams]="{state: 'georgia'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Georgia</a>
+          <a routerLink="/search" [queryParams]="{state: 'idaho'}"         class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Idaho</a>
+          <a routerLink="/search" [queryParams]="{state: 'illinois'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Illinois</a>
+          <a routerLink="/search" [queryParams]="{state: 'indiana'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Indiana</a>
+          <a routerLink="/search" [queryParams]="{state: 'iowa'}"          class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Iowa</a>
+          <a routerLink="/search" [queryParams]="{state: 'kentucky'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Kentucky</a>
+          <a routerLink="/search" [queryParams]="{state: 'maine'}"         class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Maine</a>
+          <a routerLink="/search" [queryParams]="{state: 'michigan'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Michigan</a>
+          <a routerLink="/search" [queryParams]="{state: 'minnesota'}"     class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Minnesota</a>
+          <a routerLink="/search" [queryParams]="{state: 'missouri'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Missouri</a>
+          <a routerLink="/search" [queryParams]="{state: 'montana'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Montana</a>
+          <a routerLink="/search" [queryParams]="{state: 'nebraska'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Nebraska</a>
+          <a routerLink="/search" [queryParams]="{state: 'nevada'}"        class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Nevada</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-hampshire'}" class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">New Hampshire</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-mexico'}"    class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">New Mexico</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-york'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">New York</a>
+          <a routerLink="/search" [queryParams]="{state: 'north-carolina'}" class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">North Carolina</a>
+          <a routerLink="/search" [queryParams]="{state: 'ohio'}"          class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Ohio</a>
+          <a routerLink="/search" [queryParams]="{state: 'oklahoma'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Oklahoma</a>
+          <a routerLink="/search" [queryParams]="{state: 'oregon'}"        class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Oregon</a>
+          <a routerLink="/search" [queryParams]="{state: 'pennsylvania'}"  class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Pennsylvania</a>
+          <a routerLink="/search" [queryParams]="{state: 'south-carolina'}" class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">South Carolina</a>
+          <a routerLink="/search" [queryParams]="{state: 'south-dakota'}"  class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">South Dakota</a>
+          <a routerLink="/search" [queryParams]="{state: 'texas'}"         class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Texas</a>
+          <a routerLink="/search" [queryParams]="{state: 'utah'}"          class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Utah</a>
+          <a routerLink="/search" [queryParams]="{state: 'vermont'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Vermont</a>
+          <a routerLink="/search" [queryParams]="{state: 'virginia'}"      class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Virginia</a>
+          <a routerLink="/search" [queryParams]="{state: 'washington'}"    class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Washington</a>
+          <a routerLink="/search" [queryParams]="{state: 'west-virginia'}" class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">West Virginia</a>
+          <a routerLink="/search" [queryParams]="{state: 'wisconsin'}"     class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Wisconsin</a>
+          <a routerLink="/search" [queryParams]="{state: 'wyoming'}"       class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline hover:opacity-60 transition-opacity break-inside-avoid">Wyoming</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <curbnturf-footer></curbnturf-footer>
+
+    </div><!-- /content-overlap-wrap -->
+    </div><!-- /container-body -->
+
+  </div><!-- /bg-grid-subtle bg-cream -->
+
+  </div><!-- /page-main -->
+</div><!-- /page-wrap -->

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx nx:*)",
+      "Bash(lsof -ti:4200)",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/**)",
+      "WebFetch(domain:curbnturf.vercel.app)",
+      "Bash(python3 -c \"import sys; content = sys.stdin.read\\(\\); print\\(f''''Total length: {len\\(content\\)} characters''''\\); print\\(content\\)\")",
+      "WebFetch(domain:cnt-website.webflow.io)",
+      "Bash(kill 18322 30428)",
+      "Bash(grep -oE 'sticky.content[^;]{0,300}')"
+    ]
+  }
+}

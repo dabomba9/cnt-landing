@@ -1,0 +1,143 @@
+<footer class="w-full py-8 px-4 md:px-8">
+
+  <!-- section-inner-wrap -->
+  <div class="bg-trinidad rounded-[1rem] shadow-[0_1rem_1.8rem_-1.2rem_rgba(0,0,0,0.55)] w-full max-w-[90rem] mx-auto p-16 text-white text-base">
+
+    <!-- footer_wrapper: flex, gap 2rem, align-items start -->
+    <div class="flex gap-8 items-start">
+
+      <!-- footer-outer-left: flex-1, flex col -->
+      <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- footer-inner-left: flex ROW — logo+tagline left, nav columns right -->
+        <div class="flex gap-8 items-start">
+
+          <!-- footer_left_wrap: flex col, gap 1rem, min-w 20% -->
+          <div class="flex flex-col gap-4 flex-1">
+            <a routerLink="/">
+              <img src="images/CNT_Logo_V_White.svg" loading="lazy" width="60" alt="CurbNTurf">
+            </a>
+            <!-- footer_paragraph -->
+            <div class="font-headline text-base text-white py-2 leading-relaxed">Connecting travelers with unique private campsites across America. No crowds, no reservations - just you and the great outdoors.</div>
+          </div>
+
+          <!-- footer_menu_wrap: flex, gap 4rem, align-items flex-start -->
+          <div class="flex gap-16 items-start">
+
+            <!-- Discover -->
+            <div class="flex flex-col gap-4">
+              <div class="font-headline text-[1.4rem] text-white font-normal">Discover</div>
+              <a routerLink="/articles"  class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Articles</a>
+              <a routerLink="/search"    class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Find Stays</a>
+              <a routerLink="/contact"   class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Contact Us</a>
+              <a routerLink="/faq"       class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">FAQ</a>
+            </div>
+
+            <!-- Hosting -->
+            <div class="flex flex-col gap-4">
+              <div class="font-headline text-[1.4rem] text-white font-normal">Hosting</div>
+              <a routerLink="/articles"       class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Articles</a>
+              <a routerLink="/become-a-host"  class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Become a Host</a>
+              <a routerLink="/grow"           class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Grow Program</a>
+              <a routerLink="/host-resources" class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Host Resources</a>
+            </div>
+
+            <!-- Resources -->
+            <div class="flex flex-col gap-4">
+              <div class="font-headline text-[1.4rem] text-white font-normal">Resources</div>
+              <a routerLink="/agritourism"              class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Agritourism Challenge</a>
+              <a routerLink="/convention"               class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">RV Convention</a>
+              <a href="https://recurringplot.com" target="_blank" class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">Recurring Plot</a>
+              <a href="https://rvcast.com"        target="_blank" class="text-white font-headline text-[1.1rem] no-underline hover:opacity-80 transition-opacity">RV Cast</a>
+            </div>
+
+          </div><!-- /footer_menu_wrap -->
+
+        </div><!-- /footer-inner-left -->
+
+        <!-- footer-form-outer: sits below inner-left -->
+        <div class="mt-4">
+          <!-- line-divider -->
+          <div class="w-full h-px bg-white mt-4 mb-4"></div>
+
+          <!-- footer-form-wrap -->
+          <form name="email-form" method="get">
+            <!-- text_medium m-bottom--5 -->
+            <div class="font-headline text-[1.4rem] text-white pb-2 font-normal">Sign up for our newsletter and news.</div>
+            <!-- footer_paragraph -->
+            <div class="font-headline text-base text-white py-2">Get camping inspiration, travel tips, and exclusive offers delivered to your inbox.</div>
+            <!-- field-wrapper: flex row -->
+            <div class="flex items-center gap-3 mt-2">
+              <input
+                class="flex-1 bg-white/10 border border-white/30 rounded px-4 py-3 text-white placeholder:text-white/50 font-headline text-base focus:outline-none focus:border-white/60"
+                maxlength="256" name="Email" placeholder="Enter your email" type="email" id="Email-7" required>
+              <div class="shrink-0 pointer-events-auto magnetic-btn group cursor-pointer inline-block">
+                <a href="#" class="flex items-stretch gap-0 group-hover:gap-2 transition-all duration-300 no-underline">
+                  <div class="bg-white group-hover:bg-[#1f1b1a] text-dark-text group-hover:text-white rounded-l-[4px] group-hover:rounded-r-[4px] px-6 py-3 font-button font-normal not-italic text-xs tracking-widest uppercase flex items-center shadow-2xl transition-all duration-300 origin-center">
+                    Subscribe
+                  </div>
+                  <div class="bg-white group-hover:bg-[#1f1b1a] text-dark-text group-hover:text-white rounded-r-[4px] group-hover:rounded-l-[4px] px-4 py-3 border-l-2 border-dashed border-dark-text/30 group-hover:border-l-transparent flex items-center justify-center shadow-2xl transition-all duration-300 origin-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <!-- footer_copyright -->
+            <div class="text-white text-sm mt-3">
+              By subscribing you agree to with our <a routerLink="/privacy" class="text-white no-underline hover:underline">Privacy Policy</a> and provide consent to receive updates from our company and subscribe to our newsletter.
+            </div>
+          </form>
+        </div><!-- /footer-form-outer -->
+
+      </div><!-- /footer-outer-left -->
+
+      <!-- footer_right_wrap: flex col, gap 1rem, place-items center, width 20% -->
+      <div class="flex flex-col gap-4 items-center w-[20%] shrink-0">
+        <div class="font-headline text-[1.4rem] text-white font-normal">Download our app!</div>
+        <a href="#" class="block">
+          <img src="assets/images/app-store-badge.svg" loading="lazy" alt="Apple App Store" class="h-12 w-auto border border-white/20 rounded-[10px]">
+        </a>
+        <a href="#" class="block">
+          <img src="assets/images/google-play-badge.svg" loading="lazy" alt="Google Play Store" class="h-12 w-auto border border-white/20 rounded-[10px]">
+        </a>
+        <div class="font-headline text-[1.4rem] text-white font-normal">Give us a follow!</div>
+        <!-- footer_social: flex, gap .75rem -->
+        <div class="flex gap-3 text-white">
+          <a href="https://www.facebook.com/CurbNTurf/" target="_blank" class="text-white flex items-center justify-center w-6 h-6 hover:opacity-80 transition-opacity">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M22 12.0611C22 6.50451 17.5229 2 12 2C6.47715 2 2 6.50451 2 12.0611C2 17.0828 5.65684 21.2452 10.4375 22V14.9694H7.89844V12.0611H10.4375V9.84452C10.4375 7.32296 11.9305 5.93012 14.2146 5.93012C15.3088 5.93012 16.4531 6.12663 16.4531 6.12663V8.60261H15.1922C13.95 8.60261 13.5625 9.37822 13.5625 10.1739V12.0611H16.3359L15.8926 14.9694H13.5625V22C18.3432 21.2452 22 17.083 22 12.0611Z" fill="currentColor"/></svg>
+          </a>
+          <a href="https://www.instagram.com/curbnturf" target="_blank" class="text-white flex items-center justify-center w-6 h-6 hover:opacity-80 transition-opacity">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 3H8C5.23858 3 3 5.23858 3 8V16C3 18.7614 5.23858 21 8 21H16C18.7614 21 21 18.7614 21 16V8C21 5.23858 18.7614 3 16 3ZM19.25 16C19.2445 17.7926 17.7926 19.2445 16 19.25H8C6.20735 19.2445 4.75549 17.7926 4.75 16V8C4.75549 6.20735 6.20735 4.75549 8 4.75H16C17.7926 4.75549 19.2445 6.20735 19.25 8V16ZM16.75 8.25C17.3023 8.25 17.75 7.80228 17.75 7.25C17.75 6.69772 17.3023 6.25 16.75 6.25C16.1977 6.25 15.75 6.69772 15.75 7.25C15.75 7.80228 16.1977 8.25 16.75 8.25ZM12 7.5C9.51472 7.5 7.5 9.51472 7.5 12C7.5 14.4853 9.51472 16.5 12 16.5C14.4853 16.5 16.5 14.4853 16.5 12C16.5027 10.8057 16.0294 9.65957 15.1849 8.81508C14.3404 7.97059 13.1943 7.49734 12 7.5ZM9.25 12C9.25 13.5188 10.4812 14.75 12 14.75C13.5188 14.75 14.75 13.5188 14.75 12C14.75 10.4812 13.5188 9.25 12 9.25C10.4812 9.25 9.25 10.4812 9.25 12Z" fill="currentColor"/></svg>
+          </a>
+          <a href="https://x.com/curbnturf" target="_blank" class="text-white flex items-center justify-center w-6 h-6 hover:opacity-80 transition-opacity">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M17.1761 4H19.9362L13.9061 10.7774L21 20H15.4456L11.0951 14.4066L6.11723 20H3.35544L9.80517 12.7508L3 4H8.69545L12.6279 9.11262L17.1761 4ZM16.2073 18.3754H17.7368L7.86441 5.53928H6.2232L16.2073 18.3754Z" fill="currentColor"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/curbnturf" target="_blank" class="text-white flex items-center justify-center w-6 h-6 hover:opacity-80 transition-opacity">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 3C3.67157 3 3 3.67157 3 4.5V19.5C3 20.3284 3.67157 21 4.5 21H19.5C20.3284 21 21 20.3284 21 19.5V4.5C21 3.67157 20.3284 3 19.5 3H4.5ZM8.52076 7.00272C8.52639 7.95897 7.81061 8.54819 6.96123 8.54397C6.16107 8.53975 5.46357 7.90272 5.46779 7.00413C5.47201 6.15897 6.13998 5.47975 7.00764 5.49944C7.88795 5.51913 8.52639 6.1646 8.52076 7.00272ZM12.2797 9.76176H9.75971H9.7583V18.3216H12.4217V18.1219C12.4217 17.742 12.4214 17.362 12.4211 16.9819V16.9818C12.4203 15.9674 12.4194 14.9532 12.4246 13.9397C12.426 13.6936 12.4372 13.4377 12.5005 13.2028C12.7381 12.3253 13.5271 11.7586 14.4074 11.8979C14.9727 11.9864 15.3467 12.3141 15.5042 12.8471C15.6013 13.1803 15.6449 13.5389 15.6491 13.8863C15.6605 14.9339 15.6589 15.9815 15.6573 17.0292V17.0294C15.6567 17.3992 15.6561 17.769 15.6561 18.1388V18.3202H18.328V18.1149C18.328 17.6629 18.3278 17.211 18.3275 16.7591V16.759C18.327 15.6293 18.3264 14.5001 18.3294 13.3702C18.3308 12.8597 18.276 12.3563 18.1508 11.8627C17.9638 11.1286 17.5771 10.5211 16.9485 10.0824C16.5027 9.77019 16.0133 9.5691 15.4663 9.5466C15.404 9.54401 15.3412 9.54062 15.2781 9.53721C14.9984 9.52209 14.7141 9.50673 14.4467 9.56066C13.6817 9.71394 13.0096 10.0641 12.5019 10.6814C12.4429 10.7522 12.3852 10.8241 12.2991 10.9314L12.2797 10.9557V9.76176ZM5.68164 18.3244H8.33242V9.76733H5.68164V18.3244Z" fill="currentColor"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@curbnturf" target="_blank" class="text-white flex items-center justify-center w-6 h-6 hover:opacity-80 transition-opacity">
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.5686 4.77345C21.5163 5.02692 22.2555 5.76903 22.5118 6.71673C23.1821 9.42042 23.1385 14.5321 22.5259 17.278C22.2724 18.2257 21.5303 18.965 20.5826 19.2213C17.9071 19.8831 5.92356 19.8015 3.40294 19.2213C2.45524 18.9678 1.71595 18.2257 1.45966 17.278C0.827391 14.7011 0.871044 9.25144 1.44558 6.73081C1.69905 5.78311 2.44116 5.04382 3.38886 4.78753C6.96561 4.0412 19.2956 4.282 20.5686 4.77345ZM9.86682 8.70227L15.6122 11.9974L9.86682 15.2925V8.70227Z" fill="currentColor"/></svg>
+          </a>
+        </div>
+      </div><!-- /footer_right_wrap -->
+
+    </div><!-- /footer_wrapper -->
+
+    <!-- line-divider -->
+    <div class="w-full h-px bg-white my-4"></div>
+
+    <!-- footer_bottom_wrap: flex, justify-between, align-items center -->
+    <div class="flex justify-between items-center">
+      <div class="text-white text-sm">© 2026 CurbNTurf. All rights reserved.</div>
+      <!-- footer_leagal_list: flex, gap 1.5rem -->
+      <div class="flex gap-6">
+        <a routerLink="/privacy" class="text-white font-headline text-sm no-underline hover:opacity-80 transition-opacity">Privacy Policy</a>
+        <a routerLink="/terms"   class="text-white font-headline text-sm no-underline hover:opacity-80 transition-opacity">Terms &amp; Conditions</a>
+        <a routerLink="/cookies" class="text-white font-headline text-sm no-underline hover:opacity-80 transition-opacity">Cookies Settings</a>
+      </div>
+    </div>
+
+  </div>
+</footer>

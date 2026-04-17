@@ -1,0 +1,54 @@
+{
+  "name": "projects/5332325925002064958",
+  "projectId": "5332325925002064958",
+  "title": "CurbNTurf Redesign",
+  "visibility": "PRIVATE",
+  "createTime": "2026-03-27T16:55:26.267433Z",
+  "updateTime": "2026-03-27T17:46:24.313792Z",
+  "projectType": "TEXT_TO_UI_PRO",
+  "origin": "STITCH",
+  "deviceType": "DESKTOP",
+  "designTheme": {
+    "colorMode": "LIGHT",
+    "font": "SPACE_GROTESK",
+    "roundness": "ROUND_FULL",
+    "customColor": "#e3530d"
+  },
+  "screens": {
+    "index": {
+      "id": "c293dafa7af94b52b15714ffd526ccc5",
+      "sourceScreen": "projects/5332325925002064958/screens/c293dafa7af94b52b15714ffd526ccc5",
+      "x": 2352,
+      "y": 0,
+      "width": 1280,
+      "height": 3457
+    },
+    "search": {
+      "id": "92b3c67ea35a40e1b74509e3523c1d7a",
+      "sourceScreen": "projects/5332325925002064958/screens/92b3c67ea35a40e1b74509e3523c1d7a",
+      "x": 3696,
+      "y": 0,
+      "width": 1280,
+      "height": 1326
+    },
+    "listing": {
+      "id": "f39ac5c43a6f431298621e91eee99e9d",
+      "sourceScreen": "projects/5332325925002064958/screens/f39ac5c43a6f431298621e91eee99e9d",
+      "x": 5040,
+      "y": 0,
+      "width": 1280,
+      "height": 2247
+    },
+    "host": {
+      "id": "bc9d2c3ffb3a46da8011ac5f7d05baaf",
+      "sourceScreen": "projects/5332325925002064958/screens/bc9d2c3ffb3a46da8011ac5f7d05baaf",
+      "x": 6384,
+      "y": 0,
+      "width": 1280,
+      "height": 4372
+    }
+  },
+  "metadata": {
+    "userRole": "OWNER"
+  }
+}
