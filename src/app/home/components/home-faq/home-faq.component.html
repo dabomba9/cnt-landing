@@ -1,0 +1,91 @@
+    <!-- ================= FAQ Section ================= -->
+    <div class="gsap-faq-section max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Knowledge Base</span>
+      <h2 class="text-5xl md:text-6xl font-headline font-bold text-white tracking-tight leading-tight text-center mb-16">Frequently Asked Questions</h2>
+
+      <div class="max-w-[56rem] mx-auto">
+
+        <!-- FAQ Item 1 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(0)">
+            <span class="text-white font-headline font-semibold text-lg">How do I know if my RV will fit in the host's space?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 0 ? '300px' : '0'">
+            <p class="text-white/70 text-lg font-body leading-relaxed pb-6 max-w-[48rem]">Each listing includes specific details about the maximum RV length, width, and ground type (e.g., gravel, grass, pavement). We recommend using our "My Garage" feature to save your rig's dimensions — our search filters will then automatically highlight sites that are a perfect match for your specific setup.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(1)">
+            <span class="text-white font-headline font-semibold text-lg">Are hookups (water, power, sewer) available at every site?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 1 ? '300px' : '0'">
+            <p class="text-white/70 text-lg font-body leading-relaxed pb-6 max-w-[48rem]">Not necessarily. Sites range from "Boondocking" (dry camping with no hookups) to "Full Hookups" (water, electricity, and sewer). You can filter your search by the specific amenities you need. Each host's listing page clearly displays which services are provided.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(2)">
+            <span class="text-white font-headline font-semibold text-lg">How do I get the exact location and check-in instructions?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 2 ? '300px' : '0'">
+            <p class="text-white/70 text-lg font-body leading-relaxed pb-6 max-w-[48rem]">To protect our hosts' privacy, the exact address is only shared once your booking is confirmed. After confirmation, you will receive GPS coordinates and turn-by-turn directions. You can also message the host directly through our platform for specific arrival instructions or gate codes.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(3)">
+            <span class="text-white font-headline font-semibold text-lg">Does CurbNTurf charge a membership or subscription fee?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 3 ? '300px' : '0'">
+            <p class="text-white/70 text-lg font-body leading-relaxed pb-6 max-w-[48rem]">No! Unlike other RV sharing platforms, there are no annual membership or sign-up fees to browse or book. You only pay for the nights you stay, plus a small platform fee (typically 15% or a flat $5 for low-cost sites) that covers secure payment processing and support.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="gsap-faq-item border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6 group" (click)="toggleFaq(4)">
+            <span class="text-white font-headline font-semibold text-lg">What happens if I need to cancel my reservation?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 4 ? '300px' : '0'">
+            <p class="text-white/70 text-lg font-body leading-relaxed pb-6 max-w-[48rem]">Each host chooses their own cancellation policy (Flexible, Moderate, or Strict), which is clearly listed on the site's profile. You can view these details before you book. If you need to cancel, you can do so through your dashboard, and any applicable refunds will be processed based on that host's specific policy.</p>
+          </div>
+        </div>
+
+        <!-- Show More -->
+        <div class="text-center mt-12">
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Show More FAQs
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>

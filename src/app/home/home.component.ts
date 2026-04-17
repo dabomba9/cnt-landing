@@ -1,7 +1,12 @@
 import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
+import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
+import { HomeLocationsComponent } from './components/home-locations/home-locations.component';
+import { HomeFaqComponent } from './components/home-faq/home-faq.component';
+import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';
+import { HomeHeroComponent } from './components/home-hero/home-hero.component';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,30 +14,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [RouterLink, FooterComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
-  videoPlaying = true;
   isNavbarVisible = true;
   private lastScrollY = 0;
 
-  openFaqIndex: number | null = null;
-  locationsExpanded = true;
-
-  toggleFaq(index: number): void {
-    this.openFaqIndex = this.openFaqIndex === index ? null : index;
-  }
-
-  toggleLocations(): void {
-    this.locationsExpanded = !this.locationsExpanded;
-  }
-
   private scrollTriggers: any[] = [];
-  private heroScrollHandler!: () => void;
   private cursorCleanup: (() => void) | null = null;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
@@ -40,10 +31,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       gsap.registerPlugin(ScrollTrigger);
-      this.initHeroEntry();
-      this.initHeroExpand();
       this.initStickyScroll();
       this.initLineAnimations();
+
       
       // GSAP interactions
       this.initStaggeredCards();
@@ -53,29 +43,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.initNetworkAnimatedSection();
       this.initCardPhysics();
       this.initTrustColorShift();
-      this.initCommunityMasonry();
-      this.initFaqSection();
       this.initAppDownloadSection();
       this.initCustomCursor();
-
-      this.heroVideoRef?.nativeElement?.play().catch(() => {});
-    }
-  }
-
-  toggleVideo(event: Event): void {
-    const target = event.target as HTMLElement;
-    // Don't toggle video if user clicked inside the search bar
-    if (target.closest('.search-hero-inner')) return;
-    
-    event.preventDefault();
-    const video = this.heroVideoRef?.nativeElement;
-    if (!video) return;
-    if (this.videoPlaying) {
-      video.pause();
-      this.videoPlaying = false;
-    } else {
-      video.play();
-      this.videoPlaying = true;
     }
   }
 
@@ -102,81 +71,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.lastScrollY = currentScrollY;
   }
 
-
-  private initHeroEntry(): void {
-    const words = gsap.utils.toArray('.hero-span');
-    gsap.set(words, { y: 150, rotateX: 20 });
-
-    gsap.to(words, {
-      y: 0,
-      rotateX: 0,
-      duration: 1.2,
-      stagger: 0.1,
-      ease: 'back.out(1.5)',
-      delay: 0.1
-    });
-
-    // Autonomous entrance for the perfect circle video
-    const stickyContent = document.querySelector('.sticky-content');
-    if (stickyContent) {
-      gsap.fromTo(stickyContent,
-        { scale: 0 },
-        { scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.5)', delay: 0.1 }
-      );
-    }
-  }
-
-  private initHeroExpand(): void {
-    const stickyContent = document.querySelector('.sticky-content') as HTMLElement;
-    const stickyWrap = document.querySelector('.sticky-wrap-hero') as HTMLElement;
-    if (!stickyContent || !stickyWrap) return;
-
-    const update = () => {
-      const rect = stickyWrap.getBoundingClientRect();
-      const totalScroll = stickyWrap.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / totalScroll));
-
-      // Circle Math: Initial size is 50vmin (perfect circle). Final size is 100vw x 100vh.
-      const vmin = Math.min(window.innerWidth, window.innerHeight);
-      const startPx = vmin * 0.50;
-
-      const targetWidth = window.innerWidth;
-      const targetHeight = window.innerHeight;
-
-      const currentWidthPx = startPx + (targetWidth - startPx) * p;
-      const currentHeightPx = startPx + (targetHeight - startPx) * p;
-
-      // Radius starts at 50% (circle) and goes to 0% (rectangle)
-      const currentRadiusPercent = 50 * (1 - p);
-
-      stickyContent.style.width = `${currentWidthPx}px`;
-      stickyContent.style.height = `${currentHeightPx}px`;
-      stickyContent.style.borderRadius = `${currentRadiusPercent}%`;
-      stickyContent.style.marginRight = `0`;
-
-      // Slide the entire text/search layout towards the absolute visual center
-      const searchHeroOuter = document.querySelector('.search-hero-outer') as HTMLElement;
-      if (searchHeroOuter) {
-        searchHeroOuter.style.transform = `translate(${12 * p}vw, ${15 * p}vh)`;
-
-        if (p > 0.95) {
-          const popScale = 1 + ((p - 0.95) * 5 * 0.03);
-          searchHeroOuter.style.transform += ` scale(${popScale})`;
-        }
-      }
-
-      const stickyElement = stickyWrap.querySelector('.sticky-element') as HTMLElement;
-      if (stickyElement) {
-        const excess = Math.max(0, scrolled - totalScroll);
-        stickyElement.style.transform = `translateY(${-excess * 0.4}px)`;
-      }
-    };
-
-    this.heroScrollHandler = update;
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  }
 
   private initStickyScroll(): void {
     const sectionHeight = document.querySelector('.section-height') as HTMLElement;
@@ -473,96 +367,26 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private initTrustColorShift(): void {
-    const section = document.querySelector('.trust-dynamic-section');
+    const section = document.querySelector('.trust-dynamic-section') as HTMLElement;
+    const track = document.querySelector('.trust-marquee-track') as HTMLElement;
     if (!section) return;
 
-    // We interpolate the background of the section dynamically while scrolling through.
-    const st = ScrollTrigger.create({
-      trigger: section,
-      start: 'top 50%',
-      end: 'bottom 80%',
-      scrub: 1,
-      onEnter: () => gsap.to('.trust-dynamic-section', { backgroundColor: '#295D42', duration: 1.5, ease: 'power2.out' }),
-      onLeaveBack: () => gsap.to('.trust-dynamic-section', { backgroundColor: 'transparent', duration: 1.5, ease: 'power2.out' }), // revert to global bg
-      onUpdate: (self) => {
-        // Scrub internal element colors locally for maximum isolation
-        const progress = self.progress;
-        
-        // Dynamically shift headings from dark to white based on scroll progression securely
-        if (progress > 0.1) {
-          gsap.to('.trust-dynamic-section .text-dark-text', { color: '#ffffff', duration: 0.5 });
-          gsap.to('.trust-dynamic-section .text-muted-text', { color: '#aaaaaa', duration: 0.5 });
-          gsap.to('.trust-badge', { backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)', duration: 0.5 });
-          gsap.to('.trust-card', { backgroundColor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.1)', duration: 0.5 });
-        } else {
-          gsap.to('.trust-dynamic-section .trust-heading, .trust-dynamic-section .trust-badge-text, .trust-dynamic-section .trust-card-text', { color: '#222222', duration: 0.5 });
-          gsap.to('.trust-dynamic-section .trust-desc, .trust-dynamic-section .trust-muted-text', { color: '#666666', duration: 0.5 });
-          gsap.to('.trust-badge', { backgroundColor: 'rgba(0,0,0,0.05)', borderColor: 'rgba(0,0,0,0.1)', duration: 0.5 });
-          gsap.to('.trust-card', { backgroundColor: 'rgba(0,0,0,0.05)', borderColor: 'rgba(0,0,0,0.1)', duration: 0.5 });
-        }
-      }
-    });
-    this.scrollTriggers.push(st);
+    // Scrub the Right Column Cards vertically on scroll so they float up endlessly
+    if (track) {
+      const stCards = ScrollTrigger.create({
+        trigger: section,
+        start: 'top 80%',
+        end: 'bottom top',
+        scrub: 1,
+        animation: gsap.fromTo(track,
+          { y: 50 },
+          { y: -150, ease: 'none' }
+        )
+      });
+      this.scrollTriggers.push(stCards);
+    }
   }
 
-  private initCommunityMasonry(): void {
-    const wrap = document.querySelector('.gsap-masonry-grid-wrap');
-    if (!wrap) return;
-
-    const items = gsap.utils.toArray('.gsap-masonry-item');
-    const images = gsap.utils.toArray('.gsap-masonry-parallax');
-
-    // 1. Initial Stagger Reveal from bottom up
-    const stReveal = ScrollTrigger.create({
-      trigger: wrap,
-      start: 'top 85%',
-      once: true,
-      onEnter: () => {
-        gsap.fromTo(items, 
-          { y: 80, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, ease: 'power3.out' }
-        );
-      }
-    });
-
-    // 2. Continual Parallax scrubbing inside the boundaries
-    const stParallax = ScrollTrigger.create({
-      trigger: wrap,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 1,
-      animation: gsap.fromTo(images, 
-        { yPercent: -10 }, 
-        { yPercent: 10, ease: 'none' }
-      )
-    });
-
-    this.scrollTriggers.push(stReveal, stParallax);
-  }
-
-  private initFaqSection(): void {
-    const items = gsap.utils.toArray('.gsap-faq-item') as HTMLElement[];
-    if (!items.length) return;
-
-    gsap.set(items, { y: 24, opacity: 0 });
-
-    const st = ScrollTrigger.create({
-      trigger: '.gsap-faq-section',
-      start: 'top 80%',
-      once: true,
-      onEnter: () => {
-        gsap.to(items, {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: 'power3.out',
-        });
-      },
-    });
-
-    this.scrollTriggers.push(st);
-  }
 
   private initAppDownloadSection(): void {
     const wrap = document.querySelector('.gsap-app-download-wrap');
@@ -729,9 +553,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
-    if (this.heroScrollHandler) {
-      window.removeEventListener('scroll', this.heroScrollHandler);
-    }
     if (this.cursorCleanup) {
       this.cursorCleanup();
     }

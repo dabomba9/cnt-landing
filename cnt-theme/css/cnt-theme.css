@@ -1,5 +1,5 @@
 @font-face {
-  font-family: Familjengrotesk Variablefont Wght;
+  font-family: 'Familjen Grotesk';
   src: url('../fonts/FamiljenGrotesk-Italic-VariableFont_wght.ttf') format("truetype");
   font-weight: 400 700;
   font-style: italic;
@@ -7,7 +7,7 @@
 }
 
 @font-face {
-  font-family: Familjengrotesk Variablefont Wght;
+  font-family: 'Familjen Grotesk';
   src: url('../fonts/FamiljenGrotesk-VariableFont_wght.ttf') format("truetype");
   font-weight: 400 700;
   font-style: normal;
@@ -134,7 +134,7 @@
 
 body {
   color: var(--tundora);
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4em;
@@ -144,7 +144,7 @@ h1 {
   color: var(--black);
   margin-top: 0;
   margin-bottom: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3.2rem;
   font-weight: 700;
   line-height: 1.2;
@@ -154,7 +154,7 @@ h2 {
   color: var(--black);
   margin-top: 0;
   margin-bottom: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.2;
@@ -164,7 +164,7 @@ h3 {
   color: var(--black);
   margin-top: 0;
   margin-bottom: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.8rem;
   font-weight: 700;
   line-height: 1.2;
@@ -175,7 +175,7 @@ h4 {
   margin-top: 0;
   margin-bottom: 6px;
   margin-right: 9px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.2;
@@ -185,7 +185,7 @@ h5 {
   color: var(--black);
   margin-top: 0;
   margin-bottom: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   line-height: 1.2;
@@ -195,7 +195,7 @@ h6 {
   color: var(--black);
   margin-top: 10px;
   margin-bottom: 10px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.2rem;
@@ -204,7 +204,7 @@ h6 {
 p {
   color: var(--black);
   margin-bottom: 12px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.6;
@@ -212,7 +212,7 @@ p {
 
 a {
   color: var(--trinidad);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-style: italic;
   font-weight: 700;
   text-decoration: none;
@@ -222,7 +222,7 @@ ul {
   margin-top: 0;
   margin-bottom: 10px;
   padding-left: 40px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   list-style-type: square;
 }
@@ -231,14 +231,14 @@ ol {
   margin-top: 0;
   margin-bottom: 10px;
   padding-left: 40px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   list-style-type: decimal;
 }
 
 li {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   line-height: 1.5;
 }
@@ -248,7 +248,7 @@ blockquote {
   color: var(--trinidad);
   margin-bottom: 10px;
   padding: 1rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.2rem;
   line-height: 1.4;
 }
@@ -381,7 +381,7 @@ blockquote {
   margin-bottom: 0;
   padding-top: 0;
   padding-bottom: 0;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 24px;
   line-height: 1em;
 }
@@ -426,7 +426,7 @@ blockquote {
 
 .body-copy {
   letter-spacing: -.2px;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -445,7 +445,7 @@ blockquote {
   max-width: 260px;
   height: 36px;
   padding: 1.5rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -537,7 +537,7 @@ blockquote {
   align-items: center;
   max-width: 100%;
   height: 36px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   line-height: 1em;
   text-decoration: none;
@@ -605,7 +605,7 @@ blockquote {
 
 .semi-bold {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 600;
   text-decoration: none;
 }
@@ -756,7 +756,7 @@ blockquote {
   letter-spacing: 1.5px;
   border-radius: 9px;
   height: 48px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -772,7 +772,7 @@ blockquote {
   border-color: var(--trinidad);
   letter-spacing: 0;
   height: 48px;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 400;
 }
 
@@ -973,7 +973,7 @@ blockquote {
   text-align: center;
   letter-spacing: 1.5px;
   padding-top: 6px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   line-height: 1em;
 }
@@ -1051,7 +1051,7 @@ blockquote {
 .dropdown-textblock {
   letter-spacing: 1.5px;
   flex: 1;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -1066,7 +1066,7 @@ blockquote {
   border-left: 1px solid var(--tundora);
   background-color: var(--white);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -1078,7 +1078,7 @@ blockquote {
   letter-spacing: 1.5px;
   border-bottom-right-radius: 9px;
   border-bottom-left-radius: 9px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -1293,7 +1293,7 @@ blockquote {
   cursor: auto;
   object-fit: fill;
   padding-bottom: 6px;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 400;
   position: static;
 }
@@ -1459,26 +1459,26 @@ blockquote {
   display: flex;
 }
 
-.rift-soft {
+.'Asap Condensed' {
   color: var(--black);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 18px;
   font-weight: 600;
 }
 
-.rift-soft.list {
+.'Asap Condensed'.list {
   color: var(--tundora);
   margin-bottom: 2px;
   padding-left: 3px;
 }
 
-.rift-soft.map {
+.'Asap Condensed'.map {
   color: var(--tundora);
   padding-left: 6px;
 }
 
-.rift-soft._14px {
+.'Asap Condensed'._14px {
   font-size: 14px;
 }
 
@@ -1704,7 +1704,7 @@ blockquote {
   justify-content: center;
   align-items: center;
   padding: .5rem 1rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-style: normal;
   font-weight: 600;
   text-decoration: none;
@@ -1721,7 +1721,7 @@ blockquote {
   border-color: var(--white);
   letter-spacing: 1.5px;
   width: auto;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   display: inline;
   position: absolute;
@@ -1935,7 +1935,7 @@ blockquote {
 
 .copy-light {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 14px;
   font-style: normal;
   text-decoration: none;
@@ -2130,7 +2130,7 @@ blockquote {
   min-width: 96px;
   max-width: 260px;
   padding: 1.2rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -2161,7 +2161,7 @@ blockquote {
   margin-top: 0;
   margin-left: 0;
   padding: 18px 24px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   line-height: 1;
   transition: transform .3s, background-color .3s;
   position: static;
@@ -2387,10 +2387,10 @@ blockquote {
   position: relative;
 }
 
-.rift-soft-copy {
+.'Asap Condensed'-copy {
   letter-spacing: 1.5px;
   flex: none;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   line-height: 1vh;
 }
@@ -2581,7 +2581,7 @@ blockquote {
 .rating-avg {
   padding-top: 0;
   padding-bottom: 3px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 18px;
   font-weight: 600;
 }
@@ -2590,7 +2590,7 @@ blockquote {
   letter-spacing: 1.5px;
   padding-bottom: 1px;
   padding-left: 3px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
 }
@@ -2746,7 +2746,7 @@ blockquote {
   color: var(--black);
   align-items: center;
   padding-right: 40px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   display: flex;
 }
 
@@ -2773,7 +2773,7 @@ blockquote {
   flex: none;
   height: 72px;
   padding-top: 25px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
@@ -2781,9 +2781,7 @@ blockquote {
   text-decoration: none;
 }
 
-.navigation-link:hover {
-  border-bottom: 4px solid var(--trinidad);
-}
+
 
 .navigation-link.cnt--current {
   color: var(--black);
@@ -2910,28 +2908,28 @@ blockquote {
   position: relative;
 }
 
-.card-rift-soft {
+.card-'Asap Condensed' {
   letter-spacing: 1.5px;
   margin-top: -3px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.2em;
 }
 
-.card-rift-soft.white {
+.card-'Asap Condensed'.white {
   text-align: left;
   margin-top: -3px;
 }
 
-.card-rift-soft.trinidad {
+.card-'Asap Condensed'.trinidad {
   margin-bottom: 6px;
 }
 
 .card-price {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.2em;
@@ -3183,7 +3181,7 @@ blockquote {
 
 .listing-location {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.2em;
@@ -3197,7 +3195,7 @@ blockquote {
   color: var(--trinidad);
   letter-spacing: 1.5px;
   margin-top: 2px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.2em;
@@ -3227,7 +3225,7 @@ blockquote {
 .amenities-pill-copy {
   color: var(--white);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
   display: block;
@@ -3298,7 +3296,7 @@ blockquote {
 .amenities-pill-copy-selected {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
 }
@@ -3385,7 +3383,7 @@ blockquote {
 .dates-selected {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3434,7 +3432,7 @@ blockquote {
 .price-range {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3519,7 +3517,7 @@ blockquote {
 .use-current-location {
   letter-spacing: 1.5px;
   padding-left: 9px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3538,7 +3536,7 @@ blockquote {
   color: var(--trinidad);
   letter-spacing: 1.5px;
   padding-right: 6px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3555,7 +3553,7 @@ blockquote {
 .text_distance {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3584,14 +3582,14 @@ blockquote {
 
 .rv-setup {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
 .filter-header {
   text-align: center;
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-weight: 600;
 }
@@ -3613,7 +3611,7 @@ blockquote {
 
 .select-your-profile, .amenities {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3678,7 +3676,7 @@ blockquote {
 
 .activities {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3695,7 +3693,7 @@ blockquote {
 .dates-small {
   letter-spacing: 1.5px;
   padding-top: 3px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -3879,7 +3877,7 @@ blockquote {
   border: 2px solid #fff;
   border-radius: 12px;
   padding: 2rem 1.5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
 }
 
@@ -3912,7 +3910,7 @@ blockquote {
   text-align: left;
   letter-spacing: 1.5px;
   margin-bottom: .5rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -4021,7 +4019,7 @@ blockquote {
 .link-to {
   letter-spacing: 1.5px;
   align-items: center;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 700;
   text-decoration: none;
   display: flex;
@@ -4042,7 +4040,7 @@ blockquote {
   color: #fbd784;
   letter-spacing: 1.5px;
   margin-top: 18px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   text-decoration: none;
 }
@@ -4155,7 +4153,7 @@ blockquote {
   color: var(--trinidad);
   letter-spacing: 0;
   flex: 0 auto;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
 }
 
 .social-links {
@@ -4698,7 +4696,7 @@ blockquote {
   align-items: center;
   margin-top: 18px;
   margin-bottom: 18px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -4793,13 +4791,13 @@ blockquote {
   height: 60px;
 }
 
-.rift-soft-title {
+.'Asap Condensed'-title {
   color: var(--black);
   letter-spacing: 1.5px;
   justify-content: flex-start;
   align-items: center;
   margin-right: 6px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -4807,13 +4805,13 @@ blockquote {
   display: flex;
 }
 
-.rift-soft-title.navajo-white {
+.'Asap Condensed'-title.navajo-white {
   color: var(--navajo-white);
   font-size: 1rem;
   font-style: normal;
 }
 
-.rift-soft-title.trinidad {
+.'Asap Condensed'-title.trinidad {
   color: var(--trinidad);
 }
 
@@ -5102,7 +5100,7 @@ blockquote {
 .paragraph {
   color: var(--white);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 10px;
   font-weight: 600;
 }
@@ -5130,10 +5128,10 @@ blockquote {
   display: block;
 }
 
-.optional-rift-soft {
+.optional-'Asap Condensed' {
   color: var(--trinidad);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 12px;
   font-weight: 600;
 }
@@ -6157,7 +6155,7 @@ blockquote {
 .response-copy {
   text-align: center;
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
 }
@@ -6272,7 +6270,7 @@ blockquote {
 
 .boondocking-copy {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -6360,7 +6358,7 @@ blockquote {
 .semi-bold-2 {
   color: #454545;
   letter-spacing: -.2px;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 600;
   text-decoration: none;
 }
@@ -6554,7 +6552,7 @@ blockquote {
 
 .photo-text {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -6654,7 +6652,7 @@ blockquote {
   text-align: center;
   letter-spacing: 1.5px;
   padding-left: 0;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 2rem;
   font-weight: 600;
   line-height: 1.2;
@@ -6696,7 +6694,7 @@ blockquote {
 .card-status-copy {
   letter-spacing: 1.5px;
   padding-left: 4px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
 }
@@ -6737,7 +6735,7 @@ blockquote {
   margin-top: 18px;
   padding-left: 18px;
   padding-right: 18px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   text-decoration: none;
   display: flex;
@@ -6758,7 +6756,7 @@ blockquote {
   align-items: center;
   max-width: 100%;
   height: 36px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   line-height: 1em;
   text-decoration: none;
@@ -6878,7 +6876,7 @@ blockquote {
   color: var(--black);
   text-transform: uppercase;
   margin-bottom: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -6901,22 +6899,22 @@ blockquote {
   display: flex;
 }
 
-.rift-soft-card {
+.'Asap Condensed'-card {
   letter-spacing: 1.5px;
   padding-top: 5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1em;
 }
 
-.rift-soft-card.private {
+.'Asap Condensed'-card.private {
   color: #e3530d;
   margin-bottom: 6px;
   padding-left: 0;
 }
 
-.rift-soft-card.m-6px {
+.'Asap Condensed'-card.m-6px {
   margin-right: 6px;
 }
 
@@ -7033,7 +7031,7 @@ blockquote {
 
 .location-copy {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1em;
@@ -7215,7 +7213,7 @@ blockquote {
   text-align: center;
   background-color: #0000;
   flex: 1;
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 24px;
   font-weight: 400;
 }
@@ -7287,7 +7285,7 @@ blockquote {
   color: #e3530d;
   letter-spacing: 1.5px;
   margin-bottom: 6px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-weight: 600;
 }
@@ -7455,7 +7453,7 @@ blockquote {
 
 .text-block-27 {
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -7674,7 +7672,7 @@ blockquote {
   letter-spacing: .08em;
   text-transform: uppercase;
   margin-top: 4px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 700;
   line-height: 20px;
 }
@@ -7707,7 +7705,7 @@ blockquote {
 .text-subtitle {
   color: var(--black);
   text-align: center;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.4;
@@ -7775,7 +7773,7 @@ blockquote {
   min-height: 2.75rem;
   margin-bottom: 0;
   padding: .5rem .75rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -7831,7 +7829,7 @@ blockquote {
   min-height: 2.75rem;
   margin-bottom: 0;
   padding: .5rem .75rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -7938,7 +7936,7 @@ blockquote {
   align-items: flex-start;
   max-width: 330px;
   margin-bottom: 0;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.6rem;
@@ -7967,7 +7965,7 @@ blockquote {
 .button-color {
   color: var(--black);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 18px;
@@ -7996,7 +7994,7 @@ blockquote {
   color: #fff;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 26px;
@@ -8195,7 +8193,7 @@ blockquote {
   color: #fff;
   letter-spacing: .2em;
   text-transform: uppercase;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 18px;
   font-weight: 600;
   line-height: 110%;
@@ -8562,7 +8560,7 @@ blockquote {
   letter-spacing: 1.2px;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 28px;
   font-weight: 600;
   line-height: 1;
@@ -8630,7 +8628,7 @@ blockquote {
   color: var(--black);
   letter-spacing: 1.5px;
   padding: 18px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -8680,7 +8678,7 @@ blockquote {
 .attachment-pdf {
   color: var(--white);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
   text-decoration: none;
 }
@@ -8702,7 +8700,7 @@ blockquote {
 .h3-riftsoft {
   color: var(--navajo-white);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -8974,7 +8972,7 @@ blockquote {
   color: var(--white);
   align-items: center;
   margin-right: 30px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   line-height: 1.2;
   display: flex;
@@ -9153,7 +9151,7 @@ blockquote {
 
 .h2-article.black {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-style: normal;
 }
 
@@ -9165,7 +9163,7 @@ blockquote {
   border-radius: 6px;
   margin-top: 6px;
   padding: 14px 15px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -9194,7 +9192,7 @@ blockquote {
   color: var(--trinidad);
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1.1rem;
   font-style: normal;
   font-weight: 600;
@@ -9300,7 +9298,7 @@ blockquote {
   border-radius: 50vh;
   margin-top: 20px;
   padding: 10px 40px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -9428,7 +9426,7 @@ blockquote {
 
 .article-date, .author-title {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 400;
 }
 
@@ -9508,7 +9506,7 @@ blockquote {
   flex-direction: row;
   align-items: center;
   margin-top: 1rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.4;
   display: flex;
@@ -9555,7 +9553,7 @@ blockquote {
 .heading-h2-size {
   color: var(--black);
   margin-right: 6px;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
 }
 
 .avatar-wrapper {
@@ -9694,7 +9692,7 @@ blockquote {
   width: 100%;
   min-height: 3rem;
   padding: .5rem 1rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1px;
   font-style: normal;
   font-weight: 600;
@@ -9764,7 +9762,7 @@ blockquote {
   color: var(--trinidad);
   letter-spacing: 1.5px;
   padding-bottom: 0;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1.4rem;
   font-weight: 600;
   line-height: 2rem;
@@ -9907,7 +9905,7 @@ blockquote {
 
 .share-highlight {
   color: var(--tundora);
-  font-family: proxima-nova, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -10003,7 +10001,7 @@ blockquote {
   color: #fff;
   letter-spacing: .25rem;
   text-transform: uppercase;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -10020,7 +10018,7 @@ blockquote {
   grid-auto-columns: 1fr;
   justify-content: space-around;
   padding: 2rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.4;
   display: flex;
@@ -10048,7 +10046,7 @@ blockquote {
 
 .author-name {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 400;
 }
 
@@ -10468,7 +10466,7 @@ blockquote {
   align-self: flex-start;
   margin-bottom: 0;
   padding-bottom: 1rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 4cqw;
   font-weight: 700;
   line-height: .5;
@@ -10878,7 +10876,7 @@ blockquote {
   width: 60%;
   padding-left: 2rem;
   padding-right: 2rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   display: flex;
 }
 
@@ -10909,14 +10907,14 @@ blockquote {
   padding-top: 2px;
 }
 
-.search-rift-soft {
+.search-'Asap Condensed' {
   color: #e3530d;
   letter-spacing: 1.5px;
   flex: none;
   margin-bottom: 0;
   margin-left: auto;
   margin-right: auto;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 700;
   display: flex;
 }
@@ -10953,7 +10951,7 @@ blockquote {
   padding-top: 6px;
   padding-bottom: 6px;
   padding-left: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1em;
 }
@@ -11083,25 +11081,25 @@ blockquote {
 
 .line-1 {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3.5cqw;
   line-height: 1em;
 }
 
 .line-2 {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3.5cqw;
 }
 
 .line-3 {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3.5cqw;
   display: block;
 }
 
 .line-btm-animation {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 3.5cqw;
   font-weight: 400;
   line-height: 1em;
@@ -11173,7 +11171,7 @@ blockquote {
   color: var(--black);
   margin-bottom: 0;
   padding-top: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.2rem;
   line-height: 1.6;
 }
@@ -11258,14 +11256,14 @@ blockquote {
 .host_name_wrap {
   text-align: center;
   text-transform: uppercase;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .location_wrap {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
 }
 
@@ -11297,7 +11295,7 @@ blockquote {
   grid-auto-columns: 1fr;
   width: 100%;
   height: 100%;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   display: grid;
 }
 
@@ -11328,7 +11326,7 @@ blockquote {
 
 .footer_legal-_link {
   color: var(--white);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: .875rem;
   font-style: normal;
   font-weight: 400;
@@ -11432,7 +11430,7 @@ blockquote {
 .footer_link {
   color: var(--white);
   padding-top: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   font-style: normal;
   font-weight: 400;
@@ -11456,7 +11454,7 @@ blockquote {
 .text_medium {
   color: var(--white);
   padding-bottom: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.4rem;
 }
 
@@ -11481,7 +11479,7 @@ blockquote {
   color: var(--white);
   padding-top: .5rem;
   padding-bottom: .5rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   text-decoration: none;
 }
@@ -11540,7 +11538,7 @@ blockquote {
   color: var(--trinidad);
   margin-top: 1rem;
   margin-bottom: 1rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.5rem;
   font-weight: 400;
   line-height: 1.4;
@@ -11617,7 +11615,7 @@ blockquote {
 .text-weight-semibold {
   color: var(--black);
   margin-bottom: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 600;
 }
 
@@ -11730,7 +11728,7 @@ blockquote {
   color: var(--black);
   text-transform: uppercase;
   align-self: center;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.4rem;
   line-height: 1.5em;
 }
@@ -11760,7 +11758,7 @@ blockquote {
 }
 
 .article_title {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 2rem;
   font-style: normal;
   text-decoration: none;
@@ -11777,7 +11775,7 @@ blockquote {
   max-width: 740px;
   min-height: 400px;
   padding: 3rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   display: flex;
   position: static;
   inset: 25% 0% 0% auto;
@@ -11862,7 +11860,7 @@ blockquote {
   align-items: center;
   width: 100%;
   margin-bottom: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   display: flex;
   position: relative;
 }
@@ -11906,7 +11904,7 @@ blockquote {
 .location_coordinates {
   color: var(--black);
   letter-spacing: 1.5px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   line-height: 1em;
@@ -11936,7 +11934,7 @@ blockquote {
   color: var(--black);
   height: 100%;
   margin-bottom: 0;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   position: absolute;
   inset: 0;
 }
@@ -12044,7 +12042,7 @@ blockquote {
 
 .site_name {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.6;
@@ -12087,7 +12085,7 @@ blockquote {
 }
 
 .text-small {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.6em;
 }
@@ -12142,7 +12140,7 @@ blockquote {
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   font-style: normal;
   line-height: 1.4;
@@ -12289,7 +12287,7 @@ blockquote {
   min-width: 96px;
   max-width: 260px;
   padding: 1.2rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -12320,7 +12318,7 @@ blockquote {
   margin-top: 0;
   margin-left: 0;
   padding: 18px 24px;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   line-height: 1;
   transition: transform .3s, background-color .3s;
   position: static;
@@ -12453,7 +12451,7 @@ blockquote {
 .header-discount {
   color: var(--black);
   margin-bottom: 1rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.2;
@@ -12467,7 +12465,7 @@ blockquote {
   align-items: center;
   width: 60%;
   padding: 4rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
 }
 
 .search-hero-inner {
@@ -12567,7 +12565,7 @@ blockquote {
 .rating-average {
   letter-spacing: 1.5px;
   padding-right: .125rem;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
@@ -12596,7 +12594,7 @@ blockquote {
 
 .funnel-username {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.4;
 }
@@ -12789,7 +12787,7 @@ blockquote {
   border-top-left-radius: .9rem;
   border-bottom-left-radius: .9rem;
   padding: 2rem;
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   line-height: 1.6;
 }
@@ -12815,7 +12813,7 @@ blockquote {
 }
 
 .item-list-outer {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.1rem;
   line-height: 1.6;
   display: flex;
@@ -12863,7 +12861,7 @@ blockquote {
   grid-row-gap: .25rem;
   color: var(--jungle-green);
   align-items: center;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-style: normal;
   display: flex;
 }
@@ -12881,7 +12879,7 @@ blockquote {
 .btn-text {
   letter-spacing: 1.5px;
   flex: none;
-  font-family: rift-soft, sans-serif;
+  font-family: 'Asap Condensed', sans-serif;
   font-weight: 600;
 }
 
@@ -12914,12 +12912,12 @@ blockquote {
 }
 
 .text-block-29 {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
 }
 
 .text-number {
   color: var(--black);
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.4rem;
   line-height: 1.2;
 }
@@ -13041,7 +13039,7 @@ blockquote {
 }
 
 .paragraph-2 {
-  font-family: Familjengrotesk Variablefont Wght, sans-serif;
+  font-family: 'Familjen Grotesk', sans-serif;
 }
 
 @media screen and (max-width: 991px) {
@@ -13150,12 +13148,12 @@ blockquote {
     padding-top: 0;
   }
 
-  .rift-soft {
+  .'Asap Condensed' {
     color: var(--tundora);
     text-decoration: none;
   }
 
-  .rift-soft.list {
+  .'Asap Condensed'.list {
     margin-top: 0;
     padding-top: 0;
     padding-bottom: 0;
@@ -13807,7 +13805,7 @@ blockquote {
   .rfit-soft-trinidad {
     color: var(--trinidad);
     letter-spacing: 1.5px;
-    font-family: rift-soft, sans-serif;
+    font-family: 'Asap Condensed', sans-serif;
     font-size: 18px;
     font-weight: 600;
   }
@@ -13817,9 +13815,9 @@ blockquote {
     background-image: url('../images/arrowhead.svg');
   }
 
-  .rift-soft-menu {
+  .'Asap Condensed'-menu {
     letter-spacing: 1.5px;
-    font-family: rift-soft, sans-serif;
+    font-family: 'Asap Condensed', sans-serif;
     font-weight: 600;
     display: flex;
   }
@@ -14828,15 +14826,15 @@ blockquote {
     display: flex;
   }
 
-  .rift-soft {
+  .'Asap Condensed' {
     font-size: 16px;
   }
 
-  .rift-soft.list {
+  .'Asap Condensed'.list {
     padding-left: 6px;
   }
 
-  .rift-soft.trinidad {
+  .'Asap Condensed'.trinidad {
     color: var(--trinidad);
   }
 
@@ -14978,7 +14976,7 @@ blockquote {
     grid-template-columns: 1fr 1fr;
   }
 
-  .rift-soft-copy {
+  .'Asap Condensed'-copy {
     font-size: 14px;
   }
 
@@ -15420,7 +15418,7 @@ blockquote {
     padding-top: 0;
   }
 
-  .rift-soft-title {
+  .'Asap Condensed'-title {
     font-size: 14px;
   }
 
@@ -16203,7 +16201,7 @@ blockquote {
     padding: 0;
   }
 
-  .search-rift-soft {
+  .search-'Asap Condensed' {
     color: #fff;
     font-size: 14px;
     font-weight: 600;
@@ -16558,7 +16556,7 @@ blockquote {
     padding-top: 12px;
   }
 
-  .rift-soft {
+  .'Asap Condensed' {
     margin-left: 0;
     padding-bottom: 0;
   }
@@ -17106,7 +17104,7 @@ blockquote {
     grid-row-gap: 20px;
   }
 
-  .rift-soft-title {
+  .'Asap Condensed'-title {
     flex: 1;
   }
 
@@ -17202,7 +17200,7 @@ blockquote {
     font-size: 16px;
   }
 
-  .rift-soft-menu {
+  .'Asap Condensed'-menu {
     font-size: 14px;
   }
 
@@ -20713,14 +20711,14 @@ blockquote {
 
 
 @font-face {
-  font-family: 'Familjengrotesk Variablefont Wght';
+  font-family: ''Familjen Grotesk'';
   src: url('../fonts/FamiljenGrotesk-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 400 700;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Familjengrotesk Variablefont Wght';
+  font-family: ''Familjen Grotesk'';
   src: url('../fonts/FamiljenGrotesk-VariableFont_wght.ttf') format('truetype');
   font-weight: 400 700;
   font-style: normal;

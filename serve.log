@@ -1957,3 +1957,2052 @@
 [37m[0mBuild at: [1m[37m2026-04-17T17:01:36.313Z[39m[37m[22m - Hash: [1m[37m4cccca76b10de76d[39m[37m[22m - Time: [1m[37m1112[39m[37m[22mms[0m[39m
 [37m[39m
 [37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m282.43 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:24:40.006Z[39m[37m[22m - Hash: [1m[37m051fcb9229f30bd8[39m[37m[22m - Time: [1m[37m1101[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m279.50 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:28:01.401Z[39m[37m[22m - Hash: [1m[37m637d44a5db8ffc4d[39m[37m[22m - Time: [1m[37m1104[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m279.50 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:31:11.533Z[39m[37m[22m - Hash: [1m[37m84be2894d073ff51[39m[37m[22m - Time: [1m[37m1050[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m279.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:33:37.434Z[39m[37m[22m - Hash: [1m[37m1c2cbe22a276335d[39m[37m[22m - Time: [1m[37m1023[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:38:12.466Z[39m[37m[22m - Hash: [1m[37m61eb8aef86e9d7a3[39m[37m[22m - Time: [1m[37m996[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:38:12.994Z[39m[37m[22m - Hash: [1m[37m02a4e46f342a074e[39m[37m[22m - Time: [1m[37m410[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(9095:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11356:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11428:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  place-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.87 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:45:26.535Z[39m[37m[22m - Hash: [1m[37mdd4e3a403d544bb4[39m[37m[22m - Time: [1m[37m1102[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:45:35.863Z[39m[37m[22m - Hash: [1m[37md73d977abf82967f[39m[37m[22m - Time: [1m[37m910[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T19:56:06.440Z[39m[37m[22m - Hash: [1m[37m135a7ea8e418d574[39m[37m[22m - Time: [1m[37m1120[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:34:44.843Z[39m[37m[22m - Hash: [1m[37m135a7ea8e418d574[39m[37m[22m - Time: [1m[37m823[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:35:07.022Z[39m[37m[22m - Hash: [1m[37m135a7ea8e418d574[39m[37m[22m - Time: [1m[37m871[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:35:21.367Z[39m[37m[22m - Hash: [1m[37m6fde7d67569a73b2[39m[37m[22m - Time: [1m[37m966[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:35:33.170Z[39m[37m[22m - Hash: [1m[37mab9210752cc53c4b[39m[37m[22m - Time: [1m[37m959[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:35:44.376Z[39m[37m[22m - Hash: [1m[37m913038436eed529a[39m[37m[22m - Time: [1m[37m1007[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.71 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:35:52.831Z[39m[37m[22m - Hash: [1m[37m836923bcb1a3d6bb[39m[37m[22m - Time: [1m[37m961[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:36:16.839Z[39m[37m[22m - Hash: [1m[37m7cfad8e67afd072b[39m[37m[22m - Time: [1m[37m819[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.26 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:37:28.593Z[39m[37m[22m - Hash: [1m[37m9eede89e381398fe[39m[37m[22m - Time: [1m[37m998[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.26 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:37:35.553Z[39m[37m[22m - Hash: [1m[37md94d1f8e88359cc4[39m[37m[22m - Time: [1m[37m893[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.10 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:37:43.438Z[39m[37m[22m - Hash: [1m[37m97b18cf548deacb9[39m[37m[22m - Time: [1m[37m977[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.08 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:37:51.421Z[39m[37m[22m - Hash: [1m[37m0aeb418c99d95b3e[39m[37m[22m - Time: [1m[37m892[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.32 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:38:08.913Z[39m[37m[22m - Hash: [1m[37me3bb44d97d7cc725[39m[37m[22m - Time: [1m[37m743[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:40:45.503Z[39m[37m[22m - Hash: [1m[37me3bb44d97d7cc725[39m[37m[22m - Time: [1m[37m882[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:41:04.100Z[39m[37m[22m - Hash: [1m[37me3bb44d97d7cc725[39m[37m[22m - Time: [1m[37m803[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.32 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:41:12.061Z[39m[37m[22m - Hash: [1m[37mac31e283b2881317[39m[37m[22m - Time: [1m[37m943[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m281.32 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:41:20.497Z[39m[37m[22m - Hash: [1m[37m62f441e5b76ad379[39m[37m[22m - Time: [1m[37m888[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.14 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:41:29.351Z[39m[37m[22m - Hash: [1m[37m78e13112bbe6179e[39m[37m[22m - Time: [1m[37m890[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.14 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:41:44.419Z[39m[37m[22m - Hash: [1m[37m623e0a41f0bb67e8[39m[37m[22m - Time: [1m[37m966[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:51:23.195Z[39m[37m[22m - Hash: [1m[37ma397b3b2864a5e9a[39m[37m[22m - Time: [1m[37m410[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(9093:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11354:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  align-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./cnt-theme/css/cnt-theme.css[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/@angular-devkit/build-angular/node_modules/postcss-loader/dist/cjs.js):[39m[22m
+[1m[33m(11426:3) from "autoprefixer" plugin: start value has mixed support, consider using flex-start instead[39m[22m
+[1m[33m[39m[22m
+[1m[33mCode:[39m[22m
+[1m[33m  place-items: start[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.12 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:54:11.665Z[39m[37m[22m - Hash: [1m[37me486a4c9706de0ac[39m[37m[22m - Time: [1m[37m1155[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.20 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:57:04.865Z[39m[37m[22m - Hash: [1m[37m78ef29cfda225422[39m[37m[22m - Time: [1m[37m1056[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m285.96 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T20:59:25.290Z[39m[37m[22m - Hash: [1m[37m3d5123fe863c3060[39m[37m[22m - Time: [1m[37m922[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m286.20 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:06:14.511Z[39m[37m[22m - Hash: [1m[37m78ef29cfda225422[39m[37m[22m - Time: [1m[37m872[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m285.96 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:10:57.261Z[39m[37m[22m - Hash: [1m[37m72c1377204841913[39m[37m[22m - Time: [1m[37m906[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m287.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:20:15.502Z[39m[37m[22m - Hash: [1m[37m5cc058c8c774c253[39m[37m[22m - Time: [1m[37m993[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m287.47 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:23:47.023Z[39m[37m[22m - Hash: [1m[37m5266166eddb0b354[39m[37m[22m - Time: [1m[37m1050[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m287.50 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:26:16.726Z[39m[37m[22m - Hash: [1m[37m585f82b9a4423281[39m[37m[22m - Time: [1m[37m1033[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m287.52 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:26:24.141Z[39m[37m[22m - Hash: [1m[37m01ba0cb6d3eaad8b[39m[37m[22m - Time: [1m[37m951[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m287.61 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:52:29.323Z[39m[37m[22m - Hash: [1m[37mcc740a549cdcaf85[39m[37m[22m - Time: [1m[37m1171[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m292.04 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:53:03.091Z[39m[37m[22m - Hash: [1m[37m247bbc5c0f6aadd4[39m[37m[22m - Time: [1m[37m1098[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m292.39 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T21:59:37.035Z[39m[37m[22m - Hash: [1m[37m5b4cb6cb012d62bb[39m[37m[22m - Time: [1m[37m1123[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m292.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:03:41.049Z[39m[37m[22m - Hash: [1m[37m6f68fc97fa369b44[39m[37m[22m - Time: [1m[37m1045[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:30:38.036Z[39m[37m[22m - Hash: [1m[37m6f68fc97fa369b44[39m[37m[22m - Time: [1m[37m929[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:30:59.461Z[39m[37m[22m - Hash: [1m[37m6f68fc97fa369b44[39m[37m[22m - Time: [1m[37m768[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:31:01.484Z[39m[37m[22m - Hash: [1m[37m6f68fc97fa369b44[39m[37m[22m - Time: [1m[37m774[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m169.60 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:31:27.092Z[39m[37m[22m - Hash: [1m[37m00c1039a7cc24089[39m[37m[22m - Time: [1m[37m897[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m169.60 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:31:28.212Z[39m[37m[22m - Hash: [1m[37m27bf890ee5499b66[39m[37m[22m - Time: [1m[37m821[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:32:07.174Z[39m[37m[22m - Hash: [1m[37m27bf890ee5499b66[39m[37m[22m - Time: [1m[37m783[39m[37m[22mms[0m[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:32:09.163Z[39m[37m[22m - Hash: [1m[37m27bf890ee5499b66[39m[37m[22m - Time: [1m[37m763[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:32:11.228Z[39m[37m[22m - Hash: [1m[37m27bf890ee5499b66[39m[37m[22m - Time: [1m[37m743[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m15[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m184.65 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:32:34.670Z[39m[37m[22m - Hash: [1m[37mde7dededd66ea9ef[39m[37m[22m - Time: [1m[37m967[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m184.65 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:32:35.902Z[39m[37m[22m - Hash: [1m[37mc5df1b073c49481a[39m[37m[22m - Time: [1m[37m827[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:33:26.432Z[39m[37m[22m - Hash: [1m[37mc5df1b073c49481a[39m[37m[22m - Time: [1m[37m761[39m[37m[22mms[0m[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:33:28.343Z[39m[37m[22m - Hash: [1m[37mc5df1b073c49481a[39m[37m[22m - Time: [1m[37m665[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:33:39.673Z[39m[37m[22m - Hash: [1m[37mc5df1b073c49481a[39m[37m[22m - Time: [1m[37m854[39m[37m[22mms[0m[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m17[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m17[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLo[39m[22m[1m[31mcationsComponent, HomeFaqComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m186.12 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:33:41.705Z[39m[37m[22m - Hash: [1m[37m3f2fd882b722e2cf[39m[37m[22m - Time: [1m[37m875[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m194.42 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:33:59.940Z[39m[37m[22m - Hash: [1m[37m5a10dfc261e1968f[39m[37m[22m - Time: [1m[37m875[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m18[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m18[0m   imports: [CommonM[39m[22m[1m[31module, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m194.42 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:34:01.932Z[39m[37m[22m - Hash: [1m[37md0e7b6e04beaef84[39m[37m[22m - Time: [1m[37m828[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m4[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m6[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'FooterComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m6[0m import { FooterComponent } from '../footer/footer.component';[39m[22m
+[1m[31m[7m [0m [91m         ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m12[0m - [91merror[0m[90m NG1010: [0m'imports' must be an array of components, directives, pipes, or NgModules.[39m[22m
+[1m[31m  Value is of type '[(not statically analyzable), RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent]'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m18[0m   imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent],[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'CommonModule'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m18[0m   imports: [CommonM[39m[22m[1m[31module, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent],[39m[22m
+[1m[31m[7m  [0m [91m            ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.08 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:34:21.848Z[39m[37m[22m - Hash: [1m[37m81e6fc887811311e[39m[37m[22m - Time: [1m[37m935[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:35:06.960Z[39m[37m[22m - Hash: [1m[37m81e6fc887811311e[39m[37m[22m - Time: [1m[37m874[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:35:08.848Z[39m[37m[22m - Hash: [1m[37m58dbcb3ff9882f8d[39m[37m[22m - Time: [1m[37m725[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m10 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:35:28.269Z[39m[37m[22m - Hash: [1m[37m58dbcb3ff9882f8d[39m[37m[22m - Time: [1m[37m774[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'setSearchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                   ~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m200[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                       ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component Hom[39m[22m[1m[31meComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m254[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                             ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m303[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m302.48 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:35:30.452Z[39m[37m[22m - Hash: [1m[37ma7eb41647d945cb0[39m[37m[22m - Time: [1m[37m904[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                              [39m[22m[1m[31m                                                                                ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m358[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'setSearchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === [39m[22m[1m[31m'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                   ~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m197[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                    ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m248[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark[39m[22m[1m[31m-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                       ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m294[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m346[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exis[39m[22m[1m[31mt on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m93[0m:[93m23[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m93[0m                   @if(searchMode === 'destination') {[39m[22m
+[1m[31m[7m  [0m [91m                      ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m51[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'heroVideoRef' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m51[0m       this.heroVideoRef?.nativeElement?.play().catch(() => {});[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m61[0m:[93m24[39m[22m[1m[31m[0m - [91merror[0m[90m TS2339: [0mProperty 'heroVideoRef' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m61[0m     const video = this.heroVideoRef?.nativeElement;[39m[22m
+[1m[31m[7m  [0m [91m                       ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m63[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'videoPlaying' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m63[0m     if (this.videoPlaying) {[39m[22m
+[1m[31m[7m  [0m [91m             ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m65[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'videoPlaying' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m65[0m       this.videoPlaying = false;[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m68[0m:[93m12[0m - [91merror[0m[90m TS2339: [0mProperty 'videoPlaying' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m68[0m       this.videoPlaying = true;[39m[22m
+[1m[31m[7m  [0m [91m           ~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m166[0m:[93m10[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m166[0m     this.heroScrollHandler = update;[39m[22m
+[1m[31m[7m   [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m694[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m694[0m     if (this.heroScrollHandler) {[39m[22m
+[1m[31m[7m   [0m [91m             ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m695[0m:[93m49[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m695[0m       window.removeEventListener('scroll', this.heroScrollHandler);[39m[22m
+[1m[31m[7m   [0m [91m                                                ~~~~~~~~~~~~~~~~~[39m[22m[1m[31m[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mvendor.js[39m[37m          [2m | [22mvendor [2m | [22m [96m5.35 MB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m98.90 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m7 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:35:51.734Z[39m[37m[22m - Hash: [1m[37mcc0247d1b9a09a2c[39m[37m[22m - Time: [1m[37m1148[39m[37m[22mms[0m[39m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./src/app/home/home.component.ts[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):[39m[22m
+[1m[31mSyntaxError: /Users/dustinreed/projects/cnt-landing/src/app/home/home.component.ts: Unexpected token (96:36)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m [90m 94 |[39m[31m             [36mvoid[39m[31m {[39m[22m
+[1m[31m [90m 95 |[39m[31m                 [36mconst[39m[31m[33m:[39m[31m navMenu [33m=[39m[31m document[33m.[39m[31mquerySelector([32m'.nav-menu'[39m[31m)[33m,[39m[31m[39m[22m
+[1m[31m[31m[1m>[22m[1m[39m[31m[90m 96 |[39m[31m                 navMenu[33m,[39m[31m classList[33m,[39m[31m [33m:[39m[31m [33m.[39m[31mtoggle([32m'is-open'[39m[31m)[39m[22m
+[1m[31m [90m    |[39m[31m                                     [31m[1m^[22m[1m[39m[31m[39m[22m
+[1m[31m [90m 97 |[39m[31m             }[33m;[39m[31m[39m[22m
+[1m[31m [90m 98 |[39m[31m             onWindowScroll()[33m;[39m[31m[39m[22m
+[1m[31m [90m 99 |[39m[31m             [36mvoid[39m[31m {[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m49[0m:[93m62[0m - [91merror[0m[90m TS2339: [0mProperty 'toggleMobileNav' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m49[0m         <div class="nav-menu-button cnt-nav-button" (click)="toggleMobileNav()">[39m[22m
+[1m[31m[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m64[0m:[93m46[0m - [91merror[0m[90m TS2339: [0mProperty 'toggleVideo' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m64[0m       <div class="sticky-wrap-hero" (click)="toggleVideo($event)">[39m[22m
+[1m[31m[7m  [0m [91m                                             ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~[39m[22m[1m[31m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'setSearchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                   ~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m200[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                       ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m           [39m[22m[1m[31m    ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m254[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                             ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m303[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                             [39m[22m[1m[31m                                                                                                                                                                 ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m88[0m:[93m358[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m88[0m                   <button (click)="setSearchMode('destination')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'setSearchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headl[39m[22m[1m[31mine cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                   ~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m197[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                    ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m248[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transitio[39m[22m[1m[31mn-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                       ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[93m294[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m89[0m:[39m[22m[1m[31m[93m346[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m89[0m                   <button (click)="setSearchMode('roadtrip')" class="px-5 py-1.5 rounded-full text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>[39m[22m
+[1m[31m[7m  [0m [91m                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m93[0m:[93m23[0m - [91merror[0m[90m TS2339: [0mProperty 'searchMode' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m93[0m                   @if(searchMode === 'destination') {[39m[22m
+[1m[31m[7m  [0m [91m                      ~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m139[0m:[93m85[0m - [91merror[0m[90m TS2339: [0mProperty 'toggleVideo' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m139[0m                   <div class="btn-3d-wrap shrink-0 ml-2 md:mr-2 h-16 w-16" (click)="toggleVideo($event)">[39m[22m
+[1m[31m[7m[39m[22m[1m[31m   [0m [91m                                                                                    ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'toggleMobileNav'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m                   ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS1005: [0m':' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'navMenu'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m56[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m                                                       ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m5[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'navMenu'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m    ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m[39m[22m[1m[31m55[0m:[93m12[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m           ~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m14[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'classList'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m             ~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m23[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                      ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m41[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                                        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m58[0m:[93m37[0m - [91merror[0m[90m TS1146: [0mDeclaration expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m58[0m   @HostListener('window:scroll', [])[39m[22m
+[1m[31m[7m  [0m [91m                                    [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'onWindowScroll'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                  ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m26[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.[39m[22m
+[1m[31m  Type '{ if(: any, isPlatformBrowser: any): any; }' has no call signatures.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                       [39m[22m[1m[31m  ~[0m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS7006: [0mParameter '(Missing)' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'isPlatformBrowser' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m27[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                          ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m44[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                                           ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m75[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m75[0m   private initHeroEntry(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m145[0m:[93m10[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m145[0m     this.heroScrollHandler = update;[39m[22m
+[1m[31m[7m   [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[[39m[22m[1m[31m0m[96msrc/app/home/home.component.ts[0m:[93m673[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m673[0m     if (this.heroScrollHandler) {[39m[22m
+[1m[31m[7m   [0m [91m             ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m674[0m:[93m49[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m674[0m       window.removeEventListener('scroll', this.heroScrollHandler);[39m[22m
+[1m[31m[7m   [0m [91m                                                ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:36:15.560Z[39m[37m[22m - Hash: [1m[37md5c2524f218001e3[39m[37m[22m - Time: [1m[37m986[39m[37m[22mms[0m[39m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./src/app/home/home.component.ts[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):[39m[22m
+[1m[31mSyntaxError: /Users/dustinreed/projects/cnt-landing/src/app/home/home.component.ts: Unexpected token (42:36)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m [90m 40 |[39m[31m             [36mvoid[39m[31m {[39m[22m
+[1m[31m [90m 41 |[39m[31m                 [36mconst[39m[31m[33m:[39m[31m navMenu [33m=[39m[31m document[33m.[39m[31mquerySelector([32m'.nav-menu'[39m[31m)[33m,[39m[31m[39m[22m
+[1m[31m[31m[1m>[22m[1m[39m[31m[90m 42 |[39m[31m                 navMenu[33m,[39m[31m classList[33m,[39m[31m [33m:[39m[31m [33m.[39m[31mtoggle([32m'is-open'[39m[31m)[39m[22m
+[1m[31m [90m    |[39m[31m                                     [31m[1m^[22m[1m[39m[31m[39m[22m
+[1m[31m [90m 43 |[39m[31m             }[33m;[39m[31m[39m[22m
+[1m[31m [90m 44 |[39m[31m             onWindowScroll()[33m;[39m[31m[39m[22m
+[1m[31m [90m 45 |[39m[31m             [36mvoid[39m[31m {[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m49[0m:[93m62[0m - [91merror[0m[90m TS2339: [0mProperty 'toggleMobileNav' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m49[0m         <div class="nav-menu-button cnt-nav-button" (click)="toggleMobileNav()">[39m[22m
+[1m[31m[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'toggleMobileNav'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m                   ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.comp[39m[22m[1m[31monent.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS1005: [0m':' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'navMenu'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m56[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m                                                       ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m5[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'navMenu'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m    ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m12[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m           ~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m14[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'classList'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m             ~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m23[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                      ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m41[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[39m[22m[1m[31m5[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                                        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m58[0m:[93m37[0m - [91merror[0m[90m TS1146: [0mDeclaration expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m58[0m   @HostListener('window:scroll', [])[39m[22m
+[1m[31m[7m  [0m [91m                                    [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'onWindowScroll'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                  ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m26[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.[39m[22m
+[1m[31m  Type '{ if(: any, isPlatformBrowser: any): any; }' has no call signatures.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                         ~[0m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS7006: [0mParameter '(Missing)' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'isPlatformBrowser' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) [39m[22m[1m[31mreturn;[39m[22m
+[1m[31m[7m  [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m27[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                          ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m44[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                                           ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m75[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m75[0m   private initHeroEntry(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m145[0m:[93m10[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m145[0m     this.heroScrollHandler = update;[39m[22m
+[1m[31m[7m   [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m673[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m673[0m     if (this.heroScrollHandler) {[39m[22m
+[1m[31m[7m   [0m [91m             ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m674[0m:[93m49[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m674[0m       window.removeEventListener('scroll', this.heroScrollHandler);[39m[22m
+[1m[31m[7m   [0m [91m                                                ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m[39m[22m
+[1m[31m[0m[36m./src/app/home/home.component.ts[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):[39m[22m
+[1m[31mSyntaxError: /Users/dustinreed/projects/cnt-landing/src/app/home/home.component.ts: Unexpected token (42:36)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m [90m 40 |[39m[31m             [36mvoid[39m[31m {[39m[22m
+[1m[31m [90m 41 |[39m[31m                 [36mconst[39m[31m[33m:[39m[31m navMenu [33m=[39m[31m document[33m.[39m[31mquerySelector([32m'.nav-menu'[39m[31m)[33m,[39m[31m[39m[22m
+[1m[31m[31m[1m>[22m[1m[39m[31m[90m 42 |[39m[31m                 navMenu[33m,[39m[31m classList[33m,[39m[31m [33m:[39m[31m [33m.[39m[31mtoggle([32m'is-open'[39m[31m)[39m[22m
+[1m[31m [90m    |[39m[31m                                     [31m[1m^[22m[1m[39m[31m[39m[22m
+[1m[31m [90m 43 |[39m[31m             }[33m;[39m[31m[39m[22m
+[1m[31m [90m 44 |[39m[31m             onWindowScroll()[33m;[39m[31m[39m[22m
+[1m[31m [90m 45 |[39m[31m             [36mvoid[39m[31m {[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.html[0m:[93m49[0m:[93m62[0m - [91merror[0m[90m TS2339: [0mProperty 'toggleMobileNav' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m49[0m         <div class="nav-menu-button cnt-nav-button" (click)="toggleMobileNav()">[39m[22m
+[1m[31m[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96msrc/app/home/home.component.ts[0m:[93m18[0m:[93m16[0m[39m[22m
+[1m[31m    [7m18[0m   templateUrl: './home.component.html',[39m[22m
+[1m[31m    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Error occurs in the template of component HomeComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'toggleMobileNav'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m53[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m53[0m   toggleMobileNav(): void {[39m[22m
+[1m[31m[7m  [0m [91m                   ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.comp[39m[22m[1m[31monent.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS1005: [0m':' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'navMenu'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m          ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m54[0m:[93m56[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m54[0m     const navMenu = document.querySelector('.nav-menu');[39m[22m
+[1m[31m[7m  [0m [91m                                                       ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m5[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'navMenu'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m    ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m12[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m           ~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m14[0m - [91merror[0m[90m TS18004: [0mNo value exists in scope for the shorthand property 'classList'. Either declare one or provide an initializer.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m             ~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m23[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m55[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                      ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m55[0m:[93m41[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m5[39m[22m[1m[31m5[0m     navMenu?.classList.toggle('is-open');[39m[22m
+[1m[31m[7m  [0m [91m                                        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m58[0m:[93m37[0m - [91merror[0m[90m TS1146: [0mDeclaration expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m58[0m   @HostListener('window:scroll', [])[39m[22m
+[1m[31m[7m  [0m [91m                                    [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'onWindowScroll'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                  ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m59[0m:[93m26[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.[39m[22m
+[1m[31m  Type '{ if(: any, isPlatformBrowser: any): any; }' has no call signatures.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m59[0m   onWindowScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m                         ~[0m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS7006: [0mParameter '(Missing)' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m        [0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'isPlatformBrowser' implicitly has an 'any' type.[39m[22m
+[1m[31m[39m[22m
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m[1mRaw Size[22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m[96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m9 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:36:47.264Z[39m[37m[22m - Hash: [1m[37m5ab3fab5cacf24c1[39m[37m[22m - Time: [1m[37m833[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) [39m[22m[1m[31mreturn;[39m[22m
+[1m[31m[7m  [0m [91m         ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m27[0m - [91merror[0m[90m TS1005: [0m',' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                          ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m60[0m:[93m44[0m - [91merror[0m[90m TS1005: [0m';' expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m60[0m     if (!isPlatformBrowser(this.platformId)) return;[39m[22m
+[1m[31m[7m  [0m [91m                                           ~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m75[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m75[0m   private initStickyScroll(): void {[39m[22m
+[1m[31m[7m  [0m [91m  ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m598[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m598[0m     if (this.heroScrollHandler) {[39m[22m
+[1m[31m[7m   [0m [91m             ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m599[0m:[93m49[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m599[0m       window.removeEventListener('scroll', this.heroScrollHandler);[39m[22m
+[1m[31m[7m   [0m [91m                                                ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mvendor.js[39m[37m          [2m | [22mvendor [2m | [22m  [96m5.73 MB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.25 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m7 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:39:48.679Z[39m[37m[22m - Hash: [1m[37mbd49598eb26e0233[39m[37m[22m - Time: [1m[37m1143[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[91m✖[39m[37m Failed to compile.[39m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m539[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m539[0m     if (this.heroScrollHandler) {[39m[22m
+[1m[31m[7m   [0m [91m             ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96msrc/app/home/home.component.ts[0m:[93m540[0m:[93m49[0m - [91merror[0m[90m TS2339: [0mProperty 'heroScrollHandler' does not exist on type 'HomeComponent'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m540[0m       window.removeEventListener('scroll', this.heroScrollHandler);[39m[22m
+[1m[31m[7m   [0m [91m                                                ~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.14 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:40:20.189Z[39m[37m[22m - Hash: [1m[37mb832748e394dcbcf[39m[37m[22m - Time: [1m[37m902[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.54 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:46:45.151Z[39m[37m[22m - Hash: [1m[37ma81ef7210993ff01[39m[37m[22m - Time: [1m[37m1068[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m304.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:46:46.043Z[39m[37m[22m - Hash: [1m[37m1d994c6f22590b80[39m[37m[22m - Time: [1m[37m841[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m304.82 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:48:30.677Z[39m[37m[22m - Hash: [1m[37mc57951c2509f0f33[39m[37m[22m - Time: [1m[37m1017[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m304.42 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:53:40.881Z[39m[37m[22m - Hash: [1m[37mf89ef11d77ffb122[39m[37m[22m - Time: [1m[37m1063[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.85 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T22:53:41.777Z[39m[37m[22m - Hash: [1m[37m687be5994f4e03f4[39m[37m[22m - Time: [1m[37m845[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
+[32m✔[39m Browser application bundle generation complete.
+[37m[39m
+[37m[0m[1mInitial Chunk Files[22m[2m | [22m[1mNames[22m  [2m | [22m [1mRaw Size[22m[0m[39m
+[37m[0m[92mmain.js[39m[37m            [2m | [22mmain   [2m | [22m[96m303.87 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[92mruntime.js[39m[37m         [2m | [22mruntime[2m | [22m [96m12.62 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m8 unchanged chunks[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-04-17T23:00:01.977Z[39m[37m[22m - Hash: [1m[37m4d5dca02c9b40c5b[39m[37m[22m - Time: [1m[37m1117[39m[37m[22mms[0m[39m
+[37m[39m
+[37m[92m✔[39m[37m Compiled successfully.[39m
