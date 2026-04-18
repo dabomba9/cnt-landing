@@ -1,6 +1,8 @@
 import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
 @Component({
@@ -14,13 +16,36 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   title = 'cnt-workspace';
 
   private cursorCleanup: (() => void) | null = null;
+  private routerSub: Subscription | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router
+  ) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.initCustomCursor();
+      this.initPageTransitions();
     }
+  }
+
+  private initPageTransitions(): void {
+    // Animate the routed page component on every navigation
+    this.routerSub = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => {
+      // Small delay so the new component is in the DOM
+      requestAnimationFrame(() => {
+        const outlet = document.querySelector('router-outlet + *') as HTMLElement;
+        if (outlet) {
+          gsap.fromTo(outlet,
+            { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out', clearProps: 'transform' }
+          );
+        }
+      });
+    });
   }
 
   private initCustomCursor(): void {
@@ -86,5 +111,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (this.cursorCleanup) {
       this.cursorCleanup();
     }
+    this.routerSub?.unsubscribe();
   }
 }
