@@ -1,47 +1,5 @@
 // Component-specific overrides. Global styles live in styles.scss.
 
-/* ================= Custom Cursor ================= */
-.cnt-cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: #e3530d; /* trinidad */
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
-  will-change: transform;
-}
-
-.cnt-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 36px;
-  height: 36px;
-  border: 2px solid rgba(227, 83, 13, 0.5); /* trinidad 50% */
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99998;
-  transform: translate(-50%, -50%);
-  will-change: transform;
-}
-
-/* Hover state: dot grows, ring fills slightly */
-:host-context(body.cursor-hover) .cnt-cursor-dot {
-  width: 12px;
-  height: 12px;
-  background-color: #295d42; /* jungle-green */
-}
-
-:host-context(body.cursor-hover) .cnt-cursor-ring {
-  border-color: rgba(41, 93, 66, 0.4);
-  transform: translate(-50%, -50%) scale(1.5);
-}
-
 .nav-menu.is-open {
   display: flex !important;
   flex-direction: column;

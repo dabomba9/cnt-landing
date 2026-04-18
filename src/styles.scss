@@ -147,3 +147,21 @@ body {
     cursor: none !important;
 }
 
+/* ================= Angular Material Overrides ================= */
+/* ================= Angular Material Overrides ================= */
+.cnt-inline-calendar {
+  /* Enforce Trinidad Orange and native transparency across the Material component locally */
+  .mat-calendar-body-selected {
+    background-color: #E24A00 !important; /* trinidad orange */
+    color: white !important;
+  }
+  .mat-calendar-body-in-range::before {
+    background-color: rgba(226, 74, 0, 0.15) !important; /* trinidad light wash */
+  }
+  .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+    background-color: rgba(226, 74, 0, 0.1) !important;
+  }
+  .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    border-color: #E24A00 !important;
+  }
+}

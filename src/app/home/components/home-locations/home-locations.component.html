@@ -3,7 +3,7 @@
 
       <!-- Heading + chevron toggle -->
       <button class="flex items-center gap-3 mb-8 cursor-pointer bg-transparent border-none p-0" (click)="toggleLocations()">
-        <span class="font-headline text-[1.4rem] !text-dark-text font-normal">Explore CurbNTurf Locations</span>
+        <span class="font-body text-[1.4rem] !text-dark-text font-normal not-italic">Explore CurbNTurf Locations</span>
         <span class="text-dark-text/50 transition-transform duration-300" [class.rotate-180]="!locationsExpanded">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -14,42 +14,42 @@
       <!-- Collapsible grid -->
       <div class="overflow-hidden transition-all duration-500 ease-in-out" [style.max-height]="locationsExpanded ? '3000px' : '0'">
         <div class="columns-2 md:columns-4 gap-x-8 gsap-locations-grid">
-          <a routerLink="/search" [queryParams]="{state: 'arizona'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Arizona</a>
-          <a routerLink="/search" [queryParams]="{state: 'arkansas'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Arkansas</a>
-          <a routerLink="/search" [queryParams]="{state: 'california'}"    cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">California</a>
-          <a routerLink="/search" [queryParams]="{state: 'colorado'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Colorado</a>
-          <a routerLink="/search" [queryParams]="{state: 'florida'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Florida</a>
-          <a routerLink="/search" [queryParams]="{state: 'georgia'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Georgia</a>
-          <a routerLink="/search" [queryParams]="{state: 'idaho'}"         cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Idaho</a>
-          <a routerLink="/search" [queryParams]="{state: 'illinois'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Illinois</a>
-          <a routerLink="/search" [queryParams]="{state: 'indiana'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Indiana</a>
-          <a routerLink="/search" [queryParams]="{state: 'iowa'}"          cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Iowa</a>
-          <a routerLink="/search" [queryParams]="{state: 'kentucky'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Kentucky</a>
-          <a routerLink="/search" [queryParams]="{state: 'maine'}"         cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Maine</a>
-          <a routerLink="/search" [queryParams]="{state: 'michigan'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Michigan</a>
-          <a routerLink="/search" [queryParams]="{state: 'minnesota'}"     cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Minnesota</a>
-          <a routerLink="/search" [queryParams]="{state: 'missouri'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Missouri</a>
-          <a routerLink="/search" [queryParams]="{state: 'montana'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Montana</a>
-          <a routerLink="/search" [queryParams]="{state: 'nebraska'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Nebraska</a>
-          <a routerLink="/search" [queryParams]="{state: 'nevada'}"        cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Nevada</a>
-          <a routerLink="/search" [queryParams]="{state: 'new-hampshire'}" cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">New Hampshire</a>
-          <a routerLink="/search" [queryParams]="{state: 'new-mexico'}"    cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">New Mexico</a>
-          <a routerLink="/search" [queryParams]="{state: 'new-york'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">New York</a>
-          <a routerLink="/search" [queryParams]="{state: 'north-carolina'}" cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">North Carolina</a>
-          <a routerLink="/search" [queryParams]="{state: 'ohio'}"          cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Ohio</a>
-          <a routerLink="/search" [queryParams]="{state: 'oklahoma'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Oklahoma</a>
-          <a routerLink="/search" [queryParams]="{state: 'oregon'}"        cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Oregon</a>
-          <a routerLink="/search" [queryParams]="{state: 'pennsylvania'}"  cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Pennsylvania</a>
-          <a routerLink="/search" [queryParams]="{state: 'south-carolina'}" cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">South Carolina</a>
-          <a routerLink="/search" [queryParams]="{state: 'south-dakota'}"  cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">South Dakota</a>
-          <a routerLink="/search" [queryParams]="{state: 'texas'}"         cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Texas</a>
-          <a routerLink="/search" [queryParams]="{state: 'utah'}"          cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Utah</a>
-          <a routerLink="/search" [queryParams]="{state: 'vermont'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Vermont</a>
-          <a routerLink="/search" [queryParams]="{state: 'virginia'}"      cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Virginia</a>
-          <a routerLink="/search" [queryParams]="{state: 'washington'}"    cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Washington</a>
-          <a routerLink="/search" [queryParams]="{state: 'west-virginia'}" cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">West Virginia</a>
-          <a routerLink="/search" [queryParams]="{state: 'wisconsin'}"     cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Wisconsin</a>
-          <a routerLink="/search" [queryParams]="{state: 'wyoming'}"       cntCinematicRoll class="block mb-3 font-headline text-[1.1rem] !text-dark-text font-normal no-underline break-inside-avoid">Wyoming</a>
+          <a routerLink="/search" [queryParams]="{state: 'arizona'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Arizona</a>
+          <a routerLink="/search" [queryParams]="{state: 'arkansas'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Arkansas</a>
+          <a routerLink="/search" [queryParams]="{state: 'california'}"    cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">California</a>
+          <a routerLink="/search" [queryParams]="{state: 'colorado'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Colorado</a>
+          <a routerLink="/search" [queryParams]="{state: 'florida'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Florida</a>
+          <a routerLink="/search" [queryParams]="{state: 'georgia'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Georgia</a>
+          <a routerLink="/search" [queryParams]="{state: 'idaho'}"         cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Idaho</a>
+          <a routerLink="/search" [queryParams]="{state: 'illinois'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Illinois</a>
+          <a routerLink="/search" [queryParams]="{state: 'indiana'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Indiana</a>
+          <a routerLink="/search" [queryParams]="{state: 'iowa'}"          cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Iowa</a>
+          <a routerLink="/search" [queryParams]="{state: 'kentucky'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Kentucky</a>
+          <a routerLink="/search" [queryParams]="{state: 'maine'}"         cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Maine</a>
+          <a routerLink="/search" [queryParams]="{state: 'michigan'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Michigan</a>
+          <a routerLink="/search" [queryParams]="{state: 'minnesota'}"     cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Minnesota</a>
+          <a routerLink="/search" [queryParams]="{state: 'missouri'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Missouri</a>
+          <a routerLink="/search" [queryParams]="{state: 'montana'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Montana</a>
+          <a routerLink="/search" [queryParams]="{state: 'nebraska'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Nebraska</a>
+          <a routerLink="/search" [queryParams]="{state: 'nevada'}"        cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Nevada</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-hampshire'}" cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">New Hampshire</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-mexico'}"    cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">New Mexico</a>
+          <a routerLink="/search" [queryParams]="{state: 'new-york'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">New York</a>
+          <a routerLink="/search" [queryParams]="{state: 'north-carolina'}" cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">North Carolina</a>
+          <a routerLink="/search" [queryParams]="{state: 'ohio'}"          cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Ohio</a>
+          <a routerLink="/search" [queryParams]="{state: 'oklahoma'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Oklahoma</a>
+          <a routerLink="/search" [queryParams]="{state: 'oregon'}"        cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Oregon</a>
+          <a routerLink="/search" [queryParams]="{state: 'pennsylvania'}"  cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Pennsylvania</a>
+          <a routerLink="/search" [queryParams]="{state: 'south-carolina'}" cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">South Carolina</a>
+          <a routerLink="/search" [queryParams]="{state: 'south-dakota'}"  cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">South Dakota</a>
+          <a routerLink="/search" [queryParams]="{state: 'texas'}"         cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Texas</a>
+          <a routerLink="/search" [queryParams]="{state: 'utah'}"          cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Utah</a>
+          <a routerLink="/search" [queryParams]="{state: 'vermont'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Vermont</a>
+          <a routerLink="/search" [queryParams]="{state: 'virginia'}"      cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Virginia</a>
+          <a routerLink="/search" [queryParams]="{state: 'washington'}"    cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Washington</a>
+          <a routerLink="/search" [queryParams]="{state: 'west-virginia'}" cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">West Virginia</a>
+          <a routerLink="/search" [queryParams]="{state: 'wisconsin'}"     cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Wisconsin</a>
+          <a routerLink="/search" [queryParams]="{state: 'wyoming'}"       cntCinematicRoll class="block mb-3 font-body text-[1.1rem] !text-dark-text font-normal not-italic no-underline break-inside-avoid">Wyoming</a>
         </div>
       </div>
 

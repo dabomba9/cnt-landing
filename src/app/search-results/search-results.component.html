@@ -1,225 +1,196 @@
 <!-- TopNavBar -->
-<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center h-20 max-w-5xl mx-auto mt-6 px-8 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)]">
-<div class="flex items-center gap-2">
-<span class="text-xl font-bold tracking-tight text-stone-900 dark:text-stone-50">CurbNTurf</span>
-</div>
-<div class="hidden md:flex items-center gap-8">
-<a class="text-orange-700 dark:text-orange-400 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Find Stays</a>
-<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Host a Space</a>
-<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Experiences</a>
-</div>
-<div class="flex items-center gap-4">
-<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-bold hover:scale-95 duration-200 ease-in-out transition-transform">Sign Up</button>
-</div>
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center h-20 max-w-5xl mx-auto mt-6 px-8 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)] transition-transform duration-300"
+     [class.-translate-y-32]="!isNavbarVisible">
+  <div class="flex items-center gap-2">
+    <span class="text-xl font-bold tracking-tight text-stone-900 dark:text-stone-50">CurbNTurf</span>
+  </div>
+  <div class="hidden md:flex items-center gap-8">
+    <a class="text-orange-700 dark:text-orange-400 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Find Stays</a>
+    <a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Host a Space</a>
+    <a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Experiences</a>
+  </div>
+  <div class="flex items-center gap-4">
+    <button class="bg-primary text-on-primary px-8 py-3 rounded-full font-bold hover:scale-95 duration-200 ease-in-out transition-transform">Sign Up</button>
+  </div>
 </nav>
+
 <!-- Main Content Shell -->
 <main class="pt-32 min-h-screen relative">
-<!-- Subtle Grid Texture Overlay -->
-<div class="fixed inset-0 grid-texture pointer-events-none"></div>
-<div class="flex flex-col md:flex-row h-[calc(100vh-8rem)]">
-<!-- Listings Panel (Left) -->
-<section class="w-full md:w-[60%] lg:w-[55%] overflow-y-auto px-6 md:px-12 pb-20 custom-scrollbar">
-<!-- Collection Header -->
-<div class="mb-10">
-<span class="text-primary font-label text-xs tracking-[0.15em] uppercase font-bold mb-2 block">Curated Collection</span>
-<h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-on-surface">Vineyard Stays</h1>
-<div class="w-24 h-1 bg-tertiary-fixed mt-4"></div>
-</div>
-<!-- Filters Bar -->
-<div class="flex flex-wrap gap-3 mb-12 sticky top-0 z-40 py-4 bg-surface/90 backdrop-blur-sm">
-<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-lowest border border-secondary/15 rounded-full text-sm font-medium hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-sm">rv_hookup</span>
-                        Rig Length: 45ft
-                    </button>
-<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-lowest border border-secondary/15 rounded-full text-sm font-medium hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-sm">settings_input_component</span>
-                        50/30 Amp
-                    </button>
-<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-lowest border border-secondary/15 rounded-full text-sm font-medium hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-sm">width</span>
-                        Slide-outs
-                    </button>
-<button class="flex items-center gap-2 px-5 py-2.5 bg-primary-container text-on-primary-container rounded-full text-sm font-bold shadow-sm">
-<span class="material-symbols-outlined text-sm">payments</span>
-                        Price Range
-                    </button>
-<button class="flex items-center justify-center w-10 h-10 bg-surface-container-high rounded-full">
-<span class="material-symbols-outlined">tune</span>
-</button>
-</div>
-<!-- Listings Grid -->
-<div class="space-y-10">
-<!-- Card 1 -->
-<div class="group bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-secondary/5">
-<div class="w-full md:w-2/5 h-64 md:h-auto relative overflow-hidden">
-<img alt="Napa Valley Retreat" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="golden sun setting over a lush rolling vineyard with rows of grapevines and a luxury RV parked nearby" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMSSzTn9kqF7c6BEuajUgT8dut_ocHYwPVRRor8bRpR4-m06iktLYln_ODD4T5QRJFXOO1hd15MvRe2UC03d4P4v6n_cKge5IXhjmKDeYv7KIHpVSWpBjG1aMmTEuNbfc_-jSOZdBYaobQm1lgIiZ1KQ458IfO-PLgxBgEiakSO9ZKNv_cjJur5xoCT2gJrk2gabkF6zobnfGfM-L6wFDhJDTtA9dZmlteolLjPNEYUG1snlCDlJc9aRuASHJmPSalkDe4LAdCi9Q"/>
-<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-                                Rig-Compatible
-                            </div>
-</div>
-<div class="p-8 flex-1 flex flex-col justify-between">
-<div>
-<div class="flex justify-between items-start mb-2">
-<h3 class="font-headline text-2xl font-bold text-on-surface">Heritage Oak Vineyard</h3>
-<div class="flex items-center gap-1 text-tertiary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-bold">4.9</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-4">St. Helena, California • 45ft Max</p>
-<div class="flex flex-wrap gap-2 mb-6">
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">50 Amp</span>
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">Water Hookup</span>
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">Dual Slide-outs</span>
-</div>
-</div>
-<div class="flex justify-between items-end border-t border-surface-container pt-6">
-<div class="text-on-surface">
-<span class="text-3xl font-headline font-bold">$125</span>
-<span class="text-sm opacity-60">/night</span>
-</div>
-<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Details</button>
-</div>
-</div>
-</div>
-<!-- Card 2 -->
-<div class="group bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-secondary/5">
-<div class="w-full md:w-2/5 h-64 md:h-auto relative overflow-hidden">
-<img alt="Oak Ridge Vineyard" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="modern airstream trailer parked under a massive ancient oak tree at a vineyard during early morning fog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy57M8LTuVo1cPFh1N51jC1f9qJtX7CKzBO4T5i6CkDPX1IuhohB7bHQ49QL5aZrNIoMbyqifLH_xk_sshBzDijZOXDQrTzIJfotUTeODGYXx0a8XRjjkVacgbdn_-Br5Brg3uDkJ4hgQextQOwGfiZa5XvX24gxKa1OlQkXO7spqwwsJYxe4q9Umx1sUl8Is4K9EHTqnvfhseGHdSbyl5rEV1d-XXCsEkzEFWaOkT_Px-sh1bywBYs2LyypgMqT0IFX0fAXbaCjE"/>
-<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-                                Rig-Compatible
-                            </div>
-</div>
-<div class="p-8 flex-1 flex flex-col justify-between">
-<div>
-<div class="flex justify-between items-start mb-2">
-<h3 class="font-headline text-2xl font-bold text-on-surface">Whispering Pines Winery</h3>
-<div class="flex items-center gap-1 text-tertiary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-bold">4.7</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-4">Alexander Valley, CA • 40ft Max</p>
-<div class="flex flex-wrap gap-2 mb-6">
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">30 Amp</span>
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">Pet Friendly</span>
-</div>
-</div>
-<div class="flex justify-between items-end border-t border-surface-container pt-6">
-<div class="text-on-surface">
-<span class="text-3xl font-headline font-bold">$95</span>
-<span class="text-sm opacity-60">/night</span>
-</div>
-<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Details</button>
-</div>
-</div>
-</div>
-<!-- Card 3 -->
-<div class="group bg-surface-container-lowest rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-secondary/5">
-<div class="w-full md:w-2/5 h-64 md:h-auto relative overflow-hidden">
-<img alt="Mountain View Vineyard" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="wide mountain vista overlooking a valley of grapevines with an RV and outdoor seating set up for sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-eXO_c9sj-x37mx1Fi7buhf7yoxFTzbnoDt8ziktTo2PlUgVvNPuIPXHBeKnhb4qd0InqRr799fxAs0JsDCUIqTo3TkVY2APxP7-osJmsrCSsn6EWJPaaZnO_CVqc7Rsc-X4-eBb42_p1BSvlDjkoG8GaOY6bb02UHdJ1reeVbYnh0AsHkx5L6LQWR2YC9aRjsxOslldfQVwvOsvgf1uYIwfGI0sVGVYxQ3-e3i9fBI3R7nZvRQ6MsuJt1ttewNZyerNzRVPcFs"/>
-<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-                                Rig-Compatible
-                            </div>
-</div>
-<div class="p-8 flex-1 flex flex-col justify-between">
-<div>
-<div class="flex justify-between items-start mb-2">
-<h3 class="font-headline text-2xl font-bold text-on-surface">Summit Crest Estate</h3>
-<div class="flex items-center gap-1 text-tertiary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-bold">5.0</span>
-</div>
-</div>
-<p class="text-on-surface-variant text-sm mb-4">Sonoma Coast, CA • 45ft Max</p>
-<div class="flex flex-wrap gap-2 mb-6">
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">Full Hookups</span>
-<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-xs rounded-full">Wifi</span>
-</div>
-</div>
-<div class="flex justify-between items-end border-t border-surface-container pt-6">
-<div class="text-on-surface">
-<span class="text-3xl font-headline font-bold">$165</span>
-<span class="text-sm opacity-60">/night</span>
-</div>
-<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Details</button>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Map Panel (Right) -->
-<aside class="hidden md:block w-[40%] lg:w-[45%] sticky top-32 right-0 h-full p-6">
-<div class="w-full h-full rounded-lg bg-surface-container-high relative overflow-hidden border border-secondary/10 shadow-inner">
-<!-- Map Placeholder Image -->
-<img alt="Map of Napa Valley" class="w-full h-full object-cover opacity-50 contrast-125 saturate-50" data-alt="abstract topographic map with clean lines and stylized markers showing geographic points in a valley" data-location="Napa Valley, CA" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTrf5DuPwrDFUdPu7IqofXih8laFvFqPyCYcAyh0zqOrXonvsetQm29wYG5NbrIqR8MYssbOXVb61-ze9JX7uGZQ-hnT3v5rv3lz8ajEhQLZ6WL4ReobnIRyWok0N6gLwbyF_g71F4kMZhC2IjnG3wAoiN521DErlmpporcjshdZlf6TCrE3ixTXMjGrXxY01NP8Oa-ZVVrnvVJTsipXyDipxAOGhZY181KBXoEmA50q2NrKiIMgdEHUaE9Aeqf6caC7lvOt8TrNk"/>
-<!-- Floating Map Markers -->
-<div class="absolute top-1/4 left-1/3">
-<div class="bg-primary text-on-primary px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-<span class="text-xs">$125</span>
-<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45 border-r border-b border-white"></div>
-</div>
-</div>
-<div class="absolute top-1/2 left-2/3">
-<div class="bg-on-surface text-surface px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-<span class="text-xs">$95</span>
-<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-on-surface rotate-45 border-r border-b border-white"></div>
-</div>
-</div>
-<div class="absolute bottom-1/3 left-1/2">
-<div class="bg-on-surface text-surface px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-<span class="text-xs">$165</span>
-<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-on-surface rotate-45 border-r border-b border-white"></div>
-</div>
-</div>
-<!-- Map Controls -->
-<div class="absolute bottom-6 right-6 flex flex-col gap-2">
-<button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined">add</span>
-</button>
-<button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined">remove</span>
-</button>
-</div>
-<div class="absolute top-6 left-6">
-<div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium">
-<span class="material-symbols-outlined text-secondary text-base">near_me</span>
-                            Search this area
-                        </div>
-</div>
-</div>
-</aside>
-</div>
+  <!-- Subtle Grid Texture Overlay -->
+  <div class="fixed inset-0 grid-texture pointer-events-none"></div>
+
+  <div class="flex flex-col md:flex-row h-[calc(100vh-8rem)]">
+    <!-- Listings Panel (Left) -->
+    <section class="w-full md:w-[60%] lg:w-[55%] overflow-y-auto px-6 md:px-12 pb-20 custom-scrollbar">
+
+      <!-- Collection Header -->
+      <div class="mb-10 search-header">
+        <span class="font-label text-xs tracking-[0.15em] uppercase font-bold mb-2 block" [ngClass]="searchParams.mode === 'roadtrip' ? 'text-jungle-green' : 'text-trinidad'">{{ searchParams.mode === 'roadtrip' ? 'Custom Route' : 'Curated Collection' }}</span>
+        <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-dark-text">{{ headerTitle }}</h1>
+        <div class="w-24 h-1 bg-trinidad mt-4"></div>
+        <p class="text-muted-text text-sm mt-3 font-medium">{{ resultCount }}</p>
+      </div>
+
+      <!-- Filters Bar -->
+      <div class="filters-bar flex flex-wrap gap-3 mb-12 sticky top-0 z-40 py-4 bg-white/90 backdrop-blur-sm">
+        @if (searchParams.rigType) {
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
+            <span class="material-symbols-outlined text-sm text-jungle-green">rv_hookup</span>
+            {{ searchParams.rigType }}
+            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigType')">close</span>
+          </button>
+        }
+        @if (searchParams.rigLength || searchParams.rigSlideOuts) {
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
+            <span class="material-symbols-outlined text-sm text-jungle-green">straighten</span>
+            @if (searchParams.rigLength) { Length: {{ searchParams.rigLength }}ft }
+            @if (searchParams.rigLength && searchParams.rigSlideOuts) { | }
+            @if (searchParams.rigSlideOuts) { Slides: {{ searchParams.rigSlideOuts }} }
+            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigLength'); clearFilter('rigSlideOuts')">close</span>
+          </button>
+        }
+        @if (searchParams.rigTowing === 'true') {
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
+            <span class="material-symbols-outlined text-sm text-jungle-green">car_repair</span>
+            Towing Included
+            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigTowing')">close</span>
+          </button>
+        }
+        @if (searchParams.startDate) {
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
+            <span class="material-symbols-outlined text-sm text-jungle-green">calendar_today</span>
+            Dates Selected
+            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('startDate'); clearFilter('endDate')">close</span>
+          </button>
+        }
+        @if (searchParams.start) {
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-trinidad text-white border border-trinidad rounded-full text-sm font-bold shadow-md hover:opacity-90 transition-opacity group">
+            <span class="material-symbols-outlined text-sm">route</span>
+            Origin: {{ searchParams.start }}
+            <span class="material-symbols-outlined text-xs opacity-60 opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('start')">close</span>
+          </button>
+        }
+        <button class="flex items-center justify-center w-10 h-10 bg-white border border-outline-gray/30 rounded-full shadow-sm text-dark-text hover:bg-gray-50">
+          <span class="material-symbols-outlined">tune</span>
+        </button>
+      </div>
+
+      <!-- Listings Grid -->
+      <div class="space-y-10">
+        @for (listing of mockListings; track listing.title) {
+          <div class="listing-card group bg-white rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-outline-gray/20">
+            <div class="w-full md:w-2/5 h-64 md:h-auto relative overflow-hidden bg-stone-100">
+              <img [alt]="listing.title"
+                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-0 transition-opacity duration-500"
+                   [src]="listing.img"
+                   (load)="onImageLoad($event)"/>
+              <div class="absolute top-4 left-4 bg-trinidad text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                Rig-Compatible
+              </div>
+            </div>
+            <div class="p-8 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-headline text-2xl font-bold text-dark-text">{{ listing.title }}</h3>
+                  <div class="flex items-center gap-1 text-trinidad">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <span class="font-bold">{{ listing.rating }}</span>
+                  </div>
+                </div>
+                <p class="text-muted-text text-sm mb-4">{{ listing.location }} • 45ft Max</p>
+                <div class="flex flex-wrap gap-2 mb-6">
+                  @for (feature of listing.features; track feature) {
+                    <span class="px-3 py-1 bg-jungle-green/10 text-jungle-green font-bold text-xs rounded-full">{{ feature }}</span>
+                  }
+                </div>
+              </div>
+              <div class="flex justify-between items-end border-t border-outline-gray/30 pt-6">
+                <div class="text-dark-text">
+                  <span class="text-3xl font-headline font-bold">${{ listing.price }}</span>
+                  <span class="text-sm opacity-60">/night</span>
+                </div>
+                <button class="bg-trinidad text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap">Details</button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+    </section>
+
+    <!-- Map Panel (Right) -->
+    <aside class="hidden md:block w-[40%] lg:w-[45%] sticky top-32 right-0 h-full p-6">
+      <div class="w-full h-[calc(100vh-10rem)] rounded-lg bg-[#F2F0E9] relative overflow-hidden border border-outline-gray/20 shadow-inner">
+        <!-- Map Placeholder Image -->
+        <img alt="Map" class="w-full h-full object-cover opacity-60 contrast-125 saturate-50 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTrf5DuPwrDFUdPu7IqofXih8laFvFqPyCYcAyh0zqOrXonvsetQm29wYG5NbrIqR8MYssbOXVb61-ze9JX7uGZQ-hnT3v5rv3lz8ajEhQLZ6WL4ReobnIRyWok0N6gLwbyF_g71F4kMZhC2IjnG3wAoiN521DErlmpporcjshdZlf6TCrE3ixTXMjGrXxY01NP8Oa-ZVVrnvVJTsipXyDipxAOGhZY181KBXoEmA50q2NrKiIMgdEHUaE9Aeqf6caC7lvOt8TrNk"/>
+        <!-- Floating Map Markers -->
+        <div class="absolute top-1/4 left-1/3">
+          <div class="bg-trinidad text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
+            <span class="text-xs">$125</span>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-trinidad rotate-45 border-r border-b border-white"></div>
+          </div>
+        </div>
+        <div class="absolute top-1/2 left-2/3">
+          <div class="bg-dark-text text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
+            <span class="text-xs">$95</span>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-dark-text rotate-45 border-r border-b border-white"></div>
+          </div>
+        </div>
+        <div class="absolute bottom-1/3 left-1/2">
+          <div class="bg-dark-text text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
+            <span class="text-xs">$165</span>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-dark-text rotate-45 border-r border-b border-white"></div>
+          </div>
+        </div>
+        <!-- Map Controls -->
+        <div class="absolute bottom-6 right-6 flex flex-col gap-2">
+          <button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-dark-text hover:bg-gray-50 transition-colors">
+            <span class="material-symbols-outlined">add</span>
+          </button>
+          <button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-dark-text hover:bg-gray-50 transition-colors">
+            <span class="material-symbols-outlined">remove</span>
+          </button>
+        </div>
+        <div class="absolute top-6 left-6">
+          <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium border border-outline-gray/10">
+            <span class="material-symbols-outlined text-jungle-green text-base">near_me</span>
+            Search this area
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </main>
+
 <!-- Footer -->
 <footer class="w-full flex flex-col items-center gap-8 bg-stone-50 dark:bg-stone-950 pt-16 pb-8 px-8 border-t border-emerald-900/5">
-<div class="flex flex-col md:flex-row justify-between w-full max-w-7xl gap-12">
-<div>
-<span class="text-lg font-bold text-stone-900 dark:text-stone-50 block mb-4">CurbNTurf</span>
-<p class="max-w-xs text-stone-500 text-sm leading-relaxed">Curating the finest off-grid experiences for the modern explorer. Redefining freedom, one vineyard at a time.</p>
-</div>
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-<div class="flex flex-col gap-4">
-<span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Explore</span>
-<a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Vineyard Stays</a>
-<a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Off-Grid Gems</a>
-</div>
-<div class="flex flex-col gap-4">
-<span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Hosting</span>
-<a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Host Guarantee</a>
-<a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Safety</a>
-</div>
-<div class="flex flex-col gap-4">
-<span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Support</span>
-<a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Support</a>
-</div>
-</div>
-</div>
-<div class="w-full max-w-7xl pt-8 border-t border-stone-200/50 flex flex-col md:flex-row justify-between items-center gap-4">
-<span class="text-stone-500 text-[10px] uppercase tracking-widest">© 2024 CurbNTurf. The RV Freedom Experience.</span>
-<div class="flex gap-6">
-<span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">language</span>
-<span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">share</span>
-</div>
-</div>
+  <div class="flex flex-col md:flex-row justify-between w-full max-w-7xl gap-12">
+    <div>
+      <span class="text-lg font-bold text-stone-900 dark:text-stone-50 block mb-4">CurbNTurf</span>
+      <p class="max-w-xs text-stone-500 text-sm leading-relaxed">Curating the finest off-grid experiences for the modern explorer. Redefining freedom, one vineyard at a time.</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+      <div class="flex flex-col gap-4">
+        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Explore</span>
+        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Vineyard Stays</a>
+        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Off-Grid Gems</a>
+      </div>
+      <div class="flex flex-col gap-4">
+        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Hosting</span>
+        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Host Guarantee</a>
+        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Safety</a>
+      </div>
+      <div class="flex flex-col gap-4">
+        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Support</span>
+        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="w-full max-w-7xl pt-8 border-t border-stone-200/50 flex flex-col md:flex-row justify-between items-center gap-4">
+    <span class="text-stone-500 text-[10px] uppercase tracking-widest">© 2024 CurbNTurf. The RV Freedom Experience.</span>
+    <div class="flex gap-6">
+      <span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">language</span>
+      <span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">share</span>
+    </div>
+  </div>
 </footer>

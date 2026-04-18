@@ -24,7 +24,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private lastScrollY = 0;
 
   private scrollTriggers: any[] = [];
-  private cursorCleanup: (() => void) | null = null;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -44,7 +43,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.initCardPhysics();
       this.initTrustColorShift();
       this.initAppDownloadSection();
-      this.initCustomCursor();
     }
   }
 
@@ -504,57 +502,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }, 100);
   }
 
-  private initCustomCursor(): void {
-    const dot = document.getElementById('cursorDot');
-    const ring = document.getElementById('cursorRing');
-    if (!dot || !ring) return;
-
-    document.body.style.cursor = 'none';
-
-    let ringX = 0, ringY = 0;
-    let dotX = 0, dotY = 0;
-
-    const onMouseMove = (e: MouseEvent) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
-      gsap.set(dot, { x: dotX, y: dotY });
-    };
-
-    const onMouseEnterHoverable = () => document.body.classList.add('cursor-hover');
-    const onMouseLeaveHoverable = () => document.body.classList.remove('cursor-hover');
-
-    document.addEventListener('mousemove', onMouseMove);
-
-    const hoverables = document.querySelectorAll('a, button, [class*="cursor-pointer"], .magnetic-btn, .btn-3d-wrap');
-    hoverables.forEach(el => {
-      el.addEventListener('mouseenter', onMouseEnterHoverable);
-      el.addEventListener('mouseleave', onMouseLeaveHoverable);
-    });
-
-    // Ring follows with lerp via GSAP ticker
-    const ticker = () => {
-      ringX += (dotX - ringX) * 0.12;
-      ringY += (dotY - ringY) * 0.12;
-      gsap.set(ring, { x: ringX, y: ringY });
-    };
-    gsap.ticker.add(ticker);
-
-    this.cursorCleanup = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      hoverables.forEach(el => {
-        el.removeEventListener('mouseenter', onMouseEnterHoverable);
-        el.removeEventListener('mouseleave', onMouseLeaveHoverable);
-      });
-      gsap.ticker.remove(ticker);
-      document.body.style.cursor = '';
-      document.body.classList.remove('cursor-hover');
-    };
-  }
-
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
-    if (this.cursorCleanup) {
-      this.cursorCleanup();
-    }
   }
 }

@@ -1,12 +1,16 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 @Component({
   selector: 'cnt-home-hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule],
   templateUrl: './home-hero.component.html',
   styleUrl: './home-hero.component.scss'
 })
@@ -14,13 +18,125 @@ export class HomeHeroComponent implements AfterViewInit {
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
   searchMode: 'destination' | 'roadtrip' = 'destination';
+  searchDestination = '';
+  searchStartingLocation = '';
+  searchRoadtripDestination = '';
+  
   videoPlaying = true;
   private heroScrollHandler!: () => void;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  // Rig State 
+  isRigDropdownOpen = false;
+  rigTypes = ['Class A', 'Class B', 'Class C', 'Fifth Wheel', 'Travel Trailer', 'Truck Camper', 'Popup Camper'];
+  rigSelection = { type: '', length: 0, slideOuts: 0, towing: false };
+
+  get rigDisplayText(): string {
+    if (!this.rigSelection.type && !this.rigSelection.length) return 'Type & Length';
+    const parts = [];
+    if (this.rigSelection.type) parts.push(this.rigSelection.type);
+    if (this.rigSelection.length) parts.push(`${this.rigSelection.length}ft`);
+    return parts.join(' • ');
+  }
+
+  // Date State
+  isDateDropdownOpen = false;
+  selectedDateRange: DateRange<Date> | null = null;
+
+  get dateDisplayText(): string {
+    if (!this.selectedDateRange || !this.selectedDateRange.start) return 'Add dates';
+    const startStr = this.selectedDateRange.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (!this.selectedDateRange.end) return startStr;
+    const endStr = this.selectedDateRange.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return `${startStr} - ${endStr}`;
+  }
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {}
+
+  executeSearch(event?: Event): void {
+    if (event) event.stopPropagation();
+    
+    // Construct strict query payload natively mapping all logic cleanly
+    const queryParams: any = { mode: this.searchMode };
+    
+    if (this.searchMode === 'destination' && this.searchDestination) {
+      queryParams.dest = this.searchDestination;
+    } else if (this.searchMode === 'roadtrip') {
+      if (this.searchStartingLocation) queryParams.start = this.searchStartingLocation;
+      if (this.searchRoadtripDestination) queryParams.dest = this.searchRoadtripDestination;
+    }
+    
+    if (this.selectedDateRange?.start) {
+      queryParams.startDate = this.selectedDateRange.start.toISOString();
+      if (this.selectedDateRange.end) {
+        queryParams.endDate = this.selectedDateRange.end.toISOString();
+      }
+    }
+    
+    if (this.rigSelection.type) queryParams.rigType = this.rigSelection.type;
+    if (this.rigSelection.length > 0) queryParams.rigLength = this.rigSelection.length;
+    if (this.rigSelection.slideOuts > 0) queryParams.rigSlideOuts = this.rigSelection.slideOuts;
+    if (this.rigSelection.towing) queryParams.rigTowing = true;
+
+    // Execute absolute payload dynamically pushing native URL configurations
+    this.router.navigate(['/search'], { queryParams });
+  }
 
   setSearchMode(mode: 'destination' | 'roadtrip'): void {
     this.searchMode = mode;
+    this.isRigDropdownOpen = false;
+    this.isDateDropdownOpen = false;
+  }
+
+  // Date Methods
+  onDateSelected(date: Date) {
+    if (!this.selectedDateRange || !this.selectedDateRange.start || (this.selectedDateRange.start && this.selectedDateRange.end)) {
+      this.selectedDateRange = new DateRange(date, null);
+    } else if (date < this.selectedDateRange.start) {
+      this.selectedDateRange = new DateRange(date, null);
+    } else {
+      this.selectedDateRange = new DateRange(this.selectedDateRange.start, date);
+      setTimeout(() => this.isDateDropdownOpen = false, 250);
+    }
+  }
+
+  toggleDateDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isDateDropdownOpen = !this.isDateDropdownOpen;
+    if (this.isDateDropdownOpen) this.isRigDropdownOpen = false;
+  }
+
+  // Rig Methods
+  toggleRigDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isRigDropdownOpen = !this.isRigDropdownOpen;
+    if (this.isRigDropdownOpen) this.isDateDropdownOpen = false;
+  }
+
+  selectRigType(type: string): void {
+    this.rigSelection.type = this.rigSelection.type === type ? '' : type;
+  }
+
+  updateLength(val: number): void {
+    this.rigSelection.length = Math.max(0, this.rigSelection.length + val);
+  }
+
+  updateSlideOuts(val: number): void {
+    this.rigSelection.slideOuts = Math.max(0, this.rigSelection.slideOuts + val);
+  }
+
+  toggleTowing(): void {
+    this.rigSelection.towing = !this.rigSelection.towing;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (this.isRigDropdownOpen && !target.closest('.rig-dropdown-container') && !target.closest('.cnt-glass-picker')) {
+      this.isRigDropdownOpen = false;
+    }
+    if (this.isDateDropdownOpen && !target.closest('.rig-dropdown-container') && !target.closest('.cnt-glass-picker')) {
+      this.isDateDropdownOpen = false;
+    }
   }
 
   toggleVideo(event: Event): void {

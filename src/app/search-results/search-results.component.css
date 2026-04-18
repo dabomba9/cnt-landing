@@ -1,0 +1,9 @@
+/* Image fade-in on load */
+img.img-loaded {
+  opacity: 1 !important;
+}
+
+/* Listing cards start invisible; GSAP animates them in */
+.listing-card {
+  opacity: 0;
+}
