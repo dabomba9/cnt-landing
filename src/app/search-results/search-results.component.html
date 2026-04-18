@@ -1,27 +1,50 @@
 <!-- TopNavBar -->
-<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center h-20 max-w-5xl mx-auto mt-6 px-8 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)] transition-transform duration-300"
-     [class.-translate-y-32]="!isNavbarVisible">
-  <div class="flex items-center gap-2">
-    <span class="text-xl font-bold tracking-tight text-stone-900 dark:text-stone-50">CurbNTurf</span>
+<div class="fixed top-0 left-0 right-0 z-50 transition-transform duration-300 flex flex-col items-center px-4 mt-4 md:mt-6"
+     [class.-translate-y-40]="!isNavbarVisible">
+
+  <nav class="flex justify-between items-center h-16 md:h-20 w-full max-w-5xl px-6 md:px-8 rounded-full bg-white/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)]">
+    <div class="flex items-center gap-2">
+      <span class="text-xl font-bold tracking-tight text-stone-900">CurbNTurf</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-orange-700 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 transition-colors duration-300" href="#">Find Stays</a>
+      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Host a Space</a>
+      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Experiences</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="hidden md:block bg-trinidad text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
+      <!-- Hamburger (mobile only) -->
+      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-outline-gray/20 shadow-sm"
+              (click)="isMobileNavOpen = !isMobileNavOpen">
+        <span class="material-symbols-outlined text-dark-text">{{ isMobileNavOpen ? 'close' : 'menu' }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Dropdown -->
+  <div class="md:hidden w-full max-w-5xl mt-2 overflow-hidden transition-all duration-300 ease-in-out"
+       [style.max-height]="isMobileNavOpen ? '300px' : '0'"
+       [style.opacity]="isMobileNavOpen ? '1' : '0'">
+    <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-outline-gray/10 p-4 flex flex-col gap-1">
+      <a class="px-4 py-3 rounded-xl text-orange-700 font-bold text-sm hover:bg-orange-50 transition-colors" href="#">Find Stays</a>
+      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Host a Space</a>
+      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Experiences</a>
+      <div class="border-t border-outline-gray/20 mt-1 pt-3 px-4">
+        <button class="w-full bg-trinidad text-white py-3 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
+      </div>
+    </div>
   </div>
-  <div class="hidden md:flex items-center gap-8">
-    <a class="text-orange-700 dark:text-orange-400 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Find Stays</a>
-    <a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Host a Space</a>
-    <a class="text-stone-600 dark:text-stone-400 font-medium hover:text-orange-600 dark:hover:text-orange-300 transition-colors duration-300" href="#">Experiences</a>
-  </div>
-  <div class="flex items-center gap-4">
-    <button class="bg-primary text-on-primary px-8 py-3 rounded-full font-bold hover:scale-95 duration-200 ease-in-out transition-transform">Sign Up</button>
-  </div>
-</nav>
+
+</div>
 
 <!-- Main Content Shell -->
-<main class="pt-32 min-h-screen relative">
+<main class="pt-28 md:pt-32 min-h-screen relative">
   <!-- Subtle Grid Texture Overlay -->
   <div class="fixed inset-0 grid-texture pointer-events-none"></div>
 
   <div class="flex flex-col md:flex-row h-[calc(100vh-8rem)]">
     <!-- Listings Panel (Left) -->
-    <section class="w-full md:w-[60%] lg:w-[55%] overflow-y-auto px-6 md:px-12 pb-20 custom-scrollbar">
+    <section class="w-full md:w-[60%] lg:w-[55%] overflow-y-auto px-4 sm:px-6 md:px-12 pb-20 custom-scrollbar">
 
       <!-- Collection Header -->
       <div class="mb-10 search-header">
@@ -32,7 +55,7 @@
       </div>
 
       <!-- Filters Bar -->
-      <div class="filters-bar flex flex-wrap gap-3 mb-12 sticky top-0 z-40 py-4 bg-white/90 backdrop-blur-sm">
+      <div class="filters-bar flex flex-wrap gap-2 mb-8 md:mb-12 sticky top-28 md:top-0 z-40 py-3 md:py-4 bg-white/90 backdrop-blur-sm -mx-4 sm:-mx-6 md:mx-0 px-4 sm:px-6 md:px-0">
         @if (searchParams.rigType) {
           <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
             <span class="material-symbols-outlined text-sm text-jungle-green">rv_hookup</span>
@@ -79,7 +102,7 @@
       <div class="space-y-10">
         @for (listing of mockListings; track listing.title) {
           <div class="listing-card group bg-white rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-outline-gray/20">
-            <div class="w-full md:w-2/5 h-64 md:h-auto relative overflow-hidden bg-stone-100">
+            <div class="w-full md:w-2/5 h-48 sm:h-56 md:h-auto relative overflow-hidden bg-stone-100">
               <img [alt]="listing.title"
                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-0 transition-opacity duration-500"
                    [src]="listing.img"
@@ -88,7 +111,7 @@
                 Rig-Compatible
               </div>
             </div>
-            <div class="p-8 flex-1 flex flex-col justify-between">
+            <div class="p-5 md:p-8 flex-1 flex flex-col justify-between">
               <div>
                 <div class="flex justify-between items-start mb-2">
                   <h3 class="font-headline text-2xl font-bold text-dark-text">{{ listing.title }}</h3>

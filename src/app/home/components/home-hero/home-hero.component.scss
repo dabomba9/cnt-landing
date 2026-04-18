@@ -1,3 +1,14 @@
+/* ================= Hero Headline Layer (behind video) ================= */
+/* Mirrors .sticky-bg positioning but with z-index 1 so the video (z-index 3) covers it on scroll */
+.hero-headline-layer {
+  position: absolute;
+  top: 12%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* ================= 3D Flip Button Styles ================= */
 .btn-3d-wrap {
   perspective: 1000px;

@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SeoService } from '../seo.service';
 import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,13 +16,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
   searchParams: any = {};
   isNavbarVisible = true;
+  isMobileNavOpen = false;
   private lastScrollY = 0;
   private scrollTriggers: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private seo: SeoService
   ) {}
 
   mockListings = [
@@ -52,6 +55,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   ];
 
   ngOnInit(): void {
+    this.seo.update({
+      title: 'Search RV Spots & Campsites | CurbNTurf',
+      description: 'Browse hundreds of unique private RV spots across the US. Filter by state, amenities, and hookups. Book directly with hosts — no membership fees.',
+      url: '/search',
+    });
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
     });

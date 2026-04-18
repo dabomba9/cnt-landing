@@ -1,3 +1,41 @@
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.curbnturf.com/#organization",
+      "name": "CurbNTurf",
+      "url": "https://www.curbnturf.com",
+      "logo": "https://www.curbnturf.com/assets/images/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/curbnturf",
+        "https://www.instagram.com/curbnturf",
+        "https://twitter.com/curbnturf"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://www.curbnturf.com/support"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.curbnturf.com/#website",
+      "url": "https://www.curbnturf.com",
+      "name": "CurbNTurf",
+      "publisher": { "@id": "https://www.curbnturf.com/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.curbnturf.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>
+
 <div class="page-wrap bg-background text-on-background font-body selection:bg-primary-fixed-dim">
 
 
@@ -60,7 +98,7 @@
     <!-- ================= Network Text Section ================= -->
     <section class="network-animated-section bg-jungle-green text-white py-32 md:py-64 relative z-20 flex flex-col items-center justify-center min-h-[90vh] overflow-hidden full-bleed">
       <!-- GSAP Text element -->
-      <div class="network-text-container text-center max-w-5xl text-3xl md:text-5xl lg:text-[3.25rem] font-headline font-bold leading-[2]" style="will-change: transform, opacity;">
+      <div class="network-text-container text-center max-w-5xl text-xl sm:text-2xl md:text-4xl lg:text-[3.25rem] font-headline font-bold leading-[1.8] md:leading-[2]" style="will-change: transform, opacity;">
         <span class="block">CurbNTurf connects RVers with unique stays — no subscription required.</span>
         <span class="block">
           <span class="category-pill inline-flex items-center bg-[#DE5260] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="agriculture">agriculture</span>farms</span>
@@ -137,7 +175,7 @@
         <div class="exhibit-card-wrapper shrink-0 relative z-[60]" style="transform: rotate(-2deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/winery_category.png" alt="Winery" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/winery_category.webp" alt="Winery" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Sip & Sleep</h3>
@@ -153,7 +191,7 @@
         <div class="exhibit-card-wrapper shrink-0 mt-16 relative z-[50]" style="transform: rotate(3deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/farm_category.png" alt="Farm Excursions" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/farm_category.webp" alt="Farm Excursions" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Fresh from the Source</h3>
@@ -169,7 +207,7 @@
         <div class="exhibit-card-wrapper shrink-0 relative z-[40]" style="transform: rotate(-1.5deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/brewery_category.png" alt="Breweries" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/brewery_category.webp" alt="Breweries" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Craft Pints & Quiet Nights</h3>
@@ -185,7 +223,7 @@
         <div class="exhibit-card-wrapper shrink-0 mt-8 relative z-[30]" style="transform: rotate(2deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/golf_category.png" alt="Golf Courses" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/golf_category.webp" alt="Golf Courses" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Tee Off & Tailgate</h3>
@@ -201,7 +239,7 @@
         <div class="exhibit-card-wrapper shrink-0 relative z-[20]" style="transform: rotate(-1deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/community_category.png" alt="Community Hosts" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/community_category.webp" alt="Community Hosts" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Meet the Locals</h3>
@@ -217,7 +255,7 @@
         <div class="exhibit-card-wrapper shrink-0 mt-12 relative z-[10]" style="transform: rotate(2.5deg);">
           <div class="exhibit-card relative w-[260px] md:w-[340px] rounded-[1.25rem] overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[3px] ring-cream">
             <div class="relative h-[300px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/unique_category.png" alt="Unique Stops" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+              <img src="assets/images/unique_category.webp" alt="Unique Stops" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-0 left-0 w-full p-5">
                 <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Off the Beaten Path</h3>
@@ -241,7 +279,7 @@
 <div class="max-w-[90rem] mx-auto px-4 md:px-8">
 <div class="text-center mb-20">
 <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The Journey</span>
-<h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">How It Works</h2>
+<h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">How It Works</h2>
 </div>
 <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 gsap-how-works-wrap">
   <!-- UI Thread Desktop (Horizontal S-Curve) -->
@@ -265,39 +303,39 @@
     <path d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#mobileJourneyMask)" vector-effect="non-scaling-stroke" />
   </svg>
 <!-- Card 1 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
   <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/mountain_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <img src="assets/images/mountain_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
   <!-- Dark vignette for text legible contrast -->
   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
   <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">01</div>
+  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">01</div>
   <div class="relative z-10 mt-auto pt-32 w-full">
     <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Discover</h4>
     <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Enter your rig size and dates to find curated spaces perfectly compatible with your vehicle.</p>
   </div>
 </div>
 <!-- Card 2 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
   <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/farm_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <img src="assets/images/farm_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
   <!-- Dark vignette for text legible contrast -->
   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
   <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">02</div>
+  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">02</div>
   <div class="relative z-10 mt-auto pt-32 w-full">
     <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Book with Confidence</h4>
     <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Communicate directly with vetted hosts and effortlessly reserve your site with our Rig-Compatible Guarantee.</p>
   </div>
 </div>
 <!-- Card 3 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[550px] md:min-h-[600px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
   <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/winery_category.png" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <img src="assets/images/winery_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
   <!-- Dark vignette for text legible contrast -->
   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
   <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">03</div>
+  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">03</div>
   <div class="relative z-10 mt-auto pt-32 w-full">
     <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Arrive &amp; Enjoy</h4>
     <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Navigate smoothly to your premium destination and bask in the ultimate freedom of the open road.</p>
@@ -311,12 +349,12 @@
 <section class="max-w-[90rem] mx-auto px-4 md:px-8 mb-24">
   <div class="bg-[#F9F9F8] rounded-[3rem] py-16 md:py-24 px-6 md:px-12 flex flex-col items-center border border-black/5">
     <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Interactive Map</span>
-    <h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
+    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
     <p class="text-lg md:text-xl font-body text-muted-text leading-relaxed text-center mb-16 max-w-2xl">From remote alpaca farms to historic vineyards, drop a pin and say hello to hundreds of incredible local hosts.</p>
     
     <div class="w-full max-w-7xl relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 group cursor-pointer">
       <!-- High Res Map Visual -->
-      <img src="assets/images/network_map.png" alt="Map of North American Hosts" class="w-full h-auto object-cover md:aspect-[16/9] aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.03]">
+      <img src="assets/images/network_map.webp" alt="Map of North American Hosts" loading="lazy" class="w-full h-auto object-cover md:aspect-[16/9] aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.03]">
       
       <!-- Overlay Vignette to slightly pull focus to button -->
       <div class="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -351,7 +389,7 @@
       <section class="py-24 md:py-40 px-4 md:px-8 max-w-[90rem] mx-auto">
         <div class="text-center mb-20">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Featured Hosts</span>
-        <h2 class="text-5xl md:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-16 gsap-favorite-hosts-wrap">
@@ -359,7 +397,7 @@
         <!-- Card 1 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_hops.png" alt="High Desert Hop Farm" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_hops.webp" alt="High Desert Hop Farm" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
             </div>
@@ -378,7 +416,7 @@
         <!-- Card 2 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_vineyard.png" alt="Valley View Vineyards" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_vineyard.webp" alt="Valley View Vineyards" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="wine_bar">wine_bar</span>
             </div>
@@ -394,7 +432,7 @@
         <!-- Card 3 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_alpaca.png" alt="Alpaca Ranch" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_alpaca.webp" alt="Alpaca Ranch" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
             </div>
@@ -413,7 +451,7 @@
         <!-- Card 4 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_farm.png" alt="Heritage Farm" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_farm.webp" alt="Heritage Farm" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
             </div>
@@ -429,7 +467,7 @@
         <!-- Card 5 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_museum.png" alt="Auto Museum" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_museum.webp" alt="Auto Museum" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
             </div>
@@ -448,7 +486,7 @@
         <!-- Card 6 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_brewery.png" alt="Riverfront Brewery" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_brewery.webp" alt="Riverfront Brewery" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
             </div>
@@ -464,7 +502,7 @@
         <!-- Card 7 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_village.png" alt="Pioneer Village" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_village.webp" alt="Pioneer Village" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
             </div>
@@ -483,7 +521,7 @@
         <!-- Card 8 -->
         <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
           <div class="w-full aspect-[4/3] rounded-[1rem] overflow-hidden relative mb-4">
-            <img src="assets/images/host_dairy.png" alt="Organic Dairy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <img src="assets/images/host_dairy.webp" alt="Organic Dairy" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
             </div>
@@ -619,7 +657,7 @@
         <!-- Left: Pixelated Image Masking -->
         <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square object-cover flex justify-center drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
           <!-- 3-step 8-bit geometric block cutout via pure CSS Calc Polygon -->
-          <img src="assets/images/host_opportunity.png" alt="Become a Host" 
+          <img src="assets/images/host_opportunity.webp" alt="Become a Host" loading="lazy"
                class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 hover:scale-105 will-change-transform">
         </div>
 
@@ -690,7 +728,7 @@
           <!-- Left Column: Phones Mockup -->
           <div class="gsap-app-left opacity-0 transform translate-y-10 flex items-end justify-center pt-10 px-8 lg:px-16">
             <div class="gsap-app-phones will-change-transform">
-              <img src="assets/images/phone-triptych.png" alt="CurbNTurf Mobile App" class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
+              <img src="assets/images/phone-triptych.webp" alt="CurbNTurf Mobile App" loading="lazy" class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
@@ -7,6 +7,7 @@ import { HomeLocationsComponent } from './components/home-locations/home-locatio
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
 import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';
 import { HomeHeroComponent } from './components/home-hero/home-hero.component';
+import { SeoService } from '../seo.service';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -18,14 +19,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements AfterViewInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isNavbarVisible = true;
   private lastScrollY = 0;
 
   private scrollTriggers: any[] = [];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private seo: SeoService
+  ) {}
+
+  ngOnInit(): void {
+    this.seo.update({
+      title: 'CurbNTurf | Find Your RV Spot — Private Land Camping & Stays',
+      description: 'Find unique private RV spots on farms, vineyards, and ranches across the US. Book directly with hosts. No membership fees. The RV Freedom Experience.',
+      url: '/',
+    });
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

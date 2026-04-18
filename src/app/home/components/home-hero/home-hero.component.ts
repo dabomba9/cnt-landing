@@ -23,7 +23,7 @@ export class HomeHeroComponent implements AfterViewInit {
   searchRoadtripDestination = '';
   
   videoPlaying = true;
-  private heroScrollHandler!: () => void;
+  readonly today = new Date();
 
   // Rig State 
   isRigDropdownOpen = false;
@@ -226,7 +226,6 @@ export class HomeHeroComponent implements AfterViewInit {
     };
 
     update();
-    this.heroScrollHandler = update;
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
   }
