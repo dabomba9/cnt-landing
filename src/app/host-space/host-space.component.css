@@ -1,0 +1,49 @@
+/* ── Earnings Calculator Sliders ── */
+.host-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.host-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #e3530d;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 12px rgba(227, 83, 13, 0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.host-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 20px rgba(227, 83, 13, 0.7);
+}
+
+.host-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: #e3530d;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 12px rgba(227, 83, 13, 0.5);
+}
+
+.host-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Trust card subtle border ── */
+.border-white\/8 {
+  border-color: rgba(255, 255, 255, 0.08);
+}

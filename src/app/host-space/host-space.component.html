@@ -1,228 +1,353 @@
-<!-- TopNavBar Shell -->
+<!-- ========== NAV ========== -->
 <div class="fixed top-0 left-0 right-0 z-50 flex flex-col items-center px-4 mt-4 md:mt-6">
-  <header class="flex justify-between items-center h-16 md:h-20 w-full max-w-5xl px-6 md:px-8 rounded-full bg-white/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)]">
-    <div class="text-xl font-bold tracking-tight text-stone-900">CurbNTurf</div>
+  <header class="flex justify-between items-center h-16 md:h-20 w-full max-w-5xl px-6 md:px-8 rounded-full bg-white/10 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.18)] border border-white/10">
+    <a routerLink="/" class="font-headline text-xl font-bold tracking-tight text-white no-underline">CurbNTurf</a>
     <nav class="hidden md:flex items-center gap-8">
-      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Find Stays</a>
-      <a class="text-orange-700 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 transition-colors duration-300" href="#">Host a Space</a>
-      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Experiences</a>
+      <a routerLink="/search" class="text-white/70 font-body font-medium hover:text-white transition-colors duration-300 no-underline">Find Stays</a>
+      <a routerLink="/host" class="text-white font-body font-bold border-b-2 border-trinidad pb-1 no-underline">Host a Space</a>
     </nav>
     <div class="flex items-center gap-3">
-      <button class="hidden md:block px-6 py-2.5 bg-trinidad text-white rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
-      <!-- Hamburger (mobile only) -->
-      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-outline-gray/20 shadow-sm"
+      <div class="hidden md:block btn-3d-wrap rounded-full inline-block">
+        <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+          <div class="invisible px-6 py-2.5 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
+          <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
+          <div class="btn-3d-back bg-dark-text text-white rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
+        </div>
+      </div>
+      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/10 border border-white/20"
               (click)="isMobileNavOpen = !isMobileNavOpen">
-        <span class="material-symbols-outlined text-dark-text">{{ isMobileNavOpen ? 'close' : 'menu' }}</span>
+        <span class="material-symbols-outlined text-white">{{ isMobileNavOpen ? 'close' : 'menu' }}</span>
       </button>
     </div>
   </header>
-
-  <!-- Mobile Dropdown -->
   <div class="md:hidden w-full max-w-5xl mt-2 overflow-hidden transition-all duration-300 ease-in-out"
        [style.max-height]="isMobileNavOpen ? '300px' : '0'"
        [style.opacity]="isMobileNavOpen ? '1' : '0'">
-    <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-outline-gray/10 p-4 flex flex-col gap-1">
-      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Find Stays</a>
-      <a class="px-4 py-3 rounded-xl text-orange-700 font-bold text-sm hover:bg-orange-50 transition-colors" href="#">Host a Space</a>
-      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Experiences</a>
-      <div class="border-t border-outline-gray/20 mt-1 pt-3 px-4">
-        <button class="w-full bg-trinidad text-white py-3 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
+    <div class="bg-[#1b1e17]/95 backdrop-blur-md rounded-2xl border border-white/10 p-4 flex flex-col gap-1">
+      <a routerLink="/search" class="px-4 py-3 rounded-xl text-white/70 font-body font-medium text-sm hover:bg-white/10 transition-colors no-underline">Find Stays</a>
+      <a routerLink="/host" class="px-4 py-3 rounded-xl text-white font-body font-bold text-sm hover:bg-white/10 transition-colors no-underline">Host a Space</a>
+      <div class="border-t border-white/10 mt-1 pt-3 px-4">
+        <button class="w-full bg-trinidad text-white py-3 rounded-full font-button font-normal not-italic text-xs tracking-widest uppercase hover:opacity-90 transition-opacity">Start Your Listing</button>
       </div>
     </div>
   </div>
 </div>
+
 <main class="relative">
-<!-- Hero Section -->
-<section class="relative min-h-screen flex items-center pt-32 pb-16 overflow-hidden">
-<div class="absolute inset-0 editorial-grid pointer-events-none"></div>
-<div class="container mx-auto px-6 md:px-8 grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
-<div class="z-10">
-<span class="host-anim-badge inline-block px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold tracking-widest uppercase mb-6">HOSTING REDEFINED</span>
-<h1 class="host-anim-h1 font-headline text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] -tracking-[0.02em] text-on-surface mb-8">
-                        Turn your open space into an <span class="text-primary">RV destination.</span>
-</h1>
-<p class="host-anim-p text-lg md:text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
-                        Join a community of landowners, farmers, and dreamers who are sharing their unique landscapes with travelers seeking the true freedom of the open road.
-                    </p>
-<div class="host-anim-btns flex flex-col sm:flex-row gap-4">
-<button class="px-8 md:px-10 py-4 md:py-5 bg-primary text-on-primary rounded-full font-bold text-base md:text-lg sunlight-shadow hover:bg-primary-container transition-all">Start Your Listing</button>
-<button class="px-8 md:px-10 py-4 md:py-5 bg-surface-container-high text-on-surface rounded-full font-bold text-base md:text-lg hover:bg-surface-variant transition-all flex items-center justify-center gap-2">
-<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
-                            How it works
-                        </button>
-</div>
-</div>
-<div class="host-anim-img relative">
-<div class="aspect-[4/5] rounded-lg overflow-hidden sunlight-shadow">
-<img alt="Luxury RV Camping" class="w-full h-full object-cover" data-alt="Luxurious silver Airstream trailer parked in a scenic vineyard at sunrise with rolling green hills and warm hazy light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDidgp4YYybsv0Vt0thf9hE8qRZJ2MFtVLrpLzeaUxu3YGPykHgYZYXn4IGPd5NqcCDSTdPolxDAtPUcSbLhG0Bmq8L4ZmHPy_cC-NYGXMoFtXCQBZTLxxK267Cfx9Jlcd_IAREsSeyPaE2QbJDI8GtU_RbBAlWuC-3qkiQ8YH7b61dQAAqV8QwaeNuicdMsHIpbNJ5v7fegBOqDUZjdhQ7HyDlOiid08eBhwGN1pHtY5-RL_DSyhxwPlxOek5FAasxEWI7HrQUcqE"/>
-</div>
-<div class="hidden md:block absolute -bottom-8 -left-8 glass-card sunlight-shadow p-8 rounded-lg max-w-xs border border-secondary/10">
-<p class="font-headline text-xl font-bold mb-2">"Best side income I've ever had."</p>
-<p class="text-sm text-on-surface-variant">Host Sarah, Napa Valley Vineyard</p>
-</div>
-</div>
-</div>
-</section>
-<!-- Earnings Module -->
-<section class="py-16 md:py-24 bg-surface-container-low">
-<div class="container mx-auto px-4 md:px-8">
-<div class="host-anim-earnings-heading mb-16 text-center max-w-2xl mx-auto">
-<h2 class="font-headline text-3xl md:text-4xl font-bold mb-4">The math of freedom</h2>
-<p class="text-on-surface-variant">See what you could be earning from that unused patch of land or scenic driveway.</p>
-</div>
-<div class="grid md:grid-cols-3 gap-6 md:gap-8">
-<!-- Stat Block 1 -->
-<div class="host-stat-card bg-surface-container-lowest p-6 md:p-10 rounded-lg sunlight-shadow border border-secondary/5 text-center group hover:-translate-y-2 transition-transform duration-300">
-<div class="host-stat-num font-headline text-4xl md:text-6xl font-bold text-primary mb-4 underline decoration-tertiary-fixed decoration-4 underline-offset-8">
-                            $1,200
-                        </div>
-<p class="font-label uppercase tracking-widest text-on-surface-variant text-sm font-bold">Avg. Monthly Earnings</p>
-</div>
-<!-- Stat Block 2 -->
-<div class="host-stat-card bg-surface-container-lowest p-6 md:p-10 rounded-lg sunlight-shadow border border-secondary/5 text-center group hover:-translate-y-2 transition-transform duration-300">
-<div class="host-stat-num font-headline text-4xl md:text-6xl font-bold text-primary mb-4 underline decoration-tertiary-fixed decoration-4 underline-offset-8">
-                            150k+
-                        </div>
-<p class="font-label uppercase tracking-widest text-on-surface-variant text-sm font-bold">Active Travelers</p>
-</div>
-<!-- Stat Block 3 -->
-<div class="host-stat-card bg-surface-container-lowest p-6 md:p-10 rounded-lg sunlight-shadow border border-secondary/5 text-center group hover:-translate-y-2 transition-transform duration-300">
-<div class="host-stat-num font-headline text-4xl md:text-6xl font-bold text-primary mb-4 underline decoration-tertiary-fixed decoration-4 underline-offset-8">
-                            4.9
-                        </div>
-<p class="font-label uppercase tracking-widest text-on-surface-variant text-sm font-bold">Avg. Guest Rating</p>
-</div>
-</div>
-</div>
-</section>
-<!-- How it Works: Safety Module -->
-<section class="py-16 md:py-32">
-<div class="container mx-auto px-4 md:px-8">
-<div class="grid lg:grid-cols-12 gap-16 items-start">
-<div class="lg:col-span-5">
-<h2 class="host-safety-heading font-headline text-3xl md:text-5xl font-bold leading-tight mb-8">Hosting with <span class="text-secondary italic">Confidence.</span></h2>
-<p class="text-lg text-on-surface-variant mb-12">We’ve built the industry’s most robust safety net, so you can focus on being a great host while we take care of the details.</p>
-<div class="space-y-8">
-<div class="host-safety-item flex gap-6 items-start">
-<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="verified_user">verified_user</span>
-</div>
-<div>
-<h4 class="font-headline text-xl font-bold mb-2">Host Protection Insurance</h4>
-<p class="text-on-surface-variant">Up to $1M in liability coverage for every stay, protecting your property and your peace of mind.</p>
-</div>
-</div>
-<div class="host-safety-item flex gap-6 items-start">
-<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="badge">badge</span>
-</div>
-<div>
-<h4 class="font-headline text-xl font-bold mb-2">Verified Guests</h4>
-<p class="text-on-surface-variant">We handle identity verification for all travelers before they can request a booking.</p>
-</div>
-</div>
-<div class="host-safety-item flex gap-6 items-start">
-<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="support_agent">support_agent</span>
-</div>
-<div>
-<h4 class="font-headline text-xl font-bold mb-2">24/7 Support</h4>
-<p class="text-on-surface-variant">Our specialized host support team is always just a call or click away, day or night.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-<div class="host-safety-img-col space-y-4">
-<div class="rounded-lg overflow-hidden sunlight-shadow aspect-square">
-<img alt="Vast Open Space" class="w-full h-full object-cover" data-alt="Wide expansive wheat field under a vast clear blue sky with golden sunlight hitting the crops." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGak69HrAAw8mbfoQQs5IRIrgYYWwoYs_tI2L34MMi1EWFRSu3HrjpoyQ6LXdCqF0fOQoTEmZLH6zQSgYtKWfEkHBlsfcLa0cExbDnW9kAEgAeDkvfMSL8pjNUaSvdQV1zESEtweV8C1VmfCHb3sAxxk6KQfYIjQ-rMlaVdP9qPQt_CuNbS1CNdZH1QQoyn3g0-GfypL8h-OLDOGgW6CviVOJ8OUV_nc75x77jP-Ge0Qd7KjYmWltpPlzGmiIykmSHXHZeIVUfglo"/>
-</div>
-<div class="rounded-lg overflow-hidden sunlight-shadow aspect-[3/4] bg-primary-container flex items-center justify-center p-8 text-on-primary-container">
-<p class="font-headline text-2xl font-bold text-center">Your land, your rules, your income.</p>
-</div>
-</div>
-<div class="host-safety-img-col space-y-4 sm:pt-12">
-<div class="rounded-lg overflow-hidden sunlight-shadow aspect-[3/4]">
-<img alt="Camping by the forest" class="w-full h-full object-cover" data-alt="Modern camper van parked next to a forest stream with a small campfire smoke rising in soft afternoon light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnbvOAitT_UMDvse_xJVQkXt-dEEmPMOsv-UV3xXdLXjeNoFOKdCl8caPYjVTPsVDIHdKnqIzV_c5Etij5N3QJkHwuPHV2Wr7mKM0cS5Lhg48qrE3wUz12jNJ6pi2bfj85PlNo4Nu6Z8oplvwpgG1yUQxAfAyd6jg_MzHkPfSbUGeCcx6Wxcp8qJLTNbRzcuCK5t_K-5TU4Mq8HyYPNb_vtsjYe8hOwYQ--Q_c7yYtOTja6o_81brpDoEi1i2NpbFeagfN5izNVC4"/>
-</div>
-<div class="rounded-lg overflow-hidden sunlight-shadow aspect-square">
-<img alt="Mountain Backdrop" class="w-full h-full object-cover" data-alt="Dramatic mountain peaks with low-lying clouds and deep shadows between ridges at dusk." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtca1NJvNUGLySmUFJfW_Jsl_fiFtr46QP_w1SuJunlq6HbJOEj_XIpHyL94MyYpiHprbMZ1C0r7wr-90CuUrO6SBsnyDN_hhfESsUROfUb9w08TTeR1xA1iv18S5lyqk3-lpILFSeP8s_b3L0LsK026vaE1xdrl0dRGa0f7eZNq2sy8LSCkvoftUIslZbzK4eq05KhrwY_kCO2S9N7t_t0ww4Y4r_HZOEXgaMYjPzuEr1uEnkKY1l_Ho4BR8AXf1IhGCgbRDIQWI"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Testimonial Section -->
-<section class="py-16 md:py-24 bg-surface-container-high relative overflow-hidden">
-<div class="absolute top-0 right-0 w-96 h-96 bg-primary-container/10 rounded-full blur-[100px] -mr-48 -mt-48"></div>
-<div class="container mx-auto px-4 md:px-8 relative z-10">
-<div class="host-testimonial max-w-4xl mx-auto glass-card p-8 md:p-12 lg:p-20 rounded-lg sunlight-shadow border border-white/50">
-<span class="material-symbols-outlined text-primary text-6xl mb-8" data-icon="format_quote">format_quote</span>
-<blockquote class="font-headline text-xl md:text-3xl lg:text-4xl font-bold text-on-surface leading-tight mb-8 md:mb-12">
-                        "Hosting on CurbNTurf allowed us to keep our family ranch operational while meeting incredible people from all over the country. The insurance gives us total peace of mind, and the income is a game-changer."
-                    </blockquote>
-<div class="flex items-center gap-6">
-<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
-<img alt="Host Portrait" class="w-full h-full object-cover" data-alt="Portrait of a friendly middle-aged man with short hair and a warm smile wearing a denim shirt." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB58LGfl_kvDNsUAruISIlyr7O_KEdKDio19LXUWO4GlsAvY6Qt0JindiWftWhy3rpuLVIHbmUut5-WTnFHq6-1TYtskFY3cpFO_bQFO7vATGV5_U_rDR3cjHdoYe02UzKHhlgWDbU4yP5MXefYmUzS0UUW6Ow5yK6Vy7nnv-XR4lPvxAKyYTq-pjgdq08QszRncYwZ2MZ67WMDhwFzO9wUo59KKTYmvw_USSzTMjhqj4Ub9FHyTPH702lp_TXj3ELblR4IiprgUBg"/>
-</div>
-<div>
-<p class="font-headline text-xl font-bold">Robert &amp; Diane Miller</p>
-<p class="text-on-surface-variant font-label text-xs uppercase tracking-widest">Heritage Pines Ranch, Oregon</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Final CTA -->
-<section class="py-20 md:py-32 text-center">
-<div class="container mx-auto px-4 md:px-8">
-<h2 class="host-cta-heading font-headline text-4xl md:text-5xl lg:text-7xl font-bold mb-10">Ready to share your slice of heaven?</h2>
-<div class="flex flex-col items-center gap-6">
-<button class="px-8 md:px-16 py-4 md:py-6 bg-primary text-on-primary rounded-full font-bold text-lg md:text-2xl sunlight-shadow hover:bg-primary-container transition-all hover:scale-105 active:scale-95">Start Your Listing</button>
-<p class="text-on-surface-variant flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
-                        It takes less than 10 minutes to get started.
-                    </p>
-</div>
-</div>
-</section>
+
+  <!-- ========== HERO ========== -->
+  <section class="relative min-h-screen flex items-center pt-36 pb-20 overflow-hidden bg-[#1b1e17]">
+    <!-- Subtle grid overlay -->
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <!-- Glow -->
+    <div class="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-trinidad/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
+
+      <!-- Left -->
+      <div>
+        <span class="host-hero-eyebrow text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">For Landowners &amp; Property Owners</span>
+        <h1 class="host-hero-h1 font-headline font-bold text-white leading-[0.95] tracking-tight mb-8" style="font-size: clamp(3rem, 7vw, 6rem);">
+          Share Your Land.<br><span class="text-trinidad">Earn Real Money.</span>
+        </h1>
+        <p class="host-hero-sub font-body text-white/70 text-lg md:text-xl leading-relaxed max-w-lg mb-10">
+          Turn your unused property into a consistent income stream. Farms, vineyards, driveways, ranches — if you have land, travelers want to park there.
+        </p>
+
+        <!-- Stats row -->
+        <div class="host-hero-stats flex flex-wrap gap-6 md:gap-10 mb-10">
+          <div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">$1,200</div>
+            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Avg. monthly earnings</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">150k+</div>
+            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Active travelers</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">4.9★</div>
+            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Host rating</div>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="host-hero-actions flex flex-col sm:flex-row gap-4">
+          <div class="btn-3d-wrap magnetic-btn rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+              <div class="invisible px-10 py-4 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Your Listing</div>
+              <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center gap-2 absolute inset-0 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Your Listing</div>
+              <div class="btn-3d-back bg-[#c43d07] text-white rounded-full flex items-center justify-center gap-2 absolute inset-0 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Your Listing</div>
+            </div>
+          </div>
+          <button class="px-8 py-4 rounded-full border border-white/20 text-white font-button font-normal not-italic text-sm tracking-widest uppercase hover:bg-white/10 transition-all">
+            See How It Works
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Earnings preview card -->
+      <div class="host-hero-visual relative">
+        <div class="relative rounded-3xl overflow-hidden aspect-[4/5] max-w-md mx-auto">
+          <img src="assets/images/host_opportunity.webp" alt="Host property" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        </div>
+        <!-- Floating earnings card -->
+        <div class="absolute -bottom-6 -right-4 md:-right-8 bg-white rounded-2xl p-5 shadow-2xl max-w-[200px]">
+          <p class="font-label text-[0.65rem] uppercase tracking-widest text-muted-text mb-1">Example host</p>
+          <p class="font-headline font-bold text-dark-text text-3xl leading-none mb-1">$584<span class="text-base font-body font-normal text-muted-text">/mo</span></p>
+          <p class="font-body text-muted-text text-xs leading-snug">3 nights/week · $45/night</p>
+          <div class="mt-3 flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-[#2DE889]"></div>
+            <span class="font-label text-[0.6rem] uppercase tracking-widest text-muted-text">Payouts active</span>
+          </div>
+        </div>
+        <!-- Second floating badge -->
+        <div class="absolute top-6 -left-4 md:-left-8 bg-jungle-green text-white rounded-2xl px-4 py-3 shadow-xl">
+          <p class="font-label text-[0.6rem] uppercase tracking-widest text-white/60 mb-0.5">Listed in</p>
+          <p class="font-headline font-bold text-lg leading-none">&lt; 10 min</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== PROPERTY TYPES ========== -->
+  <section class="host-property-section py-20 md:py-32 bg-background">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 text-center">
+      <span class="host-property-eyebrow text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Almost Any Land Qualifies</span>
+      <h2 class="host-property-h2 font-headline font-bold text-dark-text tracking-tight leading-tight mb-6 text-3xl sm:text-4xl md:text-5xl">If you have land, you can list it.</h2>
+      <p class="host-property-sub font-body text-muted-text text-lg max-w-2xl mx-auto mb-16 leading-relaxed">
+        CurbNTurf hosts range from working farms and vineyards to quiet driveways and open fields. Almost any outdoor space with room for an RV qualifies.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#1b1e17] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">agriculture</span>Farms
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#295d42] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">wine_bar</span>Vineyards
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#7a3b1e] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">landscape</span>Ranches
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#1a3a5c] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">local_parking</span>Driveways
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#4a3728] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">terrain</span>Vacant Land
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#2a5438] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">eco</span>Orchards
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#5c3317] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">sports_bar</span>Breweries
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#1e4a3a] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">golf_course</span>Golf Courses
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#3a3228] text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">cottage</span>Rural Properties
+        </span>
+        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text/10 text-dark-text font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 border border-dark-text/15">
+          <span class="material-symbols-outlined text-dark-text/60 text-[1.1em]">add_circle</span>And more...
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EARNINGS CALCULATOR ========== -->
+  <section class="host-calc-section py-20 md:py-32 bg-jungle-green relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-trinidad/10 rounded-full blur-[100px] pointer-events-none -mr-32 -mt-32"></div>
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <div class="host-calc-heading text-center mb-16">
+        <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Earnings Calculator</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl mb-4">See what you could earn.</h2>
+        <p class="font-body text-white/60 text-lg max-w-xl mx-auto">Drag the sliders to estimate your monthly income based on your availability and nightly rate.</p>
+      </div>
+
+      <div class="host-calc-body max-w-4xl mx-auto bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-8 md:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+
+        <!-- Sliders -->
+        <div class="space-y-10">
+          <!-- Nights/week -->
+          <div>
+            <div class="flex justify-between items-baseline mb-4">
+              <label class="font-body text-white font-medium">Nights per week</label>
+              <span class="font-headline font-bold text-white text-2xl">{{ nightsPerWeek }}</span>
+            </div>
+            <input type="range" min="1" max="7" step="1"
+                   [value]="nightsPerWeek"
+                   (input)="onNightsChange($event)"
+                   class="host-slider w-full">
+            <div class="flex justify-between mt-2">
+              <span class="font-label text-white/40 text-xs">1 night</span>
+              <span class="font-label text-white/40 text-xs">7 nights</span>
+            </div>
+          </div>
+
+          <!-- Nightly rate -->
+          <div>
+            <div class="flex justify-between items-baseline mb-4">
+              <label class="font-body text-white font-medium">Nightly rate</label>
+              <span class="font-headline font-bold text-white text-2xl">${{ nightlyRate }}</span>
+            </div>
+            <input type="range" min="15" max="200" step="5"
+                   [value]="nightlyRate"
+                   (input)="onRateChange($event)"
+                   class="host-slider w-full">
+            <div class="flex justify-between mt-2">
+              <span class="font-label text-white/40 text-xs">$15</span>
+              <span class="font-label text-white/40 text-xs">$200</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="text-center md:text-left">
+          <p class="font-label text-white/50 uppercase tracking-widest text-xs mb-3">You could earn</p>
+          <div class="font-headline font-bold text-white leading-none mb-2" style="font-size: clamp(3.5rem, 8vw, 5rem);">
+            ${{ monthlyEarnings.toLocaleString() }}
+          </div>
+          <p class="font-body text-white/50 text-lg mb-2">per month</p>
+          <p class="font-body text-[#2DE889] text-sm font-medium mb-10">${{ annualEarnings.toLocaleString() }} per year</p>
+
+          <div class="btn-3d-wrap magnetic-btn rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+              <div class="invisible px-8 py-4 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Earning This</div>
+              <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Earning This</div>
+              <div class="btn-3d-back bg-cream text-dark-text rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-sm tracking-widest uppercase">Start Earning This</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="host-steps-section py-20 md:py-32 bg-background">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <div class="host-steps-intro text-center mb-20">
+        <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Less Than 10 Minutes</span>
+        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl">Go from listed to earning<br class="hidden md:block"> in 3 simple steps.</h2>
+      </div>
+
+      <div class="max-w-4xl mx-auto space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
+
+        <!-- Step 1 -->
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+          <div class="w-12 h-12 rounded-full bg-trinidad/10 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-trinidad text-2xl">photo_camera</span>
+          </div>
+          <div class="font-headline font-bold text-trinidad text-6xl leading-none mb-4 opacity-10 absolute top-6 right-8">01</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Take Photos</h3>
+          <p class="font-body text-muted-text leading-relaxed">Snap a few shots of your space with your phone. No professional photography needed — guests love authentic.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5 md:mt-8">
+          <div class="w-12 h-12 rounded-full bg-jungle-green/10 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-jungle-green text-2xl">edit_note</span>
+          </div>
+          <div class="font-headline font-bold text-jungle-green text-6xl leading-none mb-4 opacity-10 absolute top-6 right-8">02</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">List Your Space</h3>
+          <p class="font-body text-muted-text leading-relaxed">Set your nightly price, describe your land, and choose your availability. You're in full control of your listing.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+          <div class="w-12 h-12 rounded-full bg-[#F1B434]/15 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-[#F1B434] text-2xl">payments</span>
+          </div>
+          <div class="font-headline font-bold text-[#F1B434] text-6xl leading-none mb-4 opacity-20 absolute top-6 right-8">03</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Get Booked &amp; Earn</h3>
+          <p class="font-body text-muted-text leading-relaxed">Travelers request to stay, you approve, and earnings deposit directly to your bank. Simple as that.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TRUST & SAFETY ========== -->
+  <section class="host-trust-section py-20 md:py-32 bg-[#1b1e17] relative overflow-hidden">
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-jungle-green/20 rounded-full blur-[100px] pointer-events-none -ml-32 -mb-32"></div>
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 text-center">
+      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Host Protection</span>
+      <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl mb-16">Host with total confidence.</h2>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="host-trust-item bg-white/5 border border-white/8 rounded-3xl p-8">
+          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">verified_user</span>
+          <h4 class="font-headline font-bold text-white text-xl mb-3">Host Protection Insurance</h4>
+          <p class="font-body text-white/60 leading-relaxed">Up to $1M in liability coverage for every stay, protecting your property and your peace of mind.</p>
+        </div>
+        <div class="host-trust-item bg-white/5 border border-white/8 rounded-3xl p-8">
+          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">badge</span>
+          <h4 class="font-headline font-bold text-white text-xl mb-3">Verified Guests</h4>
+          <p class="font-body text-white/60 leading-relaxed">Every traveler is ID-verified before they can request a booking. You always know who's on your land.</p>
+        </div>
+        <div class="host-trust-item bg-white/5 border border-white/8 rounded-3xl p-8">
+          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">support_agent</span>
+          <h4 class="font-headline font-bold text-white text-xl mb-3">24/7 Host Support</h4>
+          <p class="font-body text-white/60 leading-relaxed">Our dedicated host support team is always just a call or message away — day or night, we've got you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIAL ========== -->
+  <section class="host-testimonial-section py-20 md:py-32 bg-background">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="host-testimonial max-w-3xl mx-auto text-center">
+        <span class="material-symbols-outlined text-trinidad text-5xl mb-8 block">format_quote</span>
+        <blockquote class="font-headline font-bold text-dark-text text-2xl md:text-3xl leading-tight mb-10 tracking-tight">
+          "Hosting on CurbNTurf turned our unused back acreage into real income. Setup took less than 10 minutes and the guests have been wonderful. It's the easiest money we've ever made."
+        </blockquote>
+        <div class="flex items-center justify-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-jungle-green/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-jungle-green text-xl">person</span>
+          </div>
+          <div class="text-left">
+            <p class="font-headline font-bold text-dark-text">Sarah & Tom Mitchell</p>
+            <p class="font-label text-muted-text text-xs uppercase tracking-widest">Napa Valley Vineyard, California</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="host-cta-section py-20 md:py-32 bg-[#1b1e17] relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(227,83,13,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="host-cta-inner text-center max-w-3xl mx-auto">
+        <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Ready to Start?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
+          Your land is worth more than you think.
+        </h2>
+        <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
+          Join thousands of hosts already earning passive income. List your space in under 10 minutes — no experience required.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div class="btn-3d-wrap magnetic-btn rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+              <div class="invisible px-12 py-5 font-button font-normal not-italic text-base tracking-widest uppercase">Start Your Listing</div>
+              <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-base tracking-widest uppercase">Start Your Listing</div>
+              <div class="btn-3d-back bg-cream text-dark-text rounded-full flex items-center justify-center absolute inset-0 font-button font-normal not-italic text-base tracking-widest uppercase">Start Your Listing</div>
+            </div>
+          </div>
+          <p class="font-body text-white/40 text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
+            Free to list. No subscription fees.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
-<!-- Footer Shell -->
-<footer class="w-full flex flex-col items-center gap-8 bg-stone-50 dark:bg-stone-950 full-width pt-16 pb-8 px-4 md:px-8 border-t border-emerald-900/5">
-<div class="w-full max-w-7xl grid grid-cols-2 md:grid-cols-5 gap-12 mb-12">
-<div class="col-span-2">
-<div class="text-lg font-bold text-stone-900 dark:text-stone-50 mb-6">CurbNTurf</div>
-<p class="text-stone-500 max-w-xs leading-relaxed">Redefining the RV experience by connecting unique landowners with adventurous travelers.</p>
-</div>
-<div>
-<h5 class="font-label text-xs uppercase tracking-[0.05em] text-emerald-800 dark:text-emerald-500 font-bold mb-6">Explore</h5>
-<ul class="space-y-4">
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Vineyard Stays</a></li>
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Off-Grid Gems</a></li>
-</ul>
-</div>
-<div>
-<h5 class="font-label text-xs uppercase tracking-[0.05em] text-emerald-800 dark:text-emerald-500 font-bold mb-6">Hosting</h5>
-<ul class="space-y-4">
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Host Guarantee</a></li>
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Safety</a></li>
-</ul>
-</div>
-<div>
-<h5 class="font-label text-xs uppercase tracking-[0.05em] text-emerald-800 dark:text-emerald-500 font-bold mb-6">Company</h5>
-<ul class="space-y-4">
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Support</a></li>
-<li><a class="text-stone-500 hover:text-emerald-600 underline-offset-4 hover:underline transition-opacity" href="#">Terms</a></li>
-</ul>
-</div>
-</div>
-<div class="w-full pt-8 border-t border-stone-200 dark:border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-stone-500 text-sm">© 2024 CurbNTurf. The RV Freedom Experience.</p>
-<div class="flex gap-6">
-<a class="text-stone-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined" data-icon="facebook">social_leaderboard</span></a>
-<a class="text-stone-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined" data-icon="instagram">retweet</span></a>
-<a class="text-stone-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined" data-icon="twitter">retweet</span></a>
-</div>
-</div>
-</footer>
+
+<curbnturf-footer></curbnturf-footer>

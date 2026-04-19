@@ -1,18 +1,22 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SeoService } from '../seo.service';
+import { FooterComponent } from '../footer/footer.component';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 @Component({
   selector: 'cnt-workspace-host-space',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, FooterComponent],
   templateUrl: './host-space.component.html',
   styleUrl: './host-space.component.css',
 })
 export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   isMobileNavOpen = false;
+  nightsPerWeek = 3;
+  nightlyRate = 45;
   private scrollTriggers: any[] = [];
 
   constructor(
@@ -20,10 +24,34 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  get monthlyEarnings(): number {
+    return Math.round(this.nightsPerWeek * this.nightlyRate * 4.33);
+  }
+
+  get annualEarnings(): number {
+    return this.monthlyEarnings * 12;
+  }
+
+  get nightsFillPct(): string {
+    return `${((this.nightsPerWeek - 1) / 6) * 100}%`;
+  }
+
+  get rateFillPct(): string {
+    return `${((this.nightlyRate - 15) / 185) * 100}%`;
+  }
+
+  onNightsChange(e: Event): void {
+    this.nightsPerWeek = +(e.target as HTMLInputElement).value;
+  }
+
+  onRateChange(e: Event): void {
+    this.nightlyRate = +(e.target as HTMLInputElement).value;
+  }
+
   ngOnInit(): void {
     this.seo.update({
       title: 'Host Your Space & Earn | CurbNTurf',
-      description: 'Turn your open land into an RV destination. Join thousands of hosts earning passive income with CurbNTurf. List your space in under 10 minutes — no experience needed.',
+      description: 'Share your land and earn real money. Join thousands of hosts earning an average of $1,200/month on CurbNTurf. List in under 10 minutes.',
       url: '/host',
     });
   }
@@ -32,142 +60,61 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       gsap.registerPlugin(ScrollTrigger);
       this.initHeroEntrance();
-      this.initStatCounters();
-      this.initSafetySection();
-      this.initTestimonial();
-      this.initCta();
+      this.initScrollAnimations();
     }
   }
 
   private initHeroEntrance(): void {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.from('.host-anim-badge',  { y: -20, opacity: 0, duration: 0.5 })
-      .from('.host-anim-h1',     { y: 32,  opacity: 0, duration: 0.7 }, '-=0.2')
-      .from('.host-anim-p',      { y: 24,  opacity: 0, duration: 0.6 }, '-=0.4')
-      .from('.host-anim-btns',   { y: 20,  opacity: 0, duration: 0.5 }, '-=0.3')
-      .from('.host-anim-img',    { x: 40,  opacity: 0, duration: 0.8, ease: 'power2.out' }, '-=0.7');
+    tl.from('.host-hero-eyebrow', { y: -16, opacity: 0, duration: 0.5 })
+      .from('.host-hero-h1',      { y: 44,  opacity: 0, duration: 0.85 }, '-=0.2')
+      .from('.host-hero-sub',     { y: 28,  opacity: 0, duration: 0.65 }, '-=0.45')
+      .from('.host-hero-stats',   { y: 16,  opacity: 0, duration: 0.5  }, '-=0.35')
+      .from('.host-hero-actions', { y: 16,  opacity: 0, duration: 0.5  }, '-=0.3')
+      .from('.host-hero-visual',  { x: 48,  opacity: 0, duration: 0.9, ease: 'power2.out' }, '-=0.9');
   }
 
-  private initStatCounters(): void {
-    const statNums = document.querySelectorAll('.host-stat-num');
-    const targets = [
-      { el: statNums[0], from: 0, to: 1200, prefix: '$', suffix: '',   round: true  },
-      { el: statNums[1], from: 0, to: 150,  prefix: '',  suffix: 'k+', round: true  },
-      { el: statNums[2], from: 0, to: 4.9,  prefix: '',  suffix: '',   round: false },
-    ];
-
-    const cards = document.querySelectorAll('.host-stat-card');
-    if (!cards.length) return;
-
-    const st = ScrollTrigger.create({
-      trigger: '.host-stat-card',
-      start: 'top 80%',
-      once: true,
-      onEnter: () => {
-        // Cards stagger in
-        gsap.from(cards, {
-          y: 40, opacity: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
-        });
-
-        // Counter roll-up
-        targets.forEach(({ el, from, to, prefix, suffix, round }) => {
-          if (!el) return;
-          const proxy = { val: from };
-          gsap.to(proxy, {
-            val: to,
-            duration: 1.8,
-            ease: 'power2.out',
-            delay: 0.3,
-            onUpdate: () => {
-              const v = round ? Math.round(proxy.val) : proxy.val.toFixed(1);
-              el.textContent = `${prefix}${v}${suffix}`;
-            },
-          });
-        });
-      },
-    });
-    this.scrollTriggers.push(st);
-
-    // Also animate the section heading
-    const st2 = ScrollTrigger.create({
-      trigger: '.host-anim-earnings-heading',
-      start: 'top 85%',
-      once: true,
-      onEnter: () => {
-        gsap.from('.host-anim-earnings-heading', {
-          y: 24, opacity: 0, duration: 0.6, ease: 'power3.out',
-        });
-      },
-    });
-    this.scrollTriggers.push(st2);
-  }
-
-  private initSafetySection(): void {
-    const st1 = ScrollTrigger.create({
-      trigger: '.host-safety-heading',
-      start: 'top 82%',
-      once: true,
-      onEnter: () => {
-        gsap.from('.host-safety-heading', {
-          x: -30, opacity: 0, duration: 0.7, ease: 'power3.out',
-        });
-        gsap.from('.host-safety-item', {
-          x: -24, opacity: 0, duration: 0.6, stagger: 0.15, ease: 'power2.out', delay: 0.2,
-        });
-      },
-    });
-    this.scrollTriggers.push(st1);
-
-    // Image grid columns stagger
-    const imgCols = document.querySelectorAll('.host-safety-img-col');
-    if (imgCols.length) {
-      const st2 = ScrollTrigger.create({
-        trigger: imgCols[0],
-        start: 'top 82%',
-        once: true,
-        onEnter: () => {
-          gsap.from(imgCols, {
-            y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: 'power3.out',
-          });
-        },
+  private initScrollAnimations(): void {
+    this.addST('.host-property-section', () => {
+      gsap.from('.host-property-eyebrow, .host-property-h2, .host-property-sub', {
+        y: 24, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
       });
-      this.scrollTriggers.push(st2);
-    }
+      gsap.from('.host-property-pill', {
+        y: 20, opacity: 0, duration: 0.45, stagger: 0.06, ease: 'power2.out', delay: 0.3,
+      });
+    });
+
+    this.addST('.host-calc-section', () => {
+      gsap.from('.host-calc-heading', { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out' });
+      gsap.from('.host-calc-body',    { y: 32, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.15 });
+    });
+
+    this.addST('.host-steps-section', () => {
+      gsap.from('.host-steps-intro', { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out' });
+      gsap.from('.host-step', { x: -28, opacity: 0, duration: 0.65, stagger: 0.2, ease: 'power2.out', delay: 0.2 });
+    });
+
+    this.addST('.host-trust-section', () => {
+      gsap.from('.host-trust-item', { y: 32, opacity: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' });
+    });
+
+    this.addST('.host-testimonial-section', () => {
+      gsap.from('.host-testimonial', { y: 36, opacity: 0, duration: 0.8, ease: 'power3.out' });
+    });
+
+    this.addST('.host-cta-section', () => {
+      gsap.from('.host-cta-inner', { scale: 0.97, opacity: 0, duration: 0.7, ease: 'power3.out' });
+    });
   }
 
-  private initTestimonial(): void {
-    const st = ScrollTrigger.create({
-      trigger: '.host-testimonial',
-      start: 'top 82%',
-      once: true,
-      onEnter: () => {
-        gsap.from('.host-testimonial', {
-          y: 40, opacity: 0, duration: 0.9, ease: 'power3.out',
-        });
-      },
-    });
-    this.scrollTriggers.push(st);
-  }
-
-  private initCta(): void {
-    const st = ScrollTrigger.create({
-      trigger: '.host-cta-heading',
-      start: 'top 85%',
-      once: true,
-      onEnter: () => {
-        gsap.from('.host-cta-heading', {
-          y: 28, opacity: 0, duration: 0.7, ease: 'power3.out',
-        });
-        gsap.from('.host-cta-heading ~ div', {
-          y: 20, opacity: 0, duration: 0.6, ease: 'power2.out', delay: 0.2,
-        });
-      },
-    });
+  private addST(trigger: string, onEnter: () => void): void {
+    const el = document.querySelector(trigger);
+    if (!el) return;
+    const st = ScrollTrigger.create({ trigger: el, start: 'top 82%', once: true, onEnter });
     this.scrollTriggers.push(st);
   }
 
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
-    ScrollTrigger.getAll().forEach(st => st.kill());
   }
 }
