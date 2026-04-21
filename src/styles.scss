@@ -20,6 +20,7 @@
     font-style: normal !important;
     text-transform: uppercase !important;
   }
+
 }
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -106,6 +107,19 @@ html, body { height: 100%; }
   background-size: auto, 120px 120px, 120px 120px;
   background-attachment: local, fixed, fixed;
 }
+/* ── Global h2 — 60px, skips display headings that use inline clamp() ── */
+h2:not([style*='font-size']) {
+  font-size: 2rem;
+}
+
+@media (min-width: 640px) {
+  h2:not([style*='font-size']) { font-size: 2.5rem; }
+}
+
+@media (min-width: 768px) {
+  h2:not([style*='font-size']) { font-size: 3.75rem; } /* 60px */
+}
+
 .hero-gradient {
   background: linear-gradient(180deg, rgba(41, 93, 66, 0) 0%, rgba(41, 93, 66, 0.5) 100%);
 }

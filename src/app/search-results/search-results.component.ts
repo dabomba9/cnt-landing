@@ -1,6 +1,8 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { SeoService } from '../seo.service';
 import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
@@ -9,15 +11,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, CinematicRollDirective, NavbarComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
   searchParams: any = {};
-  isNavbarVisible = true;
-  isMobileNavOpen = false;
-  private lastScrollY = 0;
   private scrollTriggers: any[] = [];
 
   constructor(
@@ -70,14 +69,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       gsap.registerPlugin(ScrollTrigger);
       this.initListingAnimations();
     }
-  }
-
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const currentScrollY = window.scrollY || document.documentElement.scrollTop;
-    this.isNavbarVisible = !(currentScrollY > this.lastScrollY && currentScrollY > 100);
-    this.lastScrollY = currentScrollY;
   }
 
   private initListingAnimations(): void {

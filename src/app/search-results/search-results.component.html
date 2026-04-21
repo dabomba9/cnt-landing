@@ -1,41 +1,4 @@
-<!-- TopNavBar -->
-<div class="fixed top-0 left-0 right-0 z-50 transition-transform duration-300 flex flex-col items-center px-4 mt-4 md:mt-6"
-     [class.-translate-y-40]="!isNavbarVisible">
-
-  <nav class="flex justify-between items-center h-16 md:h-20 w-full max-w-5xl px-6 md:px-8 rounded-full bg-white/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)]">
-    <div class="flex items-center gap-2">
-      <span class="text-xl font-bold tracking-tight text-stone-900">CurbNTurf</span>
-    </div>
-    <div class="hidden md:flex items-center gap-8">
-      <a class="text-orange-700 font-bold border-b-2 border-orange-700 pb-1 hover:text-orange-600 transition-colors duration-300" href="#">Find Stays</a>
-      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Host a Space</a>
-      <a class="text-stone-600 font-medium hover:text-orange-600 transition-colors duration-300" href="#">Experiences</a>
-    </div>
-    <div class="flex items-center gap-3">
-      <button class="hidden md:block bg-trinidad text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
-      <!-- Hamburger (mobile only) -->
-      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-outline-gray/20 shadow-sm"
-              (click)="isMobileNavOpen = !isMobileNavOpen">
-        <span class="material-symbols-outlined text-dark-text">{{ isMobileNavOpen ? 'close' : 'menu' }}</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile Dropdown -->
-  <div class="md:hidden w-full max-w-5xl mt-2 overflow-hidden transition-all duration-300 ease-in-out"
-       [style.max-height]="isMobileNavOpen ? '300px' : '0'"
-       [style.opacity]="isMobileNavOpen ? '1' : '0'">
-    <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-outline-gray/10 p-4 flex flex-col gap-1">
-      <a class="px-4 py-3 rounded-xl text-orange-700 font-bold text-sm hover:bg-orange-50 transition-colors" href="#">Find Stays</a>
-      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Host a Space</a>
-      <a class="px-4 py-3 rounded-xl text-stone-700 font-medium text-sm hover:bg-stone-50 transition-colors" href="#">Experiences</a>
-      <div class="border-t border-outline-gray/20 mt-1 pt-3 px-4">
-        <button class="w-full bg-trinidad text-white py-3 rounded-full font-bold text-sm hover:opacity-90 transition-opacity">Sign Up</button>
-      </div>
-    </div>
-  </div>
-
-</div>
+<cnt-navbar></cnt-navbar>
 
 <!-- Main Content Shell -->
 <main class="pt-28 md:pt-32 min-h-screen relative">

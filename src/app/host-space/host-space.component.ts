@@ -1,6 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HomeLocationsComponent } from '../home/components/home-locations/home-locations.component';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { SeoService } from '../seo.service';
 import { FooterComponent } from '../footer/footer.component';
 import { gsap } from 'gsap';
@@ -9,23 +12,53 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-workspace-host-space',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, NavbarComponent, HomeLocationsComponent],
   templateUrl: './host-space.component.html',
   styleUrl: './host-space.component.css',
 })
 export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
-  isMobileNavOpen = false;
   nightsPerWeek = 3;
-  nightlyRate = 45;
+  nightlyRate = 50;
+  numberOfSites = 1;
+  isVideoOpen = false;
+  openFaqIndex: number | null = null;
+
+  toggleFaq(index: number): void {
+    this.openFaqIndex = this.openFaqIndex === index ? null : index;
+  }
+  videoUrl!: SafeResourceUrl;
+  private readonly youtubeEmbedBase = 'https://www.youtube.com/embed/T7CZGDXC9Ag?autoplay=1&mute=1&rel=0';
   private scrollTriggers: any[] = [];
 
   constructor(
     private seo: SeoService,
+    private sanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  openVideo(): void {
+    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeEmbedBase);
+    this.isVideoOpen = true;
+  }
+
+  closeVideo(): void {
+    this.isVideoOpen = false;
+    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isVideoOpen) this.closeVideo();
+  }
+
+  get activeTier(): 'basic' | 'standard' | 'premium' {
+    if (this.nightlyRate < 35) return 'basic';
+    if (this.nightlyRate <= 65) return 'standard';
+    return 'premium';
+  }
+
   get monthlyEarnings(): number {
-    return Math.round(this.nightsPerWeek * this.nightlyRate * 4.33);
+    return Math.round(this.nightsPerWeek * this.nightlyRate * 4.33 * this.numberOfSites);
   }
 
   get annualEarnings(): number {
@@ -40,12 +73,25 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${((this.nightlyRate - 15) / 185) * 100}%`;
   }
 
+  get sitesFillPct(): string {
+    return `${((this.numberOfSites - 1) / 9) * 100}%`;
+  }
+
+  selectTier(tier: 'basic' | 'standard' | 'premium'): void {
+    const midpoints = { basic: 25, standard: 50, premium: 90 };
+    this.nightlyRate = midpoints[tier];
+  }
+
   onNightsChange(e: Event): void {
     this.nightsPerWeek = +(e.target as HTMLInputElement).value;
   }
 
   onRateChange(e: Event): void {
     this.nightlyRate = +(e.target as HTMLInputElement).value;
+  }
+
+  onSitesChange(e: Event): void {
+    this.numberOfSites = +(e.target as HTMLInputElement).value;
   }
 
   ngOnInit(): void {
@@ -71,7 +117,9 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
       .from('.host-hero-sub',     { y: 28,  opacity: 0, duration: 0.65 }, '-=0.45')
       .from('.host-hero-stats',   { y: 16,  opacity: 0, duration: 0.5  }, '-=0.35')
       .from('.host-hero-actions', { y: 16,  opacity: 0, duration: 0.5  }, '-=0.3')
-      .from('.host-hero-visual',  { x: 48,  opacity: 0, duration: 0.9, ease: 'power2.out' }, '-=0.9');
+      .from('.host-hero-visual',  { x: 48,  opacity: 0, duration: 0.9, ease: 'power2.out' }, '-=0.9')
+      .from('.host-hero-earnings-card', { y: 20, opacity: 0, duration: 0.55, ease: 'back.out(1.4)' }, '-=0.2')
+      .from('.host-hero-listed-badge',  { x: -16, opacity: 0, duration: 0.5, ease: 'back.out(1.4)' }, '-=0.35');
   }
 
   private initScrollAnimations(): void {
@@ -82,6 +130,11 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
       gsap.from('.host-property-pill', {
         y: 20, opacity: 0, duration: 0.45, stagger: 0.06, ease: 'power2.out', delay: 0.3,
       });
+    });
+
+    this.addST('.host-tiers-section', () => {
+      gsap.from('.host-tiers-section h2', { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out' });
+      gsap.from('.host-tier-card', { y: 32, opacity: 0, duration: 0.55, stagger: 0.15, ease: 'power2.out', delay: 0.2 });
     });
 
     this.addST('.host-calc-section', () => {

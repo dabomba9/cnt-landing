@@ -1,0 +1,45 @@
+<!-- Navbar -->
+<div role="banner" class="cnt-navbar cnt-nav !z-[9990]" style="transition: transform 0.3s ease-in-out;" [style.transform]="!isNavbarVisible ? 'translateY(-150%)' : 'translateY(0)'">
+  <div class="block-navbar">
+    <div class="nav-search-wrap">
+      <a routerLink="/" class="brand cnt-nav-brand"><img src="images/CNT_Logo_V_Orange.svg" width="94" alt="CurbNTurf"></a>
+      <div class="form-block-search cnt-form">
+        <form id="search_form" name="search-form" method="get">
+          <div class="search-location-inner">
+            <a href="#" class="lb-search cnt-inline-block">
+              <div class="cnt-embed"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;">
+                <style>.icon-search-location{fill-rule:evenodd;clip-rule:evenodd;fill:#000;}</style>
+                <g id="Icon__x2F__Rounded__x2F__search">
+                  <path id="Vector" class="icon-search-location" d="M16.5,15.5h1.1l6,6c0.6,0.6,0.6,1.5,0,2.1s-1.5,0.6-2.1,0l-6-6v-1.1l-0.4-0.4c-2,1.7-4.7,2.6-7.5,2.1c-3.9-0.7-7-3.9-7.5-7.9c-0.7-6,4.3-11,10.2-10.2c3.9,0.5,7.2,3.6,7.9,7.5c0.5,2.9-0.4,5.5-2.1,7.5L16.5,15.5z M2.8,9.1c0,3.5,2.8,6.3,6.3,6.3s6.3-2.8,6.3-6.3s-2.8-6.3-6.3-6.3C5.6,2.8,2.8,5.6,2.8,9.1z"></path>
+                </g>
+              </svg></div>
+            </a>
+            <input class="search-field cnt-input" maxlength="256" name="Location-2" placeholder="Search for locations or listings" type="text" id="Location-2">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="menu">
+      <nav role="navigation" class="nav-menu cnt-nav-menu">
+        <a href="#" class="navigation-link cnt-nav-link" cntCinematicRoll>Be a guest</a>
+        <a routerLink="/host" class="navigation-link cnt-nav-link" cntCinematicRoll>Become a host</a>
+        <a href="#" class="navigation-link cnt-nav-link" cntCinematicRoll>Articles</a>
+        <a href="#" class="navigation-link cnt-inline-block" cntCinematicRoll>
+          <div class="login-wrap">
+            <div class="icon-login">
+              <div class="cnt-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C14.2091 14 16 12.2091 16 10C16 7.79086 14.2091 6 12 6C9.79086 6 8 7.79086 8 10C8 12.2091 9.79086 14 12 14ZM12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" fill="currentColor"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.9261 20.0557C20.397 18.235 22 15.3047 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 15.3047 3.60301 18.235 6.07388 20.0557C6.65997 20.4742 7.1363 20.7573 7.63587 21C8.95464 21.6407 10.4354 22 12 22C13.5646 22 15.0454 21.6407 16.3641 21C16.9657 20.7015 17.4613 20.3982 17.9261 20.0557ZM17.2287 18.055C18.926 16.588 20 14.4194 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 14.4194 5.07401 16.588 6.77128 18.055C7.80066 16.2313 9.75654 15 12 15C14.2435 15 16.1993 16.2313 17.2287 18.055ZM15.5567 19.1679C14.8921 17.8803 13.5488 17 12 17C10.4512 17 9.10792 17.8803 8.44332 19.1679C9.51467 19.7005 10.7224 20 12 20C13.2776 20 14.4853 19.7005 15.5567 19.1679Z" fill="currentColor"></path>
+              </svg></div>
+            </div>
+            <div>Log in</div>
+          </div>
+        </a>
+      </nav>
+      <div class="nav-menu-button cnt-nav-button" (click)="toggleMobileNav()">
+        <div class="cnt-icon-nav-menu"></div>
+      </div>
+    </div>
+  </div>
+  <div class="white-fill-navbar"></div>
+</div>

@@ -1,39 +1,4 @@
-<!-- ========== NAV ========== -->
-<div class="fixed top-0 left-0 right-0 z-50 flex flex-col items-center px-4 mt-4 md:mt-6">
-  <header class="flex justify-between items-center h-16 md:h-20 w-full max-w-5xl px-6 md:px-8 rounded-full bg-white/70 backdrop-blur-md shadow-[0px_20px_40px_rgba(27,28,23,0.06)] border border-outline-gray/10">
-    <a routerLink="/" class="font-headline text-xl font-bold tracking-tight text-dark-text no-underline">CurbNTurf</a>
-    <nav class="hidden md:flex items-center gap-8">
-      <a routerLink="/search" class="text-dark-text/60 font-body font-medium hover:text-dark-text transition-colors duration-300 no-underline text-sm">Find Stays</a>
-      <a routerLink="/host" class="text-trinidad font-body font-bold border-b-2 border-trinidad pb-1 no-underline text-sm">Host a Space</a>
-    </nav>
-    <div class="flex items-center gap-3">
-      <div class="hidden md:block btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-lg inline-block">
-        <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
-          <div class="invisible px-6 py-2.5 flex items-center justify-center whitespace-nowrap font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
-          <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
-          <div class="btn-3d-back bg-dark-text text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Listing</div>
-        </div>
-      </div>
-      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-outline-gray/20 shadow-sm"
-              (click)="isMobileNavOpen = !isMobileNavOpen">
-        <span class="material-symbols-outlined text-dark-text">{{ isMobileNavOpen ? 'close' : 'menu' }}</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Dropdown -->
-  <div class="md:hidden w-full max-w-5xl mt-2 overflow-hidden transition-all duration-300 ease-in-out"
-       [style.max-height]="isMobileNavOpen ? '300px' : '0'"
-       [style.opacity]="isMobileNavOpen ? '1' : '0'">
-    <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-outline-gray/10 p-4 flex flex-col gap-1">
-      <a routerLink="/search" class="px-4 py-3 rounded-xl text-dark-text/70 font-body font-medium text-sm hover:bg-stone-50 transition-colors no-underline">Find Stays</a>
-      <a routerLink="/host"   class="px-4 py-3 rounded-xl text-trinidad font-body font-bold text-sm hover:bg-orange-50 transition-colors no-underline">Host a Space</a>
-      <div class="border-t border-outline-gray/20 mt-1 pt-3 px-4">
-        <button class="w-full bg-trinidad text-white py-3 rounded-full font-button font-normal not-italic text-xs tracking-widest uppercase hover:opacity-90 transition-opacity">Start Your Listing</button>
-      </div>
-    </div>
-  </div>
-</div>
+<cnt-navbar></cnt-navbar>
 
 <main class="relative">
 
@@ -53,7 +18,7 @@
           Share Your Land.<br><span class="text-[#F1B434]">Earn Real Money.</span>
         </h1>
         <p class="host-hero-sub font-body text-white/70 text-lg md:text-xl leading-relaxed max-w-lg mb-10">
-          Turn your unused property into a consistent income stream. Farms, vineyards, driveways, ranches — if you have land, travelers want to park there.
+          Thousands of travelers are paying to park on land like yours — and no one's telling you what it earns. Farms, vineyards, driveways, ranches: if you have land, turn it into a consistent income stream.
         </p>
 
         <!-- Stats row -->
@@ -76,6 +41,8 @@
 
         <!-- CTAs -->
         <div class="host-hero-actions flex flex-col sm:flex-row gap-4">
+
+          <!-- Button 1: Start Your Listing -->
           <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
               <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
@@ -83,13 +50,22 @@
               <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             </div>
           </div>
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+
+          <!-- Button 2: How it works (ghost + icon) -->
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block" (click)="openVideo()">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
-              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">See How It Works</div>
-              <div class="btn-3d-front bg-white/10 border border-white/20 text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">See How It Works</div>
-              <div class="btn-3d-back bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">See How It Works</div>
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                <span class="material-symbols-outlined text-[18px]">play_circle</span>How it works
+              </div>
+              <div class="btn-3d-front bg-white/10 border border-white/20 text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                <span class="material-symbols-outlined text-[18px]">play_circle</span>How it works
+              </div>
+              <div class="btn-3d-back bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                <span class="material-symbols-outlined text-[18px]">play_circle</span>How it works
+              </div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -100,9 +76,9 @@
           <div class="absolute inset-0 bg-gradient-to-t from-jungle-green/60 via-transparent to-transparent"></div>
         </div>
         <!-- Floating earnings card -->
-        <div class="absolute -bottom-6 -right-4 md:-right-8 bg-cream rounded-2xl p-5 shadow-2xl max-w-[200px]">
+        <div class="host-hero-earnings-card absolute -bottom-6 -right-4 md:-right-8 bg-cream rounded-2xl p-5 shadow-2xl max-w-[200px]">
           <p class="font-label text-[0.65rem] uppercase tracking-widest text-muted-text mb-1">Example host</p>
-          <p class="font-headline font-bold text-dark-text text-3xl leading-none mb-1">$584<span class="text-base font-body font-normal text-muted-text">/mo</span></p>
+          <p class="font-headline font-bold text-dark-text text-3xl leading-none mb-1">$585<span class="text-base font-body font-normal text-muted-text">/mo</span></p>
           <p class="font-body text-muted-text text-xs leading-snug">3 nights/week · $45/night</p>
           <div class="mt-3 flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full bg-[#2DE889]"></div>
@@ -110,7 +86,7 @@
           </div>
         </div>
         <!-- Listed-in badge -->
-        <div class="absolute top-6 -left-4 md:-left-8 bg-trinidad text-white rounded-2xl px-4 py-3 shadow-xl">
+        <div class="host-hero-listed-badge absolute top-6 -left-4 md:-left-8 bg-trinidad text-white rounded-2xl px-4 py-3 shadow-xl">
           <p class="font-label text-[0.6rem] uppercase tracking-widest text-white/70 mb-0.5">Listed in</p>
           <p class="font-headline font-bold text-lg leading-none">&lt; 10 min</p>
         </div>
@@ -120,128 +96,232 @@
   </section>
 
   <!-- ========== PROPERTY TYPES ========== -->
-  <section class="host-property-section py-20 md:py-32 bg-background">
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 text-center">
+  <section class="host-property-section py-20 md:py-32 bg-cream bg-grid-subtle relative overflow-hidden">
+
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 text-center">
       <span class="host-property-eyebrow text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Almost Any Land Qualifies</span>
-      <h2 class="host-property-h2 font-headline font-bold text-dark-text tracking-tight leading-tight mb-6 text-3xl sm:text-4xl md:text-5xl">If you have land, you can list it.</h2>
-      <p class="host-property-sub font-body text-muted-text text-lg max-w-2xl mx-auto mb-16 leading-relaxed">
+      <h2 class="host-property-h2 font-headline font-bold text-dark-text tracking-tight leading-[1.15] mb-6">
+        If you have land,<br>we have travelers for it.
+      </h2>
+      <p class="host-property-sub font-body text-muted-text text-lg max-w-2xl mx-auto mb-14 leading-relaxed">
         CurbNTurf hosts range from working farms and vineyards to quiet driveways and open fields. Almost any outdoor space with room for an RV qualifies.
       </p>
 
-      <div class="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">agriculture</span>Farms
+      <!-- Category pills — same style as home network section -->
+      <div class="flex flex-wrap justify-center gap-x-3 gap-y-4 max-w-4xl mx-auto text-2xl md:text-3xl font-headline font-bold leading-snug">
+        <span class="host-property-pill inline-flex items-center bg-[#DE5260] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">agriculture</span>farms
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-jungle-green text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">wine_bar</span>Vineyards
+        <span class="host-property-pill inline-flex items-center bg-[#A541A1] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">wine_bar</span>wineries
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">landscape</span>Ranches
+        <span class="host-property-pill inline-flex items-center bg-[#E8A23D] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-1">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">sports_bar</span>breweries
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-jungle-green text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">local_parking</span>Driveways
+        <span class="host-property-pill inline-flex items-center bg-[#83C53C] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-3">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">golf_course</span>golf courses
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">terrain</span>Vacant Land
+        <span class="host-property-pill inline-flex items-center bg-[#42B0AF] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">home_work</span>community hosts
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-jungle-green text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">eco</span>Orchards
+        <span class="host-property-pill inline-flex items-center bg-[#C0664A] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-1">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">landscape</span>ranches
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">sports_bar</span>Breweries
+        <span class="host-property-pill inline-flex items-center bg-[#5B8DB8] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-3">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">water</span>lakefront
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-jungle-green text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">golf_course</span>Golf Courses
+        <span class="host-property-pill inline-flex items-center bg-[#7B6BAF] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">local_florist</span>flower farms
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full bg-dark-text text-white font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300 shadow-md">
-          <span class="material-symbols-outlined text-[#F1B434] text-[1.1em]">cottage</span>Rural Properties
+        <span class="host-property-pill inline-flex items-center bg-[#4A8C6F] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-1">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">forest</span>woodlands
         </span>
-        <span class="host-property-pill inline-flex items-center gap-2 px-5 py-3 rounded-full border border-dark-text/20 text-muted-text font-body font-medium text-sm cursor-default hover:-translate-y-1 transition-transform duration-300">
-          <span class="material-symbols-outlined text-dark-text/40 text-[1.1em]">add_circle</span>And more...
+        <span class="host-property-pill inline-flex items-center bg-[#C4885A] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">eco</span>orchards
+        </span>
+        <span class="host-property-pill inline-flex items-center bg-[#B84C6E] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">pets</span>animal farms
+        </span>
+        <span class="host-property-pill inline-flex items-center bg-[#3D7EA6] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-1">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">terrain</span>open fields
+        </span>
+        <span class="host-property-pill inline-flex items-center bg-[#7A6652] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2">
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">church</span>churches
         </span>
       </div>
+
+      <p class="font-body text-dark-text/30 text-sm mt-10 tracking-wide">and many more...</p>
     </div>
   </section>
 
-  <!-- ========== EARNINGS CALCULATOR ========== -->
-  <section class="host-calc-section py-20 md:py-32 bg-jungle-green relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-trinidad/10 rounded-full blur-[120px] pointer-events-none -mr-32 -mt-32"></div>
+  <!-- ========== PRICING & EARNINGS ========== -->
+  <section class="host-tiers-section host-calc-section py-20 md:py-32 bg-cream bg-grid-subtle relative overflow-hidden">
+
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
 
-      <div class="host-calc-heading text-center mb-16">
-        <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Earnings Calculator</span>
-        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl mb-4">See what you could earn.</h2>
-        <p class="font-body text-white/60 text-lg max-w-xl mx-auto">Drag the sliders to estimate your monthly income based on your availability and nightly rate.</p>
+      <!-- Section header -->
+      <div class="text-center mb-16">
+        <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Pricing &amp; Earnings</span>
+        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight mb-6">Where does your property fit?</h2>
+        <p class="font-body text-muted-text text-lg max-w-2xl mx-auto leading-relaxed">
+          Every property is different. Use these tiers as a starting point for pricing — you can always adjust as you learn what your guests value.
+        </p>
       </div>
 
-      <div class="host-calc-body max-w-4xl mx-auto bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-8 md:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+      <!-- Two-column: tiers left, calculator right -->
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
-        <!-- Sliders -->
-        <div class="space-y-10">
-          <div>
-            <div class="flex justify-between items-baseline mb-4">
-              <label class="font-body text-white font-medium">Nights per week</label>
-              <span class="font-headline font-bold text-white text-2xl">{{ nightsPerWeek }}</span>
+        <!-- Left: tier cards -->
+        <div class="flex flex-col gap-5">
+
+          <!-- Basic -->
+          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 cursor-pointer"
+               [ngClass]="{ 'tier-selected': activeTier === 'basic' }"
+               (click)="selectTier('basic')">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                 [ngClass]="activeTier === 'basic' ? 'bg-jungle-green/10' : 'bg-dark-text/5'">
+              <span class="material-symbols-outlined text-xl"
+                    [ngClass]="activeTier === 'basic' ? 'text-jungle-green' : 'text-muted-text'">night_shelter</span>
             </div>
-            <input type="range" min="1" max="7" step="1"
-                   [value]="nightsPerWeek"
-                   (input)="onNightsChange($event)"
-                   class="host-slider w-full">
-            <div class="flex justify-between mt-2">
-              <span class="font-label text-white/40 text-xs">1 night</span>
-              <span class="font-label text-white/40 text-xs">7 nights</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline justify-between gap-3 mb-1">
+                <span class="font-label text-xs uppercase tracking-widest"
+                      [ngClass]="activeTier === 'basic' ? 'text-jungle-green' : 'text-muted-text'">Basic</span>
+                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">Under $35<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+              </div>
+              <p class="font-body text-muted-text text-sm leading-relaxed">No hookups. Great for overnight stops and boondockers.</p>
+            </div>
+            @if (activeTier === 'basic') {
+              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
+            }
+          </div>
+
+          <!-- Standard -->
+          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 relative cursor-pointer"
+               [ngClass]="{ 'tier-selected': activeTier === 'standard' }"
+               (click)="selectTier('standard')">
+            <div class="absolute -top-3 right-5">
+              <span class="bg-jungle-green text-white font-button text-[0.6rem] tracking-widest uppercase px-3 py-1 rounded-full">Most Common</span>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-jungle-green/10 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-jungle-green text-xl">electrical_services</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline justify-between gap-3 mb-1">
+                <span class="font-label text-jungle-green text-xs uppercase tracking-widest">Standard</span>
+                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">$35–$65<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+              </div>
+              <p class="font-body text-muted-text text-sm leading-relaxed">Partial hookups (water + electric). Near destinations or good for weekend getaways.</p>
+            </div>
+            @if (activeTier === 'standard') {
+              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
+            }
+          </div>
+
+          <!-- Premium -->
+          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 cursor-pointer"
+               [ngClass]="{ 'tier-selected': activeTier === 'premium' }"
+               (click)="selectTier('premium')">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                 [ngClass]="activeTier === 'premium' ? 'bg-jungle-green/10' : 'bg-trinidad/10'">
+              <span class="material-symbols-outlined text-xl"
+                    [ngClass]="activeTier === 'premium' ? 'text-jungle-green' : 'text-trinidad'">workspace_premium</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline justify-between gap-3 mb-1">
+                <span class="font-label text-xs uppercase tracking-widest"
+                      [ngClass]="activeTier === 'premium' ? 'text-jungle-green' : 'text-muted-text'">Premium</span>
+                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">$65+<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+              </div>
+              <p class="font-body text-muted-text text-sm leading-relaxed">Full hookups (water, electric, sewer). Destination-worthy with activities or unique amenities.</p>
+            </div>
+            @if (activeTier === 'premium') {
+              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
+            }
+          </div>
+
+        </div><!-- /left: tier cards -->
+
+        <!-- Right: calculator -->
+        <div class="host-calc-body">
+          <div class="bg-white border border-dark-text/8 rounded-2xl p-6 md:p-8 shadow-[0_4px_32px_rgba(0,0,0,0.06)] sticky top-28">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+              <p class="font-label text-jungle-green text-xs uppercase tracking-widest">Earnings Calculator</p>
+              <span class="font-body text-muted-text text-xs capitalize">{{ activeTier }} tier</span>
+            </div>
+
+            <div class="space-y-8 mb-8">
+              <div>
+                <div class="flex justify-between items-baseline mb-3">
+                  <label class="font-body text-dark-text text-sm font-medium">Nights per week</label>
+                  <span class="font-headline font-bold text-dark-text text-xl">{{ nightsPerWeek }}</span>
+                </div>
+                <input type="range" min="1" max="7" step="1" [value]="nightsPerWeek" (input)="onNightsChange($event)" class="host-slider w-full">
+                <div class="flex justify-between mt-1.5">
+                  <span class="font-label text-dark-text/40 text-xs">1 night</span>
+                  <span class="font-label text-dark-text/40 text-xs">7 nights</span>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between items-baseline mb-3">
+                  <label class="font-body text-dark-text text-sm font-medium">Nightly rate</label>
+                  <span class="font-headline font-bold text-dark-text text-xl">${{ nightlyRate }}</span>
+                </div>
+                <input type="range" min="15" max="200" step="5" [value]="nightlyRate" (input)="onRateChange($event)" class="host-slider w-full">
+                <div class="flex justify-between mt-1.5">
+                  <span class="font-label text-dark-text/40 text-xs">$15</span>
+                  <span class="font-label text-dark-text/40 text-xs">$200</span>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between items-baseline mb-3">
+                  <label class="font-body text-dark-text text-sm font-medium">Number of sites</label>
+                  <span class="font-headline font-bold text-dark-text text-xl">{{ numberOfSites }}</span>
+                </div>
+                <input type="range" min="1" max="10" step="1" [value]="numberOfSites" (input)="onSitesChange($event)" class="host-slider w-full">
+                <div class="flex justify-between mt-1.5">
+                  <span class="font-label text-dark-text/40 text-xs">1 site</span>
+                  <span class="font-label text-dark-text/40 text-xs">10 sites</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between flex-wrap gap-6">
+              <div>
+                <p class="font-label text-muted-text uppercase tracking-widest text-xs mb-1">You could earn</p>
+                <div class="font-headline font-bold text-dark-text leading-none" style="font-size: clamp(2.5rem, 5vw, 3.5rem);">
+                  ${{ monthlyEarnings.toLocaleString() }}<span class="text-lg font-body font-normal text-muted-text ml-1">/ mo</span>
+                </div>
+                <p class="font-body text-jungle-green text-sm font-medium mt-1">${{ annualEarnings.toLocaleString() }} per year</p>
+              </div>
+              <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+                <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+                  <div class="invisible px-8 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs tracking-widest uppercase">Start Earning This</div>
+                  <div class="btn-3d-front bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Earning This</div>
+                  <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs tracking-widest uppercase">Start Earning This</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div>
-            <div class="flex justify-between items-baseline mb-4">
-              <label class="font-body text-white font-medium">Nightly rate</label>
-              <span class="font-headline font-bold text-white text-2xl">${{ nightlyRate }}</span>
-            </div>
-            <input type="range" min="15" max="200" step="5"
-                   [value]="nightlyRate"
-                   (input)="onRateChange($event)"
-                   class="host-slider w-full">
-            <div class="flex justify-between mt-2">
-              <span class="font-label text-white/40 text-xs">$15</span>
-              <span class="font-label text-white/40 text-xs">$200</span>
-            </div>
-          </div>
-        </div>
+        </div><!-- /right: calculator -->
 
-        <!-- Result -->
-        <div class="text-center md:text-left">
-          <p class="font-label text-white/50 uppercase tracking-widest text-xs mb-3">You could earn</p>
-          <div class="font-headline font-bold text-white leading-none mb-2" style="font-size: clamp(3.5rem, 8vw, 5rem);">
-            ${{ monthlyEarnings.toLocaleString() }}
-          </div>
-          <p class="font-body text-white/50 text-lg mb-1">per month</p>
-          <p class="font-body text-[#2DE889] text-sm font-medium mb-10">${{ annualEarnings.toLocaleString() }} per year</p>
-
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
-            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
-              <div class="invisible px-8 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Earning This</div>
-              <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Earning This</div>
-              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Earning This</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </div><!-- /grid -->
+    </div><!-- /max-w-[90rem] -->
   </section>
 
   <!-- ========== HOW IT WORKS ========== -->
-  <section class="host-steps-section py-20 md:py-32 bg-background">
+  <section class="host-steps-section py-20 md:py-32 bg-cream bg-grid-subtle">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
 
       <div class="host-steps-intro text-center mb-20">
         <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Less Than 10 Minutes</span>
-        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl">Go from listed to earning<br class="hidden md:block"> in 3 simple steps.</h2>
+        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Go from listed to earning<br class="hidden md:block"> in 3 simple steps.</h2>
       </div>
 
       <div class="max-w-4xl mx-auto space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
 
-        <div class="host-step relative bg-cream rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
           <div class="w-12 h-12 rounded-full bg-trinidad/10 flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-trinidad text-2xl">photo_camera</span>
           </div>
@@ -259,7 +339,7 @@
           <p class="font-body text-muted-text leading-relaxed">Set your nightly price, describe your land, and choose your availability. You're in full control of your listing.</p>
         </div>
 
-        <div class="host-step relative bg-cream rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
           <div class="w-12 h-12 rounded-full bg-[#F1B434]/15 flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-[#F1B434] text-2xl">payments</span>
           </div>
@@ -272,13 +352,15 @@
     </div>
   </section>
 
-  <!-- ========== TRUST & SAFETY ========== -->
-  <section class="host-trust-section py-20 md:py-32 bg-jungle-green relative overflow-hidden">
-    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-trinidad/10 rounded-full blur-[120px] pointer-events-none -ml-32 -mb-32"></div>
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 text-center">
-      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Host Protection</span>
-      <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl mb-16">Host with total confidence.</h2>
+  <!-- ========== TRUST · TESTIMONIAL · FAQ · CTA (one seamless green block) ========== -->
+  <section class="host-trust-section host-testimonial-section host-cta-section bg-jungle-green relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-trinidad/10 rounded-full blur-[160px] pointer-events-none"></div>
 
+    <!-- Trust & Safety -->
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-16 md:pb-24 text-center">
+      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Host Protection</span>
+      <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-16">Host with total confidence.</h2>
       <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
         <div class="host-trust-item bg-white/5 border border-white/10 rounded-3xl p-8">
           <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">verified_user</span>
@@ -297,34 +379,160 @@
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ========== TESTIMONIAL ========== -->
-  <section class="host-testimonial-section py-20 md:py-32 bg-background">
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+    <!-- Divider -->
+    <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8">
+      <div class="border-t border-white/10"></div>
+    </div>
+
+    <!-- Testimonial -->
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
       <div class="host-testimonial max-w-3xl mx-auto text-center">
-        <span class="material-symbols-outlined text-trinidad text-5xl mb-8 block">format_quote</span>
-        <blockquote class="font-headline font-bold text-dark-text text-2xl md:text-3xl leading-tight mb-10 tracking-tight">
+        <span class="material-symbols-outlined text-[#F1B434] text-5xl mb-8 block">format_quote</span>
+        <blockquote class="font-headline font-bold text-white text-2xl md:text-3xl leading-tight mb-10 tracking-tight">
           "Hosting on CurbNTurf turned our unused back acreage into real income. Setup took less than 10 minutes and the guests have been wonderful. It's the easiest money we've ever made."
         </blockquote>
         <div class="flex items-center justify-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-jungle-green/15 flex items-center justify-center">
-            <span class="material-symbols-outlined text-jungle-green text-xl">person</span>
+          <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-white/70 text-xl">person</span>
           </div>
           <div class="text-left">
-            <p class="font-headline font-bold text-dark-text">Sarah &amp; Tom Mitchell</p>
-            <p class="font-label text-muted-text text-xs uppercase tracking-widest">Napa Valley Vineyard, California</p>
+            <p class="font-headline font-bold text-white">Sarah &amp; Tom Mitchell</p>
+            <p class="font-label text-white/50 text-xs uppercase tracking-widest">Napa Valley Vineyard, California</p>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ========== FINAL CTA ========== -->
-  <section class="host-cta-section py-20 md:py-32 bg-jungle-green relative overflow-hidden">
-    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-trinidad/10 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+    <!-- Divider -->
+    <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8">
+      <div class="border-t border-white/10"></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-16 md:pb-24">
+      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Got Questions?</span>
+      <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-center mb-10 md:mb-16">Frequently Asked Questions</h2>
+
+      <div class="max-w-[56rem] mx-auto">
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(0)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">How much does it cost to list my property?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 0 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">Nothing. Listing is free, and you can add as many properties as you want. We only earn when your guests book — through a small fee charged to them, not you.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(1)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">When do I get paid?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 1 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">Funds are released to you after your guest checks out. You choose where the money gets deposited.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(2)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">What if a guest damages my property?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 2 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">Every stay includes supplemental stay insurance, and we verify the identity of every guest before they can book. You also have the final say on who stays — no booking is confirmed without your approval.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(3)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">Do I have to accept every booking request?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 3 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">No. You set your own rules, pricing, availability, and cancellation policy. You can message guests with questions before approving any reservation.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(4)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">What kind of land can I list?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 4 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">Almost anything. Farms, ranches, vineyards, wooded lots, riverfront, driveways, even curbside spots. If RVers can park there safely and legally, you can list it.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(5)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">Do I need hookups (water, electric, sewer) to host?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 5 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">No. Properties with no hookups are valuable too — many RVers specifically look for boondocking sites. Your amenities just affect how you price your listing.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(6)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">Is my exact location public?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 6">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 6 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">No. Your address is hidden until a guest's reservation is confirmed. Search results only show the general area.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-white/15">
+          <button class="bg-transparent border-none p-0 cursor-pointer w-full flex items-center justify-between py-6 text-left gap-6" (click)="toggleFaq(7)">
+            <span class="text-white font-headline font-semibold text-base md:text-lg">How much time does hosting actually take?</span>
+            <span class="text-white/60 transition-transform duration-300 shrink-0" [class.rotate-180]="openFaqIndex === 7">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="overflow-hidden transition-all duration-300 ease-in-out" [style.max-height]="openFaqIndex === 7 ? '300px' : '0'">
+            <p class="text-white/70 text-base font-body leading-relaxed pb-6 max-w-[48rem]">Most hosts spend just a few minutes per booking. Our app handles reservations, guest messaging, calendar, and payments — you set it up once and check in as needed.</p>
+          </div>
+        </div>
+
+        <!-- FAQ action buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
+              <div class="btn-3d-front bg-white/10 border border-white/20 text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
+              <div class="btn-3d-back bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8">
+      <div class="border-t border-white/10"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-20 md:pb-32">
       <div class="host-cta-inner text-center max-w-3xl mx-auto">
         <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Ready to Start?</span>
         <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
@@ -348,8 +556,38 @@
         </div>
       </div>
     </div>
+
   </section>
+
+
+  <!-- ========== VIDEO MODAL ========== -->
+  @if (isVideoOpen) {
+    <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
+         (click)="closeVideo()">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      <!-- Modal -->
+      <div class="relative z-10 w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
+           (click)="$event.stopPropagation()">
+        <iframe
+          [src]="videoUrl"
+          class="w-full h-full"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+        <!-- Close button -->
+        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                (click)="closeVideo()">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+    </div>
+  }
 
 </main>
 
-<curbnturf-footer></curbnturf-footer>
+<div class="bg-grid-subtle bg-cream">
+  <cnt-home-locations></cnt-home-locations>
+  <curbnturf-footer></curbnturf-footer>
+</div>

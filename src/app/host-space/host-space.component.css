@@ -1,3 +1,37 @@
+/* ── 3D Flip Buttons ── */
+.btn-3d-wrap {
+  perspective: 1000px;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.btn-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.btn-3d-front,
+.btn-3d-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-3d-back {
+  transform: rotateY(180deg);
+}
+
+.btn-3d-wrap:hover .btn-3d-inner {
+  transform: rotateY(-180deg);
+}
+
 /* ── Earnings Calculator Sliders ── */
 .host-slider {
   -webkit-appearance: none;
@@ -5,7 +39,7 @@
   width: 100%;
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(41, 93, 66, 0.15);
   outline: none;
   cursor: pointer;
 }
@@ -40,10 +74,25 @@
 .host-slider::-moz-range-track {
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(41, 93, 66, 0.15);
 }
 
 /* ── Trust card subtle border ── */
 .border-white\/8 {
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Tier cards ── */
+.host-tier-card {
+  border: 1px solid rgba(34, 34, 34, 0.08);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.host-tier-card:hover {
+  border-color: rgba(34, 34, 34, 0.2);
+}
+
+.host-tier-card.tier-selected {
+  border: 2px solid #295d42;
+  box-shadow: 0 4px 24px rgba(41, 93, 66, 0.12);
 }

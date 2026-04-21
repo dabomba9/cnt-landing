@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { SeoService } from '../seo.service';
 
 @Component({
   selector: 'cnt-workspace-listing-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, NavbarComponent],
   templateUrl: './listing-details.component.html',
   styleUrl: './listing-details.component.css',
 })
