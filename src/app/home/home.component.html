@@ -231,11 +231,11 @@
 <div class="content-overlap-wrap relative z-40 bg-cream bg-grid-subtle w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden" style="box-shadow: 0 -20px 40px rgba(0,0,0,0.05);">
 
 <!-- How It Works Section -->
-<section class="py-24 md:py-40 relative z-50 border-y border-jungle-green/5">
+<section class="pt-28 md:pt-44 pb-60 md:pb-[19rem] relative z-50 border-y border-jungle-green/5">
 <div class="max-w-[90rem] mx-auto px-4 md:px-8">
 <div class="text-center mb-20">
 <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The Journey</span>
-<h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">How It Works</h2>
+<h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">Three Steps to Your Next Adventure</h2>
 </div>
 <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 gsap-how-works-wrap">
   <!-- UI Thread Desktop (Horizontal S-Curve) -->
@@ -258,43 +258,43 @@
     </defs>
     <path d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#mobileJourneyMask)" vector-effect="non-scaling-stroke" />
   </svg>
-<!-- Card 1 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
-  <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/mountain_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <!-- Dark vignette for text legible contrast -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">01</div>
-  <div class="relative z-10 mt-auto pt-32 w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Discover</h4>
-    <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Enter your rig size and dates to find curated spaces perfectly compatible with your vehicle.</p>
+<!-- Card 1 — Search Your Stats -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
+  <img src="assets/images/hiw_search.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <div class="absolute -right-4 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-dark-text/[0.07] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">01</div>
+  <div class="relative z-10 w-14 h-14 rounded-2xl bg-trinidad/10 group-hover:bg-trinidad flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+    <span class="material-symbols-outlined text-trinidad group-hover:text-white text-3xl transition-colors duration-500">tune</span>
+  </div>
+  <div class="relative z-10 mt-auto w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Search Your Stats</h4>
+    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Enter your rig's dimensions and your travel dates. We'll filter out the guesswork, showing you only the sites where you're guaranteed to fit.</p>
   </div>
 </div>
-<!-- Card 2 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
-  <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/farm_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <!-- Dark vignette for text legible contrast -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">02</div>
-  <div class="relative z-10 mt-auto pt-32 w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Book with Confidence</h4>
-    <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Communicate directly with vetted hosts and effortlessly reserve your site with our Rig-Compatible Guarantee.</p>
+<!-- Card 2 — Book Your Spot -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
+  <img src="assets/images/hiw_book.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <div class="absolute -right-4 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-dark-text/[0.07] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">02</div>
+  <div class="relative z-10 w-14 h-14 rounded-2xl bg-jungle-green/10 group-hover:bg-jungle-green flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+    <span class="material-symbols-outlined text-jungle-green group-hover:text-white text-3xl transition-colors duration-500">lock</span>
+  </div>
+  <div class="relative z-10 mt-auto w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Book Your Spot</h4>
+    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Message hosts directly to ask questions or hit "Book Now" for instant confirmation. Our secure platform keeps your payment and data protected.</p>
   </div>
 </div>
-<!-- Card 3 -->
-<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white/15 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-[0_20px_40px_rgba(0,0,0,0.03)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
-  <!-- Subtle Photo Texture -> Full Photo on Hover -->
-  <img src="assets/images/winery_category.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <!-- Dark vignette for text legible contrast -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <!-- Watermark -->
-  <div class="absolute -right-6 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-trinidad/10 select-none pointer-events-none group-hover:text-white/20 transition-colors duration-700 z-10">03</div>
-  <div class="relative z-10 mt-auto pt-32 w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold mb-4 text-dark-text group-hover:text-white transition-colors duration-500">Arrive &amp; Enjoy</h4>
-    <p class="text-dark-text group-hover:text-white/90 text-lg font-body leading-relaxed transition-colors duration-500">Navigate smoothly to your premium destination and bask in the ultimate freedom of the open road.</p>
+<!-- Card 3 — Park & Play -->
+<div class="relative flex flex-col items-start p-10 md:p-12 min-h-[360px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
+  <img src="assets/images/hiw_park.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+  <div class="absolute -right-4 top-4 text-[7rem] md:text-[14rem] font-headline font-black text-dark-text/[0.07] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">03</div>
+  <div class="relative z-10 w-14 h-14 rounded-2xl bg-[#F1B434]/15 group-hover:bg-[#F1B434] flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+    <span class="material-symbols-outlined text-[#F1B434] group-hover:text-white text-3xl transition-colors duration-500">near_me</span>
+  </div>
+  <div class="relative z-10 mt-auto w-full">
+    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Park &amp; Play</h4>
+    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Receive exact GPS coordinates and check-in instructions. Whether it's a vineyard or a driveway, show up knowing your spot is waiting.</p>
   </div>
 </div>
 </div>
@@ -342,7 +342,7 @@
 
     <!-- ================= Favorite Hosts Grid ================= -->
     <div>
-      <section class="py-24 md:py-40 px-4 md:px-8 max-w-[90rem] mx-auto">
+      <section class="py-28 md:py-44 px-4 md:px-8 max-w-[90rem] mx-auto">
         <div class="text-center mb-20">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Featured Hosts</span>
         <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
@@ -501,8 +501,44 @@
 <!-- ================= Community Masonry Grid ================= -->
 <cnt-home-masonry></cnt-home-masonry>
 
+<!-- ================= Brand Video Section ================= -->
+<section class="bg-jungle-green py-28 md:py-44 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-trinidad/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The CurbNTurf Experience</span>
+      <h2 class="font-headline font-bold text-white tracking-tight mb-5">This is what freedom looks like</h2>
+      <p class="text-white/60 text-lg md:text-xl font-body max-w-xl mx-auto">
+        Real places. Real hosts. Real adventures — all across America.
+      </p>
+    </div>
+
+    <!-- Video card -->
+    <div class="max-w-4xl mx-auto">
+      <div class="relative rounded-3xl overflow-hidden aspect-video cursor-pointer group shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
+           (click)="openVideo()">
+        <img src="https://img.youtube.com/vi/vuisyx-U944/maxresdefault.jpg"
+             alt="The CurbNTurf Experience"
+             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300"></div>
+        <!-- Play button -->
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-24 h-24 rounded-full bg-white/15 backdrop-blur-md border-2 border-white/40 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-2xl">
+            <span class="material-symbols-outlined text-white text-5xl" style="margin-left:5px">play_arrow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- Trust Signals Section (GSAP Color Shift Target) -->
-<section class="trust-dynamic-section py-24 md:py-40 overflow-hidden relative w-full bg-jungle-green" >
+<section class="trust-dynamic-section py-28 md:py-44 overflow-hidden relative w-full bg-jungle-green" >
   
   <!-- We apply the GSAP color shift directly to this section's background and typography -->
   <div class="max-w-[90rem] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10 cache-buster-4">
@@ -717,6 +753,24 @@
 
   <!-- ================= Locations Section ================= -->
   <cnt-home-locations></cnt-home-locations>
+
+  <!-- ================= Video Modal ================= -->
+  @if (isVideoOpen) {
+    <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
+         (click)="closeVideo()">
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      <div class="relative z-10 w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
+           (click)="$event.stopPropagation()">
+        <iframe [src]="videoUrl" class="w-full h-full" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                (click)="closeVideo()">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+    </div>
+  }
 
   <curbnturf-footer></curbnturf-footer>
 

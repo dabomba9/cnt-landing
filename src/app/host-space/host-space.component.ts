@@ -23,6 +23,24 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   isVideoOpen = false;
   openFaqIndex: number | null = null;
 
+  readonly addonCategories = [
+    { id: 'meals',       icon: 'egg',       label: 'Meals & food',  description: 'Farm breakfasts, fresh eggs, baked goods, a bottle of your vineyard\'s wine', image: 'assets/images/addon_vineyard.webp',   alt: 'Vineyard wine and food experience' },
+    { id: 'experiences', icon: 'explore',   label: 'Experiences',   description: 'Guided tours, horseback rides, fishing trips, stargazing nights',              image: 'assets/images/addon_stargazing.webp', alt: 'Stargazing by Airstream under the Milky Way' },
+    { id: 'products',    icon: 'sell',      label: 'Products',      description: 'Firewood bundles, local honey, handmade goods',                                image: 'assets/images/addon-woodpile.webp',       alt: 'Stacked firewood bundle' },
+    { id: 'services',    icon: 'handyman',  label: 'Services',      description: 'Laundry, propane refills, equipment rentals, private chef dinners',             image: 'assets/images/addon_propane_refill.webp', alt: 'Propane refill station' },
+    { id: 'activities',  icon: 'terrain',   label: 'Activities',    description: 'ATV rentals, hunting access, vineyard tastings, ranch experiences',             image: 'assets/images/addon_atv.webp',            alt: 'ATV riding on ranch trails' },
+  ];
+
+  activeAddonId = 'meals';
+
+  get activeAddon() {
+    return this.addonCategories.find(c => c.id === this.activeAddonId)!;
+  }
+
+  selectAddon(id: string): void {
+    this.activeAddonId = id;
+  }
+
   toggleFaq(index: number): void {
     this.openFaqIndex = this.openFaqIndex === index ? null : index;
   }
@@ -137,6 +155,11 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
       gsap.from('.host-tier-card', { y: 32, opacity: 0, duration: 0.55, stagger: 0.15, ease: 'power2.out', delay: 0.2 });
     });
 
+    this.addST('.host-addons-section', () => {
+      gsap.from('.host-addons-left', { x: -32, opacity: 0, duration: 0.8, ease: 'power3.out' });
+      gsap.from('.host-addons-photo', { y: 20, opacity: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out', delay: 0.2 });
+    });
+
     this.addST('.host-calc-section', () => {
       gsap.from('.host-calc-heading', { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out' });
       gsap.from('.host-calc-body',    { y: 32, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.15 });
@@ -157,6 +180,10 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.addST('.host-cta-section', () => {
       gsap.from('.host-cta-inner', { scale: 0.97, opacity: 0, duration: 0.7, ease: 'power3.out' });
+    });
+
+    this.addST('.host-app-section', () => {
+      gsap.from('.host-app-section .bg-cream', { y: 32, opacity: 0, duration: 0.8, ease: 'power3.out' });
     });
   }
 

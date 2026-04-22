@@ -107,7 +107,17 @@ html, body { height: 100%; }
   background-size: auto, 120px 120px, 120px 120px;
   background-attachment: local, fixed, fixed;
 }
-/* ── Global h2 — 60px, skips display headings that use inline clamp() ── */
+/* ── Global typography defaults ── */
+h2 { line-height: 1 !important; }
+
+p {
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-size: 1rem;     /* 16px — Tailwind text-sm/lg/xl overrides as needed */
+  line-height: 1.625;  /* leading-relaxed — consistent across all paragraphs */
+  color: #707070;      /* muted-text — Tailwind text-white/* / text-dark-text overrides on dark bg */
+}
+
+/* ── Global h2 font-size — 60px, skips display headings that use inline clamp() ── */
 h2:not([style*='font-size']) {
   font-size: 2rem;
 }

@@ -84,15 +84,42 @@
 
 /* ── Tier cards ── */
 .host-tier-card {
-  border: 1px solid rgba(34, 34, 34, 0.08);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1.5px solid rgba(34, 34, 34, 0.08);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.18s ease;
 }
 
 .host-tier-card:hover {
-  border-color: rgba(34, 34, 34, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .host-tier-card.tier-selected {
-  border: 2px solid #295d42;
-  box-shadow: 0 4px 24px rgba(41, 93, 66, 0.12);
+  box-shadow: 0 8px 36px rgba(41, 93, 66, 0.16);
+  transform: translateY(-2px);
+}
+
+.host-tier-card.tier-basic.tier-selected   { border-color: #64748b; box-shadow: 0 8px 36px rgba(100, 116, 139, 0.16); }
+.host-tier-card.tier-standard.tier-selected { border-color: #295d42; }
+.host-tier-card.tier-premium.tier-selected  { border-color: #e3530d; box-shadow: 0 8px 36px rgba(227, 83, 13, 0.16); }
+
+/* ── Add-Ons category switcher ── */
+.addon-tab {
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.addon-tab:hover {
+  background: rgba(41, 93, 66, 0.04);
+}
+
+.addon-tab.addon-tab-active {
+  background: rgba(41, 93, 66, 0.06);
+  border-color: rgba(41, 93, 66, 0.15);
+}
+
+.addon-img {
+  transition: opacity 0.5s ease;
 }

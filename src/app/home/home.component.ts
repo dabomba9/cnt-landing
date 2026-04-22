@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
@@ -24,13 +25,32 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isNavbarVisible = true;
   private lastScrollY = 0;
-
   private scrollTriggers: any[] = [];
+
+  isVideoOpen = false;
+  videoUrl!: SafeResourceUrl;
+  private readonly brandVideoEmbed = 'https://www.youtube.com/embed/vuisyx-U944?autoplay=1&rel=0';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService
+    private seo: SeoService,
+    private sanitizer: DomSanitizer
   ) {}
+
+  openVideo(): void {
+    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.brandVideoEmbed);
+    this.isVideoOpen = true;
+  }
+
+  closeVideo(): void {
+    this.isVideoOpen = false;
+    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isVideoOpen) this.closeVideo();
+  }
 
   ngOnInit(): void {
     this.seo.update({
@@ -183,7 +203,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const wrap = document.querySelector('.gsap-how-works-wrap');
     if (!wrap) return;
     const steps = gsap.utils.toArray('.gsap-how-step');
-    
+
     // Slow, luxuriant cinematic fade sequence
     gsap.from(steps, {
       y: 60,
@@ -202,13 +222,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const maskPaths = gsap.utils.toArray('.journey-mask-path') as SVGPathElement[];
     maskPaths.forEach(path => {
       const length = path.getTotalLength() || 1000;
-      
+
       // Completely hide the mask
       gsap.set(path, {
         strokeDasharray: length,
         strokeDashoffset: length
       });
-      
+
       // Dynamically scrub the mask stroke back into view
       gsap.to(path, {
         strokeDashoffset: 0,

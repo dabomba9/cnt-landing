@@ -24,17 +24,17 @@
         <!-- Stats row -->
         <div class="host-hero-stats flex flex-wrap gap-6 md:gap-10 mb-10">
           <div>
-            <div class="font-headline font-bold text-white text-2xl md:text-3xl">$1,200</div>
-            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Avg. monthly earnings</div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">400+</div>
+            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Active host listings</div>
           </div>
           <div class="w-px bg-white/10 hidden sm:block"></div>
           <div>
-            <div class="font-headline font-bold text-white text-2xl md:text-3xl">150k+</div>
-            <div class="font-label text-white/50 text-xs uppercase tracking-widest">Active travelers</div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">Zero fees</div>
+            <div class="font-label text-white/50 text-xs uppercase tracking-widest">To get started</div>
           </div>
           <div class="w-px bg-white/10 hidden sm:block"></div>
           <div>
-            <div class="font-headline font-bold text-white text-2xl md:text-3xl">4.9★</div>
+            <div class="font-headline font-bold text-white text-2xl md:text-3xl">4.9 <span class="text-xl md:text-2xl">★</span></div>
             <div class="font-label text-white/50 text-xs uppercase tracking-widest">Host rating</div>
           </div>
         </div>
@@ -71,10 +71,20 @@
 
       <!-- Right: Earnings preview card -->
       <div class="host-hero-visual relative">
-        <div class="relative rounded-3xl overflow-hidden aspect-[4/5] max-w-md mx-auto">
-          <img src="assets/images/host_opportunity.webp" alt="Host property" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-jungle-green/60 via-transparent to-transparent"></div>
+
+        <!-- Image + badge wrapper — badge positions relative to the image width -->
+        <div class="relative max-w-md mx-auto">
+          <div class="rounded-3xl overflow-hidden aspect-[4/5]">
+            <img src="assets/images/host_opportunity.webp" alt="Host property" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-jungle-green/60 via-transparent to-transparent"></div>
+          </div>
+          <!-- Listed-in badge: left-0 = image left edge, -translate-x-1/2 = half off -->
+          <div class="host-hero-listed-badge absolute top-1/3 -translate-y-1/2 left-0 -translate-x-1/2 bg-trinidad text-white rounded-2xl px-4 py-3 shadow-xl">
+            <p class="font-label text-[0.6rem] uppercase tracking-widest text-white/70 mb-0.5">Listed in</p>
+            <p class="font-headline font-bold text-lg leading-none">&lt; 10 min</p>
+          </div>
         </div>
+
         <!-- Floating earnings card -->
         <div class="host-hero-earnings-card absolute -bottom-6 -right-4 md:-right-8 bg-cream rounded-2xl p-5 shadow-2xl max-w-[200px]">
           <p class="font-label text-[0.65rem] uppercase tracking-widest text-muted-text mb-1">Example host</p>
@@ -85,18 +95,14 @@
             <span class="font-label text-[0.6rem] uppercase tracking-widest text-muted-text">Payouts active</span>
           </div>
         </div>
-        <!-- Listed-in badge -->
-        <div class="host-hero-listed-badge absolute top-6 -left-4 md:-left-8 bg-trinidad text-white rounded-2xl px-4 py-3 shadow-xl">
-          <p class="font-label text-[0.6rem] uppercase tracking-widest text-white/70 mb-0.5">Listed in</p>
-          <p class="font-headline font-bold text-lg leading-none">&lt; 10 min</p>
-        </div>
+
       </div>
 
     </div>
   </section>
 
   <!-- ========== PROPERTY TYPES ========== -->
-  <section class="host-property-section py-20 md:py-32 bg-cream bg-grid-subtle relative overflow-hidden">
+  <section class="host-property-section py-28 md:py-44 bg-cream bg-grid-subtle relative overflow-hidden">
 
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 text-center">
       <span class="host-property-eyebrow text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Almost Any Land Qualifies</span>
@@ -155,7 +161,7 @@
   </section>
 
   <!-- ========== PRICING & EARNINGS ========== -->
-  <section class="host-tiers-section host-calc-section py-20 md:py-32 bg-cream bg-grid-subtle relative overflow-hidden">
+  <section class="host-tiers-section host-calc-section py-28 md:py-44 bg-cream bg-grid-subtle relative overflow-hidden">
 
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
 
@@ -175,69 +181,73 @@
         <div class="flex flex-col gap-5">
 
           <!-- Basic -->
-          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 cursor-pointer"
+          <div class="host-tier-card tier-basic bg-white rounded-2xl flex cursor-pointer"
                [ngClass]="{ 'tier-selected': activeTier === 'basic' }"
                (click)="selectTier('basic')">
-            <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                 [ngClass]="activeTier === 'basic' ? 'bg-jungle-green/10' : 'bg-dark-text/5'">
-              <span class="material-symbols-outlined text-xl"
-                    [ngClass]="activeTier === 'basic' ? 'text-jungle-green' : 'text-muted-text'">night_shelter</span>
+            <!-- Icon block -->
+            <div class="w-20 shrink-0 bg-slate-100 flex flex-col items-center justify-center gap-2 py-6">
+              <span class="material-symbols-outlined text-3xl text-slate-500">night_shelter</span>
+              <span class="font-label text-[0.55rem] uppercase tracking-widest text-slate-400">Basic</span>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-baseline justify-between gap-3 mb-1">
-                <span class="font-label text-xs uppercase tracking-widest"
-                      [ngClass]="activeTier === 'basic' ? 'text-jungle-green' : 'text-muted-text'">Basic</span>
-                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">Under $35<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+            <!-- Content -->
+            <div class="flex-1 px-6 py-5 flex flex-col justify-center min-w-0">
+              <div class="flex items-baseline justify-between gap-2 mb-1">
+                <p class="font-body text-muted-text text-sm leading-relaxed">No hookups. Great for overnight stops and boondockers.</p>
+                <span class="font-headline font-bold text-dark-text text-lg whitespace-nowrap shrink-0">Under $35<span class="text-xs font-body font-normal text-muted-text">/night</span></span>
               </div>
-              <p class="font-body text-muted-text text-sm leading-relaxed">No hookups. Great for overnight stops and boondockers.</p>
             </div>
-            @if (activeTier === 'basic') {
-              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
-            }
+            <!-- Check -->
+            <div class="pr-5 flex items-center">
+              <span class="material-symbols-outlined text-xl"
+                    [ngClass]="activeTier === 'basic' ? 'text-slate-500' : 'text-dark-text/10'">check_circle</span>
+            </div>
           </div>
 
           <!-- Standard -->
-          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 relative cursor-pointer"
+          <div class="host-tier-card tier-standard bg-white rounded-2xl flex cursor-pointer"
                [ngClass]="{ 'tier-selected': activeTier === 'standard' }"
                (click)="selectTier('standard')">
-            <div class="absolute -top-3 right-5">
-              <span class="bg-jungle-green text-white font-button text-[0.6rem] tracking-widest uppercase px-3 py-1 rounded-full">Most Common</span>
+            <!-- Icon block -->
+            <div class="w-20 shrink-0 bg-jungle-green/10 flex flex-col items-center justify-center gap-2 py-6">
+              <span class="material-symbols-outlined text-3xl text-jungle-green">electrical_services</span>
+              <span class="font-label text-[0.55rem] uppercase tracking-widest text-jungle-green/60">Standard</span>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-jungle-green/10 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-jungle-green text-xl">electrical_services</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-baseline justify-between gap-3 mb-1">
-                <span class="font-label text-jungle-green text-xs uppercase tracking-widest">Standard</span>
-                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">$35–$65<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+            <!-- Content -->
+            <div class="flex-1 px-6 py-5 flex flex-col justify-center min-w-0">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="bg-jungle-green text-white font-button text-[0.6rem] tracking-widest uppercase px-2.5 py-0.5 rounded-full">Most Common</span>
+                <span class="font-headline font-bold text-dark-text text-lg whitespace-nowrap shrink-0">$35–$65<span class="text-xs font-body font-normal text-muted-text">/night</span></span>
               </div>
               <p class="font-body text-muted-text text-sm leading-relaxed">Partial hookups (water + electric). Near destinations or good for weekend getaways.</p>
             </div>
-            @if (activeTier === 'standard') {
-              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
-            }
+            <!-- Check -->
+            <div class="pr-5 flex items-center">
+              <span class="material-symbols-outlined text-xl"
+                    [ngClass]="activeTier === 'standard' ? 'text-jungle-green' : 'text-dark-text/10'">check_circle</span>
+            </div>
           </div>
 
           <!-- Premium -->
-          <div class="host-tier-card bg-white rounded-2xl p-6 flex items-start gap-5 cursor-pointer"
+          <div class="host-tier-card tier-premium bg-white rounded-2xl flex cursor-pointer"
                [ngClass]="{ 'tier-selected': activeTier === 'premium' }"
                (click)="selectTier('premium')">
-            <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                 [ngClass]="activeTier === 'premium' ? 'bg-jungle-green/10' : 'bg-trinidad/10'">
-              <span class="material-symbols-outlined text-xl"
-                    [ngClass]="activeTier === 'premium' ? 'text-jungle-green' : 'text-trinidad'">workspace_premium</span>
+            <!-- Icon block -->
+            <div class="w-20 shrink-0 bg-trinidad/10 flex flex-col items-center justify-center gap-2 py-6">
+              <span class="material-symbols-outlined text-3xl text-trinidad">workspace_premium</span>
+              <span class="font-label text-[0.55rem] uppercase tracking-widest text-trinidad/60">Premium</span>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-baseline justify-between gap-3 mb-1">
-                <span class="font-label text-xs uppercase tracking-widest"
-                      [ngClass]="activeTier === 'premium' ? 'text-jungle-green' : 'text-muted-text'">Premium</span>
-                <span class="font-headline font-bold text-dark-text text-xl whitespace-nowrap">$65+<span class="text-sm font-body font-normal text-muted-text">/night</span></span>
+            <!-- Content -->
+            <div class="flex-1 px-6 py-5 flex flex-col justify-center min-w-0">
+              <div class="flex items-baseline justify-between gap-2 mb-1">
+                <p class="font-body text-muted-text text-sm leading-relaxed">Full hookups (water, electric, sewer). Destination-worthy with activities or unique amenities.</p>
+                <span class="font-headline font-bold text-dark-text text-lg whitespace-nowrap shrink-0">$65+<span class="text-xs font-body font-normal text-muted-text">/night</span></span>
               </div>
-              <p class="font-body text-muted-text text-sm leading-relaxed">Full hookups (water, electric, sewer). Destination-worthy with activities or unique amenities.</p>
             </div>
-            @if (activeTier === 'premium') {
-              <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 self-center">check_circle</span>
-            }
+            <!-- Check -->
+            <div class="pr-5 flex items-center">
+              <span class="material-symbols-outlined text-xl"
+                    [ngClass]="activeTier === 'premium' ? 'text-trinidad' : 'text-dark-text/10'">check_circle</span>
+            </div>
           </div>
 
         </div><!-- /left: tier cards -->
@@ -310,8 +320,87 @@
     </div><!-- /max-w-[90rem] -->
   </section>
 
+  <!-- ========== ADD-ONS ========== -->
+  <section class="host-addons-section py-28 md:py-44 bg-cream bg-grid-subtle relative overflow-hidden">
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Copy + tabs -->
+        <div class="host-addons-left">
+          <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Add-Ons</span>
+          <h2 class="font-headline font-bold text-dark-text tracking-tight mb-6">Turn your stay into<br class="hidden md:block"> an experience</h2>
+          <p class="font-body text-muted-text text-lg leading-relaxed mb-8 max-w-lg">
+            Your land is just the beginning. Offer guests the extras that make their stay unforgettable — and put more money in your pocket.
+          </p>
+
+          <!-- Interactive category tabs -->
+          <div class="flex flex-col gap-2 mb-8">
+            @for (cat of addonCategories; track cat.id) {
+              <button class="addon-tab flex items-center gap-4 p-4 rounded-2xl text-left w-full"
+                      [ngClass]="{ 'addon-tab-active': activeAddonId === cat.id }"
+                      (click)="selectAddon(cat.id)">
+                <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-200"
+                     [ngClass]="activeAddonId === cat.id ? 'bg-jungle-green' : 'bg-dark-text/5'">
+                  <span class="material-symbols-outlined text-2xl transition-colors duration-200"
+                        [ngClass]="activeAddonId === cat.id ? 'text-white' : 'text-muted-text'">{{ cat.icon }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-label font-bold text-base mb-0.5 transition-colors duration-200"
+                     [ngClass]="activeAddonId === cat.id ? 'text-jungle-green' : 'text-dark-text'">{{ cat.label }}</p>
+                  <p class="font-body text-muted-text text-sm leading-snug">{{ cat.description }}</p>
+                </div>
+                <span class="material-symbols-outlined text-jungle-green text-xl shrink-0 transition-opacity duration-200"
+                      [ngClass]="activeAddonId === cat.id ? 'opacity-100' : 'opacity-0'">chevron_right</span>
+              </button>
+            }
+          </div>
+
+          <!-- Benefit bullets -->
+          <ul class="flex flex-col gap-3 mb-10">
+            <li class="flex items-center gap-3 font-body text-dark-text text-base">
+              <span class="material-symbols-outlined text-trinidad text-xl shrink-0">check_circle</span>
+              Turn one booking into multiple revenue streams
+            </li>
+            <li class="flex items-center gap-3 font-body text-dark-text text-base">
+              <span class="material-symbols-outlined text-trinidad text-xl shrink-0">check_circle</span>
+              Showcase what makes your property truly yours
+            </li>
+            <li class="flex items-center gap-3 font-body text-dark-text text-base">
+              <span class="material-symbols-outlined text-trinidad text-xl shrink-0">check_circle</span>
+              Stand out in search — listings with Add-Ons book more often
+            </li>
+          </ul>
+
+          <!-- CTA -->
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start listing your Add-Ons</div>
+              <div class="btn-3d-front bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start listing your Add-Ons</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start listing your Add-Ons</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: crossfading image -->
+        <div class="host-addons-photo relative rounded-3xl overflow-hidden h-[520px] md:h-[640px] shadow-[0_24px_64px_rgba(0,0,0,0.12)]">
+          @for (cat of addonCategories; track cat.id) {
+            <img [src]="cat.image" [alt]="cat.alt" loading="lazy"
+                 class="addon-img absolute inset-0 w-full h-full object-cover"
+                 [ngClass]="{ 'opacity-0': activeAddonId !== cat.id }">
+          }
+          <!-- Label overlay -->
+          <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-8 pointer-events-none">
+            <p class="font-label text-white/60 text-xs uppercase tracking-widest mb-1">Now showing</p>
+            <p class="font-headline font-bold text-white text-xl">{{ activeAddon.label }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ========== HOW IT WORKS ========== -->
-  <section class="host-steps-section py-20 md:py-32 bg-cream bg-grid-subtle">
+  <section class="host-steps-section py-28 md:py-44 bg-cream bg-grid-subtle">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
 
       <div class="host-steps-intro text-center mb-20">
@@ -349,6 +438,18 @@
         </div>
 
       </div>
+
+      <!-- Steps CTA -->
+      <div class="text-center mt-16">
+        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+          <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+            <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+            <div class="btn-3d-front bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+            <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -358,7 +459,7 @@
     <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-trinidad/10 rounded-full blur-[160px] pointer-events-none"></div>
 
     <!-- Trust & Safety -->
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-16 md:pb-24 text-center">
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-28 md:pt-44 pb-20 md:pb-32 text-center">
       <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Host Protection</span>
       <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-16">Host with total confidence.</h2>
       <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
@@ -386,7 +487,7 @@
     </div>
 
     <!-- Testimonial -->
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-32">
       <div class="host-testimonial max-w-3xl mx-auto text-center">
         <span class="material-symbols-outlined text-[#F1B434] text-5xl mb-8 block">format_quote</span>
         <blockquote class="font-headline font-bold text-white text-2xl md:text-3xl leading-tight mb-10 tracking-tight">
@@ -410,7 +511,7 @@
     </div>
 
     <!-- FAQ -->
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-16 md:pb-24">
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-28 md:pt-44 pb-20 md:pb-32">
       <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Got Questions?</span>
       <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-center mb-10 md:mb-16">Frequently Asked Questions</h2>
 
@@ -517,8 +618,8 @@
           <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
               <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
-              <div class="btn-3d-front bg-white/10 border border-white/20 text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
-              <div class="btn-3d-back bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
             </div>
           </div>
         </div>
@@ -532,7 +633,7 @@
     </div>
 
     <!-- CTA -->
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-20 md:pb-32">
+    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-20 md:pb-32">
       <div class="host-cta-inner text-center max-w-3xl mx-auto">
         <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Ready to Start?</span>
         <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
@@ -541,7 +642,11 @@
         <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
           Join thousands of hosts already earning passive income. List your space in under 10 minutes — no experience required.
         </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div class="flex flex-col items-center gap-4">
+          <p class="font-body text-white/40 text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
+            Free to list. No subscription fees.
+          </p>
           <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
               <div class="invisible px-12 py-5 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
@@ -549,10 +654,47 @@
               <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             </div>
           </div>
-          <p class="font-body text-white/40 text-sm flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
-            Free to list. No subscription fees.
-          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8">
+      <div class="border-t border-white/10"></div>
+    </div>
+
+    <!-- App Download -->
+    <div class="host-app-section relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-20 md:pb-32">
+      <div class="bg-cream rounded-[2rem] overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
+
+          <!-- Left: Phone mockup -->
+          <div class="flex items-end justify-center pt-10 px-8 lg:px-16">
+            <img src="assets/images/phone-triptych.webp" alt="CurbNTurf Host App"
+                 loading="lazy"
+                 class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
+          </div>
+
+          <!-- Right: Copy & badges -->
+          <div class="py-12 px-8 lg:px-16 lg:py-20">
+            <div class="w-12 h-[2px] bg-trinidad mb-6"></div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Mobile Access</span>
+            <h2 class="font-headline font-bold !text-dark-text tracking-tight leading-tight mb-5">
+              Manage your listing<br>on the go
+            </h2>
+            <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mb-10 max-w-sm">
+              Track bookings, message guests, update availability, and monitor your earnings — all from the CurbNTurf host app.
+            </p>
+            <div class="flex flex-row flex-wrap gap-4">
+              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </a>
+              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </a>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
