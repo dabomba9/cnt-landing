@@ -76,6 +76,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initCardPhysics();
       this.initTrustColorShift();
       this.initAppDownloadSection();
+      this.initCtaSection();
     }
   }
 
@@ -533,6 +534,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.scrollTriggers.push(scrollPinSt);
       }
     }, 100);
+  }
+
+  private initCtaSection(): void {
+    const el = document.querySelector('.home-cta-inner');
+    if (!el) return;
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => {
+        gsap.from('.home-cta-inner', { y: 32, opacity: 0, duration: 0.8, ease: 'power3.out' });
+      }
+    });
+    this.scrollTriggers.push(st);
   }
 
   ngOnDestroy(): void {
