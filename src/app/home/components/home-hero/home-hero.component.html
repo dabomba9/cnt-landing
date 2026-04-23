@@ -36,10 +36,18 @@
             <div class="search-hero-outer">
               <div class="search-hero-inner w-full flex flex-col items-start">
 
-                <!-- Mode toggle -->
-                <div class="flex bg-[#F2F0E9] rounded-full p-1.5 w-max mb-1 shadow-inner border border-outline-gray/20">
+                <!-- Mode toggle + Explore Map -->
+                <div class="flex bg-[#F2F0E9] rounded-full p-1.5 w-max mb-1 shadow-inner border border-outline-gray/20 items-center gap-0">
                   <button (click)="setSearchMode('destination')" class="px-4 md:px-5 py-1.5 rounded-full text-[12px] md:text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'destination'" [class.text-dark-text]="searchMode === 'destination'" [class.shadow-md]="searchMode === 'destination'" [class.text-muted-text]="searchMode !== 'destination'">Destination</button>
                   <button (click)="setSearchMode('roadtrip')" class="px-4 md:px-5 py-1.5 rounded-full text-[12px] md:text-[13px] tracking-wide font-headline cursor-pointer transition-all duration-300" [class.bg-white]="searchMode === 'roadtrip'" [class.text-dark-text]="searchMode === 'roadtrip'" [class.shadow-md]="searchMode === 'roadtrip'" [class.text-muted-text]="searchMode !== 'roadtrip'">Roadtrip</button>
+                  <div class="w-px h-4 bg-outline-gray/30 mx-1 shrink-0"></div>
+                  <div class="btn-3d-wrap rounded-full inline-block perspective-[1000px]">
+                    <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+                      <div class="invisible px-4 md:px-5 py-1.5 flex items-center gap-1.5 whitespace-nowrap text-[12px] md:text-[13px] tracking-wide font-button font-normal uppercase">Explore Map <span class="material-symbols-outlined text-[14px]">map</span></div>
+                      <div class="btn-3d-front bg-white text-dark-text rounded-full flex items-center justify-center gap-1.5 whitespace-nowrap absolute inset-0 shadow-md text-[12px] md:text-[13px] tracking-wide font-button font-normal uppercase">Explore Map <span class="material-symbols-outlined text-[14px]">map</span></div>
+                      <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-1.5 whitespace-nowrap absolute inset-0 text-[12px] md:text-[13px] tracking-wide font-button font-normal uppercase">Explore Map <span class="material-symbols-outlined text-[14px]">map</span></div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Search pill -->
