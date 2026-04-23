@@ -128,7 +128,7 @@
           <span class="material-symbols-outlined mr-2 text-[0.8em]">golf_course</span>golf courses
         </span>
         <span class="host-property-pill inline-flex items-center px-3 py-1.5 md:px-5 md:py-2 bg-[#42B0AF] text-white rounded-[1.5rem] shadow-lg transform -rotate-2">
-          <span class="material-symbols-outlined mr-2 text-[0.8em]">home_work</span>community hosts
+          <span class="material-symbols-outlined mr-2 text-[0.8em]">rv_hookup</span>RV parks
         </span>
         <span class="host-property-pill inline-flex items-center px-3 py-1.5 md:px-5 md:py-2 bg-[#C0664A] text-white rounded-[1.5rem] shadow-lg transform rotate-1">
           <span class="material-symbols-outlined mr-2 text-[0.8em]">landscape</span>ranches
@@ -157,6 +157,60 @@
       </div>
 
       <p class="font-body text-dark-text/30 text-sm mt-10 tracking-wide">and many more...</p>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="host-steps-section py-28 md:py-44 bg-cream bg-grid-subtle">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <div class="host-steps-intro text-center mb-20">
+        <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Less Than 10 Minutes</span>
+        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Go from listed to earning<br class="hidden md:block"> in 3 simple steps.</h2>
+      </div>
+
+      <div class="max-w-4xl mx-auto space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
+
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+          <div class="w-12 h-12 rounded-full bg-trinidad/10 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-trinidad text-2xl">photo_camera</span>
+          </div>
+          <div class="font-headline font-bold text-trinidad/10 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">01</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Take Photos</h3>
+          <p class="font-body text-muted-text leading-relaxed">Snap a few shots of your space with your phone. No professional photography needed — guests love authentic.</p>
+        </div>
+
+        <div class="host-step relative bg-cream rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5 md:mt-8">
+          <div class="w-12 h-12 rounded-full bg-jungle-green/10 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-jungle-green text-2xl">edit_note</span>
+          </div>
+          <div class="font-headline font-bold text-jungle-green/10 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">02</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">List Your Space</h3>
+          <p class="font-body text-muted-text leading-relaxed">Set your nightly price, describe your land, and choose your availability. You're in full control of your listing.</p>
+        </div>
+
+        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
+          <div class="w-12 h-12 rounded-full bg-[#F1B434]/15 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-[#F1B434] text-2xl">payments</span>
+          </div>
+          <div class="font-headline font-bold text-[#F1B434]/20 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">03</div>
+          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Get Booked &amp; Earn</h3>
+          <p class="font-body text-muted-text leading-relaxed">Travelers request to stay, you approve, and earnings deposit directly to your bank. Simple as that.</p>
+        </div>
+
+      </div>
+
+      <!-- Steps CTA -->
+      <div class="text-center mt-16">
+        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+          <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+            <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+            <div class="btn-3d-front bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+            <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -298,7 +352,7 @@
 
             <div class="flex items-center justify-between flex-wrap gap-6">
               <div>
-                <p class="font-label text-muted-text uppercase tracking-widest text-xs mb-1">You could earn</p>
+                <p class="font-label text-muted-text uppercase tracking-widest text-xs mb-1">Estimated Gross Earnings</p>
                 <div class="font-headline font-bold text-dark-text leading-none" style="font-size: clamp(2.5rem, 5vw, 3.5rem);">
                   ${{ monthlyEarnings.toLocaleString() }}<span class="text-lg font-body font-normal text-muted-text ml-1">/ mo</span>
                 </div>
@@ -399,57 +453,35 @@
     </div>
   </section>
 
-  <!-- ========== HOW IT WORKS ========== -->
-  <section class="host-steps-section py-28 md:py-44 bg-cream bg-grid-subtle">
+  <!-- ========== COMMUNITY MAP ========== -->
+  <section class="bg-cream bg-grid-subtle py-16 md:py-24">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+    <div class="bg-[#F9F9F8] rounded-[3rem] py-16 md:py-24 px-6 md:px-12 flex flex-col items-center border border-black/5">
+      <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Interactive Map</span>
+      <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
+      <p class="text-lg md:text-xl font-body text-muted-text leading-relaxed text-center mb-16 max-w-2xl">From remote alpaca farms to historic vineyards, drop a pin and say hello to hundreds of incredible local hosts.</p>
 
-      <div class="host-steps-intro text-center mb-20">
-        <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Less Than 10 Minutes</span>
-        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Go from listed to earning<br class="hidden md:block"> in 3 simple steps.</h2>
-      </div>
+      <div class="w-full max-w-7xl relative rounded-[2rem] overflow-hidden shadow-2xl border border-black/5 group cursor-pointer">
+        <img src="assets/images/network_map.webp" alt="Map of North American Hosts" loading="lazy" class="w-full h-auto object-cover md:aspect-[16/9] aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.03]">
+        <div class="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-500"></div>
 
-      <div class="max-w-4xl mx-auto space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
-
-        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
-          <div class="w-12 h-12 rounded-full bg-trinidad/10 flex items-center justify-center mb-6">
-            <span class="material-symbols-outlined text-trinidad text-2xl">photo_camera</span>
-          </div>
-          <div class="font-headline font-bold text-trinidad/10 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">01</div>
-          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Take Photos</h3>
-          <p class="font-body text-muted-text leading-relaxed">Snap a few shots of your space with your phone. No professional photography needed — guests love authentic.</p>
-        </div>
-
-        <div class="host-step relative bg-cream rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5 md:mt-8">
-          <div class="w-12 h-12 rounded-full bg-jungle-green/10 flex items-center justify-center mb-6">
-            <span class="material-symbols-outlined text-jungle-green text-2xl">edit_note</span>
-          </div>
-          <div class="font-headline font-bold text-jungle-green/10 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">02</div>
-          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">List Your Space</h3>
-          <p class="font-body text-muted-text leading-relaxed">Set your nightly price, describe your land, and choose your availability. You're in full control of your listing.</p>
-        </div>
-
-        <div class="host-step relative bg-white rounded-3xl p-8 shadow-[0_4px_40px_rgba(0,0,0,0.06)] border border-dark-text/5">
-          <div class="w-12 h-12 rounded-full bg-[#F1B434]/15 flex items-center justify-center mb-6">
-            <span class="material-symbols-outlined text-[#F1B434] text-2xl">payments</span>
-          </div>
-          <div class="font-headline font-bold text-[#F1B434]/20 text-4xl md:text-7xl leading-none absolute top-6 right-8 select-none">03</div>
-          <h3 class="font-headline font-bold text-dark-text text-xl mb-3">Get Booked &amp; Earn</h3>
-          <p class="font-body text-muted-text leading-relaxed">Travelers request to stay, you approve, and earnings deposit directly to your bank. Simple as that.</p>
-        </div>
-
-      </div>
-
-      <!-- Steps CTA -->
-      <div class="text-center mt-16">
-        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
-          <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
-            <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
-            <div class="btn-3d-front bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
-            <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl">
+            <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+              <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Explore Map <span class="material-symbols-outlined text-[20px]">map</span>
+              </div>
+              <div class="btn-3d-front bg-white text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Explore Map <span class="material-symbols-outlined text-[20px]">map</span>
+              </div>
+              <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Explore Map <span class="material-symbols-outlined text-[20px]">map</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
+    </div>
     </div>
   </section>
 
@@ -464,9 +496,9 @@
       <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-16">Host with total confidence.</h2>
       <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
         <div class="host-trust-item bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
-          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">verified_user</span>
-          <h4 class="font-headline font-bold text-white text-xl mb-3">Host Protection Insurance</h4>
-          <p class="font-body text-white/60 leading-relaxed">Up to $1M in liability coverage for every stay, protecting your property and your peace of mind.</p>
+          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">tune</span>
+          <h4 class="font-headline font-bold text-white text-xl mb-3">You're in Control</h4>
+          <p class="font-body text-white/60 leading-relaxed">Approve or deny any booking request. Set your house rules, review guest profiles, and host only on your terms.</p>
         </div>
         <div class="host-trust-item bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
           <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">badge</span>
@@ -474,9 +506,9 @@
           <p class="font-body text-white/60 leading-relaxed">Every traveler is ID-verified before they can request a booking. You always know who's on your land.</p>
         </div>
         <div class="host-trust-item bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
-          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">support_agent</span>
-          <h4 class="font-headline font-bold text-white text-xl mb-3">24/7 Host Support</h4>
-          <p class="font-body text-white/60 leading-relaxed">Our dedicated host support team is always just a call or message away — day or night, we've got you.</p>
+          <span class="material-symbols-outlined text-[#F1B434] text-4xl mb-4 block">groups</span>
+          <h4 class="font-headline font-bold text-white text-xl mb-3">Host Community</h4>
+          <p class="font-body text-white/60 leading-relaxed">You're never hosting alone. Connect with the CurbNTurf community and reach our team whenever you need a hand.</p>
         </div>
       </div>
     </div>
