@@ -56,16 +56,31 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let ringX = 0, ringY = 0;
     let dotX = 0, dotY = 0;
 
+    // Use xPercent/yPercent so GSAP centres the element on the cursor point
+    gsap.set(dot,  { xPercent: -50, yPercent: -50 });
+    gsap.set(ring, { xPercent: -50, yPercent: -50 });
+
     const onMouseMove = (e: MouseEvent) => {
       dotX = e.clientX;
       dotY = e.clientY;
       gsap.set(dot, { x: dotX, y: dotY });
     };
 
-    const onMouseEnterHoverable = () => document.body.classList.add('cursor-hover');
-    const onMouseLeaveHoverable = () => document.body.classList.remove('cursor-hover');
+    const onMouseEnterHoverable = () => {
+      document.body.classList.add('cursor-hover');
+      gsap.to(ring, { scale: 1.6, backgroundColor: 'white', duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+    };
+    const onMouseLeaveHoverable = () => {
+      document.body.classList.remove('cursor-hover');
+      gsap.to(ring, { scale: 1, backgroundColor: 'transparent', duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+    };
+
+    const onMouseLeaveDoc = () => document.body.classList.add('cursor-hidden');
+    const onMouseEnterDoc = () => document.body.classList.remove('cursor-hidden');
 
     document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseleave', onMouseLeaveDoc);
+    document.addEventListener('mouseenter', onMouseEnterDoc);
 
     const bindHoverables = () => {
       const hoverables = document.querySelectorAll('a, button, [class*="cursor-pointer"], .magnetic-btn, .btn-3d-wrap');
@@ -89,21 +104,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 
     const ticker = () => {
-      ringX += (dotX - ringX) * 0.12;
-      ringY += (dotY - ringY) * 0.12;
+      ringX += (dotX - ringX) * 0.15;
+      ringY += (dotY - ringY) * 0.15;
       gsap.set(ring, { x: ringX, y: ringY });
     };
     gsap.ticker.add(ticker);
 
     this.cursorCleanup = () => {
       document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseleave', onMouseLeaveDoc);
+      document.removeEventListener('mouseenter', onMouseEnterDoc);
       hoverables.forEach(el => {
         el.removeEventListener('mouseenter', onMouseEnterHoverable);
         el.removeEventListener('mouseleave', onMouseLeaveHoverable);
       });
       mutationObserver.disconnect();
       gsap.ticker.remove(ticker);
-      document.body.classList.remove('cursor-hover');
+      document.body.classList.remove('cursor-hover', 'cursor-hidden');
     };
   }
 
