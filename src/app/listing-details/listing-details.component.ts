@@ -18,6 +18,7 @@ import { BookingStateService } from './booking-state.service';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
+import { ListingCardComponent } from '../listing-card/listing-card.component';
 
 @Component({
   selector: 'cnt-workspace-listing-details',
@@ -26,6 +27,7 @@ import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-m
     CommonModule, RouterLink,
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
+    ListingCardComponent,
   ],
   providers: [BookingStateService],
   templateUrl: './listing-details.component.html',
@@ -48,6 +50,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   // Favorite state (mirrors /search behavior)
   favorited = false;
   private readonly FAV_KEY = 'cnt-favorites';
+  private favoriteSet = new Set<number>();
 
   // Content section state
   rulesOpen = false;
@@ -279,28 +282,38 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   // ---- Favorite ----
   private hydrateFavorite(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const raw = localStorage.getItem(this.FAV_KEY);
-    if (!raw) { this.favorited = false; return; }
-    try {
-      const set = new Set(JSON.parse(raw) as number[]);
-      this.favorited = set.has(this.listing.id);
-    } catch {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.favoriteSet = new Set();
       this.favorited = false;
+      return;
     }
+    const raw = localStorage.getItem(this.FAV_KEY);
+    try {
+      this.favoriteSet = new Set(raw ? (JSON.parse(raw) as number[]) : []);
+    } catch {
+      this.favoriteSet = new Set();
+    }
+    this.favorited = this.favoriteSet.has(this.listing.id);
   }
 
   toggleFavorite(event: MouseEvent): void {
     event.stopPropagation();
-    this.favorited = !this.favorited;
+    this.toggleListingFavorite(this.listing.id, event);
+    this.favorited = this.favoriteSet.has(this.listing.id);
+  }
+
+  isListingFavorite(id: number): boolean {
+    return this.favoriteSet.has(id);
+  }
+
+  toggleListingFavorite(id: number, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    if (this.favoriteSet.has(id)) this.favoriteSet.delete(id);
+    else this.favoriteSet.add(id);
+    if (id === this.listing?.id) this.favorited = this.favoriteSet.has(id);
     if (!isPlatformBrowser(this.platformId)) return;
-    const raw = localStorage.getItem(this.FAV_KEY);
-    let set: Set<number>;
-    try { set = new Set(raw ? (JSON.parse(raw) as number[]) : []); }
-    catch { set = new Set(); }
-    if (this.favorited) set.add(this.listing.id);
-    else set.delete(this.listing.id);
-    localStorage.setItem(this.FAV_KEY, JSON.stringify([...set]));
+    localStorage.setItem(this.FAV_KEY, JSON.stringify([...this.favoriteSet]));
   }
 
   share(): void {

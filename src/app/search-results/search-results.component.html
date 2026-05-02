@@ -10,7 +10,7 @@
       <div class="flex items-baseline gap-4 flex-wrap">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold">{{ searchParams.mode === 'roadtrip' ? 'Custom Route' : 'Curated Collection' }}</span>
         @if (searchParams.mode === 'roadtrip' || searchParams.dest || searchParams.state) {
-          <h1 class="font-headline font-bold text-dark-text tracking-tight text-2xl md:text-3xl">{{ headerTitle }}</h1>
+          <h1 class="font-headline font-bold text-dark-text tracking-tight text-3xl md:text-4xl">{{ headerTitle }}</h1>
         }
         <span class="text-muted-text text-sm font-body">{{ resultCountLabel }}</span>
       </div>
@@ -152,7 +152,7 @@
                     [ngClass]="filters.rvType === t.id
                       ? 'bg-trinidad text-white border-trinidad'
                       : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
-                    class="rv-type-card border rounded-xl p-3 flex flex-col items-center gap-2 transition-colors">
+                    class="rv-type-card border rounded-lg p-3 flex flex-col items-center gap-2 transition-colors">
                     <img [src]="t.image" [alt]="t.label" class="h-10 w-auto object-contain rv-type-illustration">
                     <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold">{{ t.label }}</span>
                   </button>
@@ -276,69 +276,16 @@
       } @else {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           @for (l of filteredListings; track l.id) {
-            <article
-              class="listing-card group cursor-pointer flex flex-col bg-white rounded-[1rem] overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300"
+            <div class="rounded-2xl"
               [class.ring-2]="hoveredId === l.id"
               [class.ring-trinidad]="hoveredId === l.id"
               (mouseenter)="onCardHover(l.id)"
-              (mouseleave)="onCardHover(null)"
-              (click)="onCardClick(l.id)">
-
-              <div class="relative aspect-[4/3] overflow-hidden">
-                <img [src]="l.image" [alt]="l.title" loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  (load)="onImageLoad($event)">
-                <!-- category badge (pennant) -->
-                <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
-                  [style.background]="CATEGORY_META[l.category].color"
-                  style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-                  <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[l.category].icon }}</span>
-                </div>
-                <!-- favorite heart -->
-                <button type="button"
-                  (click)="toggleFavorite(l.id, $event)"
-                  [attr.aria-label]="isFavorite(l.id) ? 'Remove from favorites' : 'Save to favorites'"
-                  [attr.aria-pressed]="isFavorite(l.id)"
-                  class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center hover:scale-110 transition-transform">
-                  <span class="material-symbols-outlined text-[20px]"
-                    [class.text-trinidad]="isFavorite(l.id)"
-                    [class.text-dark-text]="!isFavorite(l.id)"
-                    [style.font-variation-settings]="isFavorite(l.id) ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">
-                    favorite
-                  </span>
-                </button>
-                <!-- price chip -->
-                <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-                  <span class="text-trinidad font-button font-bold text-sm">${{ l.price }}</span>
-                  <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
-                </div>
-              </div>
-
-              <div class="p-4 flex flex-col gap-3 flex-1">
-                <div>
-                  <h3 class="font-headline font-bold text-dark-text text-lg leading-tight">{{ l.title }}</h3>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ l.location }}</span>
-                    <span class="text-muted-text text-xs">•</span>
-                    <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
-                      <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-                      {{ l.rating }}
-                    </span>
-                  </div>
-                </div>
-                <!-- amenity chips (truncated to 3) -->
-                <div class="flex flex-wrap gap-1.5 mt-auto">
-                  @for (a of l.amenities.slice(0, 3); track a) {
-                    <span class="px-2.5 py-1 bg-dark-text text-white text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">
-                      {{ AMENITY_LABELS[a] }}
-                    </span>
-                  }
-                  @if (l.amenities.length > 3) {
-                    <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">+{{ l.amenities.length - 3 }}</span>
-                  }
-                </div>
-              </div>
-            </article>
+              (mouseleave)="onCardHover(null)">
+              <cnt-listing-card
+                [listing]="l"
+                [isFavorite]="isFavorite(l.id)"
+                (favoriteToggle)="toggleFavorite(l.id, $event)"></cnt-listing-card>
+            </div>
           }
         </div>
       }
@@ -366,7 +313,7 @@
         </button>
       }
 
-      <div class="sticky top-32 h-[calc(100vh-9rem)] min-h-[500px] m-4 rounded-[1rem] overflow-hidden border border-dark-text/10 shadow-[0_12px_32px_rgba(0,0,0,0.06)] flex items-center justify-center"
+      <div class="sticky top-32 h-[calc(100vh-9rem)] min-h-[500px] m-4 rounded-2xl overflow-hidden border border-dark-text/10 shadow-[0_12px_32px_rgba(0,0,0,0.06)] flex items-center justify-center"
         style="background: linear-gradient(135deg, #f3ede0 0%, #e6e1d3 50%, #d4d6c5 100%);">
         <div class="text-center px-8 py-12 max-w-md">
           <div class="w-20 h-20 mx-auto rounded-full bg-jungle-green flex items-center justify-center shadow-lg mb-6">

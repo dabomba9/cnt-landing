@@ -538,34 +538,12 @@
             <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight !text-2xl md:!text-[2rem]">{{ detail.host.name }}'s other stays</h2>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (l of hostListings; track l.id) {
-            <a [routerLink]="['/listing']" [queryParams]="{ id: l.id }"
-              class="similar-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline">
-              <div class="relative aspect-[4/3] overflow-hidden">
-                <img [src]="l.image" [alt]="l.title" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
-                <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
-                  [style.background]="CATEGORY_META[l.category].color"
-                  style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-                  <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[l.category].icon }}</span>
-                </div>
-                <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-                  <span class="text-trinidad font-button font-bold text-sm">${{ l.price }}</span>
-                  <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
-                </div>
-              </div>
-              <div class="p-4 flex flex-col gap-2">
-                <h3 class="font-headline font-bold text-dark-text text-xl leading-tight">{{ l.title }}</h3>
-                <div class="flex items-center gap-2">
-                  <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ l.location }}</span>
-                  <span class="text-muted-text text-xs">•</span>
-                  <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
-                    <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-                    {{ l.rating }}
-                  </span>
-                </div>
-              </div>
-            </a>
+            <cnt-listing-card
+              [listing]="l"
+              [isFavorite]="isListingFavorite(l.id)"
+              (favoriteToggle)="toggleListingFavorite(l.id, $event)"></cnt-listing-card>
           }
         </div>
       </div>
@@ -587,36 +565,12 @@
             <span class="material-symbols-outlined text-base">arrow_forward</span>
           </a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (l of similarListings; track l.id) {
-            <a [routerLink]="['/listing']" [queryParams]="{ id: l.id }"
-              class="similar-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline">
-              <div class="relative aspect-[4/3] overflow-hidden">
-                <img [src]="l.image" [alt]="l.title" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
-                <!-- Pennant -->
-                <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
-                  [style.background]="CATEGORY_META[l.category].color"
-                  style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-                  <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[l.category].icon }}</span>
-                </div>
-                <!-- Price chip -->
-                <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-                  <span class="text-trinidad font-button font-bold text-sm">${{ l.price }}</span>
-                  <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
-                </div>
-              </div>
-              <div class="p-4 flex flex-col gap-2">
-                <h3 class="font-headline font-bold text-dark-text text-xl leading-tight">{{ l.title }}</h3>
-                <div class="flex items-center gap-2">
-                  <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ l.location }}</span>
-                  <span class="text-muted-text text-xs">•</span>
-                  <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
-                    <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-                    {{ l.rating }}
-                  </span>
-                </div>
-              </div>
-            </a>
+            <cnt-listing-card
+              [listing]="l"
+              [isFavorite]="isListingFavorite(l.id)"
+              (favoriteToggle)="toggleListingFavorite(l.id, $event)"></cnt-listing-card>
           }
         </div>
       </div>

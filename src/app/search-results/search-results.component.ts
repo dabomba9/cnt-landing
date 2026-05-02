@@ -15,6 +15,7 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
 } from './mock-listings.data';
 import { readMyRv, writeMyRv } from '../my-rv.util';
+import { ListingCardComponent } from '../listing-card/listing-card.component';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
 
@@ -32,7 +33,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })

@@ -1,0 +1,61 @@
+<a [routerLink]="['/listing']" [queryParams]="{ id: listing.id }"
+  class="listing-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline">
+
+  <div class="relative aspect-[4/3] overflow-hidden">
+    <img [src]="listing.image" [alt]="listing.title" loading="lazy"
+      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+
+    <!-- category badge (pennant) -->
+    <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
+      [style.background]="CATEGORY_META[listing.category].color"
+      style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+      <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[listing.category].icon }}</span>
+    </div>
+
+    <!-- favorite heart -->
+    <button type="button"
+      (click)="onFavoriteClick($event)"
+      [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
+      [attr.aria-pressed]="isFavorite"
+      class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center hover:scale-110 transition-transform">
+      <span class="material-symbols-outlined text-[20px]"
+        [class.text-trinidad]="isFavorite"
+        [class.text-dark-text]="!isFavorite"
+        [style.font-variation-settings]="isFavorite ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">
+        favorite
+      </span>
+    </button>
+
+    <!-- price chip -->
+    <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
+      <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
+      <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
+    </div>
+  </div>
+
+  <div class="p-4 flex flex-col gap-3 flex-1">
+    <div>
+      <h3 class="font-headline font-bold text-dark-text text-lg leading-tight">{{ listing.title }}</h3>
+      <div class="flex items-center gap-2 mt-1">
+        <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ listing.location }}</span>
+        <span class="text-muted-text text-xs">•</span>
+        <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
+          <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+          {{ listing.rating }}
+        </span>
+      </div>
+    </div>
+
+    <!-- amenity chips (truncated to 3) -->
+    <div class="flex flex-wrap gap-1.5 mt-auto">
+      @for (a of listing.amenities.slice(0, 3); track a) {
+        <span class="px-2.5 py-1 bg-dark-text text-white text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">
+          {{ AMENITY_LABELS[a] }}
+        </span>
+      }
+      @if (listing.amenities.length > 3) {
+        <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">+{{ listing.amenities.length - 3 }}</span>
+      }
+    </div>
+  </div>
+</a>
