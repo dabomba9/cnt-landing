@@ -1,0 +1,86 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  <!-- ================= Hero ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="hr-hero-content max-w-3xl">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">For Hosts</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
+          Host resources
+        </h1>
+        <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl">
+          Everything you need to host successfully on CurbNTurf — onboarding, FAQ, the Grow Program, and direct customer support.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Resource cards ================= -->
+  <section class="px-[2%] pb-20">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        @for (r of resources; track r.title) {
+          <a [routerLink]="r.routerLink"
+            class="hr-card group bg-white rounded-[1.25rem] p-8 md:p-10 border border-dark-text/8 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline flex flex-col"
+            [class.hover:border-trinidad]="r.accent === 'trinidad'"
+            [class.hover:border-jungle-green]="r.accent === 'jungle-green'">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center mb-6 transition-colors"
+              [class.bg-trinidad]="r.accent === 'trinidad'"
+              [class.bg-jungle-green]="r.accent === 'jungle-green'">
+              <span class="material-symbols-outlined text-3xl text-white">{{ r.icon }}</span>
+            </div>
+            <h3 class="font-headline text-2xl font-bold text-dark-text mb-3 leading-tight">{{ r.title }}</h3>
+            <p class="text-muted-text text-base font-body leading-relaxed flex-1">{{ r.body }}</p>
+            <div class="flex items-center gap-2 mt-6 font-button uppercase tracking-[0.12em] text-xs font-bold"
+              [class.text-trinidad]="r.accent === 'trinidad'"
+              [class.text-jungle-green]="r.accent === 'jungle-green'">
+              <span>Open</span>
+              <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Legal references inline ================= -->
+  <section class="px-[2%] pb-20">
+    <div class="max-w-[60rem] mx-auto px-4 md:px-8">
+      <div class="bg-white/70 rounded-[1rem] border border-dark-text/8 p-6 md:p-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold mb-2 block">Legal &amp; policy</span>
+        <p class="text-muted-text text-sm md:text-base font-body leading-relaxed">
+          The full <a routerLink="/terms" class="text-trinidad hover:underline font-bold">Host Agreement</a>, Pricing/Payouts/Fees, Cancellation Policy, and Grow Program terms all live in our Terms &amp; Conditions. Privacy practices are in our <a routerLink="/privacy" class="text-trinidad hover:underline font-bold">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="px-[2%] pb-24">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="bg-jungle-green rounded-[2rem] px-8 md:px-16 py-16 md:py-20 text-center">
+        <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Ready to host?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl mb-6">
+          Start your listing today.
+        </h2>
+        <p class="text-white/80 text-lg font-body leading-relaxed max-w-xl mx-auto mb-10">
+          Most hosts list a site in 15 minutes. There's no setup fee, no listing fee, and no charge for unbooked nights.
+        </p>
+        <div class="flex justify-center">
+          <div class="btn-3d-wrap magnetic-btn">
+            <a routerLink="/host" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Become a host</div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Become a host</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Become a host</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<curbnturf-footer></curbnturf-footer>

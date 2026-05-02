@@ -3,7 +3,104 @@ img.img-loaded {
   opacity: 1 !important;
 }
 
-/* Listing cards start invisible; GSAP animates them in */
-.listing-card {
-  opacity: 0;
+/* Listing cards: GSAP animates them in via fromTo */
+
+/* ===== Search split layout (no Tailwind arbitrary values, deterministic) ===== */
+.search-split {
+  display: block;
+}
+.search-list, .search-map-pane {
+  display: block;
+}
+@media (min-width: 768px) {
+  .search-split {
+    display: grid;
+    grid-template-columns: 42% 58%;
+  }
+  .search-list, .search-map-pane {
+    display: block !important; /* always visible at md+ */
+  }
+  .search-split.map-only {
+    grid-template-columns: 1fr;
+  }
+  .search-split.map-only .search-list {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .hidden-mobile { display: none; }
+}
+
+/* Favorite heart tap-pop */
+.favorite-btn:active span {
+  transform: scale(0.85);
+  transition: transform 100ms;
+}
+
+/* ============ Filter dropdown panels ============ */
+.filter-panel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  z-index: 50;
+  width: 22rem;
+  max-width: calc(100vw - 2rem);
+  background: #fff;
+  border: 1px solid rgba(34, 34, 34, 0.1);
+  border-radius: 1.25rem;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem;
+  animation: panel-pop 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.filter-panel--anchor-left {
+  left: 0;
+}
+
+.filter-panel--anchor-right {
+  right: 0;
+}
+
+.filter-panel--wide {
+  width: 32rem;
+}
+
+.filter-panel--dates {
+  width: 22rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+@keyframes panel-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ============ RV type illustration tinting ============ */
+.rv-type-illustration {
+  filter: brightness(0) saturate(100%);
+  opacity: 0.7;
+  transition: filter 200ms, opacity 200ms;
+}
+
+.rv-type-card:hover .rv-type-illustration {
+  opacity: 1;
+}
+
+.rv-type-card.bg-trinidad .rv-type-illustration {
+  filter: brightness(0) saturate(100%) invert(1);
+  opacity: 1;
+}
+
+/* ============ Custom scrollbar ============ */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(34, 34, 34, 0.15);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 34, 34, 0.3);
 }

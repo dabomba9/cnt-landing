@@ -649,11 +649,11 @@
         <!-- FAQ action buttons -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
           <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
-            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+            <a routerLink="/faq" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width:auto;">
               <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
               <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
               <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Show More FAQs</div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -719,12 +719,12 @@
               Track bookings, message guests, update availability, and monitor your earnings — all from the CurbNTurf host app.
             </p>
             <div class="flex flex-row flex-wrap gap-4">
-              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
-                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store" class="h-12 w-auto border border-black/10 rounded-[10px]">
-              </a>
-              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
-                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play" class="h-12 w-auto border border-black/10 rounded-[10px]">
-              </a>
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </button>
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </button>
             </div>
           </div>
 

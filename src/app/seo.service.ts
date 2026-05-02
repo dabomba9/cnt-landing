@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 
 export interface SeoConfig {
@@ -11,10 +12,41 @@ export interface SeoConfig {
 
 const BASE_URL = 'https://www.curbnturf.com';
 const DEFAULT_IMAGE = `${BASE_URL}/assets/images/og-default.jpg`;
+const JSONLD_ID = 'cnt-jsonld';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
-  constructor(private title: Title, private meta: Meta) {}
+  constructor(
+    private title: Title,
+    private meta: Meta,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
+
+  /** Build absolute URLs from project-relative paths, leaving full URLs untouched. */
+  absUrl(path: string): string {
+    if (!path) return '';
+    if (/^https?:\/\//.test(path)) return path;
+    return `${BASE_URL}/${path.replace(/^\/+/, '')}`;
+  }
+
+  /** Insert or replace a JSON-LD structured data <script> in <head>. Pass null to clear. */
+  setStructuredData(data: object | null): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const head = document.head;
+    if (!head) return;
+    let script = head.querySelector<HTMLScriptElement>(`script#${JSONLD_ID}`);
+    if (!data) {
+      if (script) script.remove();
+      return;
+    }
+    if (!script) {
+      script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = JSONLD_ID;
+      head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(data);
+  }
 
   update(config: SeoConfig): void {
     const ogType = config.type ?? 'website';

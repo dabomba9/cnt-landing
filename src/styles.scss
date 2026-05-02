@@ -1,3 +1,34 @@
+// =============================================================================
+// CurbNTurf — Global Styles
+// =============================================================================
+//
+// CATALOG OF GLOBAL UTILITIES (search this file for the section marker):
+//
+//   • Brand fonts ............................... Asap Condensed (Google Fonts)
+//                                                  Familjen Grotesk (preloaded ttf)
+//   • Map markers (Leaflet) ..................... .cnt-price-marker, .cnt-cluster
+//   • Button base override (font-family) ........ button, .cnt-button, etc.
+//   • 3D Flip CTA Button ........................ .btn-3d-wrap / .btn-3d-inner /
+//                                                  .btn-3d-front / .btn-3d-back
+//                                                  Pair with .magnetic-btn class
+//                                                  + import MagneticBtnDirective in
+//                                                  the host component to get the
+//                                                  cursor-following pull behavior.
+//   • Pill button (filter / tab) ................. .cnt-pill (base)
+//                                                  .cnt-pill-active (jungle-green)
+//                                                  .cnt-pill-inactive (white default)
+//   • Subtle grid background w/ cursor halo ..... .bg-grid-subtle
+//                                                  (use with bg-cream)
+//   • Material Symbols icon weight ............... .material-symbols-outlined
+//                                                  .icon-filled
+//   • Stagger-list custom property ............... [data-stagger-list] > *
+//                                                  exposes --i for staggered
+//                                                  CSS animations.
+//
+// Component-scoped SCSS files SHOULD NOT redefine any of the above — extend
+// or compose with these classes in your component templates instead.
+// =============================================================================
+
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -5,9 +36,144 @@
 
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@400;500;600;700;800;900&display=swap');
+@import 'leaflet/dist/leaflet.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== 3D Flip CTA Button =====================================================
+   Markup pattern (use anywhere on the site for primary CTAs):
+
+   <div class="btn-3d-wrap magnetic-btn">
+     <a routerLink="..." class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+       <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+         Button Label
+       </div>
+       <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+         Button Label
+       </div>
+       <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+         Button Label
+       </div>
+     </a>
+   </div>
+
+   Adding the .magnetic-btn class enables cursor-pull behavior — call
+   initMagneticButtons() in the host component's ngAfterViewInit. (TODO:
+   replace with a directive in Phase 2 of the CSS refactor.)
+   =========================================================================== */
+.btn-3d-wrap {
+  perspective: 1000px;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.btn-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.btn-3d-front,
+.btn-3d-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-3d-back {
+  transform: rotateY(180deg);
+}
+
+.btn-3d-wrap:hover .btn-3d-inner {
+  transform: rotateY(-180deg);
+}
+
+/* ===== Pill button (filter pills, sort options, FAQ category tabs) ============
+   Compose with state classes: `.cnt-pill .cnt-pill-active` or `.cnt-pill .cnt-pill-inactive`.
+   Use `[ngClass]` to swap state.
+   Example:
+     <button class="cnt-pill" [ngClass]="active ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+   =========================================================================== */
+@layer components {
+  .cnt-pill {
+    @apply flex items-center gap-2 px-5 py-2.5 border rounded-full
+           text-xs md:text-sm font-button uppercase tracking-[0.12em] font-bold
+           transition-colors;
+  }
+  .cnt-pill-inactive {
+    @apply bg-white text-dark-text border-dark-text/15 hover:border-trinidad;
+  }
+  .cnt-pill-active {
+    @apply bg-jungle-green text-white border-jungle-green;
+  }
+}
+
+/* ===== CurbNTurf custom map markers ===== */
+.cnt-price-marker-wrap { background: transparent !important; border: none !important; }
+.cnt-price-marker {
+  background: #f7f5ec;
+  color: #e3530d;
+  border: 2px solid var(--cat, #e3530d);
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-family: 'Asap Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transform-origin: center bottom;
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms;
+  cursor: pointer;
+}
+.cnt-price-marker:hover, .cnt-price-marker.is-hovered {
+  background: #e3530d;
+  color: #fff;
+  transform: scale(1.18);
+  box-shadow: 0 8px 20px rgba(227, 83, 13, 0.4);
+  z-index: 1000;
+}
+
+.cnt-cluster-wrap { background: transparent !important; border: none !important; }
+.cnt-cluster {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #295d42;
+  color: #fff;
+  font-family: 'Asap Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform 200ms;
+}
+.cnt-cluster:hover { transform: scale(1.08); }
+
+/* Leaflet attribution + zoom buttons restyle to match brand */
+.leaflet-control-zoom a {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #222 !important;
+  border-color: rgba(34, 34, 34, 0.1) !important;
+}
+.leaflet-control-attribution {
+  background: rgba(247, 245, 236, 0.9) !important;
+  font-family: 'Familjen Grotesk', sans-serif !important;
+  font-size: 10px !important;
+}
 
 @layer base {
   button,

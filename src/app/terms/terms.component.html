@@ -1,0 +1,175 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  <!-- ================= Hero ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="legal-hero-content max-w-3xl">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Legal</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
+          Terms &amp; Conditions
+        </h1>
+        <p class="text-muted-text text-sm font-body leading-relaxed mt-6">
+          Last updated: <span class="text-dark-text font-bold">{{ lastUpdated }}</span>
+        </p>
+        <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl">
+          These terms govern your use of CurbNTurf — both as a guest booking RV stays and as a host listing land. Each section below is dated independently and may be updated separately.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Category tabs ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-5">
+      <div class="terms-tabs flex flex-wrap gap-2">
+        @for (cat of TERMS_CATEGORIES; track cat.id) {
+          <button type="button" (click)="selectCategory(cat.id)"
+            class="cnt-pill"
+            [ngClass]="selectedCategory === cat.id ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">{{ cat.icon }}</span>
+            <span class="font-button">{{ cat.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Accordion ================= -->
+  <section class="px-[2%] pt-8 pb-20">
+    <div class="max-w-[60rem] mx-auto px-4 md:px-8">
+
+      <div class="flex items-center justify-between mb-8">
+        <span class="text-muted-text text-sm font-body">
+          @if (filteredSections.length === 0) { No sections in this category. }
+          @else { Showing {{ filteredSections.length }} {{ filteredSections.length === 1 ? 'section' : 'sections' }} }
+        </span>
+        @if (filteredSections.length > 0) {
+          <div class="flex gap-3">
+            <button type="button" (click)="expandAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Expand all</button>
+            <span class="text-dark-text/30">|</span>
+            <button type="button" (click)="collapseAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Collapse all</button>
+          </div>
+        }
+      </div>
+
+      <div class="space-y-3">
+
+        @for (section of filteredSections; track section.id) {
+          <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+            [class.border-trinidad]="isOpen(section.id)"
+            [class.shadow-md]="isOpen(section.id)">
+            <button type="button" (click)="toggleItem(section.id)"
+              class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+              <div class="pr-4">
+                <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug block">{{ section.title }}</span>
+                <span class="font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold text-trinidad mt-1 inline-block">{{ section.date }}</span>
+              </div>
+              <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300"
+                [class.rotate-45]="isOpen(section.id)">add</span>
+            </button>
+
+            @if (isOpen(section.id)) {
+              <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+
+                @if (section.id === 1) {
+                  <p>In consideration of being allowed to use CurbNTurf Inc.'s reservation service, land from landowner/land agent/lessors of premises ("Host"), and its related events and activities, I the renter or user of land ("Guest"), acknowledge, appreciate, understand and agree that:</p>
+                  <ol>
+                    <li>There are inherent risks in outdoor activities, camping outdoors, transporting people and equipment, as well as the recreational activities (hiking, climbing, shooting, swimming, camping, motor sports, etc.) that are associated with this type of outdoor experience. These risks are impossible to eliminate by even the most prudent and careful planning and conduct on the part of the Guest, Hosts, guides, and/or agents and employees of CurbNTurf. Participation in these activities entails unavoidable risks, personal injury, loss or damage to personal property, and potential paralysis or loss of life. Guest certifies that Guest, its family, those traveling with Guest, and/or the minor child that Guest has legal responsibility for, are fully capable of participation in such outdoor activities; and,</li>
+                    <li>Guest <strong>KNOWINGLY AND FREELY ASSUMES ALL SUCH RISKS</strong>, both known and unknown, <strong>EVEN IF ARISING FROM THE NEGLIGENCE OF GUEST, HOST, OR OTHERS</strong>, and assumes full responsibility for Guest's participation and those for-mentioned above; and,</li>
+                    <li>Guest will maintain liability insurance on all vehicles with proof of such insurance carried in all vehicles; and,</li>
+                    <li>Guest will maintain liability insurance on all vehicles (including ATVs, boats, trailers, etc.) with proof of such insurance carried in all vehicles; and,</li>
+                    <li>Guest, for itself and on behalf of its heirs, assigns, personal representatives and next of kin, <strong>HEREBY RELEASES, INDEMNIFIES, AND HOLDS HARMLESS CURBNTURF INC.</strong>, their officers, officials, agents, and/or employees, Hosts, other participants, sponsoring agencies, sponsors, advertisers, and, if applicable, owners and lessors of premises used for the activity, with respect to any and all injury, disability, death, or loss or damage to person or property associated with my presence, participation, or use of land, whether arising from the negligence of the Host or otherwise, to the fullest extent permitted by law.</li>
+                  </ol>
+                }
+
+                @if (section.id === 2) {
+                  <p>In consideration of being allowed to use CurbNTurf Inc.'s reservation service, I the landowner/land renter/agent/lessors of premises or land ("Host") acknowledge, appreciate, understand and agree that:</p>
+                  <ol>
+                    <li>I will provide accurate information regarding each listed space and themselves; and,</li>
+                    <li>I have the legal right to use and rent the listed land; and,</li>
+                    <li>I recognize that a quick response to a booking request is important and will therefore approve or reject reservation requests within 2 hours if instant bookings has not been selected; and,</li>
+                    <li>I agree to CurbNTurf's commission structure as outlined in Pricing, Payouts, and Fees; and,</li>
+                    <li>I agree to CurbNTurf Cash Guest Incentive as outlined in Pricing, Payouts, and Fees; and,</li>
+                    <li>I agree to pay a penalty fee for moving any Guest communication off the secure CurbNTurf communication channel: penalty fee calculated at three (3) nights multiplied by the greater of 15% of historic base site rate or $5; and,</li>
+                    <li>I agree to be responsible for any related sales tax; and,</li>
+                    <li>Host again agrees to maintain property and/or commercial insurance on all listed sites; and,</li>
+                    <li>Host, for itself and on behalf of its heirs, assigns, personal representatives and next of kin, <strong>HEREBY RELEASES, INDEMNIFIES, AND HOLDS HARMLESS CURBNTURF INC.</strong>, their officers, officials, agents, and/or employees, other participants, sponsoring agencies, sponsors, advertisers, with respect to any and all injury, disability, death, or loss or damage to person or property associated with any participation, or use of land, whether arising from the negligence of the Guest or otherwise, to the fullest extent permitted by law.</li>
+                  </ol>
+                }
+
+                @if (section.id === 3) {
+                  <p><strong>CurbNTurf Cash:</strong> "CurbNTurf Cash" is the debit and credit transactional history for Guest's related user account who earn CurbNTurf Cash from reviews or any issued refunds. Any CurbNTurf Cash balance is automatically used on CurbNTurf as the first payment method toward reservations.</p>
+                  <p>A user may, at any time, withdraw CurbNTurf Cash in US Dollars (One CurbNTurf Cash equals One US Dollar). Any withdrawal is subject to a five-dollar processing fee.</p>
+                  <p><strong>Account Balance:</strong> "Account Balance" tracks debit and credit transactions for users who earn income from reservation transactions. When a reservation transaction is successfully completed, the user's share of the income is deposited into their account. Users can withdraw funds from this account at any time. The account is maintained in US Dollars.</p>
+                  <p>The 1099-MISC tax reporting is considered when withdrawals are made. If a user's total withdrawals in a calendar year reach the 1099-MISC reporting threshold, the Host will be prompted to upload the IRS Form W-9. A completed W-9 requires information such as the Host's Social Security or Employer Identification Number, name, address, individual or business structure, and signature. If you prefer not to provide this form, any funds not withdrawn will roll over to the next year and be available each year for withdrawal up to the 1099-MISC limit. Until you physically receive the money, it is not considered by CurbNTurf reportable on the 1099-MISC IRS report.</p>
+                }
+
+                @if (section.id === 4) {
+                  <p><strong>Host's Private Property:</strong> CurbNTurf's calculator adds the following surcharges to the Host-defined take-home price per site per night:</p>
+                  <ol>
+                    <li>The greater of $5 fee or 15% commission fee; and,</li>
+                    <li>$5 CurbNTurf Cash Guest Incentive.</li>
+                  </ol>
+                  <p>Upon the completion of a reservation and stay, CurbNTurf receives a portion of the financial transaction as commission for its services as the commission fee outlined above.</p>
+                  <p>Upon the completion of a reservation, stay, and leaving an honest experience review, the Guest receives the CurbNTurf Cash Guest Incentive portion of the transaction outlined above. This is received by the Guest as CurbNTurf Cash and is designed to be an incentive used toward future reservations. Or it can be withdrawn as defined in the CurbNTurf Cash section.</p>
+                  <p><strong>Boondocking:</strong> To support the going concern of CurbNTurf, donations to virtual bookings at Boondocking sites are split between the listing caretaker and CurbNTurf equally 50/50. The user will receive their donated portion as CurbNTurf Cash.</p>
+                }
+
+                @if (section.id === 5) {
+                  <p><strong>Refunds.</strong> All refunds are applied to your CurbNTurf Cash account. Cash withdrawals can be made from this account and will incur a $5 processing fee for each request. Otherwise the CurbNTurf Cash is automatically applied to your next reservation.</p>
+                  <p><strong>Easy Goin' — Free Cancellation.</strong> Cancel up to one day prior to check-in* to get a full refund. Any early check-outs will receive a full refund for all nights falling 24 hours after cancellation.</p>
+                  <p><strong>Moderate — Free Cancellation.</strong> Cancel up to three days prior to check-in* to get a full refund. Any early check-outs will receive a half refund for all nights falling 24 hours after cancellation.</p>
+                  <p><strong>Strict — Partial Refund.</strong> Cancel up to seven days prior to check-in* to get a half refund. There are no refunds for early check-outs.</p>
+                  <p><strong>Exclusive — Non-Refundable.</strong> Any cancellation is non-refundable. There are no refunds for early check-outs.</p>
+                  <p class="text-xs">*Check-in refers to your property's specified check-in time (or 2 pm if not specified) on day of check-in.</p>
+                }
+
+                @if (section.id === 6) {
+                  <p><strong>Description of the Grow Program.</strong> The CurbNTurf Grow Program permits invited eligible members to earn money (see Payment section below) by referring to CurbNTurf, for the first time, new Hosts ("Referred Hosts") who create properties for the first time and successfully complete a "Reservation". A "Completed" Reservation is a booking accepted by the Referred Host and paid for by the Guest, and is not canceled by either the Guest or the Referred Host at any time before or after the scheduled check-in for such booking.</p>
+                  <p>Through the Grow Program, after the affiliate's referral has listed their host site and a Guest has completed their stay, the affiliate will receive three percent (3%) of the Reservation for the lifetime of the published property. A Reservation excludes the Guest Incentive Program found in the transaction for both the Grow Program and CurbNTurf's own commission fee. As an example, CurbNTurf's fee is 15% of the Reservation; affiliates receive twenty percent (20%) of the CurbNTurf fee.</p>
+                  <p><strong>Your Referral.</strong> You agree to refer Referred Hosts to create and activate properties. You may not represent yourself as an employee or agent or have the authorization to bind the Company. You may not create materials (including business cards, websites, or email addresses) bearing Company branding or implying any representation of CurbNTurf.</p>
+                  <p><strong>Payment.</strong> All Referred Hosts must be new, first-time Hosts. No payment will be made for properties created by current or former CurbNTurf Hosts. Payments will be reflected as Account Balance in the Dashboard. See Pricing, Payouts &amp; Fees for more information.</p>
+                  <p>Whether a payout is due shall be a decision made at the sole discretion of CurbNTurf. CurbNTurf reserves the right to any remedy, including denial of payout or cancellation of your account, if fraud, tampering, or other violations of CurbNTurf's Terms of Service occur.</p>
+                  <p><strong>Termination.</strong> CurbNTurf may terminate your participation in the Grow Program at any time, for any reason or no reason.</p>
+                  <p><strong>Exclusion and Limitation of Liability.</strong> In no event will CurbNTurf be liable for any damages of any kind in connection with this Agreement. In no event will the Company's liability to you in connection with this Agreement exceed the amount of the payments made by the Company to you under this Agreement.</p>
+                  <p><strong>Modification.</strong> CurbNTurf reserves the right, at its sole discretion, to modify the Grow Program at any time by posting an update on this page. By accessing the Dashboard or recruiting Referred Hosts, you agree that the Terms are acceptable to you and binding on you. If the modified Terms are not acceptable to you, your only recourse is to cease using the Dashboard and terminate your Grow Program participation.</p>
+                }
+
+              </div>
+            }
+          </article>
+        }
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="px-[2%] pb-24">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="bg-jungle-green rounded-[2rem] px-8 md:px-16 py-16 md:py-20 text-center">
+        <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Need clarification?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl mb-6">
+          We're here to explain.
+        </h2>
+        <p class="text-white/80 text-lg font-body leading-relaxed max-w-xl mx-auto mb-10">
+          Reach our team during business hours and we'll walk you through any clause that's unclear.
+        </p>
+        <div class="flex justify-center">
+          <div class="btn-3d-wrap magnetic-btn">
+            <a routerLink="/contact" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Contact us</div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Contact us</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Contact us</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<curbnturf-footer></curbnturf-footer>

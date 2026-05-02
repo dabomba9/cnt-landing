@@ -1,0 +1,176 @@
+<!-- "Prices include all fees" callout -->
+<div class="flex items-center gap-3 px-5 py-3 bg-white rounded-2xl border border-dark-text/10">
+  <span class="material-symbols-outlined text-trinidad" style="font-variation-settings: 'FILL' 1;">sell</span>
+  <span class="text-sm font-body font-bold text-dark-text">Prices include all fees</span>
+</div>
+
+<div id="booking-widget" class="bg-white rounded-2xl p-6 border border-dark-text/10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] scroll-mt-32">
+  <!-- Price header -->
+  <div class="flex items-baseline justify-between mb-5">
+    <div>
+      <span class="font-headline text-3xl font-bold text-dark-text">${{ listing.price }}</span>
+      <span class="text-muted-text font-body text-sm ml-1">/ night</span>
+    </div>
+    <span class="flex items-center gap-1 text-sm text-dark-text font-bold">
+      <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+      {{ listing.rating }}
+    </span>
+  </div>
+
+  <!-- Date + Guest grouped block -->
+  <div class="border border-dark-text/15 rounded-2xl overflow-hidden">
+    <button type="button" (click)="booking.toggleCalendar()"
+      class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-cream/60 transition-colors border-b border-dark-text/10">
+      <div>
+        <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Trip dates</div>
+        <div class="text-sm font-body" [class.text-dark-text]="booking.selectedDateRange?.start" [class.text-muted-text]="!booking.selectedDateRange?.start" [class.font-bold]="booking.selectedDateRange?.start">{{ booking.dateDisplay }}</div>
+      </div>
+      <span class="material-symbols-outlined text-lg text-trinidad">{{ booking.showCalendar ? 'expand_less' : 'calendar_today' }}</span>
+    </button>
+
+    <div class="px-4 py-3 flex items-center justify-between">
+      <div>
+        <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Guests</div>
+        <div class="text-sm font-body font-bold text-dark-text">{{ booking.guestCount }} {{ booking.guestCount === 1 ? 'guest' : 'guests' }}</div>
+      </div>
+      <div class="flex flex-col items-end gap-1">
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="booking.adjustGuests(-1)" [disabled]="booking.guestCount <= 1" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad disabled:opacity-30 flex items-center justify-center"><span class="material-symbols-outlined text-base">remove</span></button>
+          <button type="button" (click)="booking.adjustGuests(1)" [disabled]="booking.guestCount >= detail.maxGuests" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad disabled:opacity-30 flex items-center justify-center"><span class="material-symbols-outlined text-base">add</span></button>
+        </div>
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.12em] text-muted-text">Max {{ detail.maxGuests }}</span>
+      </div>
+    </div>
+  </div>
+
+  @if (booking.showCalendar) {
+    <div class="mt-3 bg-white border border-dark-text/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] px-5 pt-4 pb-5">
+      <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+        <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Trip Dates</span>
+        <button type="button" (click)="booking.clearDates()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+      </div>
+      <div class="mt-3 flex justify-center">
+        <mat-calendar [selected]="booking.selectedDateRange" [minDate]="booking.today" [dateFilter]="booking.dateFilter" (selectedChange)="booking.onDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+      </div>
+      @if (booking.dateRangeError) {
+        <div class="mt-2 text-xs font-body text-trinidad">{{ booking.dateRangeError }}</div>
+      }
+      <div class="mt-3 flex items-center gap-1.5 text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text">
+        <span class="inline-block w-2 h-2 rounded-full bg-dark-text/20"></span>
+        Booked nights are greyed out
+      </div>
+      <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-dark-text/10">
+        <button type="button" (click)="booking.closeCalendar()" class="px-5 py-2.5 rounded-full border border-dark-text/20 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-dark-text/5">Cancel</button>
+        <button type="button" (click)="booking.closeCalendar()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
+      </div>
+    </div>
+  }
+
+  <!-- Add-ons (collapsible) -->
+  @if (detail.addOns.length > 0) {
+    <div class="mt-5 pt-5 border-t border-dark-text/10">
+      <button type="button" (click)="booking.toggleAddOnsPanel()"
+        class="w-full flex items-center justify-between gap-4 text-left">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg text-trinidad">add_shopping_cart</span>
+          <div>
+            <span class="font-headline font-bold text-dark-text text-sm block">Make it yours</span>
+            <span class="text-[0.6rem] font-label uppercase tracking-[0.12em] text-muted-text">
+              {{ booking.selectedAddOns.size > 0 ? booking.selectedAddOns.size + ' added' : detail.addOns.length + ' optional add-ons' }}
+            </span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-xl text-trinidad transition-transform duration-300" [class.rotate-45]="booking.showAddOns">add</span>
+      </button>
+      @if (booking.showAddOns) {
+        <div class="mt-3 space-y-2">
+          @for (a of detail.addOns; track a.id) {
+            <button type="button" (click)="booking.toggleAddOn(a.id)"
+              class="w-full flex items-start gap-3 px-3 py-3 rounded-2xl border text-left transition-colors"
+              [ngClass]="booking.selectedAddOns.has(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-dark-text/30 bg-white'">
+              <span class="material-symbols-outlined text-xl shrink-0 mt-0.5"
+                [ngClass]="booking.selectedAddOns.has(a.id) ? 'text-trinidad' : 'text-jungle-green'">{{ a.icon }}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline justify-between gap-2">
+                  <span class="font-body text-sm font-bold text-dark-text">{{ a.label }}</span>
+                  <span class="font-body text-sm font-bold text-dark-text shrink-0">${{ a.price }}<span class="text-[0.6rem] text-muted-text font-normal">/{{ a.unit === 'per stay' ? 'stay' : a.unit === 'per night' ? 'night' : 'person' }}</span></span>
+                </div>
+                <p class="text-xs font-body text-muted-text mt-0.5 leading-snug">{{ a.description }}</p>
+              </div>
+              <span class="material-symbols-outlined text-lg shrink-0"
+                [ngClass]="booking.selectedAddOns.has(a.id) ? 'text-trinidad' : 'text-dark-text/30'"
+                style="font-variation-settings: 'FILL' 1;">{{ booking.selectedAddOns.has(a.id) ? 'check_circle' : 'add_circle' }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Booking summary -->
+  @if (booking.canBook) {
+    <div class="mt-5 space-y-2 text-sm font-body">
+      <div class="flex justify-between">
+        <span class="text-muted-text">${{ listing.price }} × {{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }}</span>
+        <span class="text-dark-text font-bold">${{ booking.subtotal }}</span>
+      </div>
+      @for (a of detail.addOns; track a.id) {
+        @if (booking.selectedAddOns.has(a.id)) {
+          <div class="flex justify-between">
+            <span class="text-muted-text truncate pr-2">{{ a.label }}</span>
+            <span class="text-dark-text font-bold shrink-0">${{ booking.addOnLineTotal(a.id) }}</span>
+          </div>
+        }
+      }
+      <div class="flex justify-between">
+        <span class="text-muted-text">Service fee</span>
+        <span class="text-dark-text font-bold">${{ booking.serviceFee }}</span>
+      </div>
+    </div>
+
+    <!-- Highlighted Total block -->
+    <div class="mt-3 bg-cream rounded-2xl px-4 py-4 flex items-baseline justify-between">
+      <span class="font-headline text-base font-bold text-dark-text">Total</span>
+      <span class="font-headline text-2xl font-bold text-trinidad">${{ booking.total }}</span>
+    </div>
+  }
+
+  <!-- Refund preview pill -->
+  @if (booking.refundPreview.label) {
+    <div class="mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full"
+      [ngClass]="{
+        'bg-jungle-green/10 text-jungle-green': booking.refundPreview.tone === 'good',
+        'bg-gold/15 text-dark-text': booking.refundPreview.tone === 'warn',
+        'bg-trinidad/10 text-trinidad': booking.refundPreview.tone === 'bad'
+      }">
+      <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">{{ booking.refundPreview.tone === 'bad' ? 'block' : booking.refundPreview.tone === 'warn' ? 'schedule' : 'check_circle' }}</span>
+      <span class="text-xs font-body font-bold">
+        {{ booking.refundPreview.label }}@if (booking.refundPreview.date) { {{ ' ' + booking.refundPreview.date }} }
+      </span>
+    </div>
+  }
+
+  <!-- Request to book CTA -->
+  <div class="mt-5 btn-3d-wrap magnetic-btn block w-full" [class.opacity-50]="!booking.canBook" [class.pointer-events-none]="!booking.canBook">
+    <button type="button" (click)="onReserve()" class="btn-3d-inner rounded-full cursor-pointer no-underline block w-full bg-transparent border-0 p-0">
+      <div class="invisible px-10 py-4 flex items-center justify-center whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Request to book</div>
+      <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Request to book</div>
+      <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Request to book</div>
+    </button>
+  </div>
+  @if (!booking.canBook) {
+    <p class="text-center text-xs text-muted-text font-body mt-3">Add trip dates to see total and continue.</p>
+  }
+
+  <!-- Footer info -->
+  <div class="mt-5 pt-5 border-t border-dark-text/10 space-y-2">
+    <div class="flex items-center gap-2 text-xs font-body text-muted-text">
+      <span class="material-symbols-outlined text-base text-trinidad">redeem</span>
+      Earn $5 review reward after your stay.
+    </div>
+    <div class="flex items-center gap-2 text-xs font-body text-muted-text">
+      <span class="material-symbols-outlined text-base" [style.color]="cancellationMeta[detail.cancellationTier].color">policy</span>
+      Cancellation: <a routerLink="/terms" class="text-trinidad hover:underline font-bold">{{ cancellationMeta[detail.cancellationTier].label }}</a>
+    </div>
+  </div>
+</div>

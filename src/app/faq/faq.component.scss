@@ -1,0 +1,12 @@
+/* 3D Flip Button styles live in global src/styles.scss (search "3D Flip CTA Button"). */
+
+/* Embedded hyperlinks inside FAQ answer text. */
+.faq-answer {
+  a {
+    color: #e3530d;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+    &:hover { opacity: 0.8; }
+  }
+}

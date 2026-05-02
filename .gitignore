@@ -40,3 +40,8 @@ Thumbs.db
 
 .nx/cache
 .angular
+
+# Local logs and recovery snapshots
+*.log
+serve.log
+recover.txt

@@ -4,13 +4,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MagneticBtnDirective } from '../../../directives/magnetic-btn.directive';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 @Component({
   selector: 'cnt-home-hero',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, MagneticBtnDirective],
   templateUrl: './home-hero.component.html',
   styleUrl: './home-hero.component.scss'
 })

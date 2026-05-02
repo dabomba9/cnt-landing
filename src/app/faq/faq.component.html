@@ -1,0 +1,154 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  <!-- ================= Hero ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="faq-hero-content max-w-3xl">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Help & Support</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
+          Frequently asked questions
+        </h1>
+        <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl">
+          Quick answers about booking RV stays, hosting your land, payments, and how CurbNTurf works. Can't find what you're looking for? <a href="mailto:support@curbnturf.com" class="text-trinidad font-bold hover:underline">Email support</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Search + Tabs ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-5">
+      <div class="faq-tabs flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+
+        <!-- Search input -->
+        <div class="relative w-full lg:max-w-md">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl">search</span>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search questions…"
+            class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-4 py-3 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+          @if (searchQuery) {
+            <button type="button" (click)="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          }
+        </div>
+
+        <!-- Category tabs -->
+        <div class="flex flex-wrap gap-2">
+          @for (cat of FAQ_CATEGORIES; track cat.id) {
+            <button type="button" (click)="selectCategory(cat.id)"
+              class="cnt-pill"
+              [ngClass]="selectedCategory === cat.id ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+              <span class="material-symbols-outlined text-base">{{ cat.icon }}</span>
+              <span class="font-button">{{ cat.label }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ List ================= -->
+  <section class="px-[2%] pt-12 pb-20">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <!-- Expand / collapse controls + count -->
+      <div class="flex items-center justify-between mb-8">
+        <span class="text-muted-text text-sm font-body">
+          @if (filteredFaqs.length === 0) { No questions match your filters. }
+          @else { Showing {{ filteredFaqs.length }} {{ filteredFaqs.length === 1 ? 'question' : 'questions' }} }
+        </span>
+        @if (filteredFaqs.length > 0) {
+          <div class="flex gap-3">
+            <button type="button" (click)="expandAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Expand all</button>
+            <span class="text-dark-text/30">|</span>
+            <button type="button" (click)="collapseAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Collapse all</button>
+          </div>
+        }
+      </div>
+
+      <!-- Items -->
+      @if (filteredFaqs.length === 0) {
+        <div class="text-center py-20">
+          <span class="material-symbols-outlined text-5xl text-muted-text">help_outline</span>
+          <h3 class="font-headline text-xl font-bold mt-4">No matches</h3>
+          <p class="text-muted-text text-sm mt-2 font-body">Try a different search term or category.</p>
+        </div>
+      } @else {
+        <div class="max-w-4xl mx-auto space-y-3">
+          @for (item of filteredFaqs; track item.id) {
+            <article class="faq-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+              [class.border-trinidad]="isOpen(item.id)"
+              [class.shadow-md]="isOpen(item.id)">
+              <button type="button" (click)="toggleItem(item.id)"
+                class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+                <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">{{ item.q }}</span>
+                <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300"
+                  [class.rotate-45]="isOpen(item.id)">add</span>
+              </button>
+              @if (isOpen(item.id)) {
+                <div class="px-6 md:px-8 pb-6 pt-1">
+                  <p class="faq-answer text-muted-text text-base font-body leading-relaxed"
+                    (click)="handleAnswerClick($event)"
+                    [innerHTML]="item.a"></p>
+                </div>
+              }
+            </article>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ================= Still have questions CTA ================= -->
+  <section class="px-[2%] pb-24">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="bg-jungle-green rounded-[2rem] px-8 md:px-16 py-16 md:py-20 text-center">
+        <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Still curious?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl mb-6">
+          We're here to help.
+        </h2>
+        <p class="text-white/80 text-lg font-body leading-relaxed max-w-xl mx-auto mb-10">
+          Our team responds in under 4 hours during business hours. For booking emergencies we have 24/7 hotline coverage.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+          <!-- Email Support — 3D flip button (mirrors Learn About Our Model) -->
+          <div class="btn-3d-wrap magnetic-btn">
+            <a href="mailto:support@curbnturf.com" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Email Support
+              </div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Email Support
+              </div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Email Support
+              </div>
+            </a>
+          </div>
+
+          <!-- Become a Host — 3D flip button (mirrors Learn About Our Model) -->
+          <div class="btn-3d-wrap magnetic-btn">
+            <a routerLink="/host" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Become a Host
+              </div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Become a Host
+              </div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                Become a Host
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<curbnturf-footer></curbnturf-footer>

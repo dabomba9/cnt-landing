@@ -1,0 +1,159 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  <!-- ================= Hero ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="articles-hero-content max-w-3xl">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Field Notes &amp; Stories</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
+          Articles to fuel your next adventure
+        </h1>
+        <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl">
+          Travel tips from full-timers, stories from hosts, gear we actually use, and destination guides curated by people who live on the road.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Coming-soon banner ================= -->
+  <section class="px-[2%] pb-8">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="flex flex-col md:flex-row gap-4 md:items-center md:justify-between p-6 md:p-8 rounded-[1rem] border border-gold/40" style="background: rgba(251, 215, 132, 0.18);">
+        <div class="flex items-start gap-4 flex-1">
+          <span class="material-symbols-outlined shrink-0 mt-0.5" style="color: #b48505;">edit_note</span>
+          <div>
+            <p class="font-bold text-dark-text font-body mb-1">New articles coming soon to this page.</p>
+            <p class="text-sm text-muted-text font-body leading-relaxed">
+              Our editorial archive lives at <a href="https://www.curbnturf.com/article" target="_blank" rel="noopener" class="text-trinidad font-bold hover:underline">curbnturf.com/article</a> for now. Subscribe in the footer to be notified when articles publish here directly.
+            </p>
+          </div>
+        </div>
+        <a href="https://www.curbnturf.com/article" target="_blank" rel="noopener"
+          class="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-dark-text text-white rounded-full font-button uppercase tracking-[0.12em] text-xs font-bold hover:opacity-90 transition-opacity no-underline">
+          Read Current Articles
+          <span class="material-symbols-outlined text-base">open_in_new</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Search + Tabs ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-5">
+      <div class="articles-tabs flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+
+        <div class="relative w-full lg:max-w-md">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl">search</span>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search articles…"
+            class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-4 py-3 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+          @if (searchQuery) {
+            <button type="button" (click)="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (cat of ARTICLE_CATEGORIES; track cat.id) {
+            <button type="button" (click)="selectCategory(cat.id)"
+              class="cnt-pill"
+              [ngClass]="selectedCategory === cat.id ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+              <span class="material-symbols-outlined text-base">{{ cat.icon }}</span>
+              <span class="font-button">{{ cat.label }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Article Grid ================= -->
+  <section class="px-[2%] pt-12 pb-20">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+
+      <div class="flex items-center justify-between mb-8">
+        <span class="text-muted-text text-sm font-body">
+          @if (filteredArticles.length === 0) { No articles match your filters. }
+          @else { Showing {{ filteredArticles.length }} {{ filteredArticles.length === 1 ? 'article' : 'articles' }} }
+        </span>
+      </div>
+
+      @if (filteredArticles.length === 0) {
+        <div class="text-center py-20">
+          <span class="material-symbols-outlined text-5xl text-muted-text">article</span>
+          <h3 class="font-headline text-xl font-bold mt-4">No matches</h3>
+          <p class="text-muted-text text-sm mt-2 font-body">Try a different search term or category.</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          @for (article of filteredArticles; track article.id) {
+            <article class="article-card group cursor-pointer flex flex-col bg-white rounded-[1rem] overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300">
+              <div class="relative aspect-[16/10] overflow-hidden">
+                <img [src]="article.image" [alt]="article.title" loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+                <div class="absolute top-4 left-4 px-3 py-1 bg-cream/95 backdrop-blur-sm rounded-full">
+                  <span class="text-trinidad font-label uppercase tracking-[0.1em] text-[0.6rem] font-bold">
+                    {{ ARTICLE_CATEGORIES[ARTICLE_CATEGORIES.length - 1].label }}
+                  </span>
+                </div>
+              </div>
+              <div class="p-6 flex flex-col gap-3 flex-1">
+                <div class="flex items-center gap-3 text-muted-text text-xs font-label uppercase tracking-[0.1em]">
+                  <span>{{ formatDate(article.date) }}</span>
+                  <span class="text-dark-text/30">•</span>
+                  <span>{{ article.readTime }}</span>
+                </div>
+                <h3 class="font-headline font-bold text-dark-text text-xl leading-tight group-hover:text-trinidad transition-colors">{{ article.title }}</h3>
+                <p class="text-muted-text text-sm font-body leading-relaxed line-clamp-3 flex-1">{{ article.excerpt }}</p>
+                <div class="flex items-center gap-2 text-trinidad font-button uppercase tracking-[0.12em] text-xs font-bold mt-auto pt-2">
+                  Read article
+                  <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- Coming soon notice -->
+        <div class="mt-16 p-8 bg-white/60 border border-dark-text/8 rounded-[1rem] text-center max-w-2xl mx-auto">
+          <span class="material-symbols-outlined text-3xl text-jungle-green/60">edit_note</span>
+          <h3 class="font-headline text-lg font-bold mt-3">More coming soon</h3>
+          <p class="text-muted-text text-sm mt-2 font-body">
+            Our editorial team publishes new field notes weekly. Subscribe in the footer to get them in your inbox.
+          </p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="px-[2%] pb-24">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="bg-jungle-green rounded-[2rem] px-8 md:px-16 py-16 md:py-20 text-center">
+        <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Got a story?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl mb-6">
+          Pitch us your road trip.
+        </h2>
+        <p class="text-white/80 text-lg font-body leading-relaxed max-w-xl mx-auto mb-10">
+          We pay contributors for original travel tips, host profiles, and gear reviews. Send a 200-word pitch.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+          <div class="btn-3d-wrap magnetic-btn">
+            <a href="mailto:editorial@curbnturf.com" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Pitch a story</div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Pitch a story</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Pitch a story</div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<curbnturf-footer></curbnturf-footer>

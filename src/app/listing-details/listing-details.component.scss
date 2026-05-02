@@ -1,0 +1,14 @@
+/* 3D Flip Button styles live in global src/styles.scss (search "3D Flip CTA Button"). */
+
+.listing-gallery {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.375rem;
+}
+
+/* Map placeholder background — soft jungle-green radial halo + cream gradient base */
+.listing-map-bg {
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(41, 93, 66, 0.18) 0%, transparent 60%),
+    linear-gradient(135deg, #f3ede0 0%, #e6e1d3 50%, #d4d6c5 100%);
+}

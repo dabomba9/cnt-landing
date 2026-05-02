@@ -1,182 +1,391 @@
 <cnt-navbar></cnt-navbar>
 
-<!-- Main Content Shell -->
-<main class="pt-28 md:pt-32 min-h-screen relative">
-  <!-- Subtle Grid Texture Overlay -->
-  <div class="fixed inset-0 grid-texture pointer-events-none"></div>
+<main class="pt-24 md:pt-28 min-h-screen bg-cream">
 
-  <div class="flex flex-col md:flex-row h-[calc(100vh-8rem)]">
-    <!-- Listings Panel (Left) -->
-    <section class="w-full md:w-[60%] lg:w-[55%] overflow-y-auto px-4 sm:px-6 md:px-12 pb-20 custom-scrollbar">
+  <!-- ================= Top Filter Bar ================= -->
+  <div class="px-[2%]">
+    <div class="search-topbar max-w-[90rem] mx-auto bg-cream/95 border-b border-dark-text/30 py-4 md:py-5 flex flex-wrap gap-4 items-center justify-between">
 
-      <!-- Collection Header -->
-      <div class="mb-10 search-header">
-        <span class="font-label text-xs tracking-[0.15em] uppercase font-bold mb-2 block" [ngClass]="searchParams.mode === 'roadtrip' ? 'text-jungle-green' : 'text-trinidad'">{{ searchParams.mode === 'roadtrip' ? 'Custom Route' : 'Curated Collection' }}</span>
-        <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-dark-text">{{ headerTitle }}</h1>
-        <div class="w-24 h-1 bg-trinidad mt-4"></div>
-        <p class="text-muted-text text-sm mt-3 font-medium">{{ resultCount }}</p>
+      <!-- Header -->
+      <div class="flex items-baseline gap-4 flex-wrap">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold">{{ searchParams.mode === 'roadtrip' ? 'Custom Route' : 'Curated Collection' }}</span>
+        @if (searchParams.mode === 'roadtrip' || searchParams.dest || searchParams.state) {
+          <h1 class="font-headline font-bold text-dark-text tracking-tight text-2xl md:text-3xl">{{ headerTitle }}</h1>
+        }
+        <span class="text-muted-text text-sm font-body">{{ resultCountLabel }}</span>
       </div>
 
-      <!-- Filters Bar -->
-      <div class="filters-bar flex flex-wrap gap-2 mb-8 md:mb-12 sticky top-28 md:top-0 z-40 py-3 md:py-4 bg-white/90 backdrop-blur-sm -mx-4 sm:-mx-6 md:mx-0 px-4 sm:px-6 md:px-0">
-        @if (searchParams.rigType) {
-          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
-            <span class="material-symbols-outlined text-sm text-jungle-green">rv_hookup</span>
-            {{ searchParams.rigType }}
-            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigType')">close</span>
-          </button>
-        }
-        @if (searchParams.rigLength || searchParams.rigSlideOuts) {
-          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
-            <span class="material-symbols-outlined text-sm text-jungle-green">straighten</span>
-            @if (searchParams.rigLength) { Length: {{ searchParams.rigLength }}ft }
-            @if (searchParams.rigLength && searchParams.rigSlideOuts) { | }
-            @if (searchParams.rigSlideOuts) { Slides: {{ searchParams.rigSlideOuts }} }
-            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigLength'); clearFilter('rigSlideOuts')">close</span>
-          </button>
-        }
-        @if (searchParams.rigTowing === 'true') {
-          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
-            <span class="material-symbols-outlined text-sm text-jungle-green">car_repair</span>
-            Towing Included
-            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('rigTowing')">close</span>
-          </button>
-        }
-        @if (searchParams.startDate) {
-          <button class="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline-gray/30 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors text-dark-text shadow-sm group">
-            <span class="material-symbols-outlined text-sm text-jungle-green">calendar_today</span>
-            Dates Selected
-            <span class="material-symbols-outlined text-xs text-muted-text opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('startDate'); clearFilter('endDate')">close</span>
-          </button>
-        }
-        @if (searchParams.start) {
-          <button class="flex items-center gap-2 px-5 py-2.5 bg-trinidad text-white border border-trinidad rounded-full text-sm font-bold shadow-md hover:opacity-90 transition-opacity group">
-            <span class="material-symbols-outlined text-sm">route</span>
-            Origin: {{ searchParams.start }}
-            <span class="material-symbols-outlined text-xs opacity-60 opacity-0 group-hover:opacity-100 transition-opacity" (click)="clearFilter('start')">close</span>
-          </button>
-        }
-        <button class="flex items-center justify-center w-10 h-10 bg-white border border-outline-gray/30 rounded-full shadow-sm text-dark-text hover:bg-gray-50">
-          <span class="material-symbols-outlined">tune</span>
-        </button>
-      </div>
+      <!-- Filter Pills + Sort -->
+      <div class="flex flex-wrap gap-2 items-center">
 
-      <!-- Listings Grid -->
-      <div class="space-y-10">
-        @for (listing of mockListings; track listing.title) {
-          <div class="listing-card group bg-white rounded-lg overflow-hidden flex flex-col md:flex-row shadow-[0px_20px_40px_rgba(27,28,23,0.04)] hover:-translate-y-1 hover:shadow-[0px_20px_40px_rgba(27,28,23,0.08)] transition-all duration-300 border border-outline-gray/20">
-            <div class="w-full md:w-2/5 h-48 sm:h-56 md:h-auto relative overflow-hidden bg-stone-100">
-              <img [alt]="listing.title"
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-0 transition-opacity duration-500"
-                   [src]="listing.img"
-                   (load)="onImageLoad($event)"/>
-              <div class="absolute top-4 left-4 bg-trinidad text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-                Rig-Compatible
+        <!-- Sort pill + panel -->
+        <div class="relative">
+          <button type="button"
+            (click)="togglePill('sort')"
+            class="cnt-pill"
+            [ngClass]="(openPill === 'sort' || sortBy !== 'recommended') ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">sort</span>
+            <span class="font-button">{{ sortBy !== 'recommended' ? currentSortLabel : 'Sort' }}</span>
+          </button>
+          @if (openPill === 'sort') {
+            <div class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+                <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Sort By</span>
+                <button type="button" (click)="clearSort()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+              </div>
+              <div class="mt-3 flex flex-col">
+                @for (opt of SORT_OPTIONS; track opt.id) {
+                  <button type="button"
+                    (click)="selectSort(opt.id)"
+                    [ngClass]="sortBy === opt.id
+                      ? 'bg-trinidad/10 text-trinidad'
+                      : 'text-dark-text hover:bg-dark-text/5'"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-button uppercase tracking-[0.12em] font-bold text-left transition-colors">
+                    <span class="material-symbols-outlined text-lg" [class.text-trinidad]="sortBy === opt.id">{{ opt.icon }}</span>
+                    <span class="flex-1 font-button">{{ opt.label }}</span>
+                    @if (sortBy === opt.id) {
+                      <span class="material-symbols-outlined text-base text-trinidad">check</span>
+                    }
+                  </button>
+                }
+              </div>
+              @if (geoLocating) {
+                <p class="text-xs text-muted-text mt-3 px-3 font-body">Locating you…</p>
+              }
+              @if (geoError) {
+                <p class="text-xs text-trinidad mt-3 px-3 font-body">{{ geoError }}</p>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Dates pill + panel -->
+        <div class="relative">
+          <button type="button"
+            (click)="togglePill('dates')"
+            class="cnt-pill"
+            [ngClass]="(openPill === 'dates' || activePillSummary.dates) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">calendar_today</span>
+            {{ activePillSummary.dates || 'Dates' }}
+          </button>
+          @if (openPill === 'dates') {
+            <div class="filter-panel filter-panel--anchor-left filter-panel--dates" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+                <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Trip Dates</span>
+                <button type="button" (click)="clearDates()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+              </div>
+              <div class="mt-3">
+                <mat-calendar [selected]="selectedDateRange" [minDate]="today" (selectedChange)="onDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+              </div>
+              <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-dark-text/10">
+                <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full border border-dark-text/20 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-dark-text/5">Cancel</button>
+                <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
               </div>
             </div>
-            <div class="p-5 md:p-8 flex-1 flex flex-col justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="font-headline text-2xl font-bold text-dark-text">{{ listing.title }}</h3>
-                  <div class="flex items-center gap-1 text-trinidad">
-                    <span class="material-symbols-outlined" class="icon-filled">star</span>
-                    <span class="font-bold">{{ listing.rating }}</span>
+          }
+        </div>
+
+        <!-- Price pill + panel -->
+        <div class="relative">
+          <button type="button"
+            (click)="togglePill('price')"
+            class="cnt-pill"
+            [ngClass]="(openPill === 'price' || activePillSummary.price) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">payments</span>
+            {{ activePillSummary.price || 'Price' }}
+          </button>
+          @if (openPill === 'price') {
+            <div class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
+            <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+              <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Price Per Night</span>
+              <button type="button" (click)="clearPrice()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+            </div>
+            <div class="mt-5 flex items-center gap-4">
+              <label class="flex-1 flex flex-col gap-2">
+                <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text">Min</span>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
+                  <input type="number" [(ngModel)]="filters.minPrice" [min]="PRICE_RANGE.min" [max]="filters.maxPrice"
+                    class="w-full bg-white border border-dark-text/20 rounded-lg pl-7 pr-3 py-3 text-sm font-body focus:outline-none focus:border-trinidad">
+                </div>
+              </label>
+              <span class="text-muted-text mt-6">—</span>
+              <label class="flex-1 flex flex-col gap-2">
+                <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text">Max</span>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
+                  <input type="number" [(ngModel)]="filters.maxPrice" [min]="filters.minPrice" [max]="PRICE_RANGE.max"
+                    class="w-full bg-white border border-dark-text/20 rounded-lg pl-7 pr-3 py-3 text-sm font-body focus:outline-none focus:border-trinidad">
+                </div>
+              </label>
+            </div>
+            <p class="text-xs text-muted-text mt-3 font-body">Listings range from ${{ PRICE_RANGE.min }} to ${{ PRICE_RANGE.max }} / night.</p>
+            <div class="flex justify-end gap-3 mt-6">
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full border border-dark-text/20 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-dark-text/5">Cancel</button>
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- My RV pill + panel -->
+        <div class="relative">
+          <button type="button"
+            (click)="togglePill('rv')"
+            class="cnt-pill"
+            [ngClass]="(openPill === 'rv' || activePillSummary.rv) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">rv_hookup</span>
+            {{ activePillSummary.rv || 'My RV' }}
+          </button>
+          @if (openPill === 'rv') {
+            <div class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
+            <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+              <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">My RV Setup</span>
+              <button type="button" (click)="clearRvSetup()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-center text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-4">Select RV Type</div>
+              <div class="grid grid-cols-4 gap-3">
+                @for (t of RV_TYPES; track t.id) {
+                  <button type="button" (click)="selectRvType(t.id)"
+                    [ngClass]="filters.rvType === t.id
+                      ? 'bg-trinidad text-white border-trinidad'
+                      : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
+                    class="rv-type-card border rounded-xl p-3 flex flex-col items-center gap-2 transition-colors">
+                    <img [src]="t.image" [alt]="t.label" class="h-10 w-auto object-contain rv-type-illustration">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold">{{ t.label }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-center text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-4">Site Setup</div>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="flex flex-col gap-2">
+                  <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Length</span>
+                  <div class="flex items-center bg-white border border-dark-text/20 rounded-lg overflow-hidden">
+                    <input type="number" [(ngModel)]="filters.rvLength" (ngModelChange)="onRvDimensionChange()" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none">
+                    <span class="px-3 py-2.5 text-xs font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">Feet</span>
+                  </div>
+                </label>
+                <label class="flex flex-col gap-2">
+                  <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Height</span>
+                  <div class="flex items-center bg-white border border-dark-text/20 rounded-lg overflow-hidden">
+                    <input type="number" [(ngModel)]="filters.rvHeight" (ngModelChange)="onRvDimensionChange()" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none">
+                    <span class="px-3 py-2.5 text-xs font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">Feet</span>
+                  </div>
+                </label>
+                <label class="flex flex-col gap-2">
+                  <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Width</span>
+                  <div class="flex items-center bg-white border border-dark-text/20 rounded-lg overflow-hidden">
+                    <input type="number" [(ngModel)]="filters.rvWidth" (ngModelChange)="onRvDimensionChange()" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none">
+                    <span class="px-3 py-2.5 text-xs font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">Feet</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-center text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-4">Additional</div>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Vehicles</span>
+                  <div class="flex items-center gap-3">
+                    <button type="button" (click)="step('rvVehicles', -1)" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad flex items-center justify-center"><span class="material-symbols-outlined text-base">remove</span></button>
+                    <span class="font-headline text-xl font-bold w-8 text-center">{{ filters.rvVehicles }}</span>
+                    <button type="button" (click)="step('rvVehicles', 1)" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad flex items-center justify-center"><span class="material-symbols-outlined text-base">add</span></button>
                   </div>
                 </div>
-                <p class="text-muted-text text-sm mb-4">{{ listing.location }} • 45ft Max</p>
-                <div class="flex flex-wrap gap-2 mb-6">
-                  @for (feature of listing.features; track feature) {
-                    <span class="px-3 py-1 bg-jungle-green/10 text-jungle-green font-bold text-xs rounded-full">{{ feature }}</span>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Tents</span>
+                  <div class="flex items-center gap-3">
+                    <button type="button" (click)="step('rvTents', -1)" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad flex items-center justify-center"><span class="material-symbols-outlined text-base">remove</span></button>
+                    <span class="font-headline text-xl font-bold w-8 text-center">{{ filters.rvTents }}</span>
+                    <button type="button" (click)="step('rvTents', 1)" class="w-8 h-8 rounded-full border border-dark-text/20 hover:border-trinidad flex items-center justify-center"><span class="material-symbols-outlined text-base">add</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6 pt-5 border-t border-dark-text/10">
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full border border-dark-text/20 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-dark-text/5">Cancel</button>
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- Amenities pill + panel -->
+        <div class="relative">
+          <button type="button"
+            (click)="togglePill('amenities')"
+            class="cnt-pill"
+            [ngClass]="(openPill === 'amenities' || activePillSummary.amenities) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            <span class="material-symbols-outlined text-base">tune</span>
+            <span class="font-button">{{ activePillSummary.amenities || 'Amenities' }}</span>
+          </button>
+          @if (openPill === 'amenities') {
+            <div class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
+            <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+              <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Select amenities you need on site</span>
+              <button type="button" (click)="clearAmenities()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
+            </div>
+            <div class="mt-5 flex flex-wrap gap-2">
+              @for (a of AMENITY_GROUP; track a) {
+                <button type="button" (click)="toggleAmenity(a)"
+                  [ngClass]="isAmenitySelected(a)
+                    ? 'bg-trinidad text-white border-trinidad'
+                    : 'bg-white text-dark-text border-dark-text/20 hover:border-trinidad'"
+                  class="px-4 py-2 rounded-full border text-[0.7rem] font-label uppercase tracking-[0.1em] font-bold transition-colors">
+                  {{ AMENITY_LABELS[a] }}
+                </button>
+              }
+            </div>
+            <div class="flex justify-end gap-3 mt-6 pt-5 border-t border-dark-text/10">
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full border border-dark-text/20 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-dark-text/5">Cancel</button>
+              <button type="button" (click)="closePill()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
+            </div>
+          </div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- click-outside backdrop -->
+    @if (openPill) {
+      <div class="fixed inset-0 z-20 bg-transparent" (click)="closePill()"></div>
+    }
+  </div>
+
+  <!-- ================= Split Layout ================= -->
+  <div class="search-split min-h-[calc(100vh-13rem)] md:min-h-[calc(100vh-12rem)]"
+    [class.map-only]="viewMode === 'map-only'">
+
+    <!-- Listings Panel -->
+    <section class="search-list w-full overflow-y-auto px-4 sm:px-6 md:px-8 py-8 custom-scrollbar"
+      [class.hidden-mobile]="showMobileMap">
+      @if (filteredListings.length === 0) {
+        <div class="text-center py-20">
+          <span class="material-symbols-outlined text-5xl text-muted-text">search_off</span>
+          <h3 class="font-headline text-xl font-bold mt-4">No stays match those filters</h3>
+          <p class="text-muted-text text-sm mt-2 font-body">Try clearing some filters to see more results.</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          @for (l of filteredListings; track l.id) {
+            <article
+              class="listing-card group cursor-pointer flex flex-col bg-white rounded-[1rem] overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300"
+              [class.ring-2]="hoveredId === l.id"
+              [class.ring-trinidad]="hoveredId === l.id"
+              (mouseenter)="onCardHover(l.id)"
+              (mouseleave)="onCardHover(null)"
+              (click)="onCardClick(l.id)">
+
+              <div class="relative aspect-[4/3] overflow-hidden">
+                <img [src]="l.image" [alt]="l.title" loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  (load)="onImageLoad($event)">
+                <!-- category badge (pennant) -->
+                <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
+                  [style.background]="CATEGORY_META[l.category].color"
+                  style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                  <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[l.category].icon }}</span>
+                </div>
+                <!-- favorite heart -->
+                <button type="button"
+                  (click)="toggleFavorite(l.id, $event)"
+                  [attr.aria-label]="isFavorite(l.id) ? 'Remove from favorites' : 'Save to favorites'"
+                  [attr.aria-pressed]="isFavorite(l.id)"
+                  class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-[20px]"
+                    [class.text-trinidad]="isFavorite(l.id)"
+                    [class.text-dark-text]="!isFavorite(l.id)"
+                    [style.font-variation-settings]="isFavorite(l.id) ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">
+                    favorite
+                  </span>
+                </button>
+                <!-- price chip -->
+                <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
+                  <span class="text-trinidad font-button font-bold text-sm">${{ l.price }}</span>
+                  <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
+                </div>
+              </div>
+
+              <div class="p-4 flex flex-col gap-3 flex-1">
+                <div>
+                  <h3 class="font-headline font-bold text-dark-text text-lg leading-tight">{{ l.title }}</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ l.location }}</span>
+                    <span class="text-muted-text text-xs">•</span>
+                    <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
+                      <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+                      {{ l.rating }}
+                    </span>
+                  </div>
+                </div>
+                <!-- amenity chips (truncated to 3) -->
+                <div class="flex flex-wrap gap-1.5 mt-auto">
+                  @for (a of l.amenities.slice(0, 3); track a) {
+                    <span class="px-2.5 py-1 bg-dark-text text-white text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">
+                      {{ AMENITY_LABELS[a] }}
+                    </span>
+                  }
+                  @if (l.amenities.length > 3) {
+                    <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">+{{ l.amenities.length - 3 }}</span>
                   }
                 </div>
               </div>
-              <div class="flex justify-between items-end border-t border-outline-gray/30 pt-6">
-                <div class="text-dark-text">
-                  <span class="text-3xl font-headline font-bold">${{ listing.price }}</span>
-                  <span class="text-sm opacity-60">/night</span>
-                </div>
-                <button class="bg-trinidad text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition-opacity whitespace-nowrap">Details</button>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-
+            </article>
+          }
+        </div>
+      }
     </section>
 
-    <!-- Map Panel (Right) -->
-    <aside class="hidden md:block w-[40%] lg:w-[45%] sticky top-32 right-0 h-full p-6">
-      <div class="w-full h-[calc(100vh-10rem)] rounded-lg bg-[#F2F0E9] relative overflow-hidden border border-outline-gray/20 shadow-inner">
-        <!-- Map Placeholder Image -->
-        <img alt="Map" class="w-full h-full object-cover opacity-60 contrast-125 saturate-50 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTrf5DuPwrDFUdPu7IqofXih8laFvFqPyCYcAyh0zqOrXonvsetQm29wYG5NbrIqR8MYssbOXVb61-ze9JX7uGZQ-hnT3v5rv3lz8ajEhQLZ6WL4ReobnIRyWok0N6gLwbyF_g71F4kMZhC2IjnG3wAoiN521DErlmpporcjshdZlf6TCrE3ixTXMjGrXxY01NP8Oa-ZVVrnvVJTsipXyDipxAOGhZY181KBXoEmA50q2NrKiIMgdEHUaE9Aeqf6caC7lvOt8TrNk"/>
-        <!-- Floating Map Markers -->
-        <div class="absolute top-1/4 left-1/3">
-          <div class="bg-trinidad text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-            <span class="text-xs">$125</span>
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-trinidad rotate-45 border-r border-b border-white"></div>
+    <!-- Map Panel — interactive map coming soon. Static design for now. -->
+    <aside class="search-map-pane w-full relative bg-cream"
+      [class.hidden-mobile]="!showMobileMap">
+
+      <!-- View toggle pill: Map only (split view) -->
+      @if (viewMode === 'split') {
+        <button type="button" (click)="setViewMode('map-only')"
+          class="cnt-pill cnt-pill-inactive hidden md:flex absolute top-8 right-8 z-30 shadow-md">
+          <span class="material-symbols-outlined text-base">open_in_full</span>
+          <span class="font-button">Map only</span>
+        </button>
+      }
+
+      <!-- View toggle pill: Show list (map-only view) -->
+      @if (viewMode === 'map-only') {
+        <button type="button" (click)="setViewMode('split')"
+          class="cnt-pill cnt-pill-inactive hidden md:flex absolute top-8 left-8 z-30 shadow-md">
+          <span class="material-symbols-outlined text-base">chevron_left</span>
+          <span class="font-button">Show list</span>
+        </button>
+      }
+
+      <div class="sticky top-32 h-[calc(100vh-9rem)] min-h-[500px] m-4 rounded-[1rem] overflow-hidden border border-dark-text/10 shadow-[0_12px_32px_rgba(0,0,0,0.06)] flex items-center justify-center"
+        style="background: linear-gradient(135deg, #f3ede0 0%, #e6e1d3 50%, #d4d6c5 100%);">
+        <div class="text-center px-8 py-12 max-w-md">
+          <div class="w-20 h-20 mx-auto rounded-full bg-jungle-green flex items-center justify-center shadow-lg mb-6">
+            <span class="material-symbols-outlined text-white text-4xl">map</span>
           </div>
-        </div>
-        <div class="absolute top-1/2 left-2/3">
-          <div class="bg-dark-text text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-            <span class="text-xs">$95</span>
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-dark-text rotate-45 border-r border-b border-white"></div>
-          </div>
-        </div>
-        <div class="absolute bottom-1/3 left-1/2">
-          <div class="bg-dark-text text-white px-3 py-1.5 rounded-full font-bold shadow-xl border-2 border-white flex items-center gap-2 group cursor-pointer hover:scale-110 transition-transform">
-            <span class="text-xs">$165</span>
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-dark-text rotate-45 border-r border-b border-white"></div>
-          </div>
-        </div>
-        <!-- Map Controls -->
-        <div class="absolute bottom-6 right-6 flex flex-col gap-2">
-          <button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-dark-text hover:bg-gray-50 transition-colors">
-            <span class="material-symbols-outlined">add</span>
-          </button>
-          <button class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-dark-text hover:bg-gray-50 transition-colors">
-            <span class="material-symbols-outlined">remove</span>
-          </button>
-        </div>
-        <div class="absolute top-6 left-6">
-          <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium border border-outline-gray/10">
-            <span class="material-symbols-outlined text-jungle-green text-base">near_me</span>
-            Search this area
-          </div>
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-3">Interactive Map</span>
+          <h3 class="font-headline text-2xl font-bold text-dark-text mb-3">Coming soon</h3>
+          <p class="text-muted-text text-sm font-body leading-relaxed">
+            Browse all {{ filteredListings.length }} stays on a real map with clustered price pins, RV-friendly filters, and one-tap navigation.
+          </p>
         </div>
       </div>
     </aside>
+
+    <!-- Mobile list/map toggle -->
+    <button type="button" (click)="toggleMobileMap()"
+      class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-dark-text text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 font-button uppercase tracking-[0.12em] text-xs font-bold">
+      <span class="material-symbols-outlined text-base">{{ showMobileMap ? 'list' : 'map' }}</span>
+      {{ showMobileMap ? 'Show List' : 'Show Map' }}
+    </button>
   </div>
 </main>
-
-<!-- Footer -->
-<footer class="w-full flex flex-col items-center gap-8 bg-stone-50 dark:bg-stone-950 pt-16 pb-8 px-8 border-t border-emerald-900/5">
-  <div class="flex flex-col md:flex-row justify-between w-full max-w-7xl gap-12">
-    <div>
-      <span class="text-lg font-bold text-stone-900 dark:text-stone-50 block mb-4">CurbNTurf</span>
-      <p class="max-w-xs text-stone-500 text-sm leading-relaxed">Curating the finest off-grid experiences for the modern explorer. Redefining freedom, one vineyard at a time.</p>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-      <div class="flex flex-col gap-4">
-        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Explore</span>
-        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Vineyard Stays</a>
-        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Off-Grid Gems</a>
-      </div>
-      <div class="flex flex-col gap-4">
-        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Hosting</span>
-        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Host Guarantee</a>
-        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Safety</a>
-      </div>
-      <div class="flex flex-col gap-4">
-        <span class="text-stone-900 dark:text-stone-50 font-bold text-xs uppercase tracking-widest">Support</span>
-        <a class="text-stone-500 dark:text-stone-500 text-xs font-label uppercase tracking-[0.05em] hover:text-emerald-600 dark:hover:text-emerald-300 underline underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Support</a>
-      </div>
-    </div>
-  </div>
-  <div class="w-full max-w-7xl pt-8 border-t border-stone-200/50 flex flex-col md:flex-row justify-between items-center gap-4">
-    <span class="text-stone-500 text-[10px] uppercase tracking-widest">© 2024 CurbNTurf. The RV Freedom Experience.</span>
-    <div class="flex gap-6">
-      <span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">language</span>
-      <span class="material-symbols-outlined text-stone-400 text-lg cursor-pointer hover:text-secondary transition-colors">share</span>
-    </div>
-  </div>
-</footer>

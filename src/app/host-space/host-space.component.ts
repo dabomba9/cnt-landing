@@ -6,13 +6,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SeoService } from '../seo.service';
 import { FooterComponent } from '../footer/footer.component';
+import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 @Component({
   selector: 'cnt-workspace-host-space',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, NavbarComponent, HomeLocationsComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, NavbarComponent, HomeLocationsComponent, MagneticBtnDirective],
   templateUrl: './host-space.component.html',
   styleUrl: './host-space.component.css',
 })

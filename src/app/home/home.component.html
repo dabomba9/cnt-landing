@@ -342,7 +342,7 @@
 
     <!-- ================= Favorite Hosts Grid ================= -->
     <div>
-      <section class="py-28 md:py-44 px-4 md:px-8 max-w-[90rem] mx-auto">
+      <section id="favorite-hosts" class="py-28 md:py-44 px-4 md:px-8 max-w-[90rem] mx-auto scroll-mt-24">
         <div class="text-center mb-20">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Featured Hosts</span>
         <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
@@ -693,7 +693,7 @@
            <!-- 3D Flip Button Component -->
            <div>
              <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block mt-4">
-               <a routerLink="/become-a-host" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+               <a routerLink="/host" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
                  <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
                    START HOSTING TODAY
                  </div>
@@ -736,12 +736,12 @@
               Search listings, book sites, and navigate to your next adventure — all from the palm of your hand.
             </p>
             <div class="flex flex-row flex-wrap gap-4">
-              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
-                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store" class="h-12 w-auto border border-black/10 rounded-[10px]">
-              </a>
-              <a href="#" class="transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] bg-black inline-block">
-                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play" class="h-12 w-auto border border-black/10 rounded-[10px]">
-              </a>
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </button>
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-[10px] inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 rounded-[10px]">
+              </button>
             </div>
           </div>
 

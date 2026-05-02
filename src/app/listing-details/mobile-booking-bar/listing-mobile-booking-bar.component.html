@@ -1,0 +1,15 @@
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-[9000] bg-white border-t border-dark-text/10 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-4 py-3 flex items-center justify-between gap-4">
+  <div class="flex flex-col min-w-0">
+    @if (booking.canBook) {
+      <span class="font-headline font-bold text-dark-text text-base">${{ booking.total }} <span class="text-xs text-muted-text font-body font-normal">total</span></span>
+      <span class="text-xs text-muted-text font-body truncate">{{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }} · {{ booking.guestCount }} {{ booking.guestCount === 1 ? 'guest' : 'guests' }}</span>
+    } @else {
+      <span class="font-headline font-bold text-dark-text text-base">${{ listing.price }} <span class="text-xs text-muted-text font-body font-normal">/ night</span></span>
+      <span class="text-xs text-trinidad font-body font-bold">Add dates to book</span>
+    }
+  </div>
+  <button type="button" (click)="onReserve()"
+    class="bg-trinidad text-white font-button text-xs font-bold uppercase tracking-[0.12em] px-6 py-3 rounded-full hover:bg-trinidad/90 transition-colors shrink-0">
+    {{ booking.canBook ? 'Reserve' : 'Check dates' }}
+  </button>
+</div>

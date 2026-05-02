@@ -4,6 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
+import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { HomeLocationsComponent } from './components/home-locations/home-locations.component';
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
@@ -17,7 +18,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -70,7 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       // GSAP interactions
       this.initStaggeredCards();
       this.initHowItWorks();
-      this.initMagneticButtons();
+      // Magnetic-button behavior now handled by MagneticBtnDirective
       this.initStatsCounters();
       this.initNetworkAnimatedSection();
       this.initCardPhysics();
@@ -240,35 +241,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           end: 'bottom 80%',
           scrub: 1
         }
-      });
-    });
-  }
-
-  private initMagneticButtons(): void {
-    const buttons = document.querySelectorAll('.magnetic-btn');
-    buttons.forEach((btn: any) => {
-      btn.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = btn.getBoundingClientRect();
-        // Calculate offset from current center
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        // Move element physically slightly towards the mouse
-        gsap.to(btn, {
-          x: x * 0.3,
-          y: y * 0.3,
-          duration: 0.6,
-          ease: 'power3.out'
-        });
-      });
-
-      // Snap back to 0 immediately with elastic bounce when mouse leaves
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, {
-          x: 0,
-          y: 0,
-          duration: 0.6,
-          ease: 'elastic.out(1, 0.3)'
-        });
       });
     });
   }

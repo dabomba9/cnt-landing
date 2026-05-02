@@ -1,0 +1,175 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  <!-- ================= Hero ================= -->
+  <section class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="legal-hero-content max-w-3xl">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Legal</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
+          Cookies policy
+        </h1>
+        <p class="text-muted-text text-sm font-body leading-relaxed mt-6">
+          Last updated: <span class="text-dark-text font-bold">{{ lastUpdated }}</span>
+        </p>
+        <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl">
+          We use a small set of cookies to keep the site running, remember your preferences, and understand how the product is used. Here's the full breakdown — and how to opt out of anything optional.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Accordion ================= -->
+  <section class="px-[2%] pt-4 pb-20">
+    <div class="max-w-[60rem] mx-auto px-4 md:px-8">
+
+      <!-- Pending-review banner -->
+      <div class="flex items-start gap-4 p-5 mb-8 rounded-[1rem] border border-gold/40" style="background: rgba(251, 215, 132, 0.18);">
+        <span class="material-symbols-outlined shrink-0 mt-0.5" style="color: #b48505;">warning</span>
+        <div class="flex-1">
+          <p class="text-sm font-bold text-dark-text font-body mb-1">Working draft — pending legal review.</p>
+          <p class="text-sm text-muted-text font-body leading-relaxed">
+            This cookies disclosure is a placeholder. The production CurbNTurf site does not currently publish a formal cookies policy. Please review with legal counsel before treating this as authoritative.
+          </p>
+        </div>
+      </div>
+
+      <!-- Expand / collapse controls -->
+      <div class="flex items-center justify-between mb-8">
+        <span class="text-muted-text text-sm font-body">{{ totalSections }} sections</span>
+        <div class="flex gap-3">
+          <button type="button" (click)="expandAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Expand all</button>
+          <span class="text-dark-text/30">|</span>
+          <button type="button" (click)="collapseAll()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Collapse all</button>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(1)" [class.shadow-md]="isOpen(1)">
+          <button type="button" (click)="toggleItem(1)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">1. What is a cookie?</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(1)">add</span>
+          </button>
+          @if (isOpen(1)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <p>A cookie is a small text file your browser stores when you visit a website. It can hold a session ID, a preference, or a tracking identifier. Cookies make websites remember things between visits — like staying logged in or knowing which dates you searched.</p>
+            </div>
+          }
+        </article>
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(2)" [class.shadow-md]="isOpen(2)">
+          <button type="button" (click)="toggleItem(2)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">2. Categories of cookies we use</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(2)">add</span>
+          </button>
+          @if (isOpen(2)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <h3 class="cookie-cat-heading">Strictly necessary</h3>
+              <p>These keep the site working — for example, keeping you signed in, remembering items in your cart, and protecting against cross-site request forgery. You can't opt out; the site won't function without them.</p>
+
+              <h3 class="cookie-cat-heading">Functional</h3>
+              <p>These remember your preferences (such as locally saved favorites or display settings). Disabling them won't break the site but may reset choices on each visit.</p>
+
+              <h3 class="cookie-cat-heading">Analytics</h3>
+              <p>We may use privacy-respecting analytics to understand aggregate trends — how many visitors, which pages are most useful, and where they came from. Where used, our analytics do not track individual users across sites.</p>
+
+              <h3 class="cookie-cat-heading">Marketing &amp; advertising</h3>
+              <p>We don't currently use third-party advertising or remarketing cookies. If that changes we'll update this policy.</p>
+            </div>
+          }
+        </article>
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(3)" [class.shadow-md]="isOpen(3)">
+          <button type="button" (click)="toggleItem(3)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">3. Managing cookies</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(3)">add</span>
+          </button>
+          @if (isOpen(3)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <p>Your browser lets you view, block, or delete cookies. Here's how on common browsers:</p>
+              <ul>
+                <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Chrome</a></li>
+                <li><a href="https://support.apple.com/en-us/HT201265" target="_blank" rel="noopener">Safari</a></li>
+                <li><a href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" target="_blank" rel="noopener">Firefox</a></li>
+                <li><a href="https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Edge</a></li>
+              </ul>
+              <p>Blocking strictly necessary cookies will prevent you from logging in or completing bookings. Blocking functional cookies is fine — you'll just see a slightly less personalized experience.</p>
+            </div>
+          }
+        </article>
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(4)" [class.shadow-md]="isOpen(4)">
+          <button type="button" (click)="toggleItem(4)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">4. Do Not Track</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(4)">add</span>
+          </button>
+          @if (isOpen(4)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <p>Because we don't use third-party tracking cookies, the browser-level "Do Not Track" signal is honored by default — there's nothing to turn off.</p>
+            </div>
+          }
+        </article>
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(5)" [class.shadow-md]="isOpen(5)">
+          <button type="button" (click)="toggleItem(5)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">5. Changes to this policy</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(5)">add</span>
+          </button>
+          @if (isOpen(5)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <p>If we add new cookies (e.g. for a new analytics or advertising tool) we'll update this page and notify you in-app. You'll always be able to opt out of anything that isn't strictly necessary.</p>
+            </div>
+          }
+        </article>
+
+        <article class="legal-item bg-white border border-dark-text/8 rounded-[1rem] overflow-hidden transition-all duration-300"
+          [class.border-trinidad]="isOpen(6)" [class.shadow-md]="isOpen(6)">
+          <button type="button" (click)="toggleItem(6)" class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
+            <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">6. Contact</span>
+            <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="isOpen(6)">add</span>
+          </button>
+          @if (isOpen(6)) {
+            <div class="px-6 md:px-8 pb-6 pt-1 prose-cnt">
+              <p>Questions? Reach out via <a routerLink="/contact">our contact form</a>.</p>
+            </div>
+          }
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="px-[2%] pb-24">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="bg-jungle-green rounded-[2rem] px-8 md:px-16 py-16 md:py-20 text-center">
+        <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Curious about your data?</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight text-3xl md:text-5xl mb-6">
+          Read the full picture.
+        </h2>
+        <p class="text-white/80 text-lg font-body leading-relaxed max-w-xl mx-auto mb-10">
+          Our Privacy Policy covers everything beyond cookies — what we collect, why, and how to request deletion.
+        </p>
+        <div class="flex justify-center">
+          <div class="btn-3d-wrap magnetic-btn">
+            <a routerLink="/privacy" class="btn-3d-inner rounded-full cursor-pointer no-underline" style="width: auto;">
+              <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Read privacy policy</div>
+              <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Read privacy policy</div>
+              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Read privacy policy</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<curbnturf-footer></curbnturf-footer>
