@@ -177,7 +177,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
     private seo: SeoService,
-    public booking: BookingStateService,
+    @Inject(BookingStateService) public booking: BookingStateService,
   ) {}
 
   private currentListingId = -1;
