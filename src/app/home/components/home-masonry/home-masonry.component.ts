@@ -11,7 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home-masonry.component.scss'
 })
 export class HomeMasonryComponent implements AfterViewInit, OnDestroy {
-  private scrollTriggers: any[] = [];
+  private scrollTriggers: ScrollTrigger[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 

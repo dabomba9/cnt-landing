@@ -8,6 +8,8 @@ export interface SeoConfig {
   url: string;
   image?: string;
   type?: string;
+  /** Robots directive — e.g. 'noindex, nofollow'. Omit for default index/follow behavior. */
+  robots?: string;
 }
 
 const BASE_URL = 'https://www.curbnturf.com';
@@ -71,6 +73,13 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:title', content: config.title });
     this.meta.updateTag({ name: 'twitter:description', content: config.description });
     this.meta.updateTag({ name: 'twitter:image', content: ogImage });
+
+    // Robots — set when explicitly requested, clear when not
+    if (config.robots) {
+      this.meta.updateTag({ name: 'robots', content: config.robots });
+    } else {
+      this.meta.removeTag('name="robots"');
+    }
 
     // Canonical
     this.updateCanonical(fullUrl);

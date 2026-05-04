@@ -63,6 +63,7 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'Articles & Stories — CurbNTurf | The RV Freedom Experience',
       description: 'Travel tips, host stories, gear reviews, and destination guides for the modern RVer. Brought to you by CurbNTurf.',
       url: '/articles',
+      robots: 'noindex, nofollow',
     });
   }
 

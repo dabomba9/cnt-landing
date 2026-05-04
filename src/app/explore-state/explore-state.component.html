@@ -1,0 +1,209 @@
+<cnt-navbar></cnt-navbar>
+
+@if (state) {
+  <main class="bg-cream pt-24 md:pt-28">
+
+    <!-- ============================ HERO ============================ -->
+    <section class="px-[2%]">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <div class="relative overflow-hidden rounded-2xl h-[60vh] min-h-[420px] md:min-h-[520px] flex items-end">
+          <img [src]="state.heroImage" [alt]="state.name" class="absolute inset-0 w-full h-full object-cover">
+          <!-- darken-gradient overlay for legibility -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10"></div>
+          <!-- text content -->
+          <div class="relative z-10 p-8 md:p-12 text-white max-w-3xl">
+            <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Explore</span>
+            <h1 class="font-headline font-bold text-3xl md:text-5xl leading-tight mb-3">RV stays in {{ state.name }}</h1>
+            <p class="font-body text-white/90 text-lg md:text-xl mb-6">{{ state.tagline }}</p>
+
+            @if (listingCount > 0) {
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-6 text-sm font-label uppercase tracking-[0.12em] font-bold text-white/85">
+                <span>{{ listingCount }} listing{{ listingCount === 1 ? '' : 's' }}</span>
+                <span class="text-white/40">·</span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px] text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+                  {{ avgRating }}
+                </span>
+                <span class="text-white/40">·</span>
+                <span>From ${{ minPrice }}/night</span>
+              </div>
+            }
+
+            <a [routerLink]="['/search']" [queryParams]="{ state: state.slug }"
+              class="inline-flex items-center gap-2 bg-trinidad text-white font-button font-bold uppercase tracking-[0.12em] text-sm px-6 py-3 rounded-full hover:bg-trinidad/90 transition-colors no-underline">
+              Search {{ state.name }}
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ INTRO ============================ -->
+    <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Why {{ state.name }}</span>
+        <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-6 max-w-3xl">A traveler's overview</h2>
+        <div class="max-w-3xl space-y-4">
+          @for (p of state.intro; track $index) {
+            <p class="font-body text-dark-text/85 text-base md:text-lg leading-relaxed">{{ p }}</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ TOP DESTINATIONS ============================ -->
+    <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Where to go</span>
+        <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-8">Top destinations in {{ state.name }}</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (d of state.topDestinations; track d.city) {
+            <div class="bg-white rounded-2xl border border-dark-text/8 p-6">
+              <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl mb-2">{{ d.city }}</h3>
+              <p class="font-body text-dark-text/75 text-sm md:text-base leading-relaxed">{{ d.blurb }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ STAYS GRID ============================ -->
+    <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Stays</span>
+        <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-6">Stays in {{ state.name }}</h2>
+
+        @if (listingCount > 0) {
+          <!-- Filter pills -->
+          <div class="flex flex-wrap gap-2 mb-8">
+            <button class="cnt-pill"
+              [ngClass]="selectedCategory === null ? 'cnt-pill-active' : 'cnt-pill-inactive'"
+              (click)="selectCategory(null)">
+              All ({{ allInState.length }})
+            </button>
+            @for (pill of categoryPills; track pill.id) {
+              <button class="cnt-pill"
+                [ngClass]="selectedCategory === pill.id ? 'cnt-pill-active' : 'cnt-pill-inactive'"
+                (click)="selectCategory(pill.id)">
+                {{ pill.label }} ({{ pill.count }})
+              </button>
+            }
+          </div>
+
+          <!-- Listings grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (l of filteredListings; track l.id) {
+              <cnt-listing-card
+                [listing]="l"
+                [isFavorite]="isFavorite(l.id)"
+                (favoriteToggle)="toggleFavorite(l.id, $event)">
+              </cnt-listing-card>
+            }
+          </div>
+
+          <!-- Empty filtered state -->
+          @if (filteredListings.length === 0) {
+            <div class="bg-white rounded-2xl border border-dark-text/8 p-8 text-center">
+              <p class="font-body text-dark-text/75 mb-4">No {{ selectedCategory ? CATEGORY_META[selectedCategory].label.toLowerCase() : '' }} stays match this filter.</p>
+              <button class="cnt-pill cnt-pill-inactive" (click)="selectCategory(null)">Show all stays</button>
+            </div>
+          }
+
+          <!-- See all link -->
+          <div class="mt-8 flex justify-end">
+            <a [routerLink]="['/search']" [queryParams]="{ state: state.slug }"
+              class="inline-flex items-center gap-2 text-trinidad font-button font-bold uppercase tracking-[0.12em] text-sm no-underline hover:gap-3 transition-all">
+              See all in search
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+          </div>
+        } @else {
+          <!-- Full empty state -->
+          <div class="bg-white rounded-2xl border border-dark-text/8 p-8 md:p-12 text-center">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Coming soon</span>
+            <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl mb-3">We're growing in {{ state.name }}</h3>
+            <p class="font-body text-dark-text/75 max-w-xl mx-auto mb-6">
+              No CurbNTurf stays in {{ state.name }} yet — but new hosts are coming online every week. If you own land here, you could be one of the first.
+            </p>
+            <a [routerLink]="['/host']"
+              class="inline-flex items-center gap-2 bg-trinidad text-white font-button font-bold uppercase tracking-[0.12em] text-sm px-6 py-3 rounded-full hover:bg-trinidad/90 transition-colors no-underline">
+              List your land
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- ============================ MAP PLACEHOLDER ============================ -->
+    <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">On the map</span>
+        <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-6">{{ state.name }} at a glance</h2>
+
+        <div class="relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-dark-text/10 listing-map-bg">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center">
+            <span class="material-symbols-outlined text-6xl text-trinidad" style="font-variation-settings: 'FILL' 1; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));">location_on</span>
+            <div class="mt-2 px-3 py-1 bg-white/95 backdrop-blur-sm rounded-full shadow-md">
+              <span class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">{{ state.name }}</span>
+            </div>
+          </div>
+          <div class="absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full">
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Interactive map coming soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ THINGS TO DO ============================ -->
+    <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Things to do</span>
+        <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-6 max-w-3xl">Roads, food, and seasons in {{ state.name }}</h2>
+
+        <div class="max-w-3xl space-y-4">
+          @for (p of state.thingsToDo; track $index) {
+            <p class="font-body text-dark-text/85 text-base md:text-lg leading-relaxed">{{ p }}</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ NEARBY STATES ============================ -->
+    @if (state.nearbyStates.length > 0) {
+      <section class="px-[2%] py-10 md:py-16 border-t border-jungle-green/10">
+        <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Keep going</span>
+          <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl mb-6">Nearby states</h3>
+
+          <div class="flex flex-wrap gap-2">
+            @for (slug of state.nearbyStates; track slug) {
+              <a [routerLink]="['/explore', slug]"
+                class="cnt-pill cnt-pill-inactive no-underline">
+                {{ SLUG_TO_NAME[slug] || slug }}
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ============================ BOTTOM CTA ============================ -->
+    <section class="px-[2%] py-12 md:py-20 border-t border-jungle-green/10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8 text-center">
+        <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl mb-4">Looking for somewhere else?</h3>
+        <p class="font-body text-dark-text/75 mb-6 max-w-xl mx-auto">Browse every CurbNTurf stay across the country, filter by category, or jump back to the map.</p>
+        <a [routerLink]="['/search']"
+          class="inline-flex items-center gap-2 bg-jungle-green text-white font-button font-bold uppercase tracking-[0.12em] text-sm px-6 py-3 rounded-full hover:bg-jungle-green/90 transition-colors no-underline">
+          Browse all stays
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+}
+
+<curbnturf-footer></curbnturf-footer>

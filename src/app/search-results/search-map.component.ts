@@ -23,15 +23,15 @@ import {
     <div class="map-wrap">
       <div #mapEl class="map-el"></div>
       <button type="button" (click)="locateMe()"
-        class="absolute top-4 right-4 z-[400] w-12 h-12 rounded-full bg-trinidad shadow-2xl flex items-center justify-center hover:scale-105 transition-transform"
-        title="Center on my location">
+        class="absolute top-4 right-4 z-[var(--z-map-overlay)] w-12 h-12 rounded-full bg-trinidad shadow-2xl flex items-center justify-center hover:scale-105 transition-transform"
+        title="Center on my location" aria-label="Center map on my location">
         <span class="material-symbols-outlined text-white">rv_hookup</span>
       </button>
       @if (geoError) {
-        <div class="absolute top-20 right-4 z-[400] bg-white px-3 py-2 rounded-lg shadow text-xs font-body text-trinidad">{{ geoError }}</div>
+        <div class="absolute top-20 right-4 z-[var(--z-map-overlay)] bg-white px-3 py-2 rounded-lg shadow text-xs font-body text-trinidad" role="status">{{ geoError }}</div>
       }
       @if (initError) {
-        <div class="absolute inset-0 z-[500] flex items-center justify-center p-8 bg-white/95">
+        <div class="absolute inset-0 z-[var(--z-map-error)] flex items-center justify-center p-8 bg-white/95">
           <div class="text-center max-w-md">
             <span class="material-symbols-outlined text-5xl text-trinidad">error</span>
             <p class="font-headline text-xl font-bold mt-3">Map failed to load</p>
@@ -52,6 +52,8 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   private map: L.Map | null = null;
   private cluster: any = null;
   private markers = new Map<number, L.Marker>();
+  private destroyed = false;
+  private geoErrorTimer: ReturnType<typeof setTimeout> | null = null;
   geoError = '';
   initError = '';
 
@@ -61,11 +63,12 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     if (!isPlatformBrowser(this.platformId)) return;
     // Defer heavy leaflet init so navigation/render isn't blocked
     setTimeout(() => {
+      if (this.destroyed) return;
       try {
         this.initMap();
       } catch (err: any) {
+        if (this.destroyed) return;
         this.initError = err?.message || String(err);
-        console.error('[search-map] init failed', err);
       }
     }, 0);
   }
@@ -154,19 +157,30 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.geoError = '';
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        if (this.destroyed) return;
         this.map?.setView([pos.coords.latitude, pos.coords.longitude], 8, { animate: true });
       },
       (err) => {
+        if (this.destroyed) return;
         this.geoError = err.code === err.PERMISSION_DENIED
           ? 'Location permission denied.'
           : 'Could not determine your location.';
-        setTimeout(() => (this.geoError = ''), 4000);
+        this.geoErrorTimer = setTimeout(() => {
+          if (this.destroyed) return;
+          this.geoError = '';
+          this.geoErrorTimer = null;
+        }, 4000);
       },
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
     );
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    if (this.geoErrorTimer) {
+      clearTimeout(this.geoErrorTimer);
+      this.geoErrorTimer = null;
+    }
     if (this.map) this.map.remove();
     this.markers.clear();
   }

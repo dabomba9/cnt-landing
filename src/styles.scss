@@ -37,6 +37,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@400;500;600;700;800;900&display=swap');
 @import 'leaflet/dist/leaflet.css';
+
+/* =============================================================================
+   Z-INDEX SCALE — single source of truth for global UI layering.
+   Use these tokens (or their values) for anything that escapes a single section.
+   Local stacking inside one section (e.g. exhibit-card-wrapper z-[10..60]) does
+   NOT need to use these — it's intentionally isolated to that section.
+   ============================================================================= */
+:root {
+  --z-marker-hover:  1000;   /* Leaflet price markers when hovered/focused */
+  --z-page-overlay:  200;    /* In-page modal-style overlays (home/host video) */
+  --z-map-overlay:   400;    /* Map controls (locate-me button, geo-error toast) */
+  --z-map-error:     500;    /* Map init-failure blocking overlay */
+  --z-mobile-bar:    9000;   /* Sticky mobile booking bar */
+  --z-navbar:        9990;   /* Top navbar */
+  --z-modal:         10000;  /* Full-screen modals (photo lightbox) */
+  --z-cursor:        99999;  /* Custom cursor + skip-to-content link (always on top) */
+}
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 @tailwind base;
 @tailwind components;
@@ -140,7 +157,7 @@
   color: #fff;
   transform: scale(1.18);
   box-shadow: 0 8px 20px rgba(227, 83, 13, 0.4);
-  z-index: 1000;
+  z-index: var(--z-marker-hover);
 }
 
 .cnt-cluster-wrap { background: transparent !important; border: none !important; }
@@ -286,17 +303,296 @@ p {
   color: #707070;      /* muted-text — Tailwind text-white/* / text-dark-text overrides on dark bg */
 }
 
-/* ── Global h2 font-size — 60px, skips display headings that use inline clamp() ── */
-h2:not([style*='font-size']) {
-  font-size: 2rem;
+/* ===== Navbar — own styles, no Webflow CSS dependency =====================
+   Mirrors the visual of the Webflow-exported navbar (block-navbar floating
+   white card with logo + search + nav links + login). Used by
+   src/app/navbar/navbar.component.html. */
+.cnt-navbar {
+  z-index: var(--z-navbar);
+  background-color: #f7f5ec;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2%;
+  display: flex;
+  position: fixed;
+  inset: 0 0 auto;
+  isolation: isolate;
 }
 
-@media (min-width: 640px) {
-  h2:not([style*='font-size']) { font-size: 2.5rem; }
+.cnt-navbar--transparent {
+  background-color: transparent;
 }
 
-@media (min-width: 768px) {
-  h2:not([style*='font-size']) { font-size: 3.75rem; } /* 60px */
+.block-navbar {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 90rem;
+  padding: 0.5rem 2rem;
+  display: flex;
+  position: relative;
+  transition: background-color 250ms ease, box-shadow 250ms ease;
+}
+
+/* Transparent / over-hero variant — applied on /home before the user scrolls. */
+.cnt-navbar--transparent .block-navbar {
+  background-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nav-search-wrap {
+  flex: 1;
+  align-self: center;
+  align-items: center;
+  height: 100%;
+  display: flex;
+}
+
+.brand {
+  flex-direction: column;
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  margin-right: 2rem;
+  display: flex;
+}
+
+.brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.form-block-search {
+  flex: 0 auto;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.form-block-search form {
+  margin: 0;
+}
+
+.search-location-inner {
+  border: 1px solid #000;
+  color: #000;
+  background-color: #fff;
+  border-radius: 50vh;
+  flex: 1;
+  align-items: center;
+  height: 60px;
+  padding: 6px 12px;
+  display: flex;
+  gap: 8px;
+  max-width: 360px;
+  transition: max-width 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-location-inner:focus-within {
+  max-width: 100%;
+}
+
+.lb-search {
+  width: 24px;
+  height: 24px;
+  padding: 2px 0 0 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: #000;
+}
+
+.lb-search svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: currentColor;
+}
+
+.search-field {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-size: 1rem;
+  color: #000;
+  padding: 0;
+  margin: 0;
+}
+
+.search-field::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.menu {
+  flex: none;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 1rem;
+  display: flex;
+}
+
+.nav-menu {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.navigation-link {
+  color: #000;
+  flex: none;
+  height: 72px;
+  padding: 25px 0.75rem 0;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 200ms;
+}
+
+.navigation-link:hover {
+  color: #e3530d;
+}
+
+.navigation-link--active {
+  color: #e3530d;
+  font-weight: 700;
+}
+
+/* Favorites heart link with count badge */
+.favorites-link {
+  position: relative;
+  padding: 25px 0.5rem 0;
+}
+
+.favorites-heart {
+  font-size: 22px;
+  color: #000;
+  transition: color 200ms;
+}
+
+.favorites-link:hover .favorites-heart {
+  color: #e3530d;
+}
+
+.favorites-badge {
+  position: absolute;
+  top: 18px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: #e3530d;
+  color: #fff;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Skip-to-content link — visible only when keyboard-focused */
+.skip-link {
+  position: fixed;
+  top: -40px;
+  left: 1rem;
+  z-index: var(--z-cursor);
+  background: #000;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 200ms ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid #e3530d;
+  outline-offset: 2px;
+}
+
+.login-wrap {
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 0;
+  display: flex;
+}
+
+.icon-login {
+  margin-bottom: -6px;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-menu-button {
+  display: none;
+  background: #f7f5ec;
+  border: 0;
+  border-radius: 9999px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.375rem;
+  color: #000;
+}
+
+.nav-menu-button .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.nav-menu-mobile {
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  align-items: stretch;
+}
+
+.nav-menu-mobile .navigation-link {
+  height: auto;
+  padding: 12px 8px;
+}
+
+@media (max-width: 991px) {
+  .nav-menu {
+    display: none;
+  }
+  .nav-menu-button {
+    display: inline-flex;
+  }
+  .form-block-search {
+    display: none;
+  }
+  .brand {
+    margin-right: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .nav-menu-mobile {
+    display: none !important;
+  }
 }
 
 .hero-gradient {
@@ -331,17 +627,30 @@ h6 {
   font-family: $font-headline;
 }
 
-/* Hide default cursor */
-body {
-    cursor: none;
-}
-
-* {
-    cursor: none !important;
-}
+/* Hide default OS cursor everywhere — the custom SVG cursor is the only one. */
+html, body { cursor: none; }
+*, *::before, *::after { cursor: none !important; }
 
 /* ================= Angular Material Overrides ================= */
 /* ================= Angular Material Overrides ================= */
+/* Restore Angular CDK visually-hidden behavior. The project's Webflow theme was
+   rendering both the screen-reader long name and the narrow abbreviation side-by-side
+   in mat-calendar week-day headers ("SundayS MondayM …"). */
+.cdk-visually-hidden {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+  outline: 0 !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
 .cnt-inline-calendar {
   /* Compact sizing */
   width: 280px !important;

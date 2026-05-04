@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isNavbarVisible = true;
   private lastScrollY = 0;
-  private scrollTriggers: any[] = [];
+  private scrollTriggers: ScrollTrigger[] = [];
 
   isVideoOpen = false;
   videoUrl!: SafeResourceUrl;
@@ -250,7 +250,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!wrap) return;
     const stats = gsap.utils.toArray('.gsap-stat-number');
     
-    stats.forEach((stat: any) => {
+    stats.forEach((statEl) => {
+      const stat = statEl as HTMLElement;
       const targetStr = stat.getAttribute('data-target');
       if (!targetStr) return;
       

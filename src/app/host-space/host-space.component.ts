@@ -47,7 +47,7 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   videoUrl!: SafeResourceUrl;
   private readonly youtubeEmbedBase = 'https://www.youtube.com/embed/T7CZGDXC9Ag?autoplay=1&mute=1&rel=0';
-  private scrollTriggers: any[] = [];
+  private scrollTriggers: ScrollTrigger[] = [];
 
   constructor(
     private seo: SeoService,

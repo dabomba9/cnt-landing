@@ -1,6 +1,6 @@
 @if (open) {
   <div id="lightbox-root" role="dialog" aria-modal="true" [attr.aria-label]="'Photo gallery — ' + title"
-    class="fixed inset-0 z-[10000] bg-black/95 flex flex-col" (click)="close()">
+    class="fixed inset-0 z-[var(--z-modal)] bg-black/95 flex flex-col" (click)="close()">
     <!-- Top bar -->
     <div class="flex items-center justify-between px-6 py-4 text-white">
       <button type="button" (click)="$event.stopPropagation(); close()" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors" aria-label="Close gallery">

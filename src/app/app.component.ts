@@ -49,78 +49,59 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   private initCustomCursor(): void {
-    const dot = document.getElementById('cursorDot');
-    const ring = document.getElementById('cursorRing');
-    if (!dot || !ring) return;
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+    const cursor = document.getElementById('cntCursor');
+    if (!cursor) return;
 
-    let ringX = 0, ringY = 0;
-    let dotX = 0, dotY = 0;
+    const xTo = gsap.quickTo(cursor, 'x', { duration: 0.15, ease: 'power3.out' });
+    const yTo = gsap.quickTo(cursor, 'y', { duration: 0.15, ease: 'power3.out' });
 
-    // Use xPercent/yPercent so GSAP centres the element on the cursor point
-    gsap.set(dot,  { xPercent: -50, yPercent: -50 });
-    gsap.set(ring, { xPercent: -50, yPercent: -50 });
+    type BaseState = 'default' | 'link' | 'text';
+    let baseState: BaseState = 'default';
+    let isDown = false;
+    const setState = (s: string) => cursor.setAttribute('data-state', s);
 
-    const onMouseMove = (e: MouseEvent) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
-      gsap.set(dot, { x: dotX, y: dotY });
+    const onMove = (e: MouseEvent) => {
+      const cs = getComputedStyle(cursor);
+      const tipX = parseFloat(cs.getPropertyValue('--tip-x')) || 0;
+      const tipY = parseFloat(cs.getPropertyValue('--tip-y')) || 0;
+      xTo(e.clientX + tipX);
+      yTo(e.clientY + tipY);
+    };
+    const onDown = () => { isDown = true; setState('grab'); };
+    const onUp = () => { isDown = false; setState(baseState); };
+
+    const TEXT_SEL = 'input:not([type=button]):not([type=submit]):not([type=checkbox]):not([type=radio]), textarea, [contenteditable=true], [contenteditable=""]';
+    const LINK_SEL = 'a, button, [role=button], [class*="cursor-pointer"], .navigation-link, .cnt-nav-link, .magnetic-btn, .btn-3d-wrap, summary, label[for]';
+
+    const onOver = (e: MouseEvent) => {
+      if (isDown) return;
+      const t = e.target as HTMLElement | null;
+      if (!t || !t.closest) return;
+      if (t.closest(TEXT_SEL)) baseState = 'text';
+      else if (t.closest(LINK_SEL)) baseState = 'link';
+      else baseState = 'default';
+      setState(baseState);
     };
 
-    const onMouseEnterHoverable = () => {
-      document.body.classList.add('cursor-hover');
-      gsap.to(ring, { scale: 1.6, backgroundColor: 'white', duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
-    };
-    const onMouseLeaveHoverable = () => {
-      document.body.classList.remove('cursor-hover');
-      gsap.to(ring, { scale: 1, backgroundColor: 'transparent', duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
-    };
+    const onLeaveDoc = () => document.body.classList.add('cursor-hidden');
+    const onEnterDoc = () => document.body.classList.remove('cursor-hidden');
 
-    const onMouseLeaveDoc = () => document.body.classList.add('cursor-hidden');
-    const onMouseEnterDoc = () => document.body.classList.remove('cursor-hidden');
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseleave', onMouseLeaveDoc);
-    document.addEventListener('mouseenter', onMouseEnterDoc);
-
-    const bindHoverables = () => {
-      const hoverables = document.querySelectorAll('a, button, [class*="cursor-pointer"], .magnetic-btn, .btn-3d-wrap');
-      hoverables.forEach(el => {
-        el.addEventListener('mouseenter', onMouseEnterHoverable);
-        el.addEventListener('mouseleave', onMouseLeaveHoverable);
-      });
-      return hoverables;
-    };
-
-    let hoverables = bindHoverables();
-
-    // Re-bind hoverables on route changes (new elements enter DOM)
-    const mutationObserver = new MutationObserver(() => {
-      hoverables.forEach(el => {
-        el.removeEventListener('mouseenter', onMouseEnterHoverable);
-        el.removeEventListener('mouseleave', onMouseLeaveHoverable);
-      });
-      hoverables = bindHoverables();
-    });
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
-
-    const ticker = () => {
-      ringX += (dotX - ringX) * 0.15;
-      ringY += (dotY - ringY) * 0.15;
-      gsap.set(ring, { x: ringX, y: ringY });
-    };
-    gsap.ticker.add(ticker);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('mouseover', onOver);
+    document.addEventListener('mouseleave', onLeaveDoc);
+    document.addEventListener('mouseenter', onEnterDoc);
 
     this.cursorCleanup = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseleave', onMouseLeaveDoc);
-      document.removeEventListener('mouseenter', onMouseEnterDoc);
-      hoverables.forEach(el => {
-        el.removeEventListener('mouseenter', onMouseEnterHoverable);
-        el.removeEventListener('mouseleave', onMouseLeaveHoverable);
-      });
-      mutationObserver.disconnect();
-      gsap.ticker.remove(ticker);
-      document.body.classList.remove('cursor-hover', 'cursor-hidden');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseleave', onLeaveDoc);
+      document.removeEventListener('mouseenter', onEnterDoc);
+      document.body.classList.remove('cursor-hidden');
     };
   }
 

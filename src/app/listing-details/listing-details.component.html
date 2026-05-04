@@ -83,8 +83,9 @@
         <!-- Left content column (8/12) -->
         <div class="md:col-span-8 listing-content space-y-10">
 
-          <!-- Sticky section nav (column-width) -->
-          <div class="sticky top-[80px] z-30 -mx-2 px-2 bg-cream/95 backdrop-blur-sm">
+          <!-- Sticky section nav (column-width) — hides on scroll-down, reveals on scroll-up -->
+          <div class="sticky top-[80px] z-30 -mx-2 px-2 bg-cream/95 backdrop-blur-sm transition-transform duration-300"
+            [ngClass]="navHidden ? '-translate-y-[150%]' : ''">
             <nav class="flex gap-2 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden border-y border-dark-text/8" style="scrollbar-width: none;" aria-label="Sections">
               @for (item of sectionAnchors; track item.id) {
                 <button type="button" (click)="scrollToAnchor(item.id)"
@@ -156,8 +157,15 @@
           </div>
 
           <!-- Trust badges row -->
-          @if (detail.trustBadges.length > 0) {
+          @if (listing.instantBook || detail.trustBadges.length > 0) {
             <div class="flex flex-wrap gap-2">
+              @if (listing.instantBook) {
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-trinidad rounded-full"
+                  title="Instant Book — your booking confirms automatically when dates are available">
+                  <span class="material-symbols-outlined text-base text-white" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                  <span class="text-xs font-body font-bold text-white">Instant Book</span>
+                </div>
+              }
               @for (badge of detail.trustBadges; track badge) {
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-cream rounded-full border border-dark-text/10">
                   <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">{{ TRUST_BADGE_META[badge].icon }}</span>
@@ -340,54 +348,30 @@
             <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-6">Before you book</h2>
 
             <div class="max-w-4xl space-y-3">
-              <!-- House rules accordion -->
-              <article class="bg-white border border-dark-text/8 rounded-2xl overflow-hidden transition-all duration-300"
-                [class.border-trinidad]="rulesOpen"
-                [class.shadow-md]="rulesOpen">
-                <button type="button" (click)="toggleRules()"
-                  class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
-                  <span class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-snug pr-4">House rules</span>
-                  <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="rulesOpen">add</span>
-                </button>
-                @if (rulesOpen) {
-                  <div class="px-6 md:px-8 pb-6 pt-1">
-                    <ul class="space-y-3">
-                      @for (rule of detail.houseRules; track rule) {
-                        <li class="flex gap-3 text-base font-body text-muted-text leading-relaxed">
-                          <span class="material-symbols-outlined text-base text-trinidad shrink-0 mt-1" style="font-variation-settings: 'FILL' 1; font-size: 8px;">circle</span>
-                          <span>{{ rule }}</span>
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                }
-              </article>
+              <cnt-accordion-card title="House rules" [open]="rulesOpen" (toggled)="toggleRules()">
+                <ul class="space-y-3">
+                  @for (rule of detail.houseRules; track rule) {
+                    <li class="flex gap-3 text-base font-body text-muted-text leading-relaxed">
+                      <span class="material-symbols-outlined text-base text-trinidad shrink-0 mt-1" style="font-variation-settings: 'FILL' 1; font-size: 8px;">circle</span>
+                      <span>{{ rule }}</span>
+                    </li>
+                  }
+                </ul>
+              </cnt-accordion-card>
 
-              <!-- Cancellation accordion -->
-              <article class="bg-white border border-dark-text/8 rounded-2xl overflow-hidden transition-all duration-300"
-                [class.border-trinidad]="cancellationOpen"
-                [class.shadow-md]="cancellationOpen">
-                <button type="button" (click)="toggleCancellation()"
-                  class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
-                  <span class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-snug pr-4">Cancellation policy</span>
-                  <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="cancellationOpen">add</span>
-                </button>
-                @if (cancellationOpen) {
-                  <div class="px-6 md:px-8 pb-6 pt-1">
-                    <div class="inline-flex items-center gap-2 mb-3">
-                      <span class="material-symbols-outlined text-base shrink-0" [style.color]="CANCELLATION_TIER_META[detail.cancellationTier].color">policy</span>
-                      <span class="font-label uppercase tracking-[0.12em] text-[0.65rem] font-bold" [style.color]="CANCELLATION_TIER_META[detail.cancellationTier].color">
-                        {{ CANCELLATION_TIER_META[detail.cancellationTier].label }}
-                      </span>
-                    </div>
-                    <p class="text-muted-text text-base font-body leading-relaxed">{{ CANCELLATION_TIER_META[detail.cancellationTier].summary }}</p>
-                    <a routerLink="/terms" class="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
-                      Read full policy
-                      <span class="material-symbols-outlined text-base">arrow_forward</span>
-                    </a>
-                  </div>
-                }
-              </article>
+              <cnt-accordion-card title="Cancellation policy" [open]="cancellationOpen" (toggled)="toggleCancellation()">
+                <div class="inline-flex items-center gap-2 mb-3">
+                  <span class="material-symbols-outlined text-base shrink-0" [style.color]="CANCELLATION_TIER_META[detail.cancellationTier].color">policy</span>
+                  <span class="font-label uppercase tracking-[0.12em] text-[0.65rem] font-bold" [style.color]="CANCELLATION_TIER_META[detail.cancellationTier].color">
+                    {{ CANCELLATION_TIER_META[detail.cancellationTier].label }}
+                  </span>
+                </div>
+                <p class="text-muted-text text-base font-body leading-relaxed">{{ CANCELLATION_TIER_META[detail.cancellationTier].summary }}</p>
+                <a routerLink="/terms" class="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                  Read full policy
+                  <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </a>
+              </cnt-accordion-card>
             </div>
           </div>
 
@@ -441,23 +425,7 @@
             <!-- Review cards (2-col grid) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               @for (r of visibleReviews; track r.authorName) {
-                <article class="bg-white rounded-2xl border border-dark-text/8 p-6">
-                  <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-jungle-green/15 flex items-center justify-center">
-                      <span class="font-body font-bold text-sm text-jungle-green">{{ r.authorInitials }}</span>
-                    </div>
-                    <div>
-                      <div class="font-body font-bold text-sm text-dark-text">{{ r.authorName }}</div>
-                      <div class="text-xs text-muted-text font-body">{{ r.date }}</div>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1 mb-2">
-                    @for (i of [1,2,3,4,5]; track i) {
-                      <span class="material-symbols-outlined text-sm" [class.text-trinidad]="i <= r.rating" [class.text-dark-text]="i > r.rating" [class.opacity-20]="i > r.rating" style="font-variation-settings: 'FILL' 1;">star</span>
-                    }
-                  </div>
-                  <p class="text-base font-body text-dark-text leading-relaxed">{{ r.text }}</p>
-                </article>
+                <cnt-review-card [review]="r" />
               }
             </div>
 

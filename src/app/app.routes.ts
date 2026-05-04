@@ -1,28 +1,60 @@
 import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { SearchResultsComponent } from './search-results/search-results.component';
-import { ListingDetailsComponent } from './listing-details/listing-details.component';
-import { HostSpaceComponent } from './host-space/host-space.component';
-import { FaqComponent } from './faq/faq.component';
-import { ContactComponent } from './contact/contact.component';
-import { PrivacyComponent } from './privacy/privacy.component';
-import { TermsComponent } from './terms/terms.component';
-import { CookiesComponent } from './cookies/cookies.component';
-import { GrowComponent } from './grow/grow.component';
-import { HostResourcesComponent } from './host-resources/host-resources.component';
-import { ArticlesComponent } from './articles/articles.component';
 
 export const appRoutes: Route[] = [
   { path: '', component: HomeComponent },
-  { path: 'search', component: SearchResultsComponent },
-  { path: 'listing', component: ListingDetailsComponent },
-  { path: 'host', component: HostSpaceComponent },
-  { path: 'faq', component: FaqComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'privacy', component: PrivacyComponent },
-  { path: 'terms', component: TermsComponent },
-  { path: 'cookies', component: CookiesComponent },
-  { path: 'grow', component: GrowComponent },
-  { path: 'host-resources', component: HostResourcesComponent },
-  { path: 'articles', component: ArticlesComponent }
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./search-results/search-results.component').then(m => m.SearchResultsComponent),
+  },
+  {
+    path: 'listing',
+    loadComponent: () =>
+      import('./listing-details/listing-details.component').then(m => m.ListingDetailsComponent),
+  },
+  {
+    path: 'host',
+    loadComponent: () =>
+      import('./host-space/host-space.component').then(m => m.HostSpaceComponent),
+  },
+  {
+    path: 'faq',
+    loadComponent: () => import('./faq/faq.component').then(m => m.FaqComponent),
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./contact/contact.component').then(m => m.ContactComponent),
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./privacy/privacy.component').then(m => m.PrivacyComponent),
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./terms/terms.component').then(m => m.TermsComponent),
+  },
+  {
+    path: 'cookies',
+    loadComponent: () => import('./cookies/cookies.component').then(m => m.CookiesComponent),
+  },
+  {
+    path: 'grow',
+    loadComponent: () => import('./grow/grow.component').then(m => m.GrowComponent),
+  },
+  {
+    path: 'host-resources',
+    loadComponent: () =>
+      import('./host-resources/host-resources.component').then(m => m.HostResourcesComponent),
+  },
+  {
+    path: 'articles',
+    loadComponent: () =>
+      import('./articles/articles.component').then(m => m.ArticlesComponent),
+  },
+  {
+    path: 'explore/:state',
+    loadComponent: () =>
+      import('./explore-state/explore-state.component').then(m => m.ExploreStateComponent),
+  },
 ];

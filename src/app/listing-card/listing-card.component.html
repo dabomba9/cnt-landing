@@ -1,9 +1,34 @@
 <a [routerLink]="['/listing']" [queryParams]="{ id: listing.id }"
-  class="listing-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline">
+  class="listing-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline not-italic">
 
   <div class="relative aspect-[4/3] overflow-hidden">
-    <img [src]="listing.image" [alt]="listing.title" loading="lazy"
+    <img [src]="photos[currentImageIndex]" [alt]="listing.title" loading="lazy"
       class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+
+    <!-- carousel chevrons (hover-reveal, only if >1 photo) -->
+    @if (photos.length > 1) {
+      <button type="button" (click)="prevImage($event)"
+        aria-label="Previous photo"
+        class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_left</span>
+      </button>
+      <button type="button" (click)="nextImage($event)"
+        aria-label="Next photo"
+        class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_right</span>
+      </button>
+
+      <!-- dot indicators -->
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+        @for (p of photos; track $index) {
+          <button type="button" (click)="goToImage($index, $event)"
+            [attr.aria-label]="'Go to photo ' + ($index + 1)"
+            [attr.aria-current]="$index === currentImageIndex ? 'true' : null"
+            class="w-1.5 h-1.5 rounded-full transition-all duration-200"
+            [ngClass]="$index === currentImageIndex ? 'bg-white scale-125' : 'bg-white/40'"></button>
+        }
+      </div>
+    }
 
     <!-- category badge (pennant) -->
     <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
@@ -12,12 +37,21 @@
       <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[listing.category].icon }}</span>
     </div>
 
+    <!-- instant book chip -->
+    @if (listing.instantBook) {
+      <div class="absolute top-3 left-16 z-20 inline-flex items-center gap-1 px-2.5 py-1 bg-trinidad text-white rounded-full shadow-md"
+        title="Instant Book — confirms automatically when dates are available">
+        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold">Instant Book</span>
+      </div>
+    }
+
     <!-- favorite heart -->
     <button type="button"
       (click)="onFavoriteClick($event)"
       [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
       [attr.aria-pressed]="isFavorite"
-      class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center hover:scale-110 transition-transform">
+      class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform">
       <span class="material-symbols-outlined text-[20px]"
         [class.text-trinidad]="isFavorite"
         [class.text-dark-text]="!isFavorite"
@@ -26,35 +60,53 @@
       </span>
     </button>
 
-    <!-- price chip -->
-    <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-      <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
-      <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
+    <!-- merchandising badge (New / Best Value / Guest Favorite) — at most one per card -->
+    @if (merchBadge) {
+      <div class="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full shadow-md"
+        [ngClass]="merchBadge.bg + ' ' + merchBadge.fg">
+        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">{{ merchBadge.icon }}</span>
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold">{{ merchBadge.label }}</span>
+      </div>
+    }
+
+    <!-- price chip + hover-reveal total when nights set -->
+    <div class="absolute bottom-3 right-3 z-10 flex flex-col items-end gap-1.5">
+      @if (hoverTotal !== null) {
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-dark-text/95 backdrop-blur-sm text-white text-[0.65rem] font-body font-bold rounded-lg px-3 py-1.5 shadow-md whitespace-nowrap">
+          ${{ listing.price }} × {{ nights }} {{ nights === 1 ? 'night' : 'nights' }} =
+          <span class="text-gold">${{ hoverTotal }}</span>
+        </div>
+      }
+      <div class="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
+        <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
+        <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
+      </div>
     </div>
   </div>
 
   <div class="p-4 flex flex-col gap-3 flex-1">
     <div>
-      <h3 class="font-headline font-bold text-dark-text text-lg leading-tight">{{ listing.title }}</h3>
+      <h3 class="font-headline font-bold text-dark-text text-lg leading-tight line-clamp-2 min-h-[3rem]">{{ listing.title }}</h3>
       <div class="flex items-center gap-2 mt-1">
         <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ listing.location }}</span>
         <span class="text-muted-text text-xs">•</span>
         <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
           <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
           {{ listing.rating }}
+          <span class="text-muted-text font-normal">({{ listing.reviewCount }})</span>
         </span>
       </div>
     </div>
 
     <!-- amenity chips (truncated to 3) -->
-    <div class="flex flex-wrap gap-1.5 mt-auto">
+    <div class="flex flex-wrap gap-1.5 mt-auto min-h-[1.75rem]">
       @for (a of listing.amenities.slice(0, 3); track a) {
-        <span class="px-2.5 py-1 bg-dark-text text-white text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">
+        <span class="px-2.5 py-1 bg-jungle-green/10 text-jungle-green text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md">
           {{ AMENITY_LABELS[a] }}
         </span>
       }
       @if (listing.amenities.length > 3) {
-        <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-full">+{{ listing.amenities.length - 3 }}</span>
+        <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md">+{{ listing.amenities.length - 3 }}</span>
       }
     </div>
   </div>

@@ -19,10 +19,25 @@ import { ListingCardComponent } from '../listing-card/listing-card.component';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
 
-export type SortOption = 'recommended' | 'top-rated' | 'most-reviewed' | 'price-asc' | 'price-desc' | 'nearest';
+/** Query-string shape for /search. All fields optional; values arrive as strings from Angular Router. */
+export interface SearchQueryParams {
+  mode?: 'destination' | 'roadtrip';
+  dest?: string;
+  start?: string;
+  state?: string;
+  startDate?: string;
+  endDate?: string;
+  rigType?: RvType | string;
+  rigLength?: string;
+  rigSlideOuts?: string;
+  rigTowing?: string;
+}
+
+export type SortOption = 'recommended' | 'instant-book' | 'top-rated' | 'most-reviewed' | 'price-asc' | 'price-desc' | 'nearest';
 
 export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
   { id: 'recommended',   label: 'Recommended',    icon: 'auto_awesome' },
+  { id: 'instant-book',  label: 'Instant Book',   icon: 'bolt' },
   { id: 'top-rated',     label: 'Top Rated',      icon: 'star' },
   { id: 'most-reviewed', label: 'Most Reviewed',  icon: 'reviews' },
   { id: 'price-asc',     label: 'Lowest Price',   icon: 'arrow_upward' },
@@ -38,8 +53,8 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
   styleUrl: './search-results.component.css',
 })
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
-  searchParams: any = {};
-  private scrollTriggers: any[] = [];
+  searchParams: SearchQueryParams = {};
+  private scrollTriggers: ScrollTrigger[] = [];
 
   // Listings
   listings = MOCK_LISTINGS;
@@ -187,6 +202,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   private applySort(items: Listing[]): Listing[] {
     const list = [...items];
     switch (this.sortBy) {
+      case 'instant-book':  return list.sort((a, b) => Number(b.instantBook) - Number(a.instantBook));
       case 'top-rated':     return list.sort((a, b) => b.rating - a.rating);
       case 'most-reviewed': return list.sort((a, b) => b.reviewCount - a.reviewCount);
       case 'price-asc':     return list.sort((a, b) => a.price - b.price);
@@ -204,6 +220,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     const dLat = l.lat - this.userLocation.lat;
     const dLng = l.lng - this.userLocation.lng;
     return dLat * dLat + dLng * dLng; // squared euclidean — sufficient for ranking
+  }
+
+  /** Number of nights between selectedDateRange start/end, or 0 when not fully set. */
+  get searchNights(): number {
+    const r = this.selectedDateRange;
+    if (!r?.start || !r?.end) return 0;
+    const ms = r.end.getTime() - r.start.getTime();
+    return Math.max(1, Math.round(ms / 86_400_000));
   }
 
   get currentSortLabel(): string {

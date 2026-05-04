@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -19,6 +19,8 @@ import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-li
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
 import { ListingCardComponent } from '../listing-card/listing-card.component';
+import { ReviewCardComponent } from '../review-card/review-card.component';
+import { AccordionCardComponent } from '../accordion-card/accordion-card.component';
 
 @Component({
   selector: 'cnt-workspace-listing-details',
@@ -27,7 +29,7 @@ import { ListingCardComponent } from '../listing-card/listing-card.component';
     CommonModule, RouterLink,
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
-    ListingCardComponent,
+    ListingCardComponent, ReviewCardComponent, AccordionCardComponent,
   ],
   providers: [BookingStateService],
   templateUrl: './listing-details.component.html',
@@ -79,6 +81,28 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   ];
   activeAnchor = 'photos';
   private sectionObserver?: IntersectionObserver;
+
+  // Scroll-direction reveal/hide for the sticky section nav (Airbnb pattern)
+  navHidden = false;
+  private lastScrollY = 0;
+  private readonly SCROLL_THRESHOLD = 8;
+  private readonly REVEAL_TOP_PX = 200;
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const y = window.scrollY;
+    if (y < this.REVEAL_TOP_PX) {
+      if (this.navHidden) this.navHidden = false;
+      this.lastScrollY = y;
+      return;
+    }
+    const dy = y - this.lastScrollY;
+    if (Math.abs(dy) < this.SCROLL_THRESHOLD) return;
+    if (dy > 0 && !this.navHidden) this.navHidden = true;
+    else if (dy < 0 && this.navHidden) this.navHidden = false;
+    this.lastScrollY = y;
+  }
   private bookingChangedSub?: { unsubscribe: () => void };
 
   /** Up to 3 listings in the same category as the current one, excluding self. */
@@ -185,6 +209,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
           type: 'website',
         });
         this.seo.setStructuredData(this.buildListingJsonLd(heroImage));
+        this.preloadLightboxPhotos();
 
         this.hydrateFavorite();
       }
@@ -192,6 +217,16 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       // Always reconcile booking state with URL (idempotent)
       this.booking.hydrateFromParams(params);
     });
+  }
+
+  /** Browser-cache photos[1] and photos[2] so the first prev/next click in the lightbox feels instant. */
+  private preloadLightboxPhotos(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const candidates = [this.detail.photos[1], this.detail.photos[2]].filter(Boolean);
+    for (const src of candidates) {
+      const img = new Image();
+      img.src = src;
+    }
   }
 
   private syncBookingToUrl(): void {
@@ -319,8 +354,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   share(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     const url = window.location.href;
-    if ((navigator as any).share) {
-      (navigator as any).share({
+    if (typeof navigator.share === 'function') {
+      navigator.share({
         title: this.listing.title,
         text: `${this.listing.title} — ${this.listing.location}`,
         url,

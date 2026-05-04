@@ -737,7 +737,7 @@
 
   <!-- ========== VIDEO MODAL ========== -->
   @if (isVideoOpen) {
-    <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
+    <div class="fixed inset-0 z-[var(--z-page-overlay)] flex items-center justify-center p-4 md:p-8"
          (click)="closeVideo()">
       <!-- Backdrop -->
       <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>

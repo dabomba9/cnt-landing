@@ -25,10 +25,7 @@
           { "glob": "**/*", "input": "cnt-theme/fonts", "output": "/fonts" }
         ],
         "styles": [
-          "./src/styles.scss",
-          "cnt-theme/css/normalize.css",
-          "cnt-theme/css/cnt-base.css",
-          "cnt-theme/css/cnt-theme.css"
+          "./src/styles.scss"
         ],
         "scripts": []
       },

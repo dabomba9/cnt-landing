@@ -14,7 +14,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 })
 export class HomeFaqComponent implements AfterViewInit, OnDestroy {
   openFaqIndex: number | null = null;
-  private scrollTriggers: any[] = [];
+  private scrollTriggers: ScrollTrigger[] = [];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 

@@ -1,0 +1,17 @@
+<article class="bg-white rounded-2xl border border-dark-text/8 p-6">
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-10 h-10 rounded-full bg-jungle-green/15 flex items-center justify-center">
+      <span class="font-body font-bold text-sm text-jungle-green">{{ review.authorInitials }}</span>
+    </div>
+    <div>
+      <div class="font-body font-bold text-sm text-dark-text">{{ review.authorName }}</div>
+      <div class="text-xs text-muted-text font-body">{{ review.date }}</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-1 mb-2">
+    @for (i of [1,2,3,4,5]; track i) {
+      <span class="material-symbols-outlined text-sm" [class.text-trinidad]="i <= review.rating" [class.text-dark-text]="i > review.rating" [class.opacity-20]="i > review.rating" style="font-variation-settings: 'FILL' 1;">star</span>
+    }
+  </div>
+  <p class="text-base font-body text-dark-text leading-relaxed">{{ review.text }}</p>
+</article>

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -92,12 +92,11 @@ const FAQS: FaqItem[] = [
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
 })
-export class FaqComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FaqComponent implements OnInit, AfterViewInit {
   FAQ_CATEGORIES = FAQ_CATEGORIES;
   selectedCategory: FaqCategory | 'all' = 'all';
   searchQuery = '';
   openIds = new Set<number>();
-  private scrollTriggers: any[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -169,7 +168,4 @@ export class FaqComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openIds = new Set();
   }
 
-  ngOnDestroy(): void {
-    this.scrollTriggers.forEach(st => st.kill?.());
-  }
 }

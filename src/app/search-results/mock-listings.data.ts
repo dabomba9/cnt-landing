@@ -71,14 +71,14 @@ export const AMENITY_ICONS: Record<Amenity, string> = {
 export type RvType = 'class-a' | 'class-b' | 'class-c' | 'fifth-wheel' | 'travel-trailer' | 'truck-camper' | 'teardrop' | 'popup';
 
 export const RV_TYPES: { id: RvType; label: string; image: string }[] = [
-  { id: 'class-a',         label: 'Class A',         image: 'images/Class-A_CNT.svg' },
-  { id: 'class-b',         label: 'Class B',         image: 'images/Class-B_CNT.svg' },
-  { id: 'class-c',         label: 'Class C',         image: 'images/Class-C_CNT.svg' },
-  { id: 'fifth-wheel',     label: 'Fifth Wheel',     image: 'images/FifthWheel_CNT.svg' },
-  { id: 'travel-trailer',  label: 'Travel Trailer',  image: 'images/Travel_CNT.svg' },
-  { id: 'truck-camper',    label: 'Truck Camper',    image: 'images/App_TruckCamper_CNT.svg' },
-  { id: 'teardrop',        label: 'Teardrop',        image: 'images/TearDrop_CNT.svg' },
-  { id: 'popup',           label: 'Popup Camper',    image: 'images/Popup_CNT.svg' },
+  { id: 'class-a',         label: 'Class A',         image: 'assets/images/Class-A_CNT.svg' },
+  { id: 'class-b',         label: 'Class B',         image: 'assets/images/Class-B_CNT.svg' },
+  { id: 'class-c',         label: 'Class C',         image: 'assets/images/Class-C_CNT.svg' },
+  { id: 'fifth-wheel',     label: 'Fifth Wheel',     image: 'assets/images/FifthWheel_CNT.svg' },
+  { id: 'travel-trailer',  label: 'Travel Trailer',  image: 'assets/images/Travel_CNT.svg' },
+  { id: 'truck-camper',    label: 'Truck Camper',    image: 'assets/images/App_TruckCamper_CNT.svg' },
+  { id: 'teardrop',        label: 'Teardrop',        image: 'assets/images/TearDrop_CNT.svg' },
+  { id: 'popup',           label: 'Popup Camper',    image: 'assets/images/Popup_CNT.svg' },
 ];
 
 export interface Listing {
@@ -93,6 +93,8 @@ export interface Listing {
   category: Category;
   amenities: Amenity[];
   image: string;
+  /** Instant Book — booking confirms automatically when dates are available. */
+  instantBook: boolean;
 }
 
 const IMG = {
@@ -115,7 +117,7 @@ const A = {
   offgrid:  ['back-in','campfires','cell-coverage','pets','tents-allowed'] as Amenity[],
 };
 
-const RAW_LISTINGS: Omit<Listing, 'reviewCount'>[] = [
+const RAW_LISTINGS: Omit<Listing, 'reviewCount' | 'instantBook'>[] = [
   // California — wine country & coast
   { id:1,  title:'Heritage Oak Vineyard',     location:'St. Helena, CA',     lat:38.5052, lng:-122.4724, price:125, rating:4.9, category:'vineyard',   amenities:[...A.vineyard,'hot-tub'],         image:IMG.vineyard },
   { id:2,  title:'Whispering Pines Winery',   location:'Healdsburg, CA',     lat:38.6102, lng:-122.8694, price:95,  rating:4.7, category:'vineyard',   amenities:A.vineyard,                        image:IMG.vineyard },
@@ -227,16 +229,42 @@ const RAW_LISTINGS: Omit<Listing, 'reviewCount'>[] = [
   { id:80, title:'Ozark Cabin Hollow',        location:'Eureka Springs, AR', lat:36.4015, lng:-93.7377,  price:65,  rating:4.6, category:'offgrid',    amenities:A.offgrid,                         image:IMG.alpaca },
 ];
 
-// Deterministic review count derived from id (12–391 range) so mock data is stable across reloads.
+// Deterministic review count + instant-book flag derived from id so mock data is stable across reloads.
+// id=1 (Heritage Oak) is force-true; about 60% of others are instant-bookable.
 export const MOCK_LISTINGS: Listing[] = RAW_LISTINGS.map(l => ({
   ...l,
   reviewCount: ((l.id * 17 + 23) % 380) + 12,
+  instantBook: l.id === 1 ? true : ((l.id * 11 + 7) % 10) < 6,
 }));
 
 export const PRICE_RANGE = {
   min: Math.min(...MOCK_LISTINGS.map(l => l.price)),
   max: Math.max(...MOCK_LISTINGS.map(l => l.price)),
 };
+
+/**
+ * Listings flagged as "New" — small deterministic subset (~15%).
+ * In a real backend this would come from a `createdAt` field; here we mock it.
+ */
+export const NEW_LISTING_IDS: Set<number> = new Set(
+  MOCK_LISTINGS.filter(l => (l.id * 13 + 5) % 23 < 4).map(l => l.id),
+);
+
+/**
+ * "Best Value" — for each category, the cheapest listing among those with
+ * rating ≥ 4.7. Surfaced as a marketing chip on cards.
+ */
+export const BEST_VALUE_IDS: Set<number> = (() => {
+  const out = new Set<number>();
+  const cats = new Set(MOCK_LISTINGS.map(l => l.category));
+  for (const cat of cats) {
+    const candidates = MOCK_LISTINGS
+      .filter(l => l.category === cat && l.rating >= 4.7)
+      .sort((a, b) => a.price - b.price);
+    if (candidates.length > 0) out.add(candidates[0].id);
+  }
+  return out;
+})();
 
 // =============================================================================
 // LISTING DETAIL — extended fields for /listing detail page
@@ -332,6 +360,11 @@ export const CLEARANCE_META: Record<SlideoutClearance, { label: string }> = {
   'open':     { label: 'Open — slides clear' },
 };
 
+export interface ListingFaq {
+  q: string;
+  a: string;
+}
+
 export interface AddOn {
   id: string;
   label: string;
@@ -369,6 +402,7 @@ export interface ListingDetail {
   unavailableDates: string[];
   siteSpecs: SiteSpecs;
   addOns: AddOn[];
+  faqs: ListingFaq[];
 }
 
 const HOST_POOL: Pick<Host, 'name' | 'initials'>[] = [
@@ -506,6 +540,39 @@ const ADDONS_BY_CATEGORY: Record<Category, AddOn[]> = {
   ],
 };
 
+const FAQS_BY_CATEGORY: Record<Category, ListingFaq[]> = {
+  vineyard: [
+    { q: 'Can I taste wine on-site?', a: 'Yes — the tasting room is a short walk from the RV pad and welcomes guests during posted hours. Some hosts include a complimentary pour; others offer a discounted flight.' },
+    { q: 'Is there cell service?', a: 'Coverage varies by carrier. Most guests report reliable 4G/LTE on at least one major network; the host will share specifics in your arrival message.' },
+    { q: 'Can I have a fire?', a: 'No open campfires in vineyard rows. Propane fire pits are generally welcome at the RV pad — confirm with the host before arrival.' },
+    { q: 'Are pets allowed in the rows?', a: 'Pets are welcome at the pad on-leash, but please keep them out of the planted rows. Cleanup bags are provided at the pad.' },
+  ],
+  farm: [
+    { q: 'Can we interact with the animals?', a: 'Some hosts offer scheduled visits or feedings; others ask guests to admire from a distance. Check the listing or message your host.' },
+    { q: 'Is the farm noisy in the morning?', a: 'Yes — most farms wake up early. If you\'re a light sleeper, bring earplugs or pick a date outside busy seasons (planting/harvest).' },
+    { q: 'Can kids run around?', a: 'Generally yes, but please supervise around equipment, fences, and livestock. The host will point out any off-limits areas on arrival.' },
+    { q: 'Do you sell farm products?', a: 'Many host farms offer eggs, honey, produce, or meat for purchase. Ask the host for what\'s in season during your stay.' },
+  ],
+  brewery: [
+    { q: 'How close is the taproom?', a: 'Walking distance from the RV pad — typically a few hundred feet. Hours posted on the listing.' },
+    { q: 'Can I bring my own alcohol?', a: 'You\'re welcome to drink at your site. Outside alcohol typically isn\'t allowed inside the brewery taproom.' },
+    { q: 'Is there food on-site?', a: 'Many hosts run a kitchen, food truck, or partner with one. Hours and menu vary; check the listing for specifics.' },
+    { q: 'Are growler refills available?', a: 'Yes at most host breweries. Bring your own growler or buy one at the taproom.' },
+  ],
+  attraction: [
+    { q: 'How far is the main attraction?', a: 'The pad is positioned for easy access — typically a 5–15 minute drive. Exact details in the listing.' },
+    { q: 'Is parking available at the attraction?', a: 'Most major attractions have day-use lots; some require advance reservation. Ask the host for tips.' },
+    { q: 'Can I leave my rig and take a day trip?', a: 'Yes, the site is yours for the duration of your booking. Lock up valuables and let the host know your rough plans.' },
+    { q: 'Are there food options nearby?', a: 'The host\'s welcome packet includes their favorite local spots — small towns near attractions usually have at least 2–3 solid options.' },
+  ],
+  offgrid: [
+    { q: 'Will my generator work here?', a: 'Yes, with quiet-hour restrictions (typically 10 PM – 7 AM). Confirm wattage and noise limits with the host before arrival.' },
+    { q: 'Is there cell service?', a: 'Limited or none. We strongly recommend downloading offline maps and sharing your itinerary with someone before arrival.' },
+    { q: 'How do I get water?', a: 'There\'s no on-site water hookup. Bring a full freshwater tank or arrange a delivery add-on with the host.' },
+    { q: 'Can I have a fire?', a: 'Only in the existing fire ring and only when conditions allow — check the posted board on arrival. Always douse fully before leaving.' },
+  ],
+};
+
 // Hand-authored detail for the marquee listing (id=1, Heritage Oak Vineyard).
 const HERITAGE_OAK_DETAIL: ListingDetail = {
   description: `Heritage Oak Vineyard has been growing Cabernet, Merlot, and Petite Sirah on the same hillside outside St. Helena since 1979. We host two RV sites year-round — both with full hookups, both shaded by the namesake oak — and we treat every guest the way we treat the people who pour our wine.
@@ -587,6 +654,14 @@ We're available all weekend and during business hours weekdays; outside that, yo
     { id: 'early-checkin',    label: 'Early check-in (12 PM)',       description: 'Arrive 2 hours earlier than standard.',             icon: 'login',         price: 25, unit: 'per stay' },
     { id: 'late-checkout',    label: 'Late check-out (1 PM)',        description: 'Stay 2 hours longer on departure day.',             icon: 'logout',        price: 25, unit: 'per stay' },
   ],
+  faqs: [
+    { q: 'Can we walk to the tasting room?', a: 'Yes — about 5 minutes from the pad on a paved path. The tasting room is open Friday through Sunday, 11 AM – 5 PM. Marcus comps a flight for guests with a stay of 2+ nights.' },
+    { q: 'Is there cell service and WiFi?', a: 'Both major networks (Verizon, AT&T) get full bars at the pad. WiFi reaches the patio reliably; signal is weaker at the back of larger rigs. Marcus shares the password in the welcome message.' },
+    { q: 'Can I have a fire at the site?', a: 'Propane fire pits and stoves are welcome at the pad. No open campfires anywhere on the vineyard property — fire risk during dry months is real and the entire valley is on alert in summer.' },
+    { q: 'Are pets allowed in the vineyard rows?', a: 'Pets are welcome at the pad on-leash. Please keep them out of the planted rows during growing season — disturbed soil and nibbled fruit can affect the harvest. Cleanup bags are at the pad.' },
+    { q: 'What\'s the dump station situation?', a: 'Full hookups at the pad, plus a public dump station on the production-barn side of the property if you need an additional drain. Free for guests during your stay.' },
+    { q: 'Can I extend my stay if a neighboring date opens up?', a: 'Yes — message Marcus directly. He\'ll confirm same-day if the calendar allows and apply the same nightly rate. CurbNTurf processes the change through your booking.' },
+  ],
 };
 
 /**
@@ -631,6 +706,7 @@ export function getListingDetail(listing: Listing): ListingDetail {
     unavailableDates: generateUnavailableDates(listing.id),
     siteSpecs: generateSiteSpecs(listing),
     addOns: [...ADDONS_BY_CATEGORY[listing.category], ...COMMON_ADDONS],
+    faqs: FAQS_BY_CATEGORY[listing.category],
   };
 }
 

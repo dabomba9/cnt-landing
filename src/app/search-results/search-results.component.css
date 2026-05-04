@@ -3,6 +3,10 @@ img.img-loaded {
   opacity: 1 !important;
 }
 
+.search-topbar {
+  position: relative;
+}
+
 /* Listing cards: GSAP animates them in via fromTo */
 
 /* ===== Search split layout (no Tailwind arbitrary values, deterministic) ===== */

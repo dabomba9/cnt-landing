@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,8 +15,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   templateUrl: './home-hero.component.html',
   styleUrl: './home-hero.component.scss'
 })
-export class HomeHeroComponent implements AfterViewInit {
+export class HomeHeroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
+
+  private heroUpdate: (() => void) | null = null;
+  private dateCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
   searchMode: 'destination' | 'roadtrip' = 'destination';
   searchDestination = '';
@@ -55,9 +58,19 @@ export class HomeHeroComponent implements AfterViewInit {
 
   executeSearch(event?: Event): void {
     if (event) event.stopPropagation();
-    
-    // Construct strict query payload natively mapping all logic cleanly
-    const queryParams: any = { mode: this.searchMode };
+
+    interface HeroSearchQueryParams {
+      mode: 'destination' | 'roadtrip';
+      dest?: string;
+      start?: string;
+      startDate?: string;
+      endDate?: string;
+      rigType?: string;
+      rigLength?: number;
+      rigSlideOuts?: number;
+      rigTowing?: boolean;
+    }
+    const queryParams: HeroSearchQueryParams = { mode: this.searchMode };
     
     if (this.searchMode === 'destination' && this.searchDestination) {
       queryParams.dest = this.searchDestination;
@@ -96,7 +109,10 @@ export class HomeHeroComponent implements AfterViewInit {
       this.selectedDateRange = new DateRange(date, null);
     } else {
       this.selectedDateRange = new DateRange(this.selectedDateRange.start, date);
-      setTimeout(() => this.isDateDropdownOpen = false, 250);
+      this.dateCloseTimer = setTimeout(() => {
+        this.isDateDropdownOpen = false;
+        this.dateCloseTimer = null;
+      }, 250);
     }
   }
 
@@ -227,7 +243,20 @@ export class HomeHeroComponent implements AfterViewInit {
     };
 
     update();
+    this.heroUpdate = update;
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
+  }
+
+  ngOnDestroy(): void {
+    if (this.heroUpdate) {
+      window.removeEventListener('scroll', this.heroUpdate);
+      window.removeEventListener('resize', this.heroUpdate);
+      this.heroUpdate = null;
+    }
+    if (this.dateCloseTimer) {
+      clearTimeout(this.dateCloseTimer);
+      this.dateCloseTimer = null;
+    }
   }
 }
