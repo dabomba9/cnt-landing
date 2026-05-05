@@ -2,7 +2,7 @@ import { emptyMyRv, isMyRvSet, rvTypeLabel } from './my-rv.util';
 
 describe('my-rv.util', () => {
   it('emptyMyRv returns all-null state', () => {
-    expect(emptyMyRv()).toEqual({ type: null, length: null, height: null, width: null });
+    expect(emptyMyRv()).toEqual({ type: null, length: null, height: null, width: null, rvPhoto: null, licensePhoto: null });
   });
 
   it('isMyRvSet is false for empty', () => {

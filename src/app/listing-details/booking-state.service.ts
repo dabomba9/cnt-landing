@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
 import { AddOn, CancellationTier, Listing, ListingDetail } from '../search-results/mock-listings.data';
+import { MyRv, emptyMyRv, hasMyRvPhotos } from '../my-rv.util';
 
 /**
  * Per-listing booking state shared between the sidebar widget and the mobile bar.
@@ -18,6 +19,10 @@ export class BookingStateService {
   addOns: AddOn[] = [];
   cancellationTier: CancellationTier = 'moderate';
   nightlyPrice = 0;
+  /** Whether the current listing supports instant book. Photos aren't required when true. */
+  instantBook = false;
+  /** Latest snapshot of the user's My RV profile (read by the widget; tracked here so canBook is correct). */
+  myRv: MyRv = emptyMyRv();
 
   // Booking state
   readonly today = new Date();
@@ -40,7 +45,13 @@ export class BookingStateService {
     this.addOns = detail.addOns;
     this.cancellationTier = detail.cancellationTier;
     this.nightlyPrice = listing.price;
+    this.instantBook = listing.instantBook;
     this.dateRangeError = '';
+  }
+
+  /** Track the user's MyRv profile so canBook reflects whether photos are present. */
+  setMyRv(rv: MyRv): void {
+    this.myRv = rv;
   }
 
   /** Idempotent: pulls dates/guests/addons from query params into state. */
@@ -159,7 +170,19 @@ export class BookingStateService {
     return this.subtotal + this.addOnsTotal + this.serviceFee;
   }
 
-  get canBook(): boolean { return this.nights > 0; }
+  /** True when the user has both required photos on their My RV profile. */
+  get hasPhotosForBooking(): boolean { return hasMyRvPhotos(this.myRv); }
+
+  /**
+   * Reservation gate. Always requires picked dates. Additionally requires
+   * RV/license photos on the My RV profile WHEN this listing is request-to-book
+   * (host approval). Instant Book listings skip the photo check entirely.
+   */
+  get canBook(): boolean {
+    if (this.nights <= 0) return false;
+    if (this.instantBook) return true;
+    return this.hasPhotosForBooking;
+  }
 
   get dateDisplay(): string {
     if (!this.selectedDateRange?.start) return 'Add dates';

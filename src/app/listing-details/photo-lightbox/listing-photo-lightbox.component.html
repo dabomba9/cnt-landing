@@ -6,8 +6,15 @@
       <button type="button" (click)="$event.stopPropagation(); close()" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors" aria-label="Close gallery">
         <span class="material-symbols-outlined">close</span>
       </button>
-      <div class="font-body text-sm">
-        {{ index + 1 }} / {{ photos.length }}
+      <div class="font-body text-sm flex flex-col items-center gap-0.5">
+        <span>{{ index + 1 }} / {{ photos.length }}</span>
+        <span class="hidden md:inline-flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.12em] text-white/50 font-bold">
+          <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 normal-case tracking-normal font-mono">←</kbd>
+          <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 normal-case tracking-normal font-mono">→</kbd>
+          <span>navigate</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/70 normal-case tracking-normal font-mono">Esc</kbd>
+          <span>close</span>
+        </span>
       </div>
       <div class="w-10"></div>
     </div>

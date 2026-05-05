@@ -193,9 +193,15 @@
 }
 
 @layer base {
-  button,
-  .button-primary,
+  /* CTA-only typography (Asap Condensed, uppercase). Use a class — never the
+     bare `<button>` element selector — so structural buttons (toggles, icon
+     buttons, accordions) keep their natural typography.
+
+     Add `cnt-button` (or any of the explicit CTA classes below) to surface a
+     button as a CTA. Tailwind's `font-button` utility on inline-style CTAs
+     already pulls Asap Condensed; this rule layers uppercase + weight on top. */
   .cnt-button,
+  .button-primary,
   .app-button,
   a[class*='button'] {
     font-family: 'Asap Condensed', sans-serif !important;
@@ -203,7 +209,6 @@
     font-style: normal !important;
     text-transform: uppercase !important;
   }
-
 }
 
 // Include the common styles for Angular Material. We include this here so that you only

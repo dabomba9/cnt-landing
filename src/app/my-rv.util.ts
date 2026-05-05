@@ -8,10 +8,14 @@ export interface MyRv {
   length: number | null;   // feet
   height: number | null;
   width: number | null;
+  /** Data URL of an RV/rig photo. Required by hosts on non-instant-book reservations. */
+  rvPhoto: string | null;
+  /** Data URL of a license-plate photo. Required by hosts on non-instant-book reservations. */
+  licensePhoto: string | null;
 }
 
 export function emptyMyRv(): MyRv {
-  return { type: null, length: null, height: null, width: null };
+  return { type: null, length: null, height: null, width: null, rvPhoto: null, licensePhoto: null };
 }
 
 export function readMyRv(platformId: Object): MyRv {
@@ -25,6 +29,8 @@ export function readMyRv(platformId: Object): MyRv {
       length: typeof parsed.length === 'number' ? parsed.length : null,
       height: typeof parsed.height === 'number' ? parsed.height : null,
       width:  typeof parsed.width  === 'number' ? parsed.width  : null,
+      rvPhoto: typeof parsed.rvPhoto === 'string' ? parsed.rvPhoto : null,
+      licensePhoto: typeof parsed.licensePhoto === 'string' ? parsed.licensePhoto : null,
     };
   } catch {
     return emptyMyRv();
@@ -33,16 +39,27 @@ export function readMyRv(platformId: Object): MyRv {
 
 export function writeMyRv(platformId: Object, rv: MyRv): void {
   if (!isPlatformBrowser(platformId)) return;
-  const isEmpty = !rv.type && !rv.length && !rv.height && !rv.width;
+  const isEmpty = !rv.type && !rv.length && !rv.height && !rv.width && !rv.rvPhoto && !rv.licensePhoto;
   if (isEmpty) {
     localStorage.removeItem(MY_RV_KEY);
     return;
   }
-  localStorage.setItem(MY_RV_KEY, JSON.stringify(rv));
+  try {
+    localStorage.setItem(MY_RV_KEY, JSON.stringify(rv));
+  } catch {
+    // Likely QuotaExceeded from a large photo data URL — fall back to specs only.
+    const specsOnly: MyRv = { ...rv, rvPhoto: null, licensePhoto: null };
+    localStorage.setItem(MY_RV_KEY, JSON.stringify(specsOnly));
+  }
 }
 
 export function isMyRvSet(rv: MyRv): boolean {
   return !!(rv.type || rv.length || rv.height || rv.width);
+}
+
+/** True when both required photos are attached to the My RV profile. */
+export function hasMyRvPhotos(rv: MyRv): boolean {
+  return !!(rv.rvPhoto && rv.licensePhoto);
 }
 
 export function rvTypeLabel(type: RvType | null): string {

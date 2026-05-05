@@ -12,7 +12,7 @@ import {
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
 } from '../search-results/mock-listings.data';
-import { MyRv, emptyMyRv, readMyRv, isMyRvSet, rvTypeLabel } from '../my-rv.util';
+import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '../my-rv.util';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
@@ -82,26 +82,49 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   activeAnchor = 'photos';
   private sectionObserver?: IntersectionObserver;
 
+  /** Site-specs disclosure: top 3 always visible, bottom 4 expand on click. */
+  specsExpanded = false;
+  toggleSpecs(): void { this.specsExpanded = !this.specsExpanded; }
+
+  /** Marks a gallery image as loaded so the skeleton pulse stops. */
+  onImageLoad(event: Event): void {
+    (event.target as HTMLElement).classList.add('img-loaded');
+  }
+
+  /** Persists changes to the My RV profile coming from the booking widget
+      (photo attach/clear) so future bookings reuse the same photos. */
+  onMyRvChange(next: MyRv): void {
+    this.myRv = next;
+    writeMyRv(this.platformId, next);
+    this.booking.setMyRv(next);
+  }
+
   // Scroll-direction reveal/hide for the sticky section nav (Airbnb pattern)
   navHidden = false;
   private lastScrollY = 0;
-  private readonly SCROLL_THRESHOLD = 8;
+  private lastScrollTime = 0;
+  private readonly SCROLL_THRESHOLD = 24;
+  private readonly SCROLL_DEBOUNCE_MS = 80;
   private readonly REVEAL_TOP_PX = 200;
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     const y = window.scrollY;
+    const now = performance.now();
     if (y < this.REVEAL_TOP_PX) {
       if (this.navHidden) this.navHidden = false;
       this.lastScrollY = y;
+      this.lastScrollTime = now;
       return;
     }
     const dy = y - this.lastScrollY;
     if (Math.abs(dy) < this.SCROLL_THRESHOLD) return;
+    if (now - this.lastScrollTime < this.SCROLL_DEBOUNCE_MS) return;
     if (dy > 0 && !this.navHidden) this.navHidden = true;
     else if (dy < 0 && this.navHidden) this.navHidden = false;
     this.lastScrollY = y;
+    this.lastScrollTime = now;
   }
   private bookingChangedSub?: { unsubscribe: () => void };
 
@@ -153,6 +176,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return reviews;
   }
 
+
   get visibleReviews(): typeof this.detail.reviews {
     const list = this.sortedReviews;
     return this.reviewsExpanded ? list : list.slice(0, this.REVIEWS_COLLAPSED_COUNT);
@@ -198,6 +222,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         this.detail = getListingDetail(this.listing);
         this.booking.setListing(this.listing, this.detail);
         this.myRv = readMyRv(this.platformId);
+        this.booking.setMyRv(this.myRv);
         this.currentListingId = newListing.id;
 
         const heroImage = this.seo.absUrl(this.detail.photos[0]);

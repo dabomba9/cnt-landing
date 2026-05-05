@@ -4,6 +4,30 @@
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 0.375rem;
+
+  /* Photo skeleton: image starts hidden + fades in once loaded; until
+     then its parent button shows a subtle shimmer-pulse placeholder. */
+  img {
+    opacity: 0;
+    transition: opacity 280ms ease;
+  }
+  img.img-loaded {
+    opacity: 1;
+  }
+  button {
+    background: linear-gradient(110deg, rgba(34, 34, 34, 0.06) 30%, rgba(34, 34, 34, 0.10) 50%, rgba(34, 34, 34, 0.06) 70%);
+    background-size: 200% 100%;
+    animation: cnt-skeleton-pulse 1.4s ease-in-out infinite;
+  }
+  button:has(img.img-loaded) {
+    animation: none;
+    background: rgba(34, 34, 34, 0.06);
+  }
+}
+
+@keyframes cnt-skeleton-pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Map placeholder background — soft jungle-green radial halo + cream gradient base */

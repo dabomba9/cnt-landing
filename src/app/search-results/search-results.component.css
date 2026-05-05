@@ -5,6 +5,9 @@ img.img-loaded {
 
 .search-topbar {
   position: relative;
+  /* Lift above the sticky map pane (z-30 internally on its toggle
+     button) so filter-panel dropdowns aren't clipped or overlapped. */
+  z-index: 40;
 }
 
 /* Listing cards: GSAP animates them in via fromTo */

@@ -370,11 +370,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       const n = parseInt(s, 10);
       return Number.isFinite(n) && n > 0 ? n : null;
     };
+    // Preserve any existing photos so editing rig specs doesn't drop them.
+    const existing = readMyRv(this.platformId);
     writeMyRv(this.platformId, {
       type: this.filters.rvType,
       length: num(this.filters.rvLength),
       height: num(this.filters.rvHeight),
       width:  num(this.filters.rvWidth),
+      rvPhoto: existing.rvPhoto,
+      licensePhoto: existing.licensePhoto,
     });
   }
 
