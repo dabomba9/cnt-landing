@@ -5,6 +5,13 @@
   grid-template-columns: 1.2fr 1fr;
   gap: 0.375rem;
 
+  /* Below 640px stack vertically: hero photo full width, 4 thumbs become a
+     2×2 grid below it. Avoids the squished thumbs that result from forcing
+     the 60/40 split on a phone. */
+  @media (max-width: 639px) {
+    grid-template-columns: 1fr;
+  }
+
   /* Photo skeleton: image starts hidden + fades in once loaded; until
      then its parent button shows a subtle shimmer-pulse placeholder. */
   img {

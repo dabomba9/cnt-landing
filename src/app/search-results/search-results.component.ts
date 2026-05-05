@@ -72,6 +72,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   openPill: FilterPill = null;
   showMobileMap = false;
   viewMode: 'split' | 'map-only' = 'split';
+  private readonly VIEW_MODE_KEY = 'cnt-search-view-mode';
+  private readonly MOBILE_MAP_KEY = 'cnt-search-mobile-map';
 
   // Sort
   SORT_OPTIONS = SORT_OPTIONS;
@@ -129,6 +131,10 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       if (raw) {
         try { this.favorites = new Set(JSON.parse(raw) as number[]); } catch {}
       }
+      // Restore last view-mode + mobile-map preference so the layout persists across visits.
+      const vm = localStorage.getItem(this.VIEW_MODE_KEY);
+      if (vm === 'split' || vm === 'map-only') this.viewMode = vm;
+      this.showMobileMap = localStorage.getItem(this.MOBILE_MAP_KEY) === '1';
     }
   }
 
@@ -234,6 +240,59 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return SORT_OPTIONS.find(o => o.id === this.sortBy)?.label || 'Sort';
   }
 
+  /** True when any user-applied filter (price/dates/RV/amenities/sort) differs from defaults. */
+  get hasActiveFilters(): boolean {
+    const f = this.filters;
+    return f.minPrice !== PRICE_RANGE.min
+      || f.maxPrice !== PRICE_RANGE.max
+      || !!f.rvType
+      || !!f.rvLength
+      || !!f.rvHeight
+      || !!f.rvWidth
+      || f.rvVehicles > 0
+      || f.rvTents > 0
+      || f.amenities.size > 0
+      || !!this.selectedDateRange?.start
+      || this.sortBy !== 'recommended';
+  }
+
+  /** Identify the filter most likely cutting results, surfaced in the empty state. */
+  get mostRestrictiveFilter(): { key: 'price' | 'amenities' | 'rv' | 'dates' | 'sort'; label: string } | null {
+    if (!this.hasActiveFilters) return null;
+    if (this.filters.amenities.size > 0) return { key: 'amenities', label: 'Amenities' };
+    if (this.filters.minPrice !== PRICE_RANGE.min || this.filters.maxPrice !== PRICE_RANGE.max) return { key: 'price', label: 'Price range' };
+    if (this.filters.rvType || this.filters.rvLength || this.filters.rvHeight || this.filters.rvWidth || this.filters.rvVehicles || this.filters.rvTents) {
+      return { key: 'rv', label: 'My RV' };
+    }
+    if (this.selectedDateRange?.start) return { key: 'dates', label: 'Trip dates' };
+    return null;
+  }
+
+  clearAllFilters(): void {
+    this.filters.minPrice = PRICE_RANGE.min;
+    this.filters.maxPrice = PRICE_RANGE.max;
+    this.filters.rvType = null;
+    this.filters.rvLength = '';
+    this.filters.rvHeight = '';
+    this.filters.rvWidth = '';
+    this.filters.rvVehicles = 0;
+    this.filters.rvTents = 0;
+    this.filters.amenities = new Set();
+    this.selectedDateRange = null;
+    this.sortBy = 'recommended';
+    this.persistMyRv();
+  }
+
+  clearOneFilter(key: 'price' | 'amenities' | 'rv' | 'dates' | 'sort'): void {
+    switch (key) {
+      case 'price': this.clearPrice(); break;
+      case 'amenities': this.clearAmenities(); break;
+      case 'rv': this.clearRvSetup(); break;
+      case 'dates': this.clearDates(); break;
+      case 'sort': this.clearSort(); break;
+    }
+  }
+
   clearSort(): void {
     this.sortBy = 'recommended';
   }
@@ -248,6 +307,17 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     this.sortBy = id;
     this.closePill();
+  }
+
+  /** Re-request geolocation after a permission denial — used by the "Try again"
+   * button shown alongside the geo error in the Sort drawer. Stays open so the
+   * user can immediately see the result. */
+  retryNearestSort(): void {
+    this.geoError = '';
+    this.requestGeolocation(() => {
+      this.sortBy = 'nearest';
+      this.closePill();
+    });
   }
 
   private requestGeolocation(onSuccess: () => void): void {
@@ -288,6 +358,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return 'Curated Collection';
   }
 
+  /** Compact amenities label for the pill: first amenity name + "+N more" suffix. */
+  get amenitiesSummary(): string {
+    const set = this.filters.amenities;
+    if (set.size === 0) return '';
+    const [first] = set;
+    const firstLabel = AMENITY_LABELS[first as Amenity] ?? '1 selected';
+    return set.size === 1 ? firstLabel : `${firstLabel} +${set.size - 1}`;
+  }
+
   // Active filter chips for top bar summary
   get activePillSummary() {
     const f = this.filters;
@@ -299,7 +378,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       rv: rvActive
         ? (f.rvType ? RV_TYPES.find(r => r.id === f.rvType)?.label || 'Set' : 'Set')
         : '',
-      amenities: f.amenities.size > 0 ? `${f.amenities.size} selected` : '',
+      amenities: this.amenitiesSummary,
     };
   }
 
@@ -420,10 +499,16 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleMobileMap(): void {
     this.showMobileMap = !this.showMobileMap;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.MOBILE_MAP_KEY, this.showMobileMap ? '1' : '0');
+    }
   }
 
   setViewMode(mode: 'split' | 'map-only'): void {
     this.viewMode = mode;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.VIEW_MODE_KEY, mode);
+    }
   }
 
   ngOnDestroy(): void {

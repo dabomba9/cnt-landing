@@ -9,23 +9,27 @@
     @if (photos.length > 1) {
       <button type="button" (click)="prevImage($event)"
         aria-label="Previous photo"
-        class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
         <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_left</span>
       </button>
       <button type="button" (click)="nextImage($event)"
         aria-label="Next photo"
-        class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
         <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_right</span>
       </button>
 
-      <!-- dot indicators -->
-      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+      <!-- dot indicators (visible dots stay small, but tap area is 24×24 via padding) -->
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center">
         @for (p of photos; track $index) {
           <button type="button" (click)="goToImage($index, $event)"
             [attr.aria-label]="'Go to photo ' + ($index + 1)"
             [attr.aria-current]="$index === currentImageIndex ? 'true' : null"
-            class="w-1.5 h-1.5 rounded-full transition-all duration-200"
-            [ngClass]="$index === currentImageIndex ? 'bg-white scale-125' : 'bg-white/40'"></button>
+            class="p-2 group/dot"
+            style="-webkit-tap-highlight-color: transparent;">
+            <span
+              class="block w-2 h-2 rounded-full transition-all duration-200"
+              [ngClass]="$index === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50 group-hover/dot:bg-white/80'"></span>
+          </button>
         }
       </div>
     }
@@ -51,7 +55,7 @@
       (click)="onFavoriteClick($event)"
       [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
       [attr.aria-pressed]="isFavorite"
-      class="favorite-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform">
+      class="favorite-btn absolute top-3 right-3 z-20 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform">
       <span class="material-symbols-outlined text-[20px]"
         [class.text-trinidad]="isFavorite"
         [class.text-dark-text]="!isFavorite"

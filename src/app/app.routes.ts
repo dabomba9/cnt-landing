@@ -57,4 +57,11 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./explore-state/explore-state.component').then(m => m.ExploreStateComponent),
   },
+  // 404 — any unmatched path. Component sets `noindex, nofollow` via SeoService
+  // so the URL doesn't accidentally get crawled.
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./not-found/not-found.component').then(m => m.NotFoundComponent),
+  },
 ];

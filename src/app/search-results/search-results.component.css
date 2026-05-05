@@ -49,8 +49,7 @@ img.img-loaded {
   position: absolute;
   top: calc(100% + 0.75rem);
   z-index: 50;
-  width: 22rem;
-  max-width: calc(100vw - 2rem);
+  width: min(22rem, calc(100vw - 2rem));
   background: #fff;
   border: 1px solid rgba(34, 34, 34, 0.1);
   border-radius: 1.25rem;
@@ -68,12 +67,23 @@ img.img-loaded {
 }
 
 .filter-panel--wide {
-  width: 32rem;
+  width: min(32rem, calc(100vw - 2rem));
 }
 
 .filter-panel--dates {
-  width: 22rem;
+  width: min(22rem, calc(100vw - 2rem));
   padding: 1rem 1.25rem 1.25rem;
+}
+
+/* Narrow-viewport: pin both anchors to viewport edges so panels never clip,
+   regardless of which pill they're attached to. */
+@media (max-width: 480px) {
+  .filter-panel--anchor-left,
+  .filter-panel--anchor-right {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
 }
 
 @keyframes panel-pop {

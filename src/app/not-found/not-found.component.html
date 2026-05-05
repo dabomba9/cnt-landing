@@ -1,0 +1,45 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-28 md:pt-32 min-h-screen bg-cream bg-grid-subtle flex items-center">
+  <section class="px-[2%] w-full pb-24 md:pb-32">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">404 · Off-trail</span>
+
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[0.95]" style="font-size: clamp(3rem, 7vw, 6rem);">
+          You wandered<br>off the trail.
+        </h1>
+
+        <p class="mt-6 text-muted-text text-lg md:text-xl font-body leading-relaxed">
+          That page isn't here — maybe a typo, maybe a stale link. Pick a path back below.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a routerLink="/" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">home</span>
+            Back to home
+          </a>
+          <a routerLink="/search" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-dark-text/20 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">explore</span>
+            Browse stays
+          </a>
+        </div>
+
+        <!-- Decorative compass-y divider -->
+        <div class="mt-16 flex items-center justify-center gap-3 text-trinidad/40">
+          <span class="block h-px w-16 bg-current"></span>
+          <span class="material-symbols-outlined text-xl" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">explore</span>
+          <span class="block h-px w-16 bg-current"></span>
+        </div>
+
+        <p class="mt-6 text-sm text-muted-text font-body">
+          Need help? <a routerLink="/contact" class="text-trinidad font-bold hover:underline">Drop us a line</a>.
+        </p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

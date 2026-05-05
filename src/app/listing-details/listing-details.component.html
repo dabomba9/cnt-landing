@@ -85,10 +85,10 @@
   <!-- ================= Two-column body ================= -->
   <section class="px-[2%] pt-10 md:pt-12 pb-24">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12">
 
         <!-- Left content column (8/12) -->
-        <div class="md:col-span-8 listing-content space-y-10">
+        <div class="md:col-span-8 listing-content space-y-6 md:space-y-10">
 
           <!-- Sticky section nav (column-width) — hides on scroll-down, reveals on scroll-up -->
           <div class="sticky top-[80px] z-30 -mx-2 px-2 bg-cream/95 backdrop-blur-sm transition-transform duration-300"
@@ -500,7 +500,7 @@
         </div>
 
         <!-- Right sticky sidebar (4/12 on desktop, full-width below content on mobile) -->
-        <aside class="md:col-span-4 listing-sidebar">
+        <aside class="hidden md:block md:col-span-4 listing-sidebar">
           <div class="md:sticky md:top-32 space-y-3">
 
             <cnt-listing-booking-widget
