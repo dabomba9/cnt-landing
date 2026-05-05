@@ -212,7 +212,11 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
     const update = () => {
       const rect = stickyWrap.getBoundingClientRect();
-      const totalScroll = stickyWrap.offsetHeight - window.innerHeight;
+      // Clamp to >= one viewport height so the animation completes over a
+      // consistent scroll distance regardless of screen size. Without this,
+      // tall windows (offsetHeight < innerHeight) make totalScroll negative
+      // and freeze the animation at p=0.
+      const totalScroll = Math.max(stickyWrap.offsetHeight - window.innerHeight, window.innerHeight);
       const scrolled = -rect.top;
       const p = Math.max(0, Math.min(1, scrolled / totalScroll));
 
