@@ -236,14 +236,15 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
       const borderRadius = 50 * (1 - p);
 
-      if (stickyContent) {
-        gsap.set(stickyContent, {
-          width: currentW + 'px',
-          height: clampH + 'px',
-          borderRadius: borderRadius + '%',
-          overwrite: 'auto'
-        });
-      }
+      // Direct style writes instead of gsap.set: the entry animation
+      // (gsap.fromTo on .scale) keeps gsap actively writing the inline
+      // transform — gsap.set with `overwrite: 'auto'` only handles same-
+      // property collisions, so its width/height/borderRadius writes were
+      // getting clobbered in prod. We don't need easing here (1:1 scroll-
+      // driven), so plain CSS writes are simpler and reliable.
+      stickyContent.style.width = currentW + 'px';
+      stickyContent.style.height = clampH + 'px';
+      stickyContent.style.borderRadius = borderRadius + '%';
     };
 
     update();
