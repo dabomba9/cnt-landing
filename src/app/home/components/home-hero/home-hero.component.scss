@@ -12,9 +12,12 @@
 
 .sticky-wrap-hero {
   height: 250vh;
-  max-height: 2500px;
   margin-bottom: 4rem;
   position: relative;
+  /* No max-height cap — on tall viewports the cap was shrinking the
+     scroll runway below 1 viewport, so the expand animation never
+     reached p=1 before the element unstuck. 250vh gives 1.5 viewport
+     heights of runway regardless of screen size. */
 }
 
 .sticky-element {
@@ -36,7 +39,7 @@
   width: 40vw;
   height: 40vw;
   border-radius: 40vw;
-  margin-right: 2vw;
+  margin: 0; /* JS animates marginRight from 2rem at p=0 to 0 at p=1 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,6 +59,23 @@
   justify-content: flex-end;
   align-self: center;
   background-color: transparent;
+}
+
+.search-hero-outer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  width: 60%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  text-align: center;
+  font-family: 'Familjen Grotesk', sans-serif;
+}
+
+.search-hero-inner {
+  flex: none;
 }
 
 .video-wrapper {

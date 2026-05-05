@@ -41,11 +41,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   openVideo(): void {
     this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.brandVideoEmbed);
     this.isVideoOpen = true;
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.classList.add('cnt-modal-open');
+    }
   }
 
   closeVideo(): void {
     this.isVideoOpen = false;
     this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.classList.remove('cnt-modal-open');
+    }
   }
 
   @HostListener('document:keydown.escape')

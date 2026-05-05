@@ -510,7 +510,7 @@
 
     <!-- Header -->
     <div class="text-center mb-12">
-      <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The CurbNTurf Experience</span>
+      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The CurbNTurf Experience</span>
       <h2 class="font-headline font-bold text-white tracking-tight mb-5">This is what freedom looks like</h2>
       <p class="text-white/60 text-lg md:text-xl font-body max-w-xl mx-auto">
         Real places. Real hosts. Real adventures — all across America.
@@ -527,8 +527,10 @@
         <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300"></div>
         <!-- Play button -->
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="w-24 h-24 rounded-full bg-white/15 backdrop-blur-md border-2 border-white/40 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-2xl">
-            <span class="material-symbols-outlined text-white text-5xl" style="margin-left:5px">play_arrow</span>
+          <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-trinidad flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-[0_12px_40px_rgba(227,83,13,0.45)] ring-4 ring-white/20">
+            <svg viewBox="0 0 24 24" class="w-9 h-9 md:w-11 md:h-11 text-white" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -736,11 +738,11 @@
               Search listings, book sites, and navigate to your next adventure — all from the palm of your hand.
             </p>
             <div class="flex flex-row flex-wrap gap-4">
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-lg inline-block">
-                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 rounded-lg">
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
               </button>
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-lg inline-block">
-                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 rounded-lg">
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
               </button>
             </div>
           </div>
@@ -758,7 +760,7 @@
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-28 md:pb-44">
       <div class="home-cta-inner text-center max-w-3xl mx-auto">
         <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Start Your Adventure</span>
-        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
           Your next great stay<br>is out there.
         </h2>
         <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
@@ -786,24 +788,6 @@
   <!-- ================= Locations Section ================= -->
   <cnt-home-locations></cnt-home-locations>
 
-  <!-- ================= Video Modal ================= -->
-  @if (isVideoOpen) {
-    <div class="fixed inset-0 z-[var(--z-page-overlay)] flex items-center justify-center p-4 md:p-8"
-         (click)="closeVideo()">
-      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
-      <div class="relative z-10 w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
-           (click)="$event.stopPropagation()">
-        <iframe [src]="videoUrl" class="w-full h-full" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
-                (click)="closeVideo()">
-          <span class="material-symbols-outlined text-[20px]">close</span>
-        </button>
-      </div>
-    </div>
-  }
-
   <curbnturf-footer></curbnturf-footer>
 
     </div><!-- /content-overlap-wrap -->
@@ -813,3 +797,23 @@
 
   </div><!-- /page-main -->
 </div><!-- /page-wrap -->
+
+<!-- ================= Video Modal =================
+     Rendered OUTSIDE .content-overlap-wrap because that wrapper has
+     `transform: translateX(-50%)`, which would make a `position: fixed`
+     descendant resolve relative to the wrapper instead of the viewport. -->
+@if (isVideoOpen) {
+  <div class="fixed inset-0 z-[var(--z-modal)]" (click)="closeVideo()">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,56rem)] aspect-video rounded-2xl overflow-hidden shadow-2xl"
+         (click)="$event.stopPropagation()">
+      <iframe [src]="videoUrl" class="absolute inset-0 w-full h-full" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+      <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors z-10"
+              (click)="closeVideo()">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+  </div>
+}

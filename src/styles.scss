@@ -294,7 +294,10 @@ html, body { height: 100%; }
   background-attachment: local, fixed, fixed;
 }
 /* ── Global typography defaults ── */
-h2 { line-height: 1 !important; }
+h2 {
+  line-height: 1 !important;
+  font-size: clamp(2rem, 5vw, 3.75rem);
+}
 
 p {
   font-family: 'Familjen Grotesk', sans-serif;
@@ -303,13 +306,54 @@ p {
   color: #707070;      /* muted-text — Tailwind text-white/* / text-dark-text overrides on dark bg */
 }
 
+/* ===== Page-level layout primitives (ported from Webflow theme) ============ */
+.page-wrap {
+  overflow: clip;
+}
+
+.container-body {
+  background-color: #f7f5ec;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 2%;
+}
+
+.hero-heading {
+  color: var(--trinidad, #e3530d);
+  text-align: left;
+  align-self: flex-start;
+  margin-bottom: 0;
+  padding-bottom: 1rem;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-weight: 700;
+  line-height: 0.5;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  /* font-size is set via inline clamp() in the template */
+}
+
+.hero-span {
+  display: inline-block;
+}
+
+.article-card {
+  display: flex;
+  align-items: flex-end;
+  min-height: 526px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
 /* ===== Navbar — own styles, no Webflow CSS dependency =====================
    Mirrors the visual of the Webflow-exported navbar (block-navbar floating
    white card with logo + search + nav links + login). Used by
    src/app/navbar/navbar.component.html. */
 .cnt-navbar {
   z-index: var(--z-navbar);
-  background-color: #f7f5ec;
+  background-color: transparent;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -318,10 +362,11 @@ p {
   position: fixed;
   inset: 0 0 auto;
   isolation: isolate;
+  pointer-events: none; /* let clicks pass through the wrapper gap; pill itself re-enables them */
 }
 
-.cnt-navbar--transparent {
-  background-color: transparent;
+.cnt-navbar .block-navbar {
+  pointer-events: auto;
 }
 
 .block-navbar {
@@ -630,6 +675,19 @@ h6 {
 /* Hide default OS cursor everywhere — the custom SVG cursor is the only one. */
 html, body { cursor: none; }
 *, *::before, *::after { cursor: none !important; }
+
+/* Lock scroll + hide navbar while a full-screen modal is open. Components
+   add `cnt-modal-open` to <body> on open and remove it on close.
+   Reserve scrollbar gutter so locking doesn't shift the layout. */
+html {
+  scrollbar-gutter: stable;
+}
+body.cnt-modal-open {
+  overflow: hidden;
+}
+body.cnt-modal-open .cnt-navbar {
+  visibility: hidden;
+}
 
 /* ================= Angular Material Overrides ================= */
 /* ================= Angular Material Overrides ================= */

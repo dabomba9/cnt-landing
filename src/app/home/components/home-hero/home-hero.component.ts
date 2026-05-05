@@ -212,18 +212,21 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
     const update = () => {
       const rect = stickyWrap.getBoundingClientRect();
-      // Clamp to >= one viewport height so the animation completes over a
-      // consistent scroll distance regardless of screen size. Without this,
-      // tall windows (offsetHeight < innerHeight) make totalScroll negative
-      // and freeze the animation at p=0.
-      const totalScroll = Math.max(stickyWrap.offsetHeight - window.innerHeight, window.innerHeight);
+      // Use actual scroll runway. `.sticky-wrap-hero` is height:250vh so
+      // runway = 1.5 viewports — animation completes naturally before the
+      // sticky element unsticks. Floor at 1 to avoid divide-by-zero on
+      // edge cases where wrap collapses below viewport.
+      const totalScroll = Math.max(stickyWrap.offsetHeight - window.innerHeight, 1);
       const scrolled = -rect.top;
       const p = Math.max(0, Math.min(1, scrolled / totalScroll));
 
       const vmin = Math.min(window.innerWidth, window.innerHeight);
       const startPx = vmin * 0.50;
 
-      const targetWidth = window.innerWidth;
+      // Match the navbar pill's rendered width at full expansion so the
+       // hero ends visually flush with the navbar (capped at 90rem).
+      const navbar = document.querySelector('.block-navbar') as HTMLElement | null;
+      const targetWidth = navbar ? navbar.getBoundingClientRect().width : window.innerWidth;
       const targetHeight = window.innerHeight;
 
       const currentW = startPx + (targetWidth - startPx) * (Math.pow(p, 2));
@@ -236,15 +239,18 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
       const borderRadius = 50 * (1 - p);
 
-      // Direct style writes instead of gsap.set: the entry animation
-      // (gsap.fromTo on .scale) keeps gsap actively writing the inline
-      // transform — gsap.set with `overwrite: 'auto'` only handles same-
-      // property collisions, so its width/height/borderRadius writes were
-      // getting clobbered in prod. We don't need easing here (1:1 scroll-
-      // driven), so plain CSS writes are simpler and reliable.
+      // No JS offset needed — `.sticky-element` is justify-content:
+      // flex-end inside .hero-wrap (max-width: 90rem, centered), so the
+      // pill sits at the right edge of the same 90rem container as the
+      // navbar. As width grows toward 90rem the pill expands leftward
+      // and at p=1 fills the container exactly, edges flush with the
+      // navbar pill.
       stickyContent.style.width = currentW + 'px';
       stickyContent.style.height = clampH + 'px';
       stickyContent.style.borderRadius = borderRadius + '%';
+      // Inset from the right edge at p=0 (Webflow start aesthetic);
+      // collapses to 0 at p=1 so the pill ends flush with the navbar.
+      stickyContent.style.marginRight = (32 * (1 - p)) + 'px';
     };
 
     update();

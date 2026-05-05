@@ -669,7 +669,7 @@
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-20 md:pb-32">
       <div class="host-cta-inner text-center max-w-3xl mx-auto">
         <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Ready to Start?</span>
-        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);">
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
           Your land is worth<br>more than you think.
         </h2>
         <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
@@ -719,11 +719,11 @@
               Track bookings, message guests, update availability, and monitor your earnings — all from the CurbNTurf host app.
             </p>
             <div class="flex flex-row flex-wrap gap-4">
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-lg inline-block">
-                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 rounded-lg">
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
               </button>
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] rounded-lg inline-block">
-                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 rounded-lg">
+              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
               </button>
             </div>
           </div>
@@ -737,22 +737,21 @@
 
   <!-- ========== VIDEO MODAL ========== -->
   @if (isVideoOpen) {
-    <div class="fixed inset-0 z-[var(--z-page-overlay)] flex items-center justify-center p-4 md:p-8"
-         (click)="closeVideo()">
+    <div class="fixed inset-0 z-[var(--z-modal)]" (click)="closeVideo()">
       <!-- Backdrop -->
       <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
       <!-- Modal -->
-      <div class="relative z-10 w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,56rem)] aspect-video rounded-2xl overflow-hidden shadow-2xl"
            (click)="$event.stopPropagation()">
         <iframe
           [src]="videoUrl"
-          class="w-full h-full"
+          class="absolute inset-0 w-full h-full"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen>
         </iframe>
         <!-- Close button -->
-        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors z-10"
                 (click)="closeVideo()">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
