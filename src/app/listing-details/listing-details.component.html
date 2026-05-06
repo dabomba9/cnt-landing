@@ -54,13 +54,13 @@
       <div class="listing-gallery">
         <!-- Large primary photo (slightly wider than thumb stack on left half) -->
         <button type="button" (click)="openLightbox(0)" class="relative h-[280px] sm:h-[420px] md:h-[560px] overflow-hidden rounded-2xl group cursor-pointer p-0 border-0">
-          <img [src]="detail.photos[0]" [alt]="listing.title" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" (load)="onImageLoad($event)">
+          <img [src]="detail.photos[0]" [alt]="listing.title" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform" (load)="onImageLoad($event)">
         </button>
         <!-- 2x2 grid of 4 thumbnails (right half) -->
         <div class="grid grid-cols-2 grid-rows-2 gap-1.5 h-[280px] sm:h-[420px] md:h-[560px]">
           @for (photo of detail.photos.slice(1, 5); track $index) {
             <button type="button" (click)="openLightbox($index + 1)" class="relative overflow-hidden rounded-2xl group cursor-pointer p-0 border-0">
-              <img [src]="photo" [alt]="listing.title + ' photo ' + ($index + 2)" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" (load)="onImageLoad($event)">
+              <img [src]="photo" [alt]="listing.title + ' photo ' + ($index + 2)" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform" loading="lazy" (load)="onImageLoad($event)">
               @if ($index === 3) {
                 <span (click)="$event.stopPropagation(); openLightbox(0)" class="absolute bottom-4 right-4 inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-dark-text/15 rounded-lg text-xs font-body font-bold text-dark-text hover:bg-cream/60 shadow-sm">
                   <span class="material-symbols-outlined text-base">grid_view</span>
@@ -500,7 +500,7 @@
         </div>
 
         <!-- Right sticky sidebar (4/12 on desktop, full-width below content on mobile) -->
-        <aside class="hidden md:block md:col-span-4 listing-sidebar">
+        <aside class="md:col-span-4 listing-sidebar">
           <div class="md:sticky md:top-32 space-y-3">
 
             <cnt-listing-booking-widget

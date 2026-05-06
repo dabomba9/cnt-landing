@@ -357,14 +357,14 @@ p {
    white card with logo + search + nav links + login). Used by
    src/app/navbar/navbar.component.html. */
 .cnt-navbar {
-  z-index: var(--z-navbar);
+  z-index: var(--z-navbar) !important;
   background-color: transparent;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 1rem 2%;
   display: flex;
-  position: fixed;
+  position: fixed !important;
   inset: 0 0 auto;
   isolation: isolate;
   pointer-events: none; /* let clicks pass through the wrapper gap; pill itself re-enables them */

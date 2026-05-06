@@ -5,8 +5,8 @@ img.img-loaded {
 
 .search-topbar {
   position: relative;
-  /* Lift above the sticky map pane (z-30 internally on its toggle
-     button) so filter-panel dropdowns aren't clipped or overlapped. */
+  /* Lift above the map pane so filter-panel dropdowns aren't clipped
+     by the sticky map placeholder. Navbar (z 9990) still wins. */
   z-index: 40;
 }
 
