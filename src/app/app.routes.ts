@@ -1,8 +1,32 @@
 import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { authGuard } from './auth/auth.guard';
 
 export const appRoutes: Route[] = [
   { path: '', component: HomeComponent },
+  {
+    path: 'signin',
+    loadComponent: () => import('./auth/sign-in/sign-in.component').then(m => m.SignInComponent),
+  },
+  {
+    path: 'signup',
+    loadComponent: () => import('./auth/sign-up/sign-up.component').then(m => m.SignUpComponent),
+  },
+  {
+    path: 'booking/review',
+    canActivate: [authGuard],
+    loadComponent: () => import('./booking/review/booking-review.component').then(m => m.BookingReviewComponent),
+  },
+  {
+    path: 'booking/confirm/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./booking/confirm/booking-confirm.component').then(m => m.BookingConfirmComponent),
+  },
+  {
+    path: 'trips',
+    canActivate: [authGuard],
+    loadComponent: () => import('./trips/trips.component').then(m => m.TripsComponent),
+  },
   {
     path: 'search',
     loadComponent: () =>

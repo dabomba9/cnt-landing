@@ -15,6 +15,7 @@ import {
 import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '../my-rv.util';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
+import { AuthService } from '../auth/auth.service';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -202,6 +203,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     @Inject(PLATFORM_ID) private platformId: Object,
     private seo: SeoService,
     @Inject(BookingStateService) public booking: BookingStateService,
+    private auth: AuthService,
   ) {}
 
   private currentListingId = -1;
@@ -392,15 +394,23 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   requestBooking(): void {
     if (!this.booking.canBook) return;
-    this.router.navigate(['/contact'], {
-      queryParams: {
-        reason: 'guest-support',
-        listingId: this.listing.id,
-        listingTitle: this.listing.title,
-        nights: this.booking.nights,
-        guests: this.booking.guestCount,
-      },
-    });
+    const params = this.booking.serializeToParams();
+    const reviewQuery: Record<string, string | number> = {
+      listingId: this.listing.id,
+      guests: this.booking.guestCount,
+    };
+    if (params.start) reviewQuery['start'] = params.start;
+    if (params.end) reviewQuery['end'] = params.end;
+    if (!this.auth.currentUser) {
+      const queryString = Object.entries(reviewQuery)
+        .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
+        .join('&');
+      this.router.navigate(['/signin'], {
+        queryParams: { returnTo: `/booking/review?${queryString}` },
+      });
+      return;
+    }
+    this.router.navigate(['/booking/review'], { queryParams: reviewQuery });
   }
 
   onMobileReserveClick(): void {

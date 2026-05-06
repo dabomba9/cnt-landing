@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
+import { AuthService, PublicUser } from '../auth/auth.service';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'cnt-navbar',
@@ -14,28 +16,64 @@ import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 export class NavbarComponent implements OnInit {
   isNavbarVisible = true;
   mobileNavOpen = false;
+  userMenuOpen = false;
   scrolled = false;
   isHome = false;
   searchQuery = '';
   favoritesCount = 0;
+  user: PublicUser | null = null;
   private lastScrollY = 0;
   private readonly TRANSPARENT_THRESHOLD = 80;
   private readonly FAV_KEY = 'cnt-favorites';
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router,
+    private auth: AuthService,
+    private toasts: ToastService,
+  ) {}
 
   ngOnInit(): void {
     this.isHome = this.router.url === '/' || this.router.url.startsWith('/?');
     this.hydrateFavoritesCount();
+    this.auth.currentUser$.subscribe(u => (this.user = u));
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(e => {
         this.isHome = e.urlAfterRedirects === '/' || e.urlAfterRedirects.startsWith('/?');
         this.mobileNavOpen = false;
+        this.userMenuOpen = false;
         this.hydrateFavoritesCount();
       });
+  }
+
+  toggleUserMenu(): void { this.userMenuOpen = !this.userMenuOpen; }
+  closeUserMenu(): void { this.userMenuOpen = false; }
+
+  signOut(): void {
+    this.auth.signOut();
+    this.userMenuOpen = false;
+    this.toasts.info('Signed out.');
+    this.router.navigate(['/']);
+  }
+
+  get userInitials(): string {
+    if (!this.user) return '';
+    const f = this.user.firstName?.[0] || '';
+    const l = this.user.lastName?.[0] || '';
+    return (f + l).toUpperCase();
+  }
+
+  get verifiedSinceLabel(): string {
+    if (!this.user?.verifiedAt) return '';
+    try {
+      const d = new Date(this.user.verifiedAt);
+      return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(d);
+    } catch {
+      return '';
+    }
   }
 
   /** True when the navbar should render its translucent over-hero state. */

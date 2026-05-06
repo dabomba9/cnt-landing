@@ -1,0 +1,27 @@
+/* Tile-shimmer reuses cnt-skeleton-pulse. Modal entrance is GSAP-free; pure CSS. */
+:host { display: contents; }
+
+.cnt-id-modal-shell {
+  animation: cnt-id-modal-pop 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes cnt-id-modal-pop {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cnt-id-modal-shell { animation: none; }
+}
+
+.id-doc-frame {
+  position: absolute;
+  inset: 0.75rem;
+  border: 2px dashed rgba(34, 34, 34, 0.18);
+  border-radius: 0.75rem;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 0.5rem;
+}

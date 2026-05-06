@@ -1,0 +1,73 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-10 md:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-stretch">
+
+        <!-- Form column -->
+        <div class="lg:col-span-6 flex flex-col justify-center">
+          <div class="max-w-md w-full mx-auto lg:mx-0">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Welcome back</span>
+            <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl mb-3">Pick up where you left off.</h1>
+            <p class="text-muted-text text-base font-body mb-8 leading-relaxed">Sign in to manage trips, your RV profile, and saved stays.</p>
+
+            <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-5">
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Email</span>
+                <input type="email" name="email" autocomplete="email" required [(ngModel)]="email"
+                  class="bg-white border border-dark-text/15 rounded-xl px-4 py-3.5 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+              </label>
+
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Password</span>
+                <input type="password" name="password" autocomplete="current-password" required [(ngModel)]="password"
+                  class="bg-white border border-dark-text/15 rounded-xl px-4 py-3.5 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+              </label>
+
+              @if (error) {
+                <p class="text-xs text-trinidad font-body inline-flex items-center gap-1.5" role="alert">
+                  <span class="material-symbols-outlined text-base">error</span>
+                  {{ error }}
+                </p>
+              }
+
+              <button type="submit" [disabled]="submitting"
+                class="mt-2 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-trinidad text-white font-button uppercase tracking-[0.12em] text-sm font-bold hover:opacity-95 disabled:opacity-60 transition-opacity shadow-[0_10px_24px_rgba(227,83,13,0.25)]">
+                {{ submitting ? 'Signing in…' : 'Sign in' }}
+                @if (!submitting) {
+                  <span class="material-symbols-outlined text-base">arrow_forward</span>
+                }
+              </button>
+            </form>
+
+            <p class="text-sm text-muted-text font-body text-center mt-8">
+              No account?
+              <a [routerLink]="signUpLink.path" [queryParams]="signUpLink.query" class="text-trinidad font-bold hover:underline">Create one</a>
+            </p>
+
+            <p class="text-[0.65rem] text-muted-text/70 font-body text-center mt-6">
+              Demo only — passwords stored locally on this device.
+            </p>
+          </div>
+        </div>
+
+        <!-- Imagery column -->
+        <div class="hidden lg:block lg:col-span-6">
+          <div class="relative h-full min-h-[520px] rounded-3xl overflow-hidden">
+            <img src="assets/images/host_vineyard.webp" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-jungle-green/80 via-jungle-green/20 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-10">
+              <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">The RV Freedom Experience</span>
+              <h2 class="font-headline font-bold text-white text-3xl leading-tight tracking-tight mb-3">"We ditched the chains. The hosts have been the best part."</h2>
+              <p class="text-white/85 text-sm font-body">— Sarah & Mike, full-time travelers since 2024</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

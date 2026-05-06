@@ -1,0 +1,321 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+
+  @if (!booking) {
+    <section class="px-[2%] py-20">
+      <div class="max-w-md mx-auto text-center px-4">
+        <span class="material-symbols-outlined text-5xl text-muted-text" aria-hidden="true">search_off</span>
+        <h1 class="font-headline font-bold text-2xl mt-4 mb-2">Booking not found</h1>
+        <p class="text-muted-text text-sm font-body mb-6">We couldn't find that confirmation. Check your trips or browse new stays.</p>
+        <div class="flex justify-center gap-3">
+          <a routerLink="/trips" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">My trips</a>
+          <a routerLink="/search" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad">Browse stays</a>
+        </div>
+      </div>
+    </section>
+  } @else {
+
+    <!-- Hero confirmation -->
+    <section class="px-[2%] pt-6">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8">
+
+        <!-- Progress steps strip -->
+        <ol class="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.14em] font-button font-bold mb-8 overflow-x-auto">
+          <li class="inline-flex items-center gap-2 text-jungle-green">
+            <span class="w-6 h-6 rounded-full bg-jungle-green text-white inline-flex items-center justify-center"><span class="material-symbols-outlined text-[14px]">check</span></span>
+            Choose dates
+          </li>
+          <span class="w-8 h-px bg-jungle-green/40"></span>
+          <li class="inline-flex items-center gap-2 text-jungle-green">
+            <span class="w-6 h-6 rounded-full bg-jungle-green text-white inline-flex items-center justify-center"><span class="material-symbols-outlined text-[14px]">check</span></span>
+            Review &amp; confirm
+          </li>
+          <span class="w-8 h-px bg-jungle-green/40"></span>
+          <li class="inline-flex items-center gap-2 text-trinidad">
+            <span class="w-6 h-6 rounded-full bg-trinidad text-white inline-flex items-center justify-center"><span class="material-symbols-outlined text-[14px]">check</span></span>
+            Confirmed
+          </li>
+        </ol>
+
+        <!-- Celebration card -->
+        <div class="confirm-card confirm-anim relative rounded-3xl overflow-hidden border border-dark-text/8 shadow-[0_24px_48px_rgba(0,0,0,0.06)]"
+          style="background: radial-gradient(ellipse at 30% 20%, rgba(251, 215, 132, 0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(41, 93, 66, 0.18) 0%, transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7f5ec 100%);">
+          <!-- confetti container (filled by GSAP on confirmed bookings) -->
+          <div class="confetti-root no-print" aria-hidden="true"></div>
+          <!-- decorative sparkle row -->
+          <div class="absolute top-6 right-8 hidden md:flex items-center gap-2 text-gold/70 no-print">
+            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+            <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+          </div>
+          <div class="px-8 md:px-16 py-10 md:py-14 text-center max-w-2xl mx-auto relative">
+            <div class="confirm-checkmark inline-flex items-center justify-center w-16 h-16 rounded-full bg-jungle-green text-white mb-5 shadow-[0_12px_28px_rgba(41,93,66,0.3)]">
+              <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">{{ booking.instantBook ? 'Instant booking' : 'Request sent' }}</span>
+            <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl mb-2">
+              {{ booking.status === 'confirmed' ? "You're booked!" : (booking.status === 'pending' ? "We've sent your request" : (booking.status === 'cancelled' ? "Trip cancelled" : STATUS_META[booking.status].label)) }}
+            </h1>
+            <div class="font-headline font-bold text-dark-text text-lg md:text-xl mb-1">{{ booking.listingTitle }}</div>
+            <div class="inline-flex items-center gap-1.5 text-muted-text text-sm font-body mb-5">
+              <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">location_on</span>
+              <span>{{ booking.hostAddress || booking.listingLocation }}</span>
+            </div>
+            <p class="text-muted-text text-base md:text-lg font-body leading-relaxed mb-6 max-w-xl mx-auto">
+              @switch (booking.status) {
+                @case ('confirmed') { Your reservation is locked in. Plan to arrive between 2 PM and 8 PM on day one. }
+                @case ('pending') { Your host has 24 hours to respond. We'll email you the moment they do. }
+                @case ('cancelled') { This booking has been cancelled. A refund (if applicable) will appear within 5 business days. }
+                @default { {{ STATUS_META[booking.status].label }} }
+              }
+            </p>
+
+            <!-- Status pill row: Verified guest + Confirmation # -->
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              @if (guestVerified && booking.status === 'confirmed') {
+                <span class="inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold">
+                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                  Verified guest
+                </span>
+              }
+              <span class="inline-flex items-center gap-2 pl-3 pr-3 py-1.5 rounded-full bg-white border border-dark-text/8 shadow-sm">
+                <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold">Confirmation</span>
+                <span class="font-headline font-bold text-dark-text text-sm tracking-wider">#{{ confirmationNumber }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-[2%] py-12">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+
+          <!-- Left: details -->
+          <div class="lg:col-span-7 space-y-6">
+
+            <!-- Trip card -->
+            <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden">
+              <div class="relative">
+                <img [src]="booking.listingPhoto" [alt]="booking.listingTitle" class="w-full h-56 md:h-72 object-cover">
+                @if (guestVerified) {
+                  <div class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-md ring-1 ring-jungle-green/20">
+                    <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    <span class="text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold text-jungle-green">Verified guest</span>
+                  </div>
+                }
+              </div>
+              <div class="p-6 md:p-8">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">Your stay</span>
+                <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl leading-tight tracking-tight mb-2">{{ booking.listingTitle }}</h2>
+                <p class="text-muted-text text-sm font-body mb-6">{{ booking.listingLocation }}</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-5 pt-5 border-t border-dark-text/8">
+                  <div>
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Check-in</div>
+                    <div class="text-sm font-body font-bold text-dark-text mt-1">{{ datesLabel.split(' – ')[0] }}</div>
+                    <div class="text-xs text-muted-text font-body">2 – 8 PM</div>
+                  </div>
+                  <div>
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Check-out</div>
+                    <div class="text-sm font-body font-bold text-dark-text mt-1">{{ datesLabel.split(' – ')[1] }}</div>
+                    <div class="text-xs text-muted-text font-body">By 11 AM</div>
+                  </div>
+                  <div class="col-span-2 sm:col-span-1">
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Trip</div>
+                    <div class="text-sm font-body font-bold text-dark-text mt-1">{{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }} · {{ booking.guests }} {{ booking.guests === 1 ? 'guest' : 'guests' }}</div>
+                    <div class="text-xs text-muted-text font-body">Rig: {{ booking.rvSummary }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Host card -->
+            <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8 flex items-center gap-5">
+              <div class="w-16 h-16 rounded-full bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-xl shrink-0">
+                {{ hostInitials }}
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block">Your host</span>
+                <h3 class="font-headline font-bold text-dark-text text-lg leading-tight">{{ booking.hostName }}</h3>
+                <p class="text-xs text-muted-text font-body mt-0.5">Typically replies within 2 hours</p>
+              </div>
+              <a [routerLink]="'/contact'" [queryParams]="{ reason: 'guest-support', listingId: booking.listingId }"
+                class="hidden sm:inline-flex shrink-0 items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad transition-colors">
+                <span class="material-symbols-outlined text-base">forum</span>
+                Message
+              </a>
+            </div>
+
+            <!-- Address reveal (only when confirmed) -->
+            @if (booking.status === 'confirmed') {
+              <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)]">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined text-trinidad" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                  <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold">Approximate location</span>
+                </div>
+                <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight leading-tight mb-4">{{ booking.listingLocation }}</h3>
+                @if (booking.lat != null && booking.lng != null) {
+                  <cnt-mini-map [lat]="booking.lat" [lng]="booking.lng" [label]="booking.listingTitle" class="block mb-4"></cnt-mini-map>
+                }
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+                  <p class="text-muted-text text-sm font-body flex-1">Exact location shared 24 hrs before check-in.</p>
+                  @if (booking.lat != null && booking.lng != null) {
+                    <a [href]="'https://maps.google.com/?q=' + booking.lat + ',' + booking.lng" target="_blank" rel="noopener"
+                      class="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors no-underline">
+                      <span class="material-symbols-outlined text-base">directions</span>
+                      Open in Maps
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- What's next timeline -->
+            <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">What's next</span>
+              <h3 class="font-headline font-bold text-dark-text text-2xl leading-tight tracking-tight mb-6">Your trip in 3 steps</h3>
+              <ol class="relative space-y-6 pl-2">
+                <span class="absolute left-[14px] top-3 bottom-3 w-px bg-jungle-green/20" aria-hidden="true"></span>
+                <li class="flex gap-4 relative">
+                  <span class="relative z-10 shrink-0 w-7 h-7 rounded-full bg-jungle-green text-white font-headline font-bold text-sm flex items-center justify-center ring-4 ring-cream">1</span>
+                  <div>
+                    <div class="font-body font-bold text-dark-text">Your host will reach out</div>
+                    <div class="text-sm text-muted-text font-body mt-1">Expect a welcome message with arrival details within 24 hours.</div>
+                  </div>
+                </li>
+                <li class="flex gap-4 relative">
+                  <span class="relative z-10 shrink-0 w-7 h-7 rounded-full bg-jungle-green text-white font-headline font-bold text-sm flex items-center justify-center ring-4 ring-cream">2</span>
+                  <div>
+                    <div class="font-body font-bold text-dark-text">Plan your arrival</div>
+                    <div class="text-sm text-muted-text font-body mt-1">Add the dates to your calendar. We'll resend address details on day-of.</div>
+                  </div>
+                </li>
+                <li class="flex gap-4 relative">
+                  <span class="relative z-10 shrink-0 w-7 h-7 rounded-full bg-trinidad text-white font-headline font-bold text-sm flex items-center justify-center ring-4 ring-cream">3</span>
+                  <div>
+                    <div class="font-body font-bold text-dark-text">Earn $5/night Review Reward</div>
+                    <div class="text-sm text-muted-text font-body mt-1">Leave a 5-star review after your stay to claim the credit on your next trip.</div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+          </div>
+
+          <!-- Right: actions + price + trust -->
+          <aside class="lg:col-span-5">
+            <div class="lg:sticky lg:top-32 space-y-5">
+
+              <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_8px_24px_rgba(0,0,0,0.04)] p-6">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-4">Total</span>
+                <div class="flex flex-col gap-3 text-sm font-body text-dark-text">
+                  <div class="flex justify-between"><span>${{ booking.pricePerNight }} × {{ booking.nights }} nights</span><span>${{ booking.subtotal }}</span></div>
+                  <div class="flex justify-between"><span>Service fee</span><span>${{ booking.serviceFee }}</span></div>
+                </div>
+                <hr class="my-4 border-dark-text/8">
+                <div class="flex justify-between items-baseline">
+                  <span class="font-headline font-bold text-dark-text">Total</span>
+                  <span class="font-headline font-bold text-trinidad text-3xl">${{ booking.total }}</span>
+                </div>
+              </div>
+
+              <a routerLink="/trips" class="no-print w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-trinidad text-white font-button uppercase tracking-[0.12em] text-sm font-bold hover:opacity-95 transition-opacity shadow-[0_10px_24px_rgba(227,83,13,0.25)]">
+                View all trips
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </a>
+
+              <!-- Action bar -->
+              <div class="no-print bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] divide-y divide-dark-text/8 overflow-hidden">
+                <button type="button" (click)="downloadIcs()"
+                  class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/60 transition-colors">
+                  <span class="material-symbols-outlined text-jungle-green">calendar_add_on</span>
+                  <span class="flex-1 text-sm font-body font-bold text-dark-text">Add to calendar</span>
+                  <span class="text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold text-muted-text">.ICS</span>
+                </button>
+                <button type="button" (click)="shareTrip()"
+                  class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/60 transition-colors">
+                  <span class="material-symbols-outlined text-jungle-green">share</span>
+                  <span class="flex-1 text-sm font-body font-bold text-dark-text">Share trip</span>
+                  <span class="material-symbols-outlined text-base text-muted-text">arrow_forward_ios</span>
+                </button>
+                <button type="button" (click)="printReceipt()"
+                  class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/60 transition-colors">
+                  <span class="material-symbols-outlined text-jungle-green">print</span>
+                  <span class="flex-1 text-sm font-body font-bold text-dark-text">Print receipt</span>
+                  <span class="material-symbols-outlined text-base text-muted-text">arrow_forward_ios</span>
+                </button>
+                @if (isCancellable) {
+                  <button type="button" (click)="openCancelModal()"
+                    class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-trinidad/5 transition-colors">
+                    <span class="material-symbols-outlined text-trinidad">cancel</span>
+                    <span class="flex-1 text-sm font-body font-bold text-trinidad">Cancel booking</span>
+                  </button>
+                }
+              </div>
+
+              <!-- Trust strip -->
+              <div class="confirm-anim bg-jungle-green/5 rounded-2xl border border-jungle-green/15 p-5 space-y-3">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-jungle-green shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">policy</span>
+                  <div>
+                    <div class="text-sm font-body font-bold text-dark-text">Cancellation policy</div>
+                    <div class="text-xs text-muted-text font-body">Free up to 72 hrs before check-in.</div>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-jungle-green shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+                  <div>
+                    <div class="text-sm font-body font-bold text-dark-text">24/7 trip support</div>
+                    <div class="text-xs text-muted-text font-body">Reach a real person any time.</div>
+                  </div>
+                </div>
+              </div>
+
+              <a [routerLink]="'/contact'" [queryParams]="{ reason: 'guest-support', listingId: booking.listingId }"
+                class="block text-center text-xs text-muted-text font-body hover:text-trinidad mt-2">
+                Need help? Message support
+              </a>
+
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Cancel modal -->
+    @if (cancelOpen) {
+      <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+        <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeCancelModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-trinidad/10 mb-4">
+            <span class="material-symbols-outlined text-3xl text-trinidad">cancel</span>
+          </div>
+          <h2 id="cancel-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Cancel this booking?</h2>
+          <p class="text-sm text-muted-text font-body leading-relaxed mb-6">
+            Cancelling now keeps you within the free-cancellation window. A refund (if applicable) will appear within 5 business days. The host will be notified.
+          </p>
+          <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+            <button type="button" (click)="closeCancelModal()" [disabled]="cancelling"
+              class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50">
+              Keep booking
+            </button>
+            <button type="button" (click)="confirmCancel()" [disabled]="cancelling"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+              @if (cancelling) {
+                <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+                Cancelling…
+              } @else {
+                Cancel booking
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</main>
+
+<curbnturf-footer></curbnturf-footer>

@@ -33,17 +33,54 @@
             <span class="favorites-badge" aria-hidden="true">{{ favoritesCount }}</span>
           }
         </a>
-        <a title="Log in coming soon" aria-disabled="true" tabindex="0" class="navigation-link cursor-not-allowed" cntCinematicRoll>
-          <div class="login-wrap">
-            <div class="icon-login">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C14.2091 14 16 12.2091 16 10C16 7.79086 14.2091 6 12 6C9.79086 6 8 7.79086 8 10C8 12.2091 9.79086 14 12 14ZM12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" fill="currentColor"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.9261 20.0557C20.397 18.235 22 15.3047 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 15.3047 3.60301 18.235 6.07388 20.0557C6.65997 20.4742 7.1363 20.7573 7.63587 21C8.95464 21.6407 10.4354 22 12 22C13.5646 22 15.0454 21.6407 16.3641 21C16.9657 20.7015 17.4613 20.3982 17.9261 20.0557ZM17.2287 18.055C18.926 16.588 20 14.4194 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 14.4194 5.07401 16.588 6.77128 18.055C7.80066 16.2313 9.75654 15 12 15C14.2435 15 16.1993 16.2313 17.2287 18.055ZM15.5567 19.1679C14.8921 17.8803 13.5488 17 12 17C10.4512 17 9.10792 17.8803 8.44332 19.1679C9.51467 19.7005 10.7224 20 12 20C13.2776 20 14.4853 19.7005 15.5567 19.1679Z" fill="currentColor"></path>
-              </svg>
+        @if (!user) {
+          <a routerLink="/signin" class="navigation-link cnt-nav-link" cntCinematicRoll>
+            <div class="login-wrap">
+              <div class="icon-login">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C14.2091 14 16 12.2091 16 10C16 7.79086 14.2091 6 12 6C9.79086 6 8 7.79086 8 10C8 12.2091 9.79086 14 12 14ZM12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" fill="currentColor"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.9261 20.0557C20.397 18.235 22 15.3047 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 15.3047 3.60301 18.235 6.07388 20.0557C6.65997 20.4742 7.1363 20.7573 7.63587 21C8.95464 21.6407 10.4354 22 12 22C13.5646 22 15.0454 21.6407 16.3641 21C16.9657 20.7015 17.4613 20.3982 17.9261 20.0557ZM17.2287 18.055C18.926 16.588 20 14.4194 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 14.4194 5.07401 16.588 6.77128 18.055C7.80066 16.2313 9.75654 15 12 15C14.2435 15 16.1993 16.2313 17.2287 18.055ZM15.5567 19.1679C14.8921 17.8803 13.5488 17 12 17C10.4512 17 9.10792 17.8803 8.44332 19.1679C9.51467 19.7005 10.7224 20 12 20C13.2776 20 14.4853 19.7005 15.5567 19.1679Z" fill="currentColor"></path>
+                </svg>
+              </div>
+              <div>Sign in</div>
             </div>
-            <div>Log in</div>
+          </a>
+        } @else {
+          <div class="relative">
+            <button type="button" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen" aria-label="Account menu"
+              class="relative w-10 h-10 rounded-full bg-trinidad text-white flex items-center justify-center font-button font-bold text-sm hover:opacity-95 transition-opacity">
+              {{ userInitials }}
+              @if (user.verified) {
+                <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-jungle-green text-white ring-2 ring-white flex items-center justify-center" aria-label="Verified">
+                  <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </span>
+              }
+            </button>
+            @if (userMenuOpen) {
+              <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
+              <div class="absolute right-0 top-full mt-2 z-50 w-60 bg-white rounded-2xl border border-dark-text/8 shadow-[0_24px_48px_rgba(0,0,0,0.12)] py-2 overflow-hidden">
+                <div class="px-4 py-3 border-b border-dark-text/8">
+                  <div class="text-sm font-headline font-bold text-dark-text">{{ user.firstName }} {{ user.lastName }}</div>
+                  <div class="text-xs text-muted-text font-body truncate">{{ user.email }}</div>
+                  @if (user.verified) {
+                    <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.1em] font-bold">
+                      <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                      Verified · since {{ verifiedSinceLabel }}
+                    </div>
+                  }
+                </div>
+                <a routerLink="/trips" (click)="closeUserMenu()" class="block px-4 py-3 text-sm font-body text-dark-text hover:bg-cream/60">
+                  <span class="material-symbols-outlined text-base align-middle mr-2 text-trinidad">luggage</span>
+                  My trips
+                </a>
+                <button type="button" (click)="signOut()" class="block w-full text-left px-4 py-3 text-sm font-body text-dark-text hover:bg-cream/60 border-t border-dark-text/8">
+                  <span class="material-symbols-outlined text-base align-middle mr-2 text-muted-text">logout</span>
+                  Sign out
+                </button>
+              </div>
+            }
           </div>
-        </a>
+        }
       </nav>
       <button type="button" (click)="toggleMobileNav()" class="nav-menu-button" aria-label="Toggle menu" [attr.aria-expanded]="mobileNavOpen">
         <span class="material-symbols-outlined">{{ mobileNavOpen ? 'close' : 'menu' }}</span>
@@ -57,7 +94,12 @@
       <a routerLink="/search" routerLinkActive="navigation-link--active" (click)="closeMobileNav()" class="navigation-link">Be a guest</a>
       <a routerLink="/host" routerLinkActive="navigation-link--active" (click)="closeMobileNav()" class="navigation-link">Become a host</a>
       <a routerLink="/articles" routerLinkActive="navigation-link--active" (click)="closeMobileNav()" class="navigation-link">Articles</a>
-      <a title="Log in coming soon" aria-disabled="true" tabindex="0" class="navigation-link cursor-not-allowed">Log in</a>
+      @if (!user) {
+        <a routerLink="/signin" (click)="closeMobileNav()" class="navigation-link">Sign in</a>
+      } @else {
+        <a routerLink="/trips" (click)="closeMobileNav()" class="navigation-link">My trips</a>
+        <button type="button" (click)="signOut(); closeMobileNav()" class="navigation-link text-left">Sign out</button>
+      }
     </nav>
   }
 </div>

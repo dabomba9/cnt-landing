@@ -1,0 +1,22 @@
+.confetti-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  will-change: transform, opacity;
+}
+
+@media print {
+  cnt-navbar, curbnturf-footer, .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .confirm-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+}
