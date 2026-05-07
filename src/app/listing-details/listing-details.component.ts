@@ -19,6 +19,7 @@ import { AuthService } from '../auth/auth.service';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
+import { RvPhotosModalComponent } from './rv-photos-modal/rv-photos-modal.component';
 import { ListingCardComponent } from '../listing-card/listing-card.component';
 import { ReviewCardComponent } from '../review-card/review-card.component';
 import { AccordionCardComponent } from '../accordion-card/accordion-card.component';
@@ -30,7 +31,7 @@ import { AccordionCardComponent } from '../accordion-card/accordion-card.compone
     CommonModule, RouterLink,
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
-    ListingCardComponent, ReviewCardComponent, AccordionCardComponent,
+    ListingCardComponent, ReviewCardComponent, AccordionCardComponent, RvPhotosModalComponent,
   ],
   providers: [BookingStateService],
   templateUrl: './listing-details.component.html',
@@ -392,8 +393,28 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /** Modal flag for the RV photos collection step (non-Instant-Book listings only). */
+  rvPhotosOpen = false;
+
   requestBooking(): void {
     if (!this.booking.canBook) return;
+    // Gate: non-Instant-Book listings need the user's RV + license-plate photos.
+    // If they're missing, open the photos modal first; on success it'll re-fire requestBooking.
+    if (!this.listing.instantBook && !this.booking.hasPhotosForBooking) {
+      this.rvPhotosOpen = true;
+      return;
+    }
+    this.proceedToReview();
+  }
+
+  /** Modal saved photos → persist to MyRv profile, close, continue to /booking/review. */
+  onRvPhotosSaved(next: MyRv): void {
+    this.onMyRvChange(next);
+    this.rvPhotosOpen = false;
+    this.proceedToReview();
+  }
+
+  private proceedToReview(): void {
     const params = this.booking.serializeToParams();
     const reviewQuery: Record<string, string | number> = {
       listingId: this.listing.id,

@@ -20,6 +20,8 @@ export class SignUpComponent implements OnInit {
   email = '';
   phone = '';
   password = '';
+  isOver18 = false;
+  newsletterOptIn = false;
   error: string | null = null;
   submitting = false;
   returnTo: string | null = null;
@@ -50,6 +52,10 @@ export class SignUpComponent implements OnInit {
       this.error = 'Password must be at least 6 characters.';
       return;
     }
+    if (!this.isOver18) {
+      this.error = 'You must confirm you are 18 or older to create an account.';
+      return;
+    }
     this.submitting = true;
     const result = this.auth.signUp({
       email: this.email,
@@ -65,6 +71,17 @@ export class SignUpComponent implements OnInit {
     }
     this.toasts.success(`Account created — welcome, ${result.user.firstName}!`);
     this.redirectAfterAuth();
+  }
+
+  onGoogle(): void {
+    this.error = null;
+    this.submitting = true;
+    setTimeout(() => {
+      const result = this.auth.signInWithGoogle();
+      this.submitting = false;
+      this.toasts.success(`Welcome, ${result.user.firstName}!`);
+      this.redirectAfterAuth();
+    }, 400);
   }
 
   private redirectAfterAuth(): void {

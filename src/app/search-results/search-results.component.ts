@@ -6,7 +6,7 @@ import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 import { NavbarComponent } from '../navbar/navbar.component';
-// SearchMapComponent intentionally not imported — leaflet integration paused
+import { SearchMapComponent } from './search-map.component';
 import { SeoService } from '../seo.service';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -48,7 +48,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })
@@ -59,6 +59,9 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   // Listings
   listings = MOCK_LISTINGS;
   hoveredId: number | null = null;
+  selectedId: number | null = null;
+  /** Map viewport bounds; when set, listings are filtered to those within view. */
+  mapBounds: { north: number; south: number; east: number; west: number } | null = null;
   favorites = new Set<number>();
   private readonly FAV_KEY = 'cnt-favorites';
   CATEGORY_META = CATEGORY_META;
@@ -144,8 +147,19 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleFavorite(id: number, event: MouseEvent): void {
     event.stopPropagation();
-    if (this.favorites.has(id)) this.favorites.delete(id);
-    else this.favorites.add(id);
+    this.setFavorite(id, !this.favorites.has(id));
+  }
+
+  /** Toggle handler for the map popup heart (already optimistically updated in the popup). */
+  onMapFavoriteToggle(payload: { id: number; next: boolean }): void {
+    this.setFavorite(payload.id, payload.next);
+  }
+
+  private setFavorite(id: number, next: boolean): void {
+    if (next) this.favorites.add(id);
+    else this.favorites.delete(id);
+    // Make the Set reference change so child components re-evaluate when needed.
+    this.favorites = new Set(this.favorites);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.FAV_KEY, JSON.stringify([...this.favorites]));
     }
@@ -167,8 +181,43 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // ============ Computed ============
 
+  /** Listings that pass every filter except the map viewport — used for map pins. */
+  get pinListings(): Listing[] {
+    return this.listings.filter(l => this.passesNonViewportFilters(l));
+  }
+
+  /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.). */
+  private passesNonViewportFilters(l: Listing): boolean {
+    if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
+    if (this.filters.amenities.size > 0) {
+      for (const a of this.filters.amenities) if (!l.amenities.includes(a)) return false;
+    }
+    if (this.selectedDateRange?.start) {
+      const dayHash = Math.floor(this.selectedDateRange.start.getTime() / 86_400_000);
+      if (((l.id * 31) + dayHash) % 100 >= 85) return false;
+    }
+    const bigRigs: RvType[] = ['class-a', 'fifth-wheel'];
+    if (this.filters.rvType && bigRigs.includes(this.filters.rvType) && !l.amenities.includes('pull-through')) return false;
+    const len = this.filters.rvLength ? parseInt(this.filters.rvLength, 10) : 0;
+    if (len >= 40 && !l.amenities.includes('pull-through')) return false;
+    if (this.filters.rvVehicles > 0 && !l.amenities.includes('vehicles-allowed')) return false;
+    if (this.filters.rvTents > 0 && !l.amenities.includes('tents-allowed')) return false;
+    return true;
+  }
+
   get filteredListings(): Listing[] {
     const filtered = this.listings.filter(l => {
+      // Map viewport — only listings whose pin is currently visible on the map
+      if (this.mapBounds) {
+        const b = this.mapBounds;
+        if (l.lat > b.north || l.lat < b.south) return false;
+        if (b.west <= b.east) {
+          if (l.lng < b.west || l.lng > b.east) return false;
+        } else {
+          if (l.lng < b.west && l.lng > b.east) return false;
+        }
+      }
+
       // Price
       if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
 
@@ -208,17 +257,24 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   private applySort(items: Listing[]): Listing[] {
     const list = [...items];
     switch (this.sortBy) {
-      case 'instant-book':  return list.sort((a, b) => Number(b.instantBook) - Number(a.instantBook));
-      case 'top-rated':     return list.sort((a, b) => b.rating - a.rating);
-      case 'most-reviewed': return list.sort((a, b) => b.reviewCount - a.reviewCount);
-      case 'price-asc':     return list.sort((a, b) => a.price - b.price);
-      case 'price-desc':    return list.sort((a, b) => b.price - a.price);
-      case 'nearest':       return this.userLocation
-        ? list.sort((a, b) => this.distance(a) - this.distance(b))
-        : list;
+      case 'instant-book':  list.sort((a, b) => Number(b.instantBook) - Number(a.instantBook)); break;
+      case 'top-rated':     list.sort((a, b) => b.rating - a.rating); break;
+      case 'most-reviewed': list.sort((a, b) => b.reviewCount - a.reviewCount); break;
+      case 'price-asc':     list.sort((a, b) => a.price - b.price); break;
+      case 'price-desc':    list.sort((a, b) => b.price - a.price); break;
+      case 'nearest':       if (this.userLocation) list.sort((a, b) => this.distance(a) - this.distance(b)); break;
       case 'recommended':
-      default:              return list;
+      default:              break;
     }
+    // Hoist the selected listing (from a marker click) to the top so it's the first card.
+    if (this.selectedId != null) {
+      const idx = list.findIndex(l => l.id === this.selectedId);
+      if (idx > 0) {
+        const [picked] = list.splice(idx, 1);
+        list.unshift(picked);
+      }
+    }
+    return list;
   }
 
   private distance(l: Listing): number {
@@ -490,6 +546,28 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onCardClick(id: number): void {
     this.router.navigate(['/listing'], { queryParams: { id } });
+  }
+
+  /** Marker click: hoist the listing to top of the list, scroll list to top, map opens its popup. */
+  onMarkerClick(id: number): void {
+    this.selectedId = id;
+    this.hoveredId = id;
+    if (!isPlatformBrowser(this.platformId)) return;
+    // Selected card is now at index 0 thanks to applySort hoisting; scroll the list section to top.
+    setTimeout(() => {
+      const list = document.querySelector('.search-list') as HTMLElement | null;
+      if (list) list.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
+  }
+
+  /** Leaflet popup closed — clear the selection so the ring goes away too. */
+  onPopupClosed(): void {
+    this.selectedId = null;
+  }
+
+  /** Map bounds changed — re-filter the list. */
+  onMapBoundsChange(bounds: { north: number; south: number; east: number; west: number }): void {
+    this.mapBounds = bounds;
   }
 
   onImageLoad(event: Event): void {

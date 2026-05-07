@@ -1,5 +1,6 @@
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { FooterComponent } from '../../footer/footer.component';
@@ -19,13 +20,18 @@ import { gsap } from 'gsap';
   templateUrl: './booking-confirm.component.html',
   styleUrls: ['./booking-confirm.component.scss'],
 })
-export class BookingConfirmComponent implements OnInit, AfterViewInit {
+export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy {
   booking: Booking | null = null;
   STATUS_META = STATUS_META;
   guestVerified = false;
 
   cancelOpen = false;
   cancelling = false;
+
+  /** "0:28" countdown to host decision when status === 'pending'. */
+  decisionCountdownLabel = '';
+  private bookingsSub: Subscription | null = null;
+  private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -55,6 +61,52 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit {
       url: `/booking/confirm/${id}`,
       robots: 'noindex, nofollow',
     });
+
+    // React to status flips (host decision) without requiring a refresh.
+    this.bookingsSub = this.bookingSvc.bookings$.subscribe(all => {
+      const updated = all.find(b => b.id === id);
+      if (!updated || !this.booking) return;
+      const prevStatus = this.booking.status;
+      // Preserve any backfilled lat/lng we set in ngOnInit.
+      this.booking = { lat: this.booking.lat, lng: this.booking.lng, ...updated };
+      if (prevStatus === 'pending' && updated.status === 'approved') {
+        this.fireConfetti();
+      }
+    });
+
+    this.startCountdownIfPending();
+  }
+
+  /** Start a 1s ticker that updates the countdown chip while status === 'pending'. */
+  private startCountdownIfPending(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.countdownInterval) clearInterval(this.countdownInterval);
+    const tick = () => {
+      if (!this.booking || this.booking.status !== 'pending' || !this.booking.decisionAt) {
+        this.decisionCountdownLabel = '';
+        if (this.countdownInterval) {
+          clearInterval(this.countdownInterval);
+          this.countdownInterval = null;
+        }
+        return;
+      }
+      const ms = new Date(this.booking.decisionAt).getTime() - Date.now();
+      if (ms <= 0) {
+        this.decisionCountdownLabel = 'Any moment now…';
+        return;
+      }
+      const total = Math.ceil(ms / 1000);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      this.decisionCountdownLabel = `${m}:${s.toString().padStart(2, '0')}`;
+    };
+    tick();
+    this.countdownInterval = setInterval(tick, 1000);
+  }
+
+  ngOnDestroy(): void {
+    this.bookingsSub?.unsubscribe();
+    if (this.countdownInterval) clearInterval(this.countdownInterval);
   }
 
   ngAfterViewInit(): void {
@@ -107,7 +159,7 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit {
 
   get isCancellable(): boolean {
     if (!this.booking) return false;
-    if (this.booking.status === 'cancelled') return false;
+    if (this.booking.status === 'cancelled' || this.booking.status === 'declined') return false;
     return new Date(this.booking.dates.start).getTime() > Date.now();
   }
 

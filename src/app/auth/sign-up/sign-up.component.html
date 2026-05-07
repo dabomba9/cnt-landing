@@ -5,31 +5,124 @@
     <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-10 md:py-16">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-stretch">
 
-        <!-- Imagery column (left on signup so the visual identity feels different from signin) -->
-        <div class="hidden lg:block lg:col-span-6 lg:order-1">
-          <div class="relative h-full min-h-[640px] rounded-3xl overflow-hidden">
-            <img src="assets/images/host_farm.webp" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-trinidad/70 via-trinidad/10 to-transparent"></div>
-            <div class="absolute inset-x-0 bottom-0 p-10">
-              <span class="text-cream font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Join 12,000+ travelers</span>
-              <h2 class="font-headline font-bold text-white text-3xl leading-tight tracking-tight mb-4">Land on a working farm. Wake to a real rooster.</h2>
-              <ul class="flex flex-col gap-2 text-white/90 text-sm font-body">
-                <li class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-gold">check_circle</span> No membership fees</li>
-                <li class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-gold">check_circle</span> Direct messaging with hosts</li>
-                <li class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-gold">check_circle</span> $5/night Review Reward</li>
-              </ul>
+        <!-- Editorial showcase column — photo collage + value props -->
+        <div class="hidden lg:flex lg:col-span-6 lg:order-1 flex-col gap-5">
+
+          <!-- Photo collage: 1 large feature + 2 stacked secondaries (mirrors listing-card patterns) -->
+          <div class="grid grid-cols-3 gap-3 h-[400px]">
+            <div class="relative col-span-2 rounded-2xl overflow-hidden">
+              <img src="assets/images/host_vineyard.webp" alt="Stay at a vineyard" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
+              <!-- Category pennant — same pattern as listing-card -->
+              <div class="absolute top-0 left-4 w-9 h-12 flex items-start justify-center pt-1.5 z-10"
+                style="background: #A541A1; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                <span class="material-symbols-outlined text-white text-[20px]">wine_bar</span>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-dark-text/35 via-transparent to-transparent"></div>
+              <div class="absolute bottom-4 left-4 right-4 text-white">
+                <span class="text-gold font-label uppercase tracking-[0.14em] text-[0.6rem] font-bold block">Vineyard</span>
+                <p class="font-headline font-bold text-lg leading-tight mt-0.5">St. Helena, CA</p>
+              </div>
+            </div>
+            <div class="grid grid-rows-2 gap-3">
+              <div class="relative rounded-2xl overflow-hidden">
+                <img src="assets/images/host_farm.webp" alt="Stay on a working farm" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute top-0 left-3 w-7 h-9 flex items-start justify-center pt-1 z-10"
+                  style="background: #DE5260; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                  <span class="material-symbols-outlined text-white text-[14px]">agriculture</span>
+                </div>
+              </div>
+              <div class="relative rounded-2xl overflow-hidden">
+                <img src="assets/images/host_brewery.webp" alt="Stay behind a craft brewery" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute top-0 left-3 w-7 h-9 flex items-start justify-center pt-1 z-10"
+                  style="background: #E59B47; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                  <span class="material-symbols-outlined text-white text-[14px]">sports_bar</span>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Stat row + value props in a brand-tinted card -->
+          <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-7">
+            <div class="flex items-center gap-5 pb-5 border-b border-dark-text/8">
+              <div>
+                <div class="font-headline font-bold text-trinidad text-3xl tracking-tight leading-none">400+</div>
+                <div class="text-[0.65rem] uppercase tracking-[0.12em] text-muted-text font-button font-bold mt-1">Hosts</div>
+              </div>
+              <div class="w-px h-10 bg-dark-text/10"></div>
+              <div>
+                <div class="font-headline font-bold text-jungle-green text-3xl tracking-tight leading-none flex items-baseline gap-1">
+                  4.9
+                  <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+                </div>
+                <div class="text-[0.65rem] uppercase tracking-[0.12em] text-muted-text font-button font-bold mt-1">Avg rating</div>
+              </div>
+              <div class="w-px h-10 bg-dark-text/10"></div>
+              <div>
+                <div class="font-headline font-bold text-dark-text text-3xl tracking-tight leading-none">45+</div>
+                <div class="text-[0.65rem] uppercase tracking-[0.12em] text-muted-text font-button font-bold mt-1">States</div>
+              </div>
+            </div>
+
+            <ul class="flex flex-col gap-3 pt-5">
+              <li class="flex items-start gap-3">
+                <span class="w-7 h-7 rounded-full bg-jungle-green/10 inline-flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">check</span>
+                </span>
+                <div>
+                  <div class="text-sm font-body font-bold text-dark-text">No membership fees</div>
+                  <div class="text-xs text-muted-text font-body">Pay the host's nightly rate plus a small service fee. That's it.</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-7 h-7 rounded-full bg-jungle-green/10 inline-flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">check</span>
+                </span>
+                <div>
+                  <div class="text-sm font-body font-bold text-dark-text">Direct messaging with hosts</div>
+                  <div class="text-xs text-muted-text font-body">Ask about hookups, pets, terrain — get answers from the person who knows.</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-7 h-7 rounded-full bg-jungle-green/10 inline-flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">check</span>
+                </span>
+                <div>
+                  <div class="text-sm font-body font-bold text-dark-text">$5/night Review Reward</div>
+                  <div class="text-xs text-muted-text font-body">Leave a 5-star review after your stay and apply the credit on your next trip.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
         </div>
 
         <!-- Form column -->
         <div class="lg:col-span-6 lg:order-2 flex flex-col justify-center">
-          <div class="max-w-md w-full mx-auto lg:mx-0">
+          <div class="max-w-md w-full mx-auto">
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Get started</span>
             <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl mb-3">Create your account.</h1>
             <p class="text-muted-text text-base font-body mb-8 leading-relaxed">Takes about 30 seconds — and it's free.</p>
 
-            <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-5">
+            <!-- Google CTA -->
+            <button type="button" (click)="onGoogle()" [disabled]="submitting"
+              class="w-full inline-flex items-center justify-center gap-3 px-5 py-3.5 rounded-full bg-white border border-dark-text/15 text-dark-text font-body font-bold text-sm hover:border-dark-text/40 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] disabled:opacity-60 transition-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.16c-.27 1.4-1.07 2.59-2.28 3.39v2.77h3.68c2.16-1.99 3.43-4.93 3.43-8.4z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.94-2.91l-3.68-2.84c-1.02.69-2.32 1.1-4.27 1.1-3.28 0-6.06-2.21-7.05-5.19H1.13v3.27C3.1 21.34 7.21 24 12 24z"/>
+                <path fill="#FBBC05" d="M4.95 14.16c-.25-.75-.39-1.55-.39-2.36s.14-1.61.39-2.36V6.17H1.13C.41 7.83 0 9.79 0 11.8s.41 3.97 1.13 5.63l3.82-3.27z"/>
+                <path fill="#EA4335" d="M12 4.74c1.77 0 3.36.61 4.62 1.81l3.27-3.27C17.95.99 15.24 0 12 0 7.21 0 3.1 2.66 1.13 6.17l3.82 3.27c.99-2.98 3.77-5.19 7.05-5.19z"/>
+              </svg>
+              Continue with Google
+            </button>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-3 my-6" aria-hidden="true">
+              <div class="flex-1 h-px bg-dark-text/12"></div>
+              <span class="text-[0.65rem] font-label uppercase tracking-[0.14em] text-muted-text font-bold">or with email</span>
+              <div class="flex-1 h-px bg-dark-text/12"></div>
+            </div>
+
+            <form (submit)="onSubmit($event)" novalidate class="flex flex-col gap-4">
               <div class="grid grid-cols-2 gap-3">
                 <label class="flex flex-col gap-2">
                   <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">First</span>
@@ -62,6 +155,22 @@
                 <span class="text-[0.65rem] text-muted-text/70 font-body">At least 6 characters.</span>
               </label>
 
+              <!-- Age + newsletter — single bordered container, hairline-divided rows -->
+              <div class="rounded-xl border border-dark-text/8 divide-y divide-dark-text/8 overflow-hidden mt-1">
+                <label class="flex items-start gap-3 cursor-pointer p-4 hover:bg-cream/40 transition-colors">
+                  <input type="checkbox" name="isOver18" [(ngModel)]="isOver18" required
+                    class="mt-0.5 w-4 h-4 accent-trinidad cursor-pointer shrink-0">
+                  <span class="flex-1 text-sm font-body font-bold text-dark-text leading-snug">I am over 18</span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-4 hover:bg-cream/40 transition-colors">
+                  <input type="checkbox" name="newsletterOptIn" [(ngModel)]="newsletterOptIn"
+                    class="mt-0.5 w-4 h-4 accent-trinidad cursor-pointer shrink-0">
+                  <span class="flex-1 text-xs font-body text-muted-text leading-relaxed">
+                    <strong class="text-dark-text font-bold">Keep me up to date</strong> on CurbNTurf products and services by subscribing to the newsletter. We'll send you marketing promotions, special offers, inspiration, and policy updates via email.
+                  </span>
+                </label>
+              </div>
+
               @if (error) {
                 <p class="text-xs text-trinidad font-body inline-flex items-center gap-1.5" role="alert">
                   <span class="material-symbols-outlined text-base">error</span>
@@ -76,14 +185,18 @@
                   <span class="material-symbols-outlined text-base">arrow_forward</span>
                 }
               </button>
+
+              <p class="text-[0.65rem] text-muted-text/70 font-body leading-relaxed text-center mt-1">
+                By creating an account you agree to our <a routerLink="/terms" class="text-trinidad hover:underline">Terms</a> and <a routerLink="/privacy" class="text-trinidad hover:underline">Privacy Policy</a>.
+              </p>
             </form>
 
-            <p class="text-sm text-muted-text font-body text-center mt-8">
+            <p class="text-sm text-muted-text font-body text-center mt-7">
               Already have an account?
-              <a [routerLink]="signInLink.path" [queryParams]="signInLink.query" class="text-trinidad font-bold hover:underline">Sign in</a>
+              <a [routerLink]="signInLink.path" [queryParams]="signInLink.query" class="text-trinidad font-bold hover:underline">Log in</a>
             </p>
 
-            <p class="text-[0.65rem] text-muted-text/70 font-body text-center mt-6">
+            <p class="text-[0.65rem] text-muted-text/70 font-body text-center mt-4">
               Demo only — accounts stored locally on this device.
             </p>
           </div>

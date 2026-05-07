@@ -574,4 +574,10 @@
   [listing]="listing"
   (reserveClick)="onMobileReserveClick()"></cnt-listing-mobile-booking-bar>
 
+<cnt-rv-photos-modal
+  [open]="rvPhotosOpen"
+  [myRv]="myRv"
+  (closed)="rvPhotosOpen = false"
+  (saved)="onRvPhotosSaved($event)"></cnt-rv-photos-modal>
+
 <curbnturf-footer></curbnturf-footer>

@@ -282,7 +282,8 @@
   </div>
 
   <!-- ================= Split Layout ================= -->
-  <div class="search-split min-h-[calc(100vh-13rem)] md:min-h-[calc(100vh-12rem)]"
+  <div class="px-[2%]">
+  <div class="search-split max-w-[90rem] mx-auto min-h-[calc(100vh-13rem)] md:min-h-[calc(100vh-12rem)]"
     [class.map-only]="viewMode === 'map-only'">
 
     <!-- Listings Panel -->
@@ -312,10 +313,11 @@
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           @for (l of filteredListings; track l.id) {
-            <div class="rounded-2xl relative"
-              [class.ring-2]="hoveredId === l.id"
-              [class.ring-trinidad]="hoveredId === l.id"
-              [class.z-10]="hoveredId === l.id"
+            <div [id]="'listing-' + l.id" class="rounded-2xl relative transition-shadow duration-200 scroll-mt-32"
+              [class.ring-2]="hoveredId === l.id || selectedId === l.id"
+              [class.ring-trinidad]="hoveredId === l.id || selectedId === l.id"
+              [class.shadow-[0_16px_40px_rgba(227,83,13,0.18)]]="selectedId === l.id"
+              [class.z-10]="hoveredId === l.id || selectedId === l.id"
               (mouseenter)="onCardHover(l.id)"
               (mouseleave)="onCardHover(null)">
               <cnt-listing-card
@@ -333,34 +335,19 @@
     <aside class="search-map-pane w-full relative bg-cream"
       [class.hidden-mobile]="!showMobileMap">
 
-      <!-- View toggle pill: Map only (split view) -->
-      @if (viewMode === 'split') {
-        <button type="button" (click)="setViewMode('map-only')"
-          class="cnt-pill cnt-pill-inactive hidden md:flex absolute top-8 right-8 z-50 shadow-md">
-          <span class="material-symbols-outlined text-base">open_in_full</span>
-          <span class="font-button">Map only</span>
-        </button>
-      }
-
-      <!-- View toggle pill: Show list (map-only view) -->
-      @if (viewMode === 'map-only') {
-        <button type="button" (click)="setViewMode('split')"
-          class="cnt-pill cnt-pill-inactive hidden md:flex absolute top-8 left-8 z-30 shadow-md">
-          <span class="material-symbols-outlined text-base">chevron_left</span>
-          <span class="font-button">Show list</span>
-        </button>
-      }
-
-      <div class="sticky top-32 h-[calc(100vh-9rem)] min-h-[500px] m-4 rounded-2xl overflow-hidden border border-dark-text/8 shadow-[0_12px_32px_rgba(0,0,0,0.06)] flex items-center justify-center"
-        style="background: linear-gradient(135deg, #f3ede0 0%, #e6e1d3 50%, #d4d6c5 100%);">
-        <div class="text-center px-8 py-12 max-w-md">
-          <span class="material-symbols-outlined text-5xl text-trinidad mb-5 inline-block" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">explore</span>
-          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block mb-3">Interactive Map</span>
-          <h3 class="font-headline text-2xl font-bold text-dark-text mb-3">Coming soon</h3>
-          <p class="text-muted-text text-sm font-body leading-relaxed">
-            Browse all {{ filteredListings.length }} stays on a real map with clustered price pins, RV-friendly filters, and one-tap navigation.
-          </p>
-        </div>
+      <div class="sticky top-28 h-[calc(100vh-7rem)] min-h-[500px] overflow-hidden">
+        <cnt-search-map
+          [listings]="pinListings"
+          [hoveredId]="hoveredId"
+          [popupId]="selectedId"
+          [favoriteIds]="favorites"
+          [viewMode]="viewMode"
+          (markerHover)="onCardHover($event)"
+          (markerClick)="onMarkerClick($event)"
+          (popupClosed)="onPopupClosed()"
+          (favoriteToggle)="onMapFavoriteToggle($event)"
+          (viewModeChange)="setViewMode($event)"
+          (boundsChange)="onMapBoundsChange($event)"></cnt-search-map>
       </div>
     </aside>
 
@@ -370,5 +357,6 @@
       <span class="material-symbols-outlined text-base">{{ showMobileMap ? 'list' : 'map' }}</span>
       {{ showMobileMap ? 'Show List' : 'Show Map' }}
     </button>
+  </div>
   </div>
 </main>

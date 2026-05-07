@@ -105,6 +105,28 @@ export class AuthService {
     return toPublic(users[idx]);
   }
 
+  /** Mock Google sign-in. In production this would call OAuth and exchange tokens. */
+  signInWithGoogle(profile?: { email?: string; firstName?: string; lastName?: string }): { ok: true; user: PublicUser } {
+    const email = (profile?.email || 'guest.google@curbnturf.demo').trim().toLowerCase();
+    const firstName = profile?.firstName || 'Google';
+    const lastName = profile?.lastName || 'Guest';
+    const users = this.readUsers();
+    let user = users.find(u => u.email === email);
+    if (!user) {
+      user = {
+        email,
+        passwordHash: btoa('google-oauth-mock'),
+        firstName,
+        lastName,
+        createdAt: new Date().toISOString(),
+      };
+      users.push(user);
+      this.writeUsers(users);
+    }
+    this.startSession(email);
+    return { ok: true, user: toPublic(user) };
+  }
+
   signOut(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(SESSION_KEY);

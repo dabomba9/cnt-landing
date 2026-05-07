@@ -30,7 +30,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   startDate: Date | null = null;
   endDate: Date | null = null;
-  guests = 2;
+  guests = 1;
   selectedDateRange: DateRange<Date> | null = null;
 
   /** Form */

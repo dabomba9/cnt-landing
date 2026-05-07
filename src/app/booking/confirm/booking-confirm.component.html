@@ -50,30 +50,74 @@
             <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
           </div>
           <div class="px-8 md:px-16 py-10 md:py-14 text-center max-w-2xl mx-auto relative">
-            <div class="confirm-checkmark inline-flex items-center justify-center w-16 h-16 rounded-full bg-jungle-green text-white mb-5 shadow-[0_12px_28px_rgba(41,93,66,0.3)]">
-              <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <div class="confirm-checkmark inline-flex items-center justify-center w-16 h-16 rounded-full mb-5 shadow-[0_12px_28px_rgba(41,93,66,0.3)]"
+              [ngClass]="{
+                'bg-jungle-green text-white': booking.status === 'confirmed' || booking.status === 'approved',
+                'bg-gold text-dark-text': booking.status === 'pending',
+                'bg-trinidad text-white': booking.status === 'declined' || booking.status === 'cancelled'
+              }">
+              <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">
+                @switch (booking.status) {
+                  @case ('pending') { hourglass_top }
+                  @case ('declined') { do_not_disturb_on }
+                  @case ('cancelled') { cancel }
+                  @default { check_circle }
+                }
+              </span>
             </div>
-            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">{{ booking.instantBook ? 'Instant booking' : 'Request sent' }}</span>
+            <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2"
+              [ngClass]="{
+                'text-jungle-green': booking.status === 'approved',
+                'text-trinidad': booking.status !== 'approved'
+              }">
+              @switch (booking.status) {
+                @case ('approved') { Host approved }
+                @case ('declined') { Host declined }
+                @case ('pending') { Awaiting host }
+                @case ('cancelled') { Cancelled }
+                @case ('confirmed') { {{ booking.instantBook ? 'Instant booking' : 'Confirmed' }} }
+              }
+            </span>
             <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl mb-2">
-              {{ booking.status === 'confirmed' ? "You're booked!" : (booking.status === 'pending' ? "We've sent your request" : (booking.status === 'cancelled' ? "Trip cancelled" : STATUS_META[booking.status].label)) }}
+              @switch (booking.status) {
+                @case ('confirmed') { You're booked! }
+                @case ('approved') { You're booked! }
+                @case ('pending') { Waiting on the host }
+                @case ('declined') { Couldn't host this trip }
+                @case ('cancelled') { Trip cancelled }
+              }
             </h1>
             <div class="font-headline font-bold text-dark-text text-lg md:text-xl mb-1">{{ booking.listingTitle }}</div>
             <div class="inline-flex items-center gap-1.5 text-muted-text text-sm font-body mb-5">
               <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">location_on</span>
               <span>{{ booking.hostAddress || booking.listingLocation }}</span>
             </div>
-            <p class="text-muted-text text-base md:text-lg font-body leading-relaxed mb-6 max-w-xl mx-auto">
+            <p class="text-muted-text text-base md:text-lg font-body leading-relaxed mb-4 max-w-xl mx-auto">
               @switch (booking.status) {
                 @case ('confirmed') { Your reservation is locked in. Plan to arrive between 2 PM and 8 PM on day one. }
-                @case ('pending') { Your host has 24 hours to respond. We'll email you the moment they do. }
+                @case ('approved') { The host accepted your request. Your reservation is locked in — plan to arrive between 2 PM and 8 PM on day one. }
+                @case ('pending') { We've sent your request to the host. They typically respond within an hour. }
+                @case ('declined') { Your host couldn't fit this stay into their calendar. Try one of our similar stays nearby. }
                 @case ('cancelled') { This booking has been cancelled. A refund (if applicable) will appear within 5 business days. }
-                @default { {{ STATUS_META[booking.status].label }} }
               }
             </p>
 
+            @if (booking.status === 'pending' && decisionCountdownLabel) {
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-dark-text text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold mb-6">
+                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+                Decision expected in {{ decisionCountdownLabel }}
+              </div>
+            }
+            @if (booking.status === 'declined') {
+              <a routerLink="/search" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_10px_24px_rgba(227,83,13,0.25)] mb-2">
+                Browse similar stays
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </a>
+            }
+
             <!-- Status pill row: Verified guest + Confirmation # -->
             <div class="flex flex-wrap items-center justify-center gap-2">
-              @if (guestVerified && booking.status === 'confirmed') {
+              @if (guestVerified && (booking.status === 'confirmed' || booking.status === 'approved')) {
                 <span class="inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold">
                   <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                   Verified guest
@@ -100,7 +144,7 @@
             <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden">
               <div class="relative">
                 <img [src]="booking.listingPhoto" [alt]="booking.listingTitle" class="w-full h-56 md:h-72 object-cover">
-                @if (guestVerified) {
+                @if (guestVerified && booking.status !== 'cancelled' && booking.status !== 'declined') {
                   <div class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-md ring-1 ring-jungle-green/20">
                     <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">verified</span>
                     <span class="text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold text-jungle-green">Verified guest</span>
@@ -148,8 +192,8 @@
               </a>
             </div>
 
-            <!-- Address reveal (only when confirmed) -->
-            @if (booking.status === 'confirmed') {
+            <!-- Address reveal (when confirmed or host-approved) -->
+            @if (booking.status === 'confirmed' || booking.status === 'approved') {
               <div class="confirm-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)]">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="material-symbols-outlined text-trinidad" style="font-variation-settings: 'FILL' 1;">location_on</span>

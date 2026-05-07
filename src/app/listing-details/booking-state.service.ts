@@ -27,7 +27,7 @@ export class BookingStateService {
   // Booking state
   readonly today = new Date();
   selectedDateRange: DateRange<Date> | null = null;
-  guestCount = 2;
+  guestCount = 1;
   selectedAddOns = new Set<string>();
   showCalendar = false;
   showAddOns = false;
@@ -69,7 +69,7 @@ export class BookingStateService {
     const g = parseInt(params['guests'], 10);
     const desiredGuests = (Number.isFinite(g) && g > 0)
       ? Math.max(1, Math.min(this.maxGuests, g))
-      : Math.min(2, this.maxGuests);
+      : Math.min(1, this.maxGuests);
     if (this.guestCount !== desiredGuests) this.guestCount = desiredGuests;
 
     const addonsStr = params['addons'] || '';
@@ -174,14 +174,12 @@ export class BookingStateService {
   get hasPhotosForBooking(): boolean { return hasMyRvPhotos(this.myRv); }
 
   /**
-   * Reservation gate. Always requires picked dates. Additionally requires
-   * RV/license photos on the My RV profile WHEN this listing is request-to-book
-   * (host approval). Instant Book listings skip the photo check entirely.
+   * Reservation gate. Only requires picked dates — the RV photos for non-Instant-Book
+   * listings are now collected via the RvPhotosModal triggered by the parent's
+   * requestBooking(), not gated here.
    */
   get canBook(): boolean {
-    if (this.nights <= 0) return false;
-    if (this.instantBook) return true;
-    return this.hasPhotosForBooking;
+    return this.nights > 0;
   }
 
   get dateDisplay(): string {

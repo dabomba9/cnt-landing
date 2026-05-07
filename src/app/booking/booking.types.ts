@@ -28,6 +28,8 @@ export interface Booking {
   instantBook: boolean;
   status: BookingStatus;
   createdAt: string;
+  /** When the host's mock decision is due to fire (request-to-book only). ISO. */
+  decisionAt?: string;
   contact: { email: string; phone?: string };
 }
 

@@ -32,8 +32,8 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     this.seo.update({
-      title: 'Sign in — CurbNTurf',
-      description: 'Sign in to manage your trips on CurbNTurf.',
+      title: 'Log in — CurbNTurf',
+      description: 'Log in to manage your trips on CurbNTurf.',
       url: '/signin',
       robots: 'noindex, nofollow',
     });
@@ -53,6 +53,17 @@ export class SignInComponent implements OnInit {
     }
     this.toasts.success(`Welcome back, ${result.user.firstName}!`);
     this.redirectAfterAuth();
+  }
+
+  onGoogle(): void {
+    this.error = null;
+    this.submitting = true;
+    setTimeout(() => {
+      const result = this.auth.signInWithGoogle();
+      this.submitting = false;
+      this.toasts.success(`Welcome, ${result.user.firstName}!`);
+      this.redirectAfterAuth();
+    }, 400);
   }
 
   private redirectAfterAuth(): void {
