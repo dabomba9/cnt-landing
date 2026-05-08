@@ -137,6 +137,10 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       // Restore last view-mode + mobile-map preference so the layout persists across visits.
       const vm = localStorage.getItem(this.VIEW_MODE_KEY);
       if (vm === 'split' || vm === 'map-only') this.viewMode = vm;
+      // ?view=map (e.g., from the home Explore Map CTA) overrides persisted preference.
+      const viewParam = this.route.snapshot.queryParamMap.get('view');
+      if (viewParam === 'map') this.viewMode = 'map-only';
+      else if (viewParam === 'list' || viewParam === 'split') this.viewMode = 'split';
       this.showMobileMap = localStorage.getItem(this.MOBILE_MAP_KEY) === '1';
     }
   }

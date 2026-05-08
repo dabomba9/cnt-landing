@@ -68,7 +68,7 @@ export class SignInComponent implements OnInit {
 
   private redirectAfterAuth(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    const target = this.returnTo || '/trips';
+    const target = this.returnTo || '/dashboard';
     const [path, query] = target.split('?');
     const queryParams: Record<string, string> = {};
     if (query) {

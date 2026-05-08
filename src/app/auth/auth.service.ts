@@ -33,6 +33,9 @@ export interface PublicUser {
 
 const USERS_KEY = 'cnt-users';
 const SESSION_KEY = 'cnt-session-email';
+const VIEW_KEY = 'cnt-view-mode'; // 'guest' | 'host'
+
+export type AppView = 'guest' | 'host';
 
 function toPublic(user: User): PublicUser {
   const { passwordHash, ...rest } = user;
@@ -44,8 +47,27 @@ export class AuthService {
   private readonly _currentUser$ = new BehaviorSubject<PublicUser | null>(null);
   readonly currentUser$: Observable<PublicUser | null> = this._currentUser$.asObservable();
 
+  private readonly _currentView$ = new BehaviorSubject<AppView>('guest');
+  readonly currentView$: Observable<AppView> = this._currentView$.asObservable();
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.hydrate();
+    this.hydrateView();
+  }
+
+  get currentView(): AppView { return this._currentView$.value; }
+
+  setView(v: AppView): void {
+    this._currentView$.next(v);
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(VIEW_KEY, v); } catch {}
+    }
+  }
+
+  private hydrateView(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const v = localStorage.getItem(VIEW_KEY);
+    if (v === 'host' || v === 'guest') this._currentView$.next(v);
   }
 
   get currentUser(): PublicUser | null {
@@ -130,8 +152,10 @@ export class AuthService {
   signOut(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(VIEW_KEY);
     }
     this._currentUser$.next(null);
+    this._currentView$.next('guest');
   }
 
   private hydrate(): void {

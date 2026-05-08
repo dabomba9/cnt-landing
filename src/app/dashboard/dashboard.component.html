@@ -1,0 +1,90 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-12 md:space-y-16">
+
+      <!-- Greeting -->
+      <cnt-dashboard-greeting [user]="user" [verified]="verified" [memberSince]="memberSince"></cnt-dashboard-greeting>
+
+      <!-- Quick actions -->
+      <cnt-quick-actions [rvSet]="rvSet" [verified]="verified"></cnt-quick-actions>
+
+      <!-- Stat tiles -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <cnt-stat-tile label="Trips taken"   tone="jungle"   [value]="tripsTaken"   icon="luggage" [trend]="tripsTaken === 0 ? 'No trips yet' : 'All-time'"></cnt-stat-tile>
+        <cnt-stat-tile label="Nights booked" tone="trinidad" [value]="nightsBooked" icon="bed"     [trend]="nightsBooked === 0 ? 'Plan your first stay' : 'Across all bookings'"></cnt-stat-tile>
+        <cnt-stat-tile label="Stays saved"   tone="neutral"  [value]="staysSaved"   icon="favorite" [trend]="staysSaved === 0 ? 'Tap a heart to save' : 'In your wishlist'"></cnt-stat-tile>
+        <cnt-stat-tile label="Reward credit" tone="gold"     [value]="'$' + rewardCredit" icon="redeem" trend="$5/night after reviews"></cnt-stat-tile>
+      </div>
+
+      <!-- Upcoming trip -->
+      <section>
+        <div class="flex items-baseline justify-between gap-3 mb-4">
+          <div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Up next</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Your upcoming trip</h2>
+          </div>
+          @if (bookings.length > 0) {
+            <a routerLink="/trips" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">View all trips →</a>
+          }
+        </div>
+        <cnt-upcoming-trip [booking]="upcomingTrip"></cnt-upcoming-trip>
+      </section>
+
+      <!-- Saved stays -->
+      <section>
+        <div class="flex items-baseline justify-between gap-3 mb-4">
+          <div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Wishlist</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Saved stays</h2>
+          </div>
+          @if (savedListings.length > 0) {
+            <a routerLink="/search" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">See all ({{ savedListings.length }}) →</a>
+          }
+        </div>
+        <cnt-saved-stays [savedListings]="savedListings"></cnt-saved-stays>
+      </section>
+
+      <!-- My rig + activity feed -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        <section class="lg:col-span-1">
+          <div class="mb-4">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Profile</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">My rig</h2>
+          </div>
+          <cnt-my-rv-summary [myRv]="myRv"></cnt-my-rv-summary>
+        </section>
+        <section class="lg:col-span-2">
+          <div class="mb-4">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Recent</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Activity</h2>
+          </div>
+          <cnt-activity-feed [bookings]="bookings" [user]="user"></cnt-activity-feed>
+        </section>
+      </div>
+
+      <!-- Continue exploring (recommendations) -->
+      @if (recommendedListings.length > 0) {
+        <section>
+          <div class="flex items-baseline justify-between gap-3 mb-4">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Inspired by you</span>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Continue exploring</h2>
+              <p class="text-sm text-muted-text font-body mt-1">Hand-picked stays we think you'll love.</p>
+            </div>
+            <a routerLink="/search" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">Browse all →</a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @for (l of recommendedListings; track l.id) {
+              <cnt-listing-card [listing]="l"></cnt-listing-card>
+            }
+          </div>
+        </section>
+      }
+
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

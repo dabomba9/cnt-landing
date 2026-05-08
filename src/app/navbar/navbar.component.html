@@ -60,9 +60,17 @@
             </button>
             @if (userMenuOpen) {
               <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
-              <div class="absolute right-0 top-full mt-2 z-50 w-60 bg-white rounded-2xl border border-dark-text/8 shadow-[0_24px_48px_rgba(0,0,0,0.12)] py-2 overflow-hidden">
+              <div class="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-2xl border border-dark-text/8 shadow-[0_24px_48px_rgba(0,0,0,0.14)] py-2 overflow-hidden">
+
+                <!-- Switch view (Airbnb-style top item) -->
+                <button type="button" (click)="switchView()" class="flex items-center gap-3 w-full text-left px-4 py-3 text-sm font-body font-bold text-dark-text bg-cream/40 hover:bg-cream/70 border-b border-dark-text/8 transition-colors">
+                  <span class="material-symbols-outlined text-lg text-trinidad">{{ view === 'host' ? 'luggage' : 'campaign' }}</span>
+                  {{ view === 'host' ? 'Switch to traveling' : 'Switch to hosting' }}
+                </button>
+
+                <!-- Identity header -->
                 <div class="px-4 py-3 border-b border-dark-text/8">
-                  <div class="text-sm font-headline font-bold text-dark-text">{{ user.firstName }} {{ user.lastName }}</div>
+                  <div class="text-sm font-headline font-bold text-dark-text leading-tight">{{ user.firstName }} {{ user.lastName }}</div>
                   <div class="text-xs text-muted-text font-body truncate">{{ user.email }}</div>
                   @if (user.verified) {
                     <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.1em] font-bold">
@@ -71,13 +79,68 @@
                     </div>
                   }
                 </div>
-                <a routerLink="/trips" (click)="closeUserMenu()" class="block px-4 py-3 text-sm font-body text-dark-text hover:bg-cream/60">
-                  <span class="material-symbols-outlined text-base align-middle mr-2 text-trinidad">luggage</span>
-                  My trips
+
+                <!-- Primary group -->
+                <div class="py-1">
+                  <a routerLink="/dashboard" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
+                    Dashboard
+                  </a>
+                  <a routerLink="/trips" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-dark-text">luggage</span>
+                    Trips
+                  </a>
+                  <a routerLink="/search" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
+                    Wishlists
+                  </a>
+                  <a routerLink="/contact" [queryParams]="{ reason: 'guest-support' }" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-dark-text">forum</span>
+                    Messages
+                  </a>
+                </div>
+
+                <!-- Secondary group -->
+                <div class="border-t border-dark-text/8 py-1">
+                  <a routerLink="/search" [queryParams]="{ openRv: 1 }" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-muted-text">rv_hookup</span>
+                    My RV
+                  </a>
+                  <a routerLink="/faq" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-muted-text">help</span>
+                    Help Center
+                  </a>
+                </div>
+
+                <!-- Become a host promo -->
+                <a routerLink="/host" (click)="closeUserMenu()" class="block border-t border-dark-text/8 px-4 py-3 hover:bg-cream/60 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-full bg-trinidad/10 inline-flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-base text-trinidad">campaign</span>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                      <div class="text-sm font-body font-bold text-dark-text leading-tight">Become a host</div>
+                      <div class="text-xs text-muted-text font-body leading-snug mt-0.5">Earn from your land — pull in extra income.</div>
+                    </div>
+                  </div>
                 </a>
-                <button type="button" (click)="signOut()" class="block w-full text-left px-4 py-3 text-sm font-body text-dark-text hover:bg-cream/60 border-t border-dark-text/8">
-                  <span class="material-symbols-outlined text-base align-middle mr-2 text-muted-text">logout</span>
-                  Sign out
+
+                <!-- Tertiary -->
+                <div class="border-t border-dark-text/8 py-1">
+                  <a routerLink="/articles" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-text hover:bg-cream/60 hover:text-dark-text transition-colors">
+                    <span class="material-symbols-outlined text-lg">menu_book</span>
+                    Articles
+                  </a>
+                  <a routerLink="/grow" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-text hover:bg-cream/60 hover:text-dark-text transition-colors">
+                    <span class="material-symbols-outlined text-lg">park</span>
+                    Grow Program
+                  </a>
+                </div>
+
+                <!-- Sign out -->
+                <button type="button" (click)="signOut()" class="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 border-t border-dark-text/8 transition-colors">
+                  <span class="material-symbols-outlined text-lg text-muted-text">logout</span>
+                  Log out
                 </button>
               </div>
             }
@@ -99,6 +162,7 @@
       @if (!user) {
         <a routerLink="/signin" (click)="closeMobileNav()" class="navigation-link">Log in / Sign up</a>
       } @else {
+        <a routerLink="/dashboard" (click)="closeMobileNav()" class="navigation-link">Dashboard</a>
         <a routerLink="/trips" (click)="closeMobileNav()" class="navigation-link">My trips</a>
         <button type="button" (click)="signOut(); closeMobileNav()" class="navigation-link text-left">Sign out</button>
       }

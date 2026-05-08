@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { AuthService, PublicUser } from '../auth/auth.service';
+import { AuthService, PublicUser, AppView } from '../auth/auth.service';
 import { ToastService } from '../toast.service';
 
 @Component({
@@ -22,6 +22,7 @@ export class NavbarComponent implements OnInit {
   searchQuery = '';
   favoritesCount = 0;
   user: PublicUser | null = null;
+  view: AppView = 'guest';
   private lastScrollY = 0;
   private readonly TRANSPARENT_THRESHOLD = 80;
   private readonly FAV_KEY = 'cnt-favorites';
@@ -39,6 +40,7 @@ export class NavbarComponent implements OnInit {
     this.isHome = this.router.url === '/' || this.router.url.startsWith('/?');
     this.hydrateFavoritesCount();
     this.auth.currentUser$.subscribe(u => (this.user = u));
+    this.auth.currentView$.subscribe(v => (this.view = v));
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(e => {
@@ -57,6 +59,13 @@ export class NavbarComponent implements OnInit {
     this.userMenuOpen = false;
     this.toasts.info('Signed out.');
     this.router.navigate(['/']);
+  }
+
+  switchView(): void {
+    const next: AppView = this.view === 'host' ? 'guest' : 'host';
+    this.auth.setView(next);
+    this.userMenuOpen = false;
+    this.router.navigate([next === 'host' ? '/host/dashboard' : '/dashboard']);
   }
 
   get userInitials(): string {
@@ -91,8 +100,8 @@ export class NavbarComponent implements OnInit {
 
   onSearchSubmit(): void {
     const q = this.searchQuery.trim();
-    if (!q) return;
-    this.router.navigate(['/search'], { queryParams: { dest: q } });
+    const queryParams = q ? { dest: q } : {};
+    this.router.navigate(['/search'], { queryParams });
     this.searchQuery = '';
     this.searchInput?.nativeElement.blur();
   }
