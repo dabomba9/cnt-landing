@@ -171,6 +171,19 @@
               </div>
             </div>
 
+            <!-- Note to host (request-to-book only) -->
+            @if (!listing!.instantBook) {
+              <div class="review-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Note to host</span>
+                <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight mb-1">Introduce yourself <span class="text-muted-text/70 normal-case font-normal text-base">(optional)</span></h2>
+                <p class="text-xs text-muted-text font-body mb-4">A friendly hello helps your request stand out. Mention your rig, plans, or any questions.</p>
+                <textarea [(ngModel)]="noteToHost" name="noteToHost" rows="4" maxlength="500"
+                  placeholder="Hi! We're a couple traveling with a 28-ft Class C and would love to stay…"
+                  class="w-full bg-cream/60 border border-dark-text/15 rounded-xl px-4 py-3.5 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-y"></textarea>
+                <div class="text-[0.65rem] text-muted-text/70 font-body text-right mt-1">{{ noteToHost.length }}/500</div>
+              </div>
+            }
+
             <!-- Payment method (mock) -->
             <div class="review-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
               <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Pay with</span>

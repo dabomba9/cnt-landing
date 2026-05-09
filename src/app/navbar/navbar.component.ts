@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -6,6 +6,8 @@ import { filter } from 'rxjs/operators';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 import { AuthService, PublicUser, AppView } from '../auth/auth.service';
 import { ToastService } from '../toast.service';
+import { MessageService } from '../messaging/message.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cnt-navbar',
@@ -13,7 +15,7 @@ import { ToastService } from '../toast.service';
   imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, CinematicRollDirective],
   templateUrl: './navbar.component.html',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isNavbarVisible = true;
   mobileNavOpen = false;
   userMenuOpen = false;
@@ -21,9 +23,11 @@ export class NavbarComponent implements OnInit {
   isHome = false;
   searchQuery = '';
   favoritesCount = 0;
+  unreadMessages = 0;
   user: PublicUser | null = null;
   view: AppView = 'guest';
   private lastScrollY = 0;
+  private unreadSub: Subscription | null = null;
   private readonly TRANSPARENT_THRESHOLD = 80;
   private readonly FAV_KEY = 'cnt-favorites';
 
@@ -35,12 +39,21 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private auth: AuthService,
     private toasts: ToastService,
+    private msg: MessageService,
   ) {}
 
   ngOnInit(): void {
     this.isHome = this.router.url === '/' || this.router.url.startsWith('/?');
     this.hydrateFavoritesCount();
-    this.auth.currentUser$.subscribe(u => (this.user = u));
+    this.auth.currentUser$.subscribe(u => {
+      this.user = u;
+      this.unreadSub?.unsubscribe();
+      this.unreadSub = null;
+      this.unreadMessages = 0;
+      if (u) {
+        this.unreadSub = this.msg.unreadFor$(u.email).subscribe(n => (this.unreadMessages = n));
+      }
+    });
     this.auth.currentView$.subscribe(v => (this.view = v));
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
@@ -50,6 +63,10 @@ export class NavbarComponent implements OnInit {
         this.userMenuOpen = false;
         this.hydrateFavoritesCount();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.unreadSub?.unsubscribe();
   }
 
   toggleUserMenu(): void { this.userMenuOpen = !this.userMenuOpen; }

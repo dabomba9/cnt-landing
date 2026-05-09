@@ -19,7 +19,8 @@
           <button type="button" (click)="clearAllFilters()"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.65rem] font-button uppercase tracking-[0.12em] font-bold text-trinidad hover:bg-trinidad/10 transition-colors">
             <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
-            Clear all filters
+            Clear all
+            <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.6rem] font-button font-bold">{{ activeFilterCount }}</span>
           </button>
         }
       </div>
@@ -74,6 +75,26 @@
           }
         </div>
 
+        <!-- Quick toggle: Instant Book -->
+        <button type="button"
+          (click)="toggleInstantBookFilter()"
+          [attr.aria-pressed]="filters.instantBookOnly"
+          class="cnt-pill"
+          [ngClass]="filters.instantBookOnly ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+          <span class="material-symbols-outlined text-base" [style.font-variation-settings]="filters.instantBookOnly ? '\'FILL\' 1' : null">bolt</span>
+          <span class="font-button">Instant Book</span>
+        </button>
+
+        <!-- Quick toggle: Pets -->
+        <button type="button"
+          (click)="togglePetsFilter()"
+          [attr.aria-pressed]="filters.amenities.has('pets')"
+          class="cnt-pill"
+          [ngClass]="filters.amenities.has('pets') ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+          <span class="material-symbols-outlined text-base" [style.font-variation-settings]="filters.amenities.has('pets') ? '\'FILL\' 1' : null">pets</span>
+          <span class="font-button">Pets</span>
+        </button>
+
         <!-- Dates pill + panel -->
         <div class="relative">
           <button type="button"
@@ -119,7 +140,7 @@
                 <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text">Min</span>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
-                  <input type="number" [(ngModel)]="filters.minPrice" [min]="PRICE_RANGE.min" [max]="filters.maxPrice"
+                  <input type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onPriceChange()" [min]="PRICE_RANGE.min" [max]="filters.maxPrice"
                     class="w-full bg-white border border-dark-text/20 rounded-lg pl-7 pr-3 py-3 text-sm font-body focus:outline-none focus:border-trinidad">
                 </div>
               </label>
@@ -128,7 +149,7 @@
                 <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text">Max</span>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
-                  <input type="number" [(ngModel)]="filters.maxPrice" [min]="filters.minPrice" [max]="PRICE_RANGE.max"
+                  <input type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onPriceChange()" [min]="filters.minPrice" [max]="PRICE_RANGE.max"
                     class="w-full bg-white border border-dark-text/20 rounded-lg pl-7 pr-3 py-3 text-sm font-body focus:outline-none focus:border-trinidad">
                 </div>
               </label>
@@ -204,6 +225,19 @@
               <div class="text-center text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-4">Additional</div>
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
+                  <span id="rv-guests-label" class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Guests</span>
+                  <div class="flex items-center gap-3"
+                    role="spinbutton"
+                    aria-labelledby="rv-guests-label"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuenow]="filters.guests"
+                    [attr.aria-valuetext]="filters.guests + (filters.guests === 1 ? ' guest' : ' guests')">
+                    <button type="button" (click)="stepGuests(-1)" [disabled]="filters.guests <= 0" aria-label="Decrease guest count" class="w-10 h-10 rounded-full border border-dark-text/20 hover:border-trinidad disabled:opacity-40 flex items-center justify-center"><span aria-hidden="true" class="material-symbols-outlined text-base">remove</span></button>
+                    <span class="font-headline text-xl font-bold w-8 text-center" aria-hidden="true">{{ filters.guests || 'Any' }}</span>
+                    <button type="button" (click)="stepGuests(1)" aria-label="Increase guest count" class="w-10 h-10 rounded-full border border-dark-text/20 hover:border-trinidad flex items-center justify-center"><span aria-hidden="true" class="material-symbols-outlined text-base">add</span></button>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
                   <span id="rv-vehicles-label" class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Vehicles</span>
                   <div class="flex items-center gap-3"
                     role="spinbutton"
@@ -278,6 +312,22 @@
     <!-- click-outside backdrop -->
     @if (openPill) {
       <div class="fixed inset-0 z-20 bg-transparent" (click)="closePill()"></div>
+    }
+
+    <!-- Active filter chips strip -->
+    @if (activeFilterChips.length > 0) {
+      <div class="max-w-[90rem] mx-auto pt-3 pb-1 flex flex-wrap items-center gap-2">
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.14em] text-muted-text font-bold mr-1">Filters:</span>
+        @for (chip of activeFilterChips; track chip.key) {
+          <button type="button" (click)="chip.clear()"
+            class="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold hover:bg-trinidad/15 transition-colors">
+            <span>{{ chip.label }}</span>
+            <span class="w-4 h-4 inline-flex items-center justify-center rounded-full bg-trinidad/15 hover:bg-trinidad hover:text-white transition-colors" aria-hidden="true">
+              <span class="material-symbols-outlined text-[12px]">close</span>
+            </span>
+          </button>
+        }
+      </div>
     }
   </div>
 

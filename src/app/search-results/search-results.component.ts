@@ -95,6 +95,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     rvWidth: '',
     rvVehicles: 0,
     rvTents: 0,
+    guests: 0,
+    instantBookOnly: false,
     amenities: new Set<Amenity>(),
   };
 
@@ -118,6 +120,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       url: '/search',
     });
     this.hydrateMyRv();
+    this.hydrateFiltersFromUrl();
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
       // Hydrate date range from query params (e.g. arriving from home page)
@@ -190,8 +193,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.listings.filter(l => this.passesNonViewportFilters(l));
   }
 
+  /** Mirrors `getListingDetail.maxGuests` formula so we can filter without the full detail. */
+  private listingMaxGuests(l: Listing): number {
+    return 2 + ((l.id * 5) % 5);
+  }
+
   /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.). */
   private passesNonViewportFilters(l: Listing): boolean {
+    if (this.filters.instantBookOnly && !l.instantBook) return false;
+    if (this.filters.guests > 0 && this.listingMaxGuests(l) < this.filters.guests) return false;
     if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
     if (this.filters.amenities.size > 0) {
       for (const a of this.filters.amenities) if (!l.amenities.includes(a)) return false;
@@ -211,7 +221,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   get filteredListings(): Listing[] {
     const filtered = this.listings.filter(l => {
-      // Map viewport — only listings whose pin is currently visible on the map
       if (this.mapBounds) {
         const b = this.mapBounds;
         if (l.lat > b.north || l.lat < b.south) return false;
@@ -221,39 +230,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
           if (l.lng < b.west && l.lng > b.east) return false;
         }
       }
-
-      // Price
-      if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
-
-      // Amenities (must include all selected)
-      if (this.filters.amenities.size > 0) {
-        for (const a of this.filters.amenities) if (!l.amenities.includes(a)) return false;
-      }
-
-      // Dates — mock availability check (~85% available, stable per (listing, date)).
-      // In production this would query real booking availability.
-      if (this.selectedDateRange?.start) {
-        const dayHash = Math.floor(this.selectedDateRange.start.getTime() / 86_400_000);
-        if (((l.id * 31) + dayHash) % 100 >= 85) return false;
-      }
-
-      // RV type — large rigs need pull-through access
-      const bigRigs: RvType[] = ['class-a', 'fifth-wheel'];
-      if (this.filters.rvType && bigRigs.includes(this.filters.rvType) && !l.amenities.includes('pull-through')) {
-        return false;
-      }
-
-      // RV length — anything 40+ ft needs pull-through
-      const len = this.filters.rvLength ? parseInt(this.filters.rvLength, 10) : 0;
-      if (len >= 40 && !l.amenities.includes('pull-through')) return false;
-
-      // Extra vehicles must be allowed at the site
-      if (this.filters.rvVehicles > 0 && !l.amenities.includes('vehicles-allowed')) return false;
-
-      // Tents must be allowed at the site
-      if (this.filters.rvTents > 0 && !l.amenities.includes('tents-allowed')) return false;
-
-      return true;
+      return this.passesNonViewportFilters(l);
     });
     return this.applySort(filtered);
   }
@@ -311,9 +288,95 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       || !!f.rvWidth
       || f.rvVehicles > 0
       || f.rvTents > 0
+      || f.guests > 0
+      || f.instantBookOnly
       || f.amenities.size > 0
       || !!this.selectedDateRange?.start
       || this.sortBy !== 'recommended';
+  }
+
+  /** Number of distinct active filters — surfaced as a count badge. */
+  get activeFilterCount(): number {
+    return this.activeFilterChips.length;
+  }
+
+  /** Inline chip strip below the pill bar — one chip per applied filter, dismissable. */
+  get activeFilterChips(): { key: string; label: string; clear: () => void }[] {
+    const chips: { key: string; label: string; clear: () => void }[] = [];
+    if (this.filters.instantBookOnly) {
+      chips.push({ key: 'ib', label: 'Instant Book', clear: () => { this.filters.instantBookOnly = false; this.syncToUrl(); } });
+    }
+    if (this.filters.guests > 0) {
+      const g = this.filters.guests;
+      chips.push({ key: 'guests', label: `${g} guest${g === 1 ? '' : 's'}`, clear: () => { this.filters.guests = 0; this.syncToUrl(); } });
+    }
+    if (this.selectedDateRange?.start) {
+      chips.push({ key: 'dates', label: this.dateDisplayText, clear: () => { this.clearDates(); this.syncToUrl(); } });
+    }
+    if (this.filters.minPrice !== PRICE_RANGE.min || this.filters.maxPrice !== PRICE_RANGE.max) {
+      chips.push({ key: 'price', label: `$${this.filters.minPrice}–$${this.filters.maxPrice}`, clear: () => { this.clearPrice(); this.syncToUrl(); } });
+    }
+    if (this.filters.rvType) {
+      const rv = RV_TYPES.find(t => t.id === this.filters.rvType);
+      chips.push({ key: 'rvType', label: rv?.label || 'RV', clear: () => { this.filters.rvType = null; this.persistMyRv(); this.syncToUrl(); } });
+    }
+    if (this.filters.rvLength) {
+      chips.push({ key: 'rvLength', label: `${this.filters.rvLength} ft long`, clear: () => { this.filters.rvLength = ''; this.persistMyRv(); this.syncToUrl(); } });
+    }
+    if (this.filters.rvHeight) {
+      chips.push({ key: 'rvHeight', label: `${this.filters.rvHeight} ft tall`, clear: () => { this.filters.rvHeight = ''; this.persistMyRv(); this.syncToUrl(); } });
+    }
+    if (this.filters.rvWidth) {
+      chips.push({ key: 'rvWidth', label: `${this.filters.rvWidth} ft wide`, clear: () => { this.filters.rvWidth = ''; this.persistMyRv(); this.syncToUrl(); } });
+    }
+    if (this.filters.rvVehicles > 0) {
+      chips.push({ key: 'rvVehicles', label: `${this.filters.rvVehicles} vehicle${this.filters.rvVehicles === 1 ? '' : 's'}`, clear: () => { this.filters.rvVehicles = 0; this.syncToUrl(); } });
+    }
+    if (this.filters.rvTents > 0) {
+      chips.push({ key: 'rvTents', label: `${this.filters.rvTents} tent${this.filters.rvTents === 1 ? '' : 's'}`, clear: () => { this.filters.rvTents = 0; this.syncToUrl(); } });
+    }
+    for (const a of this.filters.amenities) {
+      chips.push({
+        key: 'amenity-' + a,
+        label: AMENITY_LABELS[a],
+        clear: () => {
+          const next = new Set(this.filters.amenities);
+          next.delete(a);
+          this.filters.amenities = next;
+          this.syncToUrl();
+        },
+      });
+    }
+    if (this.sortBy !== 'recommended') {
+      const opt = SORT_OPTIONS.find(o => o.id === this.sortBy);
+      chips.push({ key: 'sort', label: opt?.label || 'Sort', clear: () => { this.sortBy = 'recommended'; this.syncToUrl(); } });
+    }
+    return chips;
+  }
+
+  togglePetsFilter(): void {
+    if (this.filters.amenities.has('pets')) {
+      const next = new Set(this.filters.amenities);
+      next.delete('pets');
+      this.filters.amenities = next;
+    } else {
+      this.filters.amenities = new Set([...this.filters.amenities, 'pets']);
+    }
+    this.syncToUrl();
+  }
+
+  toggleInstantBookFilter(): void {
+    this.filters.instantBookOnly = !this.filters.instantBookOnly;
+    this.syncToUrl();
+  }
+
+  setGuests(n: number): void {
+    this.filters.guests = Math.max(0, n);
+    this.syncToUrl();
+  }
+
+  stepGuests(delta: number): void {
+    this.setGuests(this.filters.guests + delta);
   }
 
   /** Identify the filter most likely cutting results, surfaced in the empty state. */
@@ -337,10 +400,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.rvWidth = '';
     this.filters.rvVehicles = 0;
     this.filters.rvTents = 0;
+    this.filters.guests = 0;
+    this.filters.instantBookOnly = false;
     this.filters.amenities = new Set();
     this.selectedDateRange = null;
     this.sortBy = 'recommended';
     this.persistMyRv();
+    this.syncToUrl();
   }
 
   clearOneFilter(key: 'price' | 'amenities' | 'rv' | 'dates' | 'sort'): void {
@@ -355,6 +421,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   clearSort(): void {
     this.sortBy = 'recommended';
+    this.syncToUrl();
   }
 
   selectSort(id: SortOption): void {
@@ -362,11 +429,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       this.requestGeolocation(() => {
         this.sortBy = 'nearest';
         this.closePill();
+        this.syncToUrl();
       });
       return;
     }
     this.sortBy = id;
     this.closePill();
+    this.syncToUrl();
   }
 
   /** Re-request geolocation after a permission denial — used by the "Try again"
@@ -461,6 +530,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       this.selectedDateRange = new DateRange(this.selectedDateRange.start, date);
       setTimeout(() => this.closePill(), 250);
     }
+    this.syncToUrl();
   }
 
   // ============ Filter actions ============
@@ -474,8 +544,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   toggleAmenity(a: Amenity): void {
-    if (this.filters.amenities.has(a)) this.filters.amenities.delete(a);
-    else this.filters.amenities.add(a);
+    const next = new Set(this.filters.amenities);
+    if (next.has(a)) next.delete(a);
+    else next.add(a);
+    this.filters.amenities = next;
+    this.syncToUrl();
   }
 
   isAmenitySelected(a: Amenity): boolean {
@@ -484,11 +557,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   clearAmenities(): void {
     this.filters.amenities = new Set();
+    this.syncToUrl();
   }
 
   selectRvType(t: RvType): void {
     this.filters.rvType = this.filters.rvType === t ? null : t;
     this.persistMyRv();
+    this.syncToUrl();
   }
 
   clearRvSetup(): void {
@@ -498,11 +573,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.rvWidth = '';
     this.filters.rvVehicles = 0;
     this.filters.rvTents = 0;
+    this.filters.guests = 0;
     this.persistMyRv();
+    this.syncToUrl();
   }
 
   /** Called when length/height/width inputs change (template binding). */
-  onRvDimensionChange(): void { this.persistMyRv(); }
+  onRvDimensionChange(): void { this.persistMyRv(); this.syncToUrl(); }
 
   private persistMyRv(): void {
     const num = (s: string): number | null => {
@@ -521,6 +598,58 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  /** Hydrate filters from URL on first load — refresh-safe shareable links. */
+  private hydrateFiltersFromUrl(): void {
+    const q = this.route.snapshot.queryParamMap;
+    const sort = q.get('sort');
+    if (sort && SORT_OPTIONS.some(o => o.id === sort)) this.sortBy = sort as SortOption;
+    const min = parseInt(q.get('min') || '', 10);
+    if (Number.isFinite(min)) this.filters.minPrice = min;
+    const max = parseInt(q.get('max') || '', 10);
+    if (Number.isFinite(max)) this.filters.maxPrice = max;
+    const am = q.get('am');
+    if (am) {
+      for (const a of am.split(',')) {
+        if ((AMENITY_GROUP as string[]).includes(a)) this.filters.amenities.add(a as Amenity);
+      }
+    }
+    const rt = q.get('rt');
+    if (rt && RV_TYPES.some(t => t.id === rt)) this.filters.rvType = rt as RvType;
+    const rl = q.get('rl'); if (rl) this.filters.rvLength = rl;
+    const rh = q.get('rh'); if (rh) this.filters.rvHeight = rh;
+    const rw = q.get('rw'); if (rw) this.filters.rvWidth = rw;
+    const rvh = parseInt(q.get('rvh') || '', 10); if (Number.isFinite(rvh) && rvh > 0) this.filters.rvVehicles = rvh;
+    const rvt = parseInt(q.get('rvt') || '', 10); if (Number.isFinite(rvt) && rvt > 0) this.filters.rvTents = rvt;
+    const g = parseInt(q.get('guests') || '', 10); if (Number.isFinite(g) && g > 0) this.filters.guests = g;
+    if (q.get('ib') === '1') this.filters.instantBookOnly = true;
+  }
+
+  /** Push the current filter state to query params; replaceUrl so we don't pollute history. */
+  syncToUrl(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const f = this.filters;
+    const qp: Record<string, string | null> = {
+      sort: this.sortBy !== 'recommended' ? this.sortBy : null,
+      min: f.minPrice !== PRICE_RANGE.min ? String(f.minPrice) : null,
+      max: f.maxPrice !== PRICE_RANGE.max ? String(f.maxPrice) : null,
+      am: f.amenities.size ? [...f.amenities].join(',') : null,
+      rt: f.rvType || null,
+      rl: f.rvLength || null,
+      rh: f.rvHeight || null,
+      rw: f.rvWidth || null,
+      rvh: f.rvVehicles > 0 ? String(f.rvVehicles) : null,
+      rvt: f.rvTents > 0 ? String(f.rvTents) : null,
+      guests: f.guests > 0 ? String(f.guests) : null,
+      ib: f.instantBookOnly ? '1' : null,
+    };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: qp,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
   private hydrateMyRv(): void {
     const rv = readMyRv(this.platformId);
     if (rv.type)   this.filters.rvType = rv.type;
@@ -531,15 +660,20 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   clearDates(): void {
     this.selectedDateRange = null;
+    this.syncToUrl();
   }
 
   clearPrice(): void {
     this.filters.minPrice = PRICE_RANGE.min;
     this.filters.maxPrice = PRICE_RANGE.max;
+    this.syncToUrl();
   }
+
+  onPriceChange(): void { this.syncToUrl(); }
 
   step(field: 'rvVehicles' | 'rvTents', delta: number): void {
     this.filters[field] = Math.max(0, this.filters[field] + delta);
+    this.syncToUrl();
   }
 
   // ============ Card / map sync ============

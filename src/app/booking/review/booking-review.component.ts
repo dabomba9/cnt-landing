@@ -36,6 +36,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   /** Form */
   contactEmail = '';
   contactPhone = '';
+  noteToHost = '';
   acceptedTerms = false;
   error: string | null = null;
   submitting = false;
@@ -352,6 +353,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
         instantBook: this.listing!.instantBook,
         status: this.listing!.instantBook ? 'confirmed' : 'pending',
         contact: { email: this.contactEmail, phone: this.contactPhone || undefined },
+        requestMessage: !this.listing!.instantBook && this.noteToHost.trim() ? this.noteToHost.trim() : undefined,
       });
       this.submitting = false;
       this.toasts.success(this.listing!.instantBook ? 'Booking confirmed!' : 'Request sent — host has 24h to respond.');

@@ -1,0 +1,137 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-10">
+      <div class="mb-6 md:mb-8">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Messages</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-3xl md:text-4xl">Inbox</h1>
+      </div>
+
+      @if (threads.length === 0) {
+        <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-12 text-center">
+          <span class="w-14 h-14 mx-auto rounded-full bg-jungle-green/10 inline-flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl text-jungle-green" style="font-variation-settings: 'FILL' 1;">forum</span>
+          </span>
+          <h2 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">No messages yet</h2>
+          <p class="text-sm font-body text-muted-text max-w-md mx-auto mb-5">When you book a stay or a guest reaches out, you'll see the conversation here.</p>
+          <a routerLink="/search" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">Browse stays</a>
+        </div>
+      } @else {
+        <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden inbox-shell">
+
+          <!-- Threads list -->
+          <aside class="inbox-list" [class.inbox-list--hidden]="activeThread !== null">
+            <ul class="divide-y divide-dark-text/8">
+              @for (t of threads; track t.id) {
+                <li>
+                  <button type="button" (click)="selectThread(t)"
+                    class="w-full text-left flex items-start gap-3 px-4 md:px-5 py-4 hover:bg-cream/50 transition-colors"
+                    [class.bg-cream]="activeThreadId === t.id">
+                    <div class="relative w-12 h-12 rounded-full overflow-hidden shrink-0 bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-sm">
+                      @if (t.listingPhoto) {
+                        <img [src]="t.listingPhoto" [alt]="t.listingTitle" class="w-full h-full object-cover">
+                      } @else {
+                        <span>{{ counterpartyInitials(t) }}</span>
+                      }
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-baseline justify-between gap-2">
+                        <div class="text-sm font-body font-bold text-dark-text truncate">{{ counterpartyName(t) }}</div>
+                        <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text shrink-0">{{ formatRelative(t.updatedAt) }}</div>
+                      </div>
+                      <div class="text-xs text-muted-text font-body truncate">{{ t.listingTitle }}</div>
+                      <div class="text-xs text-dark-text font-body mt-1 line-clamp-1" [class.font-bold]="unreadCount(t) > 0">{{ preview(t) }}</div>
+                    </div>
+                    @if (unreadCount(t) > 0) {
+                      <span class="w-2 h-2 mt-2 rounded-full bg-trinidad shrink-0" aria-label="Unread"></span>
+                    }
+                  </button>
+                </li>
+              }
+            </ul>
+          </aside>
+
+          <!-- Active thread -->
+          <section class="inbox-thread" [class.inbox-thread--hidden]="activeThread === null">
+            @if (!activeThread) {
+              <div class="hidden md:flex h-full items-center justify-center text-center px-8 py-16">
+                <div>
+                  <span class="w-14 h-14 mx-auto rounded-full bg-cream inline-flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl text-muted-text">forum</span>
+                  </span>
+                  <h2 class="font-headline font-bold text-lg mt-4 mb-1 text-dark-text">Select a conversation</h2>
+                  <p class="text-sm font-body text-muted-text">Pick a thread on the left to view messages.</p>
+                </div>
+              </div>
+            } @else {
+              <header class="flex items-center gap-3 px-4 md:px-6 py-4 border-b border-dark-text/8 bg-white">
+                <button type="button" (click)="back()" class="md:hidden -ml-1 p-2 rounded-full hover:bg-cream/60" aria-label="Back">
+                  <span class="material-symbols-outlined text-lg">arrow_back</span>
+                </button>
+                <div class="w-10 h-10 rounded-full overflow-hidden bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-xs shrink-0">
+                  @if (activeThread.listingPhoto) {
+                    <img [src]="activeThread.listingPhoto" [alt]="activeThread.listingTitle" class="w-full h-full object-cover">
+                  } @else {
+                    {{ counterpartyInitials(activeThread) }}
+                  }
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm font-body font-bold text-dark-text truncate">{{ counterpartyName(activeThread) }}</div>
+                  <div class="text-xs text-muted-text font-body truncate">{{ activeThread.listingTitle }}</div>
+                </div>
+                @if (activeThread.bookingId) {
+                  <a [routerLink]="['/booking/confirm', activeThread.bookingId]" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0 hidden sm:inline-flex items-center gap-1">
+                    View booking
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                  </a>
+                }
+              </header>
+
+              <div #thread class="inbox-thread__messages px-4 md:px-6 py-5 space-y-3">
+                @for (m of activeThread.messages; track m.id) {
+                  @if (m.author === 'system') {
+                    <div class="text-center text-[0.7rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text py-2">{{ m.body }}</div>
+                  } @else {
+                    @if (m.author === authorForCurrentUser(activeThread)) {
+                      <div class="flex justify-end">
+                        <div class="max-w-[85%] rounded-2xl rounded-br-md bg-trinidad text-white px-4 py-2.5 text-sm font-body leading-relaxed shadow-sm">
+                          {{ m.body }}
+                          <div class="text-[0.6rem] text-white/70 mt-1 text-right">{{ formatTime(m.createdAt) }}</div>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="flex justify-start">
+                        <div class="max-w-[85%] rounded-2xl rounded-bl-md bg-cream/80 border border-dark-text/8 text-dark-text px-4 py-2.5 text-sm font-body leading-relaxed">
+                          {{ m.body }}
+                          <div class="text-[0.6rem] text-muted-text mt-1">{{ formatTime(m.createdAt) }}</div>
+                        </div>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+
+              <form (submit)="$event.preventDefault(); send()" class="border-t border-dark-text/8 bg-white px-3 md:px-4 py-3 flex items-end gap-2">
+                <textarea
+                  [(ngModel)]="composeBody"
+                  name="composeBody"
+                  rows="1"
+                  placeholder="Write a message…"
+                  class="flex-1 resize-none bg-cream/60 border border-dark-text/15 rounded-2xl px-4 py-2.5 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all max-h-32"></textarea>
+                <button type="submit" [disabled]="!composeBody.trim()"
+                  class="shrink-0 w-11 h-11 rounded-full bg-trinidad text-white inline-flex items-center justify-center hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity"
+                  aria-label="Send">
+                  <span class="material-symbols-outlined text-lg">send</span>
+                </button>
+              </form>
+            }
+          </section>
+
+        </div>
+      }
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

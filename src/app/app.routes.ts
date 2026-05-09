@@ -28,6 +28,16 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./trips/trips.component').then(m => m.TripsComponent),
   },
   {
+    path: 'inbox',
+    canActivate: [authGuard],
+    loadComponent: () => import('./inbox/inbox.component').then(m => m.InboxComponent),
+  },
+  {
+    path: 'inbox/:threadId',
+    canActivate: [authGuard],
+    loadComponent: () => import('./inbox/inbox.component').then(m => m.InboxComponent),
+  },
+  {
     path: 'dashboard',
     canActivate: [authGuard],
     loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),

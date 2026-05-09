@@ -31,6 +31,8 @@ export interface Booking {
   /** When the host's mock decision is due to fire (request-to-book only). ISO. */
   decisionAt?: string;
   contact: { email: string; phone?: string };
+  /** Optional opening note from the guest — surfaces in the inbox thread. */
+  requestMessage?: string;
 }
 
 export const STATUS_META: Record<BookingStatus, { label: string; color: string; bg: string }> = {

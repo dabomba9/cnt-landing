@@ -116,6 +116,10 @@
                   </div>
                   <!-- Actions -->
                   <div class="flex items-center gap-2 shrink-0">
+                    <a [routerLink]="['/inbox', 'req-' + req.id]" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors inline-flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">forum</span>
+                      Message
+                    </a>
                     <button type="button" (click)="declineRequest(req)" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
                       Decline
                     </button>

@@ -93,9 +93,12 @@
                     <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
                     Wishlists
                   </a>
-                  <a routerLink="/contact" [queryParams]="{ reason: 'guest-support' }" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                  <a routerLink="/inbox" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-dark-text">forum</span>
-                    Messages
+                    <span class="flex-1">Messages</span>
+                    @if (unreadMessages > 0) {
+                      <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.65rem] font-button font-bold">{{ unreadMessages }}</span>
+                    }
                   </a>
                 </div>
 
@@ -163,6 +166,7 @@
       } @else {
         <a routerLink="/dashboard" (click)="closeMobileNav()" class="navigation-link">Dashboard</a>
         <a routerLink="/trips" (click)="closeMobileNav()" class="navigation-link">My trips</a>
+        <a routerLink="/inbox" (click)="closeMobileNav()" class="navigation-link">Messages @if (unreadMessages > 0) { <span class="ml-1 text-trinidad font-bold">({{ unreadMessages }})</span> }</a>
         <button type="button" (click)="signOut(); closeMobileNav()" class="navigation-link text-left">Sign out</button>
       }
     </nav>
