@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { gsap } from 'gsap';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { ListingCardComponent } from '../listing-card/listing-card.component';
@@ -18,6 +19,7 @@ import { SavedStaysWidgetComponent } from './widgets/saved-stays/saved-stays.com
 import { MyRvSummaryWidgetComponent } from './widgets/my-rv-summary/my-rv-summary.component';
 import { ActivityFeedComponent } from './widgets/activity-feed/activity-feed.component';
 import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.component';
+import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
 import { isMyRvSet } from '../my-rv.util';
 
 const FAV_KEY = 'cnt-favorites';
@@ -29,11 +31,11 @@ const FAV_KEY = 'cnt-favorites';
     CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
     SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
-    QuickActionsComponent,
+    QuickActionsComponent, TripPrepComponent,
   ],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   user: PublicUser | null = null;
   bookings: Booking[] = [];
   myRv: MyRv | null = null;
@@ -43,6 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthService,
+    private router: Router,
     private bookingSvc: BookingService,
     private seo: SeoService,
   ) {}
@@ -65,6 +68,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.bookingsSub?.unsubscribe();
+  }
+
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    requestAnimationFrame(() => {
+      gsap.from('.dashboard-anim', {
+        opacity: 0,
+        y: 18,
+        duration: 0.55,
+        ease: 'power3.out',
+        stagger: 0.07,
+        delay: 0.05,
+        clearProps: 'opacity,transform',
+      });
+    });
+  }
+
+  // ---- Sparkline series helpers (mock 4-week trends derived from stable inputs) ----
+  get tripsSpark(): number[] {
+    const t = this.tripsTaken;
+    return [Math.max(0, t - 3), Math.max(0, t - 2), Math.max(0, t - 1), t];
+  }
+  get nightsSpark(): number[] {
+    const n = this.nightsBooked;
+    return [Math.max(0, n - 5), Math.max(0, n - 3), Math.max(0, n - 1), n];
+  }
+  get savedSpark(): number[] {
+    const s = this.staysSaved;
+    return [Math.max(0, s - 2), Math.max(0, s - 1), s, s];
+  }
+  get rewardSpark(): number[] {
+    const r = this.rewardCredit;
+    return [Math.max(0, r - 15), Math.max(0, r - 10), Math.max(0, r - 5), r];
   }
 
   private readSavedListings(): Listing[] {
@@ -92,8 +130,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Verified flag from current user. */
   get verified(): boolean { return !!this.user?.verified; }
 
+  /** Show trip-prep checklist when there's an upcoming booking starting within 14 days. */
+  get showTripPrep(): boolean {
+    const t = this.upcomingTrip;
+    if (!t) return false;
+    const days = Math.ceil((new Date(t.dates.start).getTime() - Date.now()) / 86_400_000);
+    return days >= 0 && days <= 14;
+  }
+
   /** True when MyRv profile has any specs set. */
   get rvSet(): boolean { return this.myRv ? isMyRvSet(this.myRv) : false; }
+
+  /** Flip to hosting view from the greeting CTA. */
+  onSwitchToHosting(): void {
+    this.auth.setView('host');
+    this.router.navigate(['/hosting']);
+  }
 
   /** "Continue exploring" — 4 recommended listings.
       Strategy: prioritize same categories as the user's saved + booked listings, exclude already-saved/booked, fall back to top-rated. */

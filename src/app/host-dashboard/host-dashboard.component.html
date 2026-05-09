@@ -39,6 +39,24 @@
         <cnt-stat-tile label="Avg rating"   tone="neutral"  [value]="stats.averageRating || '—'" icon="star" [trend]="stats.totalReviews + ' reviews'"></cnt-stat-tile>
       </div>
 
+      <!-- Earnings + Calendar -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        <section class="lg:col-span-2">
+          <div class="mb-4">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Performance</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Earnings trend</h2>
+          </div>
+          <cnt-earnings-chart [listings]="listings"></cnt-earnings-chart>
+        </section>
+        <section class="lg:col-span-1">
+          <div class="mb-4">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Bookings</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Availability</h2>
+          </div>
+          <cnt-availability-calendar [listings]="listings"></cnt-availability-calendar>
+        </section>
+      </div>
+
       <!-- Pending requests -->
       <section>
         <div class="flex items-baseline justify-between gap-3 mb-4">
@@ -144,6 +162,15 @@
             }
           </div>
         }
+      </section>
+
+      <!-- Reviews snapshot -->
+      <section>
+        <div class="mb-4">
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">From your guests</span>
+          <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Recent reviews</h2>
+        </div>
+        <cnt-reviews-snapshot [listings]="listings"></cnt-reviews-snapshot>
       </section>
 
     </div>

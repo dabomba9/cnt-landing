@@ -43,6 +43,20 @@ type Tone = 'jungle' | 'trinidad' | 'gold' | 'neutral';
           'text-trinidad': tone === 'trinidad',
           'text-dark-text': tone === 'neutral' || tone === 'gold'
         }">{{ value }}</div>
+
+      @if (sparkPath) {
+        <svg class="relative mt-3 block" width="100%" height="22" viewBox="0 0 80 22" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient [attr.id]="'spark-grad-' + uid" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" [attr.stop-color]="strokeColor" stop-opacity="0.18"></stop>
+              <stop offset="100%" [attr.stop-color]="strokeColor" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <path [attr.d]="sparkAreaPath" [attr.fill]="'url(#spark-grad-' + uid + ')'"></path>
+          <polyline [attr.points]="sparkPath" fill="none" [attr.stroke]="strokeColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+      }
+
       @if (trend) {
         <div class="relative text-[0.7rem] text-muted-text font-body mt-2">{{ trend }}</div>
       }
@@ -55,4 +69,36 @@ export class StatTileComponent {
   @Input() icon = 'insights';
   @Input() trend?: string;
   @Input() tone: Tone = 'jungle';
+  @Input() spark?: number[];
+
+  /** Unique id for SVG gradient defs, so multiple tiles don't collide. */
+  readonly uid = Math.random().toString(36).slice(2, 8);
+
+  /** Sparkline polyline points. Returns '' when no series provided. */
+  get sparkPath(): string {
+    if (!this.spark || this.spark.length < 2) return '';
+    const min = Math.min(...this.spark);
+    const max = Math.max(...this.spark);
+    const range = max - min || 1;
+    const stepX = 80 / (this.spark.length - 1);
+    return this.spark
+      .map((v, i) => `${(i * stepX).toFixed(2)},${(20 - ((v - min) / range) * 16).toFixed(2)}`)
+      .join(' ');
+  }
+
+  /** Filled area under the sparkline for a soft tinted glow. */
+  get sparkAreaPath(): string {
+    if (!this.spark || this.spark.length < 2) return '';
+    const points = this.sparkPath.split(' ');
+    return `M0,22 L${points.join(' L')} L80,22 Z`;
+  }
+
+  get strokeColor(): string {
+    switch (this.tone) {
+      case 'trinidad': return '#e3530d';
+      case 'jungle':   return '#295d42';
+      case 'gold':     return '#b3760e';
+      default:         return '#222222';
+    }
+  }
 }

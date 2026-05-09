@@ -33,10 +33,12 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
   },
   {
-    path: 'host/dashboard',
+    path: 'hosting',
     canActivate: [authGuard],
     loadComponent: () => import('./host-dashboard/host-dashboard.component').then(m => m.HostDashboardComponent),
   },
+  // Legacy redirect for any saved bookmarks of the old path.
+  { path: 'host/dashboard', redirectTo: 'hosting', pathMatch: 'full' },
   {
     path: 'search',
     loadComponent: () =>

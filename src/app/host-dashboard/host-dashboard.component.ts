@@ -11,13 +11,16 @@ import { ToastService } from '../toast.service';
 import { Listing } from '../search-results/mock-listings.data';
 import { getMyListings, getHostStats, getPendingRequests, HostStats, HostRequest } from './mock-host-data';
 import { StatTileComponent } from '../dashboard/widgets/stat-tile/stat-tile.component';
+import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.component';
+import { ReviewsSnapshotComponent } from './widgets/reviews-snapshot/reviews-snapshot.component';
+import { AvailabilityCalendarComponent } from './widgets/availability-calendar/availability-calendar.component';
 
 @Component({
   selector: 'cnt-host-dashboard',
   standalone: true,
   imports: [
     CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
-    StatTileComponent,
+    StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
   ],
   templateUrl: './host-dashboard.component.html',
 })
@@ -40,7 +43,7 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     this.seo.update({
       title: 'Host dashboard — CurbNTurf',
       description: 'Manage your CurbNTurf listings, requests, and earnings.',
-      url: '/host/dashboard',
+      url: '/hosting',
       robots: 'noindex, nofollow',
     });
     this.user = this.auth.currentUser;

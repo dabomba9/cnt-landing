@@ -28,6 +28,7 @@ export class NavbarComponent implements OnInit {
   private readonly FAV_KEY = 'cnt-favorites';
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('userMenuWrapper') userMenuWrapper?: ElementRef<HTMLDivElement>;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -65,7 +66,7 @@ export class NavbarComponent implements OnInit {
     const next: AppView = this.view === 'host' ? 'guest' : 'host';
     this.auth.setView(next);
     this.userMenuOpen = false;
-    this.router.navigate([next === 'host' ? '/host/dashboard' : '/dashboard']);
+    this.router.navigate([next === 'host' ? '/hosting' : '/dashboard']);
   }
 
   get userInitials(): string {
@@ -129,6 +130,23 @@ export class NavbarComponent implements OnInit {
     this.scrolled = currentScrollY > this.TRANSPARENT_THRESHOLD;
     this.isNavbarVisible = !(currentScrollY > this.lastScrollY && currentScrollY > 100);
     this.lastScrollY = currentScrollY;
+  }
+
+  /** Close the user dropdown when clicking anywhere outside of it (including on the navbar itself). */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.userMenuOpen) return;
+    const wrapper = this.userMenuWrapper?.nativeElement;
+    if (!wrapper) return;
+    if (!wrapper.contains(event.target as Node)) {
+      this.userMenuOpen = false;
+    }
+  }
+
+  /** Close on Escape too. */
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.userMenuOpen) this.userMenuOpen = false;
   }
 
   @HostListener('document:keydown', ['$event'])

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Listing } from '../../../search-results/mock-listings.data';
@@ -22,9 +22,26 @@ import { ListingCardComponent } from '../../../listing-card/listing-card.compone
         </a>
       </div>
     } @else {
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        @for (l of savedListings.slice(0, 4); track l.id) {
-          <cnt-listing-card [listing]="l"></cnt-listing-card>
+      <div class="relative">
+        <!-- Track -->
+        <div #track class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-pl-1 pb-2 [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
+          @for (l of savedListings; track l.id) {
+            <div class="snap-start shrink-0 w-[calc(85%-12px)] sm:w-[calc(50%-10px)] lg:w-[calc(33.33%-14px)] xl:w-[calc(25%-15px)]">
+              <cnt-listing-card [listing]="l"></cnt-listing-card>
+            </div>
+          }
+        </div>
+
+        <!-- Arrow buttons (md+) -->
+        @if (savedListings.length > 1) {
+          <button type="button" (click)="scrollByCard(-1)" aria-label="Previous"
+            class="hidden md:flex absolute -left-3 top-[140px] -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] border border-dark-text/8 items-center justify-center hover:scale-105 transition-transform z-10">
+            <span class="material-symbols-outlined text-lg text-dark-text">chevron_left</span>
+          </button>
+          <button type="button" (click)="scrollByCard(1)" aria-label="Next"
+            class="hidden md:flex absolute -right-3 top-[140px] -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] border border-dark-text/8 items-center justify-center hover:scale-105 transition-transform z-10">
+            <span class="material-symbols-outlined text-lg text-dark-text">chevron_right</span>
+          </button>
         }
       </div>
     }
@@ -32,4 +49,16 @@ import { ListingCardComponent } from '../../../listing-card/listing-card.compone
 })
 export class SavedStaysWidgetComponent {
   @Input() savedListings: Listing[] = [];
+  @ViewChild('track') trackEl?: ElementRef<HTMLDivElement>;
+
+  scrollByCard(direction: 1 | -1): void {
+    const el = this.trackEl?.nativeElement;
+    if (!el) return;
+    // Find the first child to compute one-card width including gap.
+    const first = el.querySelector<HTMLDivElement>('div.snap-start');
+    if (!first) return;
+    const cardWidth = first.getBoundingClientRect().width;
+    const gap = 20; // matches gap-5
+    el.scrollBy({ left: direction * (cardWidth + gap), behavior: 'smooth' });
+  }
 }

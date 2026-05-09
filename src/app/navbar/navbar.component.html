@@ -48,7 +48,7 @@
             </div>
           </a>
         } @else {
-          <div class="relative ml-3">
+          <div #userMenuWrapper class="relative ml-3">
             <button type="button" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen" aria-label="Account menu"
               class="relative w-10 h-10 rounded-full bg-trinidad text-white flex items-center justify-center font-button font-bold text-sm hover:opacity-95 transition-opacity">
               {{ userInitials }}
@@ -59,7 +59,6 @@
               }
             </button>
             @if (userMenuOpen) {
-              <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
               <div class="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-2xl border border-dark-text/8 shadow-[0_24px_48px_rgba(0,0,0,0.14)] py-2 overflow-hidden">
 
                 <!-- Switch view (Airbnb-style top item) -->
