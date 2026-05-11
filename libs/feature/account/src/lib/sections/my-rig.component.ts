@@ -20,12 +20,38 @@ import { MyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           @for (t of rvTypes; track t.id) {
             <button type="button" (click)="rv.type = (rv.type === t.id ? null : t.id)"
-              [ngClass]="rv.type === t.id ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
-              class="border rounded-xl p-3 flex flex-col items-center gap-2 transition-colors">
-              <img [src]="t.image" [alt]="t.label" class="h-10 w-auto object-contain">
+              [ngClass]="rv.type === t.id ? 'bg-trinidad/10 text-trinidad' : 'text-dark-text hover:bg-cream/60'"
+              class="rounded-xl p-3 flex flex-col items-center gap-2 transition-colors text-center">
+              <img [src]="t.image" [alt]="t.label" class="h-10 w-auto object-contain" [class.opacity-90]="rv.type !== t.id">
               <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold">{{ t.label }}</span>
             </button>
           }
+        </div>
+      </div>
+
+      <div>
+        <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Vehicle details</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <label class="flex flex-col gap-2">
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Year</span>
+            <input type="number" [(ngModel)]="rv.year" name="year" placeholder="2024" min="1900" max="2100"
+              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Make</span>
+            <input type="text" [(ngModel)]="rv.make" name="make" placeholder="Winnebago"
+              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Model</span>
+            <input type="text" [(ngModel)]="rv.model" name="model" placeholder="Revel"
+              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">License plate</span>
+            <input type="text" [(ngModel)]="rv.licensePlate" name="licensePlate" placeholder="ABC-1234" maxlength="10"
+              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body uppercase focus:outline-none focus:border-jungle-green">
+          </label>
         </div>
       </div>
 
@@ -47,10 +73,10 @@ import { MyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } 
       <div>
         <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Photos</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="rounded-xl border border-dashed border-dark-text/20 p-4 bg-cream/30">
+          <div class="rounded-md border border-dashed border-dark-text/20 p-4 bg-cream/30">
             <div class="text-xs font-body font-bold text-dark-text mb-2">RV photo</div>
             @if (rv.rvPhoto) {
-              <img [src]="rv.rvPhoto" alt="RV photo" class="w-full h-32 object-cover rounded-lg mb-2">
+              <img [src]="rv.rvPhoto" alt="RV photo" class="w-full h-32 object-cover rounded-md mb-2">
             }
             <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-base">photo_camera</span>
@@ -61,10 +87,10 @@ import { MyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } 
               <button type="button" (click)="rv.rvPhoto = null" class="ml-2 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad">Remove</button>
             }
           </div>
-          <div class="rounded-xl border border-dashed border-dark-text/20 p-4 bg-cream/30">
+          <div class="rounded-md border border-dashed border-dark-text/20 p-4 bg-cream/30">
             <div class="text-xs font-body font-bold text-dark-text mb-2">License plate</div>
             @if (rv.licensePhoto) {
-              <img [src]="rv.licensePhoto" alt="License plate" class="w-full h-32 object-cover rounded-lg mb-2">
+              <img [src]="rv.licensePhoto" alt="License plate" class="w-full h-32 object-cover rounded-md mb-2">
             }
             <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-base">photo_camera</span>

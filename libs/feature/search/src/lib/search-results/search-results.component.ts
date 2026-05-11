@@ -589,12 +589,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     // Preserve any existing photos so editing rig specs doesn't drop them.
     const existing = readMyRv(this.platformId);
     writeMyRv(this.platformId, {
+      ...existing,
       type: this.filters.rvType,
       length: num(this.filters.rvLength),
       height: num(this.filters.rvHeight),
       width:  num(this.filters.rvWidth),
-      rvPhoto: existing.rvPhoto,
-      licensePhoto: existing.licensePhoto,
     });
   }
 

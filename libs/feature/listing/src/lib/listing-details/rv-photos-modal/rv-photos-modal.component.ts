@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MyRv } from '@cnt-workspace/data-access';
+import { MyRv, emptyMyRv } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
@@ -157,7 +157,7 @@ export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestr
       const dwell = reduced ? 350 : 700;
       setTimeout(() => {
         this.toasts.success('Photos saved to your RV profile.');
-        const base: MyRv = this.myRv || { type: null, length: null, height: null, width: null, rvPhoto: null, licensePhoto: null };
+        const base: MyRv = this.myRv || emptyMyRv();
         this.saved.emit({ ...base, rvPhoto: this.rvPreview, licensePhoto: this.licensePreview });
         this.reset();
       }, dwell);
