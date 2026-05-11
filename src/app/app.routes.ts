@@ -30,22 +30,22 @@ export const appRoutes: Route[] = [
   {
     path: 'inbox',
     canActivate: [authGuard],
-    loadComponent: () => import('./inbox/inbox.component').then(m => m.InboxComponent),
+    loadComponent: () => import('@cnt-workspace/inbox').then(m => m.InboxComponent),
   },
   {
     path: 'inbox/:threadId',
     canActivate: [authGuard],
-    loadComponent: () => import('./inbox/inbox.component').then(m => m.InboxComponent),
+    loadComponent: () => import('@cnt-workspace/inbox').then(m => m.InboxComponent),
   },
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+    loadComponent: () => import('@cnt-workspace/dashboard').then(m => m.DashboardComponent),
   },
   {
     path: 'hosting',
     canActivate: [authGuard],
-    loadComponent: () => import('./host-dashboard/host-dashboard.component').then(m => m.HostDashboardComponent),
+    loadComponent: () => import('@cnt-workspace/host-dashboard').then(m => m.HostDashboardComponent),
   },
   { path: 'host/dashboard', redirectTo: 'hosting', pathMatch: 'full' },
   {

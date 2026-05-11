@@ -18,11 +18,16 @@
       "@cnt-workspace/auth": ["libs/feature/auth/src/index.ts"],
       "@cnt-workspace/booking": ["libs/feature/booking/src/index.ts"],
       "@cnt-workspace/content": ["libs/feature/content/src/index.ts"],
+      "@cnt-workspace/dashboard": ["libs/feature/dashboard/src/index.ts"],
       "@cnt-workspace/data-access": ["libs/data-access/src/index.ts"],
       "@cnt-workspace/explore": ["libs/feature/explore/src/index.ts"],
       "@cnt-workspace/helpers": ["libs/helpers/src/index.ts"],
       "@cnt-workspace/home": ["libs/feature/home/src/index.ts"],
+      "@cnt-workspace/host-dashboard": [
+        "libs/feature/host-dashboard/src/index.ts"
+      ],
       "@cnt-workspace/host-space": ["libs/feature/host-space/src/index.ts"],
+      "@cnt-workspace/inbox": ["libs/feature/inbox/src/index.ts"],
       "@cnt-workspace/listing": ["libs/feature/listing/src/index.ts"],
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
       "@cnt-workspace/search": ["libs/feature/search/src/index.ts"],
