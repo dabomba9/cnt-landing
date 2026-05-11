@@ -33,7 +33,8 @@
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
       "@cnt-workspace/search": ["libs/feature/search/src/index.ts"],
       "@cnt-workspace/trips": ["libs/feature/trips/src/index.ts"],
-      "@cnt-workspace/ui": ["libs/ui/src/index.ts"]
+      "@cnt-workspace/ui": ["libs/ui/src/index.ts"],
+      "@cnt-workspace/wishlists": ["libs/feature/wishlists/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,59 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-12">
+
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
+        <div>
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Saved</span>
+          <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-3xl md:text-4xl">Wishlists</h1>
+          <p class="text-sm text-muted-text font-body mt-2">
+            @if (listings.length > 0) {
+              {{ listings.length }} stay{{ listings.length === 1 ? '' : 's' }} you saved for later
+            } @else {
+              Tap the heart on any listing to save it here.
+            }
+          </p>
+        </div>
+        @if (listings.length > 0) {
+          <div class="flex items-center gap-2 shrink-0">
+            <a [routerLink]="['/search']" [queryParams]="mapLinkQueryParams"
+              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-dark-text/8 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-colors">
+              <span class="material-symbols-outlined text-base">map</span>
+              Open on map
+            </a>
+            <button type="button" (click)="clearAll()"
+              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-dark-text/8 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">delete</span>
+              Clear all
+            </button>
+          </div>
+        }
+      </div>
+
+      @if (listings.length === 0) {
+        <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-12 text-center">
+          <span class="w-16 h-16 mx-auto rounded-full bg-trinidad/10 inline-flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl text-trinidad" style="font-variation-settings: 'FILL' 1;">favorite</span>
+          </span>
+          <h2 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">No saved stays yet</h2>
+          <p class="text-sm font-body text-muted-text max-w-md mx-auto mb-5">Save stays you love by tapping the heart on any listing. They'll wait here for you to come back.</p>
+          <a routerLink="/search" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+            Browse stays
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </a>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          @for (l of listings; track l.id) {
+            <cnt-listing-card [listing]="l" [isFavorite]="isFavorite(l.id)" (favoriteToggle)="onFavoriteToggle(l.id, $event)"></cnt-listing-card>
+          }
+        </div>
+      }
+
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>
