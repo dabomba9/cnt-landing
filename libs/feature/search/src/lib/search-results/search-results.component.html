@@ -331,6 +331,26 @@
     }
   </div>
 
+  <!-- Wishlists deep-link banner -->
+  @if (wishlistMode) {
+    <div class="px-[2%]">
+      <div class="max-w-[90rem] mx-auto mt-3 mb-2 flex flex-wrap items-center gap-3 p-3 md:p-4 rounded-2xl bg-trinidad/5 border border-trinidad/20">
+        <span class="w-9 h-9 rounded-full bg-trinidad/15 inline-flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">favorite</span>
+        </span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-body font-bold text-dark-text leading-tight">Showing your saved stays</div>
+          <p class="text-xs text-muted-text font-body leading-snug mt-0.5">Filter limited to listings from your wishlist. Map view honors the same set.</p>
+        </div>
+        <button type="button" (click)="clearWishlistFilter()"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+          <span class="material-symbols-outlined text-base">close</span>
+          Show all stays
+        </button>
+      </div>
+    </div>
+  }
+
   <!-- ================= Split Layout ================= -->
   <div class="px-[2%]">
   <div class="search-split max-w-[90rem] mx-auto min-h-[calc(100vh-13rem)] md:min-h-[calc(100vh-12rem)]"

@@ -85,6 +85,9 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   geoLocating = false;
   geoError = '';
 
+  /** Listing IDs to restrict to (set via ?ids= query param from /wishlists). null = no restriction. */
+  pinnedIds: Set<number> | null = null;
+
   // Filter values
   filters = {
     minPrice: PRICE_RANGE.min,
@@ -131,6 +134,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
           this.selectedDateRange = new DateRange(start, end && !isNaN(end.getTime()) ? end : null);
         }
       }
+      // Wishlists deep-link: filter to a specific set of listing IDs.
+      const idsParam = params['ids'];
+      if (typeof idsParam === 'string' && idsParam.length > 0) {
+        const ids = idsParam.split(',').map(s => parseInt(s, 10)).filter(n => Number.isFinite(n));
+        this.pinnedIds = ids.length > 0 ? new Set(ids) : null;
+      } else {
+        this.pinnedIds = null;
+      }
     });
     if (isPlatformBrowser(this.platformId)) {
       const raw = localStorage.getItem(this.FAV_KEY);
@@ -150,6 +161,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   isFavorite(id: number): boolean {
     return this.favorites.has(id);
+  }
+
+  /** True when /search was deep-linked from /wishlists with ?ids=... */
+  get wishlistMode(): boolean { return this.pinnedIds !== null && this.pinnedIds.size > 0; }
+
+  /** Drop the ?ids= filter and show full results again. */
+  clearWishlistFilter(): void {
+    this.pinnedIds = null;
+    this.router.navigate([], { relativeTo: this.route, queryParams: { ids: null }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
   toggleFavorite(id: number, event: MouseEvent): void {
@@ -200,6 +220,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.). */
   private passesNonViewportFilters(l: Listing): boolean {
+    if (this.pinnedIds && !this.pinnedIds.has(l.id)) return false;
     if (this.filters.instantBookOnly && !l.instantBook) return false;
     if (this.filters.guests > 0 && this.listingMaxGuests(l) < this.filters.guests) return false;
     if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
