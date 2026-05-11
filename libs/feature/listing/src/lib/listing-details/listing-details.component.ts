@@ -422,6 +422,9 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     };
     if (params.start) reviewQuery['start'] = params.start;
     if (params.end) reviewQuery['end'] = params.end;
+    if (this.booking.selectedAddOns.size > 0) {
+      reviewQuery['addOns'] = [...this.booking.selectedAddOns].join(',');
+    }
     if (!this.auth.currentUser) {
       const queryString = Object.entries(reviewQuery)
         .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)

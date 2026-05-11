@@ -256,6 +256,15 @@
                 <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-4">Total</span>
                 <div class="flex flex-col gap-3 text-sm font-body text-dark-text">
                   <div class="flex justify-between"><span>${{ booking.pricePerNight }} × {{ booking.nights }} nights</span><span>${{ booking.subtotal }}</span></div>
+                  @if (booking.addOns?.length) {
+                    @for (a of booking.addOns; track a.id) {
+                      <div class="flex justify-between text-muted-text">
+                        <span class="truncate pr-2">+ {{ a.label }}</span>
+                        <span>${{ a.amount }}</span>
+                      </div>
+                    }
+                  }
+                  <div class="flex justify-between"><span>Cleaning fee</span><span>${{ booking.cleaningFee }}</span></div>
                   <div class="flex justify-between"><span>Service fee</span><span>${{ booking.serviceFee }}</span></div>
                 </div>
                 <hr class="my-4 border-dark-text/8">
@@ -290,6 +299,14 @@
                   <span class="flex-1 text-sm font-body font-bold text-dark-text">Print receipt</span>
                   <span class="material-symbols-outlined text-base text-muted-text">arrow_forward_ios</span>
                 </button>
+                @if (isModifiable) {
+                  <button type="button" (click)="openModifyModal()"
+                    class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-jungle-green">edit_calendar</span>
+                    <span class="flex-1 text-sm font-body font-bold text-dark-text">Modify dates or guests</span>
+                    <span class="material-symbols-outlined text-base text-muted-text">arrow_forward_ios</span>
+                  </button>
+                }
                 @if (isCancellable) {
                   <button type="button" (click)="openCancelModal()"
                     class="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-trinidad/5 transition-colors">
@@ -338,9 +355,16 @@
             <span class="material-symbols-outlined text-3xl text-trinidad">cancel</span>
           </div>
           <h2 id="cancel-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Cancel this booking?</h2>
-          <p class="text-sm text-muted-text font-body leading-relaxed mb-6">
+          <p class="text-sm text-muted-text font-body leading-relaxed mb-5">
             Cancelling now keeps you within the free-cancellation window. A refund (if applicable) will appear within 5 business days. The host will be notified.
           </p>
+          <label class="flex flex-col gap-2 mb-6">
+            <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Reason <span class="text-muted-text/70 normal-case font-normal">(optional, shared with host)</span></span>
+            <textarea [(ngModel)]="cancelReason" name="cancelReason" rows="3" maxlength="240"
+              placeholder="Change of plans, weather, …"
+              class="bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none"></textarea>
+            <span class="text-[0.6rem] text-muted-text/70 font-body text-right">{{ cancelReason.length }}/240</span>
+          </label>
           <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
             <button type="button" (click)="closeCancelModal()" [disabled]="cancelling"
               class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50">
@@ -359,6 +383,147 @@
         </div>
       </div>
     }
+
+    <!-- Modify-dates modal -->
+    @if (modifyOpen) {
+      <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modify-title">
+        <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeModifyModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full p-6 md:p-8">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-jungle-green/10 mb-4">
+            <span class="material-symbols-outlined text-3xl text-jungle-green">edit_calendar</span>
+          </div>
+          <h2 id="modify-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Modify your trip</h2>
+          <p class="text-sm text-muted-text font-body leading-relaxed mb-6">Pick new dates or change your guest count. The total will update to reflect the new nights.</p>
+
+          <div class="mb-5 relative">
+            <button type="button" (click)="toggleModifyDatesEditor()"
+              class="w-full text-left flex items-center gap-3 p-3 rounded-xl border transition-colors"
+              [ngClass]="modifyEditor === 'dates' ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-trinidad/40'">
+              <span class="material-symbols-outlined text-jungle-green">calendar_today</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Trip dates</div>
+                <div class="text-sm font-body font-bold text-dark-text truncate">
+                  @if (modifyRange?.start && modifyRange?.end) {
+                    {{ modifyRange?.start | date:'MMM d' }} → {{ modifyRange?.end | date:'MMM d' }}
+                  } @else if (modifyRange?.start) {
+                    {{ modifyRange?.start | date:'MMM d' }} → pick check-out
+                  } @else {
+                    Tap to pick dates
+                  }
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-base text-trinidad">edit</span>
+            </button>
+            @if (modifyEditor === 'dates') {
+              <!-- Backdrop limited to inside the modal so click-outside closes the popover, not the modal -->
+              <div class="absolute inset-0 z-10" (click)="closeModifyDatesEditor()" style="position: fixed; inset: 0;"></div>
+              <div class="absolute left-0 right-0 mt-2 z-20 bg-white rounded-2xl border border-dark-text/10 shadow-[0_24px_48px_rgba(0,0,0,0.18)] p-4">
+                <div class="flex items-center justify-between mb-2 px-1">
+                  <span class="text-[0.7rem] font-label uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
+                  <button type="button" (click)="closeModifyDatesEditor()" class="text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:underline">Done</button>
+                </div>
+                <div class="flex justify-center">
+                  <mat-calendar [selected]="modifyRange" [minDate]="today" (selectedChange)="onModifyDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="flex items-center justify-between p-4 rounded-md bg-cream/40 border border-dark-text/8 mb-5">
+            <div>
+              <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Guests</div>
+              <div class="text-sm font-body text-dark-text mt-0.5">How many will join you?</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button type="button" (click)="stepGuests(-1)" [disabled]="modifyGuests <= 1"
+                class="w-10 h-10 rounded-full border border-dark-text/15 flex items-center justify-center hover:border-trinidad disabled:opacity-40">
+                <span class="material-symbols-outlined text-base">remove</span>
+              </button>
+              <span class="font-headline font-bold text-dark-text text-lg w-6 text-center">{{ modifyGuests }}</span>
+              <button type="button" (click)="stepGuests(1)"
+                class="w-10 h-10 rounded-full border border-dark-text/15 flex items-center justify-center hover:border-trinidad">
+                <span class="material-symbols-outlined text-base">add</span>
+              </button>
+            </div>
+          </div>
+
+          @if (availableAddOns.length > 0) {
+            <div class="mb-5">
+              <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-3 px-1">Add-ons</div>
+              <ul class="space-y-2 max-h-[28vh] overflow-y-auto pr-1">
+                @for (a of availableAddOns; track a.id) {
+                  <li>
+                    <button type="button" (click)="toggleEditingAddOn(a.id)"
+                      class="w-full text-left flex items-center gap-3 p-3 rounded-md border transition-colors"
+                      [ngClass]="isEditingAddOnSelected(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-trinidad/40'">
+                      <span class="material-symbols-outlined text-jungle-green shrink-0">{{ a.icon }}</span>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-sm font-body font-bold text-dark-text">{{ a.label }}</div>
+                        <div class="text-xs text-muted-text font-body line-clamp-1">{{ a.description }}</div>
+                      </div>
+                      <div class="text-right shrink-0">
+                        <div class="text-sm font-headline font-bold text-trinidad">${{ a.price }}</div>
+                        <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ a.unit }}</div>
+                      </div>
+                      <span class="material-symbols-outlined text-base shrink-0"
+                        [ngClass]="isEditingAddOnSelected(a.id) ? 'text-trinidad' : 'text-muted-text/40'"
+                        [style.font-variation-settings]="isEditingAddOnSelected(a.id) ? '\'FILL\' 1' : null">
+                        {{ isEditingAddOnSelected(a.id) ? 'check_circle' : 'add_circle' }}
+                      </span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (modifyNights > 0 && booking) {
+            <div class="rounded-md bg-jungle-green/5 border border-jungle-green/15 p-4 mb-6">
+              <div class="flex items-center justify-between text-sm font-body">
+                <span class="text-dark-text">{{ modifyNights }} {{ modifyNights === 1 ? 'night' : 'nights' }} × ${{ booking.pricePerNight }}</span>
+                <span class="text-muted-text">${{ booking.pricePerNight * modifyNights }}</span>
+              </div>
+              @if (modifyAddOnsTotal > 0) {
+                <div class="flex items-center justify-between text-sm font-body mt-1">
+                  <span class="text-muted-text">Add-ons</span>
+                  <span class="text-muted-text">${{ modifyAddOnsTotal }}</span>
+                </div>
+              }
+              <div class="flex items-center justify-between text-sm font-body mt-1">
+                <span class="text-muted-text">Cleaning + service</span>
+                <span class="text-muted-text">${{ booking.cleaningFee + booking.serviceFee }}</span>
+              </div>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-jungle-green/15">
+                <span class="font-headline font-bold text-dark-text">New total</span>
+                <span class="font-headline font-bold text-trinidad text-xl">${{ modifyPreviewTotal }}</span>
+              </div>
+            </div>
+          } @else {
+            <div class="rounded-md bg-trinidad/5 border border-trinidad/20 p-4 mb-6 text-xs text-trinidad font-body inline-flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">error</span>
+              Check-out must be after check-in.
+            </div>
+          }
+
+          <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+            <button type="button" (click)="closeModifyModal()" [disabled]="modifying"
+              class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50">
+              Cancel
+            </button>
+            <button type="button" (click)="confirmModify()" [disabled]="modifying || !modifyCanSave"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed">
+              @if (modifying) {
+                <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+                Saving…
+              } @else {
+                Save changes
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
   }
 </main>
 

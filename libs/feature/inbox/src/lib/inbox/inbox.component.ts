@@ -84,12 +84,11 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.threads.find(t => t.id === this.activeThreadId) ?? null;
   }
 
-  /** Author label for the *current user* writing in this thread. */
+  /** Author label for the *current user* writing in this thread.
+   * Delegates to MessageService so that hosts-by-listing-ownership are honored too. */
   authorForCurrentUser(t: Thread): MessageAuthor | null {
     if (!this.user) return null;
-    if (t.guestEmail === this.user.email) return 'guest';
-    if (t.hostEmail === this.user.email) return 'host';
-    return null;
+    return this.msg.roleForUser(t, this.user.email);
   }
 
   /** Display name of the counter-party (the other participant). */

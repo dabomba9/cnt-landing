@@ -184,6 +184,39 @@
               </div>
             }
 
+            <!-- Add-ons -->
+            @if (detail!.addOns.length) {
+              <div class="review-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Add-ons</span>
+                <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight mb-1">Make it extra</h2>
+                <p class="text-xs text-muted-text font-body mb-5">Optional extras from {{ detail!.host.name.split(' ')[0] }}. Add now, edit later.</p>
+                <ul class="space-y-2">
+                  @for (a of detail!.addOns; track a.id) {
+                    <li>
+                      <button type="button" (click)="toggleAddOn(a.id)"
+                        class="w-full text-left flex items-center gap-3 p-4 rounded-md border transition-colors"
+                        [ngClass]="isAddOnSelected(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-trinidad/40'">
+                        <span class="material-symbols-outlined text-jungle-green shrink-0">{{ a.icon }}</span>
+                        <div class="flex-1 min-w-0">
+                          <div class="text-sm font-body font-bold text-dark-text">{{ a.label }}</div>
+                          <div class="text-xs text-muted-text font-body line-clamp-1">{{ a.description }}</div>
+                        </div>
+                        <div class="text-right shrink-0">
+                          <div class="text-sm font-headline font-bold text-trinidad">${{ a.price }}</div>
+                          <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ a.unit }}</div>
+                        </div>
+                        <span class="material-symbols-outlined text-base shrink-0"
+                          [ngClass]="isAddOnSelected(a.id) ? 'text-trinidad' : 'text-muted-text/40'"
+                          [style.font-variation-settings]="isAddOnSelected(a.id) ? '\'FILL\' 1' : null">
+                          {{ isAddOnSelected(a.id) ? 'check_circle' : 'add_circle' }}
+                        </span>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
             <!-- Payment method (mock) -->
             <div class="review-anim bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
               <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Pay with</span>
@@ -290,6 +323,14 @@
                     <div class="flex justify-between text-jungle-green"><span class="inline-flex items-center gap-1">Weekly discount
                       <span class="text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold bg-jungle-green/10 px-1.5 py-0.5 rounded">10% off</span>
                     </span><span>−${{ weeklyDiscount }}</span></div>
+                  }
+                  @if (selectedAddOns.length > 0) {
+                    @for (a of selectedAddOns; track a.id) {
+                      <div class="flex justify-between text-muted-text">
+                        <span class="truncate pr-2">+ {{ a.label }}</span>
+                        <span>${{ a.unit === 'per night' ? (a.price * nights) : a.unit === 'per person' ? (a.price * guests) : a.price }}</span>
+                      </div>
+                    }
                   }
                   <div class="flex justify-between"><span>Cleaning fee</span><span>${{ CLEANING_FEE }}</span></div>
                   <div class="flex justify-between"><span class="inline-flex items-center gap-1">Service fee

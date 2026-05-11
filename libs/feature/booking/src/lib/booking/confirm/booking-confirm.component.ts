@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -7,16 +10,16 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { MiniMapComponent } from '../mini-map/mini-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
-import { Booking, STATUS_META } from '@cnt-workspace/models';
+import { Booking, BookingAddOn, STATUS_META } from '@cnt-workspace/models';
 import { AuthService } from '@cnt-workspace/data-access';
-import { MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS, getListingDetail, AddOn } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 @Component({
   selector: 'cnt-booking-confirm',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, MiniMapComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, NavbarComponent, FooterComponent, MiniMapComponent],
   templateUrl: './booking-confirm.component.html',
   styleUrls: ['./booking-confirm.component.scss'],
 })
@@ -27,6 +30,17 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
 
   cancelOpen = false;
   cancelling = false;
+  cancelReason = '';
+
+  modifyOpen = false;
+  modifying = false;
+  modifyRange: DateRange<Date> | null = null;
+  modifyGuests = 1;
+  modifyEditor: 'dates' | null = null;
+  readonly today = new Date();
+
+  /** Add-ons currently checked in the modify editor (mirrors booking.addOns when opened). */
+  editingAddOnIds = new Set<string>();
 
   /** "0:28" countdown to host decision when status === 'pending'. */
   decisionCountdownLabel = '';
@@ -213,16 +227,24 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
     window.print();
   }
 
-  openCancelModal(): void { this.cancelOpen = true; }
-  closeCancelModal(): void { this.cancelOpen = false; }
+  openCancelModal(): void {
+    this.cancelOpen = true;
+    this.cancelReason = '';
+  }
+  closeCancelModal(): void {
+    if (this.cancelling) return;
+    this.cancelOpen = false;
+    this.cancelReason = '';
+  }
 
   confirmCancel(): void {
     if (!this.booking) return;
     this.cancelling = true;
     setTimeout(() => {
-      const updated = this.bookingSvc.cancel(this.booking!.id);
+      const updated = this.bookingSvc.cancel(this.booking!.id, this.cancelReason);
       this.cancelling = false;
       this.cancelOpen = false;
+      this.cancelReason = '';
       if (updated) {
         this.booking = updated;
         this.toasts.info('Booking cancelled. A refund (if applicable) will appear within 5 business days.');
@@ -230,5 +252,158 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
         this.toasts.error('Could not cancel — please try again.');
       }
     }, 400);
+  }
+
+  // ============ Modify dates ============
+
+  /** Same eligibility window as cancel — pre-check-in and not cancelled/declined. */
+  get isModifiable(): boolean { return this.isCancellable; }
+
+  openModifyModal(): void {
+    if (!this.booking) return;
+    this.modifyRange = new DateRange<Date>(new Date(this.booking.dates.start), new Date(this.booking.dates.end));
+    this.modifyGuests = this.booking.guests;
+    this.editingAddOnIds = new Set((this.booking.addOns || []).map(a => a.id));
+    this.modifyEditor = null;
+    this.modifyOpen = true;
+  }
+
+  closeModifyModal(): void {
+    if (this.modifying) return;
+    this.modifyOpen = false;
+    this.modifyEditor = null;
+  }
+
+  toggleModifyDatesEditor(): void {
+    this.modifyEditor = this.modifyEditor === 'dates' ? null : 'dates';
+  }
+
+  closeModifyDatesEditor(): void { this.modifyEditor = null; }
+
+  /** Range picker: first click sets start, second click sets end (mat-calendar pattern). */
+  onModifyDateSelected(date: Date | null): void {
+    if (!date) return;
+    const r = this.modifyRange;
+    if (!r || !r.start || (r.start && r.end)) {
+      this.modifyRange = new DateRange<Date>(date, null);
+    } else if (date < r.start) {
+      this.modifyRange = new DateRange<Date>(date, null);
+    } else {
+      this.modifyRange = new DateRange<Date>(r.start, date);
+      // Auto-close popover when range is complete (matches booking-review behavior).
+      setTimeout(() => this.closeModifyDatesEditor(), 200);
+    }
+  }
+
+  /** Nights derived from the current modify-modal date range. */
+  get modifyNights(): number {
+    const r = this.modifyRange;
+    if (!r?.start || !r?.end) return 0;
+    return Math.max(1, Math.round((r.end.getTime() - r.start.getTime()) / 86_400_000));
+  }
+
+  /** Live preview of what the new total will be after modification. */
+  get modifyPreviewTotal(): number {
+    if (!this.booking) return 0;
+    const nights = this.modifyNights;
+    if (nights === 0) return this.booking.total;
+    return (this.booking.pricePerNight * nights)
+      + this.modifyAddOnsTotal
+      + this.booking.cleaningFee
+      + this.booking.serviceFee;
+  }
+
+  get modifyHasChanges(): boolean {
+    if (!this.booking || !this.modifyRange?.start || !this.modifyRange?.end) return false;
+    const startIso = this.modifyRange.start.toISOString();
+    const endIso = this.modifyRange.end.toISOString();
+    return startIso !== this.booking.dates.start
+        || endIso !== this.booking.dates.end
+        || this.modifyGuests !== this.booking.guests
+        || this.hasAddOnChanges;
+  }
+
+  get modifyCanSave(): boolean {
+    return this.modifyNights > 0 && this.modifyHasChanges;
+  }
+
+  stepGuests(delta: number): void {
+    this.modifyGuests = Math.max(1, this.modifyGuests + delta);
+  }
+
+  // ============ Add-ons (inside modify modal) ============
+
+  /** All add-ons available on this booking's listing. */
+  get availableAddOns(): AddOn[] {
+    if (!this.booking) return [];
+    const listing = MOCK_LISTINGS.find(l => l.id === this.booking!.listingId);
+    return listing ? getListingDetail(listing).addOns : [];
+  }
+
+  toggleEditingAddOn(id: string): void {
+    const next = new Set(this.editingAddOnIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    this.editingAddOnIds = next;
+  }
+
+  isEditingAddOnSelected(id: string): boolean { return this.editingAddOnIds.has(id); }
+
+  /** Compute the billed amount for an add-on against the *modified* nights/guests. */
+  private addOnAmount(a: AddOn, nights: number, guests: number): number {
+    if (a.unit === 'per night') return a.price * Math.max(1, nights);
+    if (a.unit === 'per person') return a.price * guests;
+    return a.price;
+  }
+
+  /** Snapshot of currently-checked add-ons priced against the modified trip shape. */
+  private buildAddOnSnapshot(nights: number, guests: number): BookingAddOn[] {
+    return this.availableAddOns
+      .filter(a => this.editingAddOnIds.has(a.id))
+      .map(a => ({
+        id: a.id,
+        label: a.label,
+        unit: a.unit,
+        unitPrice: a.price,
+        amount: this.addOnAmount(a, nights, guests),
+      }));
+  }
+
+  /** Live add-on subtotal for the modify-modal preview. */
+  get modifyAddOnsTotal(): number {
+    const nights = this.modifyNights || this.booking?.nights || 1;
+    return this.buildAddOnSnapshot(nights, this.modifyGuests)
+      .reduce((sum, a) => sum + a.amount, 0);
+  }
+
+  get hasAddOnChanges(): boolean {
+    const before = new Set((this.booking?.addOns || []).map(a => a.id));
+    if (before.size !== this.editingAddOnIds.size) return true;
+    for (const id of this.editingAddOnIds) if (!before.has(id)) return true;
+    return false;
+  }
+
+  confirmModify(): void {
+    if (!this.booking || !this.modifyCanSave || !this.modifyRange?.start || !this.modifyRange?.end) return;
+    this.modifying = true;
+    const startIso = this.modifyRange.start.toISOString();
+    const endIso = this.modifyRange.end.toISOString();
+    const addOns = this.buildAddOnSnapshot(this.modifyNights, this.modifyGuests);
+    setTimeout(() => {
+      const updated = this.bookingSvc.modify(this.booking!.id, {
+        start: startIso,
+        end: endIso,
+        guests: this.modifyGuests,
+        addOns,
+      });
+      this.modifying = false;
+      this.modifyOpen = false;
+      if (updated) {
+        this.booking = updated;
+        this.toasts.success('Trip updated.');
+      } else {
+        this.toasts.error('Could not update — check the dates and try again.');
+      }
+    }, 300);
   }
 }

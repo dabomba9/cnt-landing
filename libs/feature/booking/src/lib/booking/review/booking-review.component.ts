@@ -11,9 +11,10 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, PublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
-import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail, AddOn } from '@cnt-workspace/data-access';
 import { readMyRv, MyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, PaymentMethod } from '@cnt-workspace/data-access';
+import { BookingAddOn } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
@@ -34,6 +35,9 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   endDate: Date | null = null;
   guests = 1;
   selectedDateRange: DateRange<Date> | null = null;
+
+  /** Selected add-on IDs, hydrated from `?addOns=...` query param. */
+  selectedAddOnIds = new Set<string>();
 
   /** Form */
   contactEmail = '';
@@ -112,6 +116,11 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     const g = parseInt(q.get('guests') || '', 10);
     if (Number.isFinite(g) && g > 0) this.guests = g;
 
+    const addOnsParam = q.get('addOns');
+    if (addOnsParam) {
+      this.selectedAddOnIds = new Set(addOnsParam.split(',').filter(Boolean));
+    }
+
     this.startLockTimer();
 
     this.paymentsSub = this.payments.methods$.subscribe(methods => {
@@ -168,12 +177,48 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return 0;
   }
 
+  /** AddOn objects the user picked, in the order they appear on the listing. */
+  get selectedAddOns(): AddOn[] {
+    if (!this.detail) return [];
+    return this.detail.addOns.filter(a => this.selectedAddOnIds.has(a.id));
+  }
+
+  /** Per-line snapshot ({ ...AddOn, amount }) using the current nights/guests multipliers. */
+  get addOnSnapshots(): BookingAddOn[] {
+    return this.selectedAddOns.map(a => ({
+      id: a.id,
+      label: a.label,
+      unit: a.unit,
+      unitPrice: a.price,
+      amount: this.addOnAmount(a),
+    }));
+  }
+
+  private addOnAmount(a: AddOn): number {
+    if (a.unit === 'per night') return a.price * Math.max(1, this.nights);
+    if (a.unit === 'per person') return a.price * this.guests;
+    return a.price;
+  }
+
+  get addOnsTotal(): number {
+    return this.selectedAddOns.reduce((sum, a) => sum + this.addOnAmount(a), 0);
+  }
+
+  toggleAddOn(id: string): void {
+    const next = new Set(this.selectedAddOnIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    this.selectedAddOnIds = next;
+  }
+
+  isAddOnSelected(id: string): boolean { return this.selectedAddOnIds.has(id); }
+
   get serviceFee(): number {
-    return Math.round((this.subtotal - this.weeklyDiscount + this.CLEANING_FEE) * this.SERVICE_FEE_RATE);
+    return Math.round((this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE) * this.SERVICE_FEE_RATE);
   }
 
   get taxes(): number {
-    return Math.round((this.subtotal - this.weeklyDiscount + this.CLEANING_FEE + this.serviceFee) * this.TAX_RATE);
+    return Math.round((this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee) * this.TAX_RATE);
   }
 
   get promoDiscount(): number {
@@ -181,7 +226,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   get total(): number {
-    return Math.max(0, this.subtotal - this.weeklyDiscount + this.CLEANING_FEE + this.serviceFee + this.taxes - this.promoDiscount);
+    return Math.max(0, this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee + this.taxes - this.promoDiscount);
   }
 
   get hasValidState(): boolean {
@@ -363,6 +408,8 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
         status: this.listing!.instantBook ? 'confirmed' : 'pending',
         contact: { email: this.contactEmail, phone: this.contactPhone || undefined },
         requestMessage: !this.listing!.instantBook && this.noteToHost.trim() ? this.noteToHost.trim() : undefined,
+        addOns: this.addOnSnapshots.length > 0 ? this.addOnSnapshots : undefined,
+        addOnsTotal: this.addOnsTotal || undefined,
       });
       this.submitting = false;
       this.toasts.success(this.listing!.instantBook ? 'Booking confirmed!' : 'Request sent — host has 24h to respond.');

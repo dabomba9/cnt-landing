@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Booking } from '@cnt-workspace/models';
+import { Booking, BookingAddOn } from '@cnt-workspace/models';
 import { ToastService } from '../toast/toast.service';
 
 const BOOKINGS_KEY = 'cnt-bookings';
@@ -55,13 +55,104 @@ export class BookingService {
     return booking;
   }
 
-  cancel(id: string): Booking | null {
+  cancel(id: string, reason?: string): Booking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
-    all[idx] = { ...all[idx], status: 'cancelled' };
+    const cleaned = reason?.trim();
+    all[idx] = {
+      ...all[idx],
+      status: 'cancelled',
+      cancelReason: cleaned || undefined,
+    };
     this.write(all);
     this.clearTimer(id);
+    return all[idx];
+  }
+
+  /** Host-initiated decision on a pending request — approve or decline. */
+  hostDecide(id: string, decision: 'approved' | 'declined', reason?: string): Booking | null {
+    const all = this.read();
+    const idx = all.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    if (all[idx].status !== 'pending') return null;
+    const cleaned = reason?.trim();
+    all[idx] = {
+      ...all[idx],
+      status: decision,
+      cancelReason: decision === 'declined' ? (cleaned || undefined) : all[idx].cancelReason,
+    };
+    this.write(all);
+    this.clearTimer(id);
+    if (decision === 'approved') {
+      this.toasts.success(`Approved — ${all[idx].listingTitle} is locked in for the guest.`);
+    } else {
+      this.toasts.info('Request declined.');
+    }
+    return all[idx];
+  }
+
+  /** Host-initiated cancellation on an already-approved/confirmed booking. */
+  hostCancel(id: string, reason?: string): Booking | null {
+    const all = this.read();
+    const idx = all.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    const status = all[idx].status;
+    if (status !== 'approved' && status !== 'confirmed') return null;
+    const cleaned = reason?.trim();
+    all[idx] = {
+      ...all[idx],
+      status: 'cancelled',
+      cancelReason: cleaned || undefined,
+    };
+    this.write(all);
+    this.clearTimer(id);
+    this.toasts.info('Reservation cancelled.');
+    return all[idx];
+  }
+
+  /**
+   * Modify an existing booking's dates and/or guest count. Recomputes nights,
+   * subtotal, and total from the original pricePerNight. Returns null if the
+   * booking is missing, cancelled/declined, or check-in has already passed.
+   */
+  modify(
+    id: string,
+    patch: { start?: string; end?: string; guests?: number; addOns?: BookingAddOn[] },
+  ): Booking | null {
+    const all = this.read();
+    const idx = all.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    const current = all[idx];
+    if (current.status === 'cancelled' || current.status === 'declined') return null;
+    if (new Date(current.dates.start).getTime() < Date.now()) return null;
+
+    const startIso = patch.start ?? current.dates.start;
+    const endIso   = patch.end   ?? current.dates.end;
+    const guests   = typeof patch.guests === 'number' ? Math.max(1, patch.guests) : current.guests;
+    const addOns   = patch.addOns ?? current.addOns ?? [];
+
+    const startMs = new Date(startIso).getTime();
+    const endMs   = new Date(endIso).getTime();
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return null;
+
+    const nights      = Math.max(1, Math.round((endMs - startMs) / 86_400_000));
+    const subtotal    = current.pricePerNight * nights;
+    const addOnsTotal = addOns.reduce((sum, a) => sum + a.amount, 0);
+    const total       = subtotal + addOnsTotal + current.cleaningFee + current.serviceFee;
+
+    all[idx] = {
+      ...current,
+      dates: { start: startIso, end: endIso },
+      guests,
+      nights,
+      subtotal,
+      addOns: addOns.length > 0 ? addOns : undefined,
+      addOnsTotal: addOnsTotal || undefined,
+      total,
+      modifiedAt: new Date().toISOString(),
+    };
+    this.write(all);
     return all[idx];
   }
 

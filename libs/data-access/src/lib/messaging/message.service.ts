@@ -47,6 +47,7 @@ export class MessageService {
   readonly threads$: Observable<Thread[]> = this._threads$.asObservable();
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
   private lastSeenStatus = new Map<string, BookingStatus>();
+  private lastSeenModifiedAt = new Map<string, string | undefined>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -66,9 +67,30 @@ export class MessageService {
 
   // ---- Public API ------------------------------------------------------
 
+  /** True when the user is the host of the thread's listing (via getMyListings). */
+  private isHostOfListing(listingId: number, email: string): boolean {
+    return getMyListings(email).some(l => l.id === listingId);
+  }
+
+  /** What role does this user play in this thread? null = no relationship. */
+  roleForUser(t: Thread, email: string): 'guest' | 'host' | null {
+    if (t.guestEmail === email) return 'guest';
+    if (t.hostEmail === email) return 'host';
+    if (this.isHostOfListing(t.listingId, email)) return 'host';
+    return null;
+  }
+
+  /** The thread participant key to use for lastReadAt — matches stored thread emails. */
+  private readKeyFor(t: Thread, email: string): string | null {
+    const role = this.roleForUser(t, email);
+    if (role === 'guest') return t.guestEmail;
+    if (role === 'host') return t.hostEmail;
+    return null;
+  }
+
   threadsForUser(email: string): Thread[] {
     return this._threads$.value
-      .filter(t => t.guestEmail === email || t.hostEmail === email)
+      .filter(t => this.roleForUser(t, email) !== null)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
@@ -86,10 +108,12 @@ export class MessageService {
     if (t.messages.length === 0) return false;
     const last = t.messages[t.messages.length - 1];
     if (last.author === 'system') return false;
-    const fromMe = (last.author === 'guest' && t.guestEmail === email)
-                || (last.author === 'host' && t.hostEmail === email);
-    if (fromMe) return false;
-    const lastRead = t.lastReadAt[email];
+    const role = this.roleForUser(t, email);
+    if (!role) return false;
+    if (last.author === role) return false;
+    const key = this.readKeyFor(t, email);
+    if (!key) return false;
+    const lastRead = t.lastReadAt[key];
     return !lastRead || lastRead < last.createdAt;
   }
 
@@ -98,8 +122,9 @@ export class MessageService {
     const idx = all.findIndex(t => t.id === threadId);
     if (idx === -1) return;
     const t = all[idx];
-    if (t.guestEmail !== email && t.hostEmail !== email) return;
-    all[idx] = { ...t, lastReadAt: { ...t.lastReadAt, [email]: new Date().toISOString() } };
+    const key = this.readKeyFor(t, email);
+    if (!key) return;
+    all[idx] = { ...t, lastReadAt: { ...t.lastReadAt, [key]: new Date().toISOString() } };
     this.write(all);
   }
 
@@ -204,25 +229,54 @@ export class MessageService {
       // Detect status transitions and append a system message once per transition.
       const prev = this.lastSeenStatus.get(b.id) ?? b.status;
       if (prev !== b.status) {
-        const sysBody = this.systemBodyForStatus(b.status, b.hostName);
+        const sysBody = this.systemBodyForStatus(b.status, b);
         if (sysBody) {
-          const sys: Message = {
-            id: newId('m'),
-            threadId: thread.id,
-            author: 'system',
-            authorName: 'CurbNTurf',
-            body: sysBody,
-            createdAt: new Date().toISOString(),
-          };
-          thread = { ...thread, messages: [...thread.messages, sys], updatedAt: sys.createdAt };
+          thread = this.appendSystem(thread, sysBody);
           const idx = all.findIndex(t => t.id === thread!.id);
           if (idx !== -1) all[idx] = thread;
           mutated = true;
         }
       }
       this.lastSeenStatus.set(b.id, b.status);
+
+      // Detect modify (dates/guests) transitions.
+      const prevModified = this.lastSeenModifiedAt.get(b.id);
+      if (b.modifiedAt && b.modifiedAt !== prevModified) {
+        // Only emit if we've seen this booking before (i.e. modification, not initial seed).
+        if (prevModified !== undefined || this.lastSeenStatus.has(b.id)) {
+          const body = this.modifyBody(b);
+          thread = this.appendSystem(thread, body);
+          const idx = all.findIndex(t => t.id === thread!.id);
+          if (idx !== -1) all[idx] = thread;
+          mutated = true;
+        }
+      }
+      this.lastSeenModifiedAt.set(b.id, b.modifiedAt);
     }
     if (mutated) this.write(all);
+  }
+
+  private appendSystem(thread: Thread, body: string): Thread {
+    const sys: Message = {
+      id: newId('m'),
+      threadId: thread.id,
+      author: 'system',
+      authorName: 'CurbNTurf',
+      body,
+      createdAt: new Date().toISOString(),
+    };
+    return { ...thread, messages: [...thread.messages, sys], updatedAt: sys.createdAt };
+  }
+
+  private modifyBody(b: Booking): string {
+    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    const start = new Date(b.dates.start).toLocaleDateString('en-US', opts);
+    const end = new Date(b.dates.end).toLocaleDateString('en-US', opts);
+    const base = `Trip updated to ${start} – ${end} · ${b.guests} guest${b.guests === 1 ? '' : 's'}`;
+    const addOns = b.addOns || [];
+    if (addOns.length === 0) return `${base}.`;
+    const names = addOns.map(a => a.label).join(', ');
+    return `${base} · Add-ons: ${names}.`;
   }
 
   private buildThreadFromBooking(b: Booking): Thread {
@@ -275,11 +329,14 @@ export class MessageService {
     };
   }
 
-  private systemBodyForStatus(status: BookingStatus, hostName: string): string | null {
+  private systemBodyForStatus(status: BookingStatus, b: Booking): string | null {
     switch (status) {
-      case 'approved': return `${hostName} approved the request — your stay is locked in.`;
-      case 'declined': return `${hostName} declined the request.`;
-      case 'cancelled': return `Booking cancelled.`;
+      case 'approved': return `${b.hostName} approved the request — your stay is locked in.`;
+      case 'declined': return `${b.hostName} declined the request.`;
+      case 'cancelled':
+        return b.cancelReason
+          ? `Booking cancelled — "${b.cancelReason}"`
+          : `Booking cancelled.`;
       case 'confirmed': return null;
       case 'pending': return null;
       default: return null;

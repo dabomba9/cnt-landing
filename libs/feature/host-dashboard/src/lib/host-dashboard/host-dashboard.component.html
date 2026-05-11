@@ -57,19 +57,123 @@
         </section>
       </div>
 
-      <!-- Pending requests -->
+      <!-- Active reservations (real bookings: approved or confirmed) -->
+      @if (activeHostBookings.length > 0) {
+        <section>
+          <div class="flex items-baseline justify-between gap-3 mb-4">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Confirmed</span>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Active reservations</h2>
+            </div>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ activeHostBookings.length }} active</span>
+          </div>
+          <div class="space-y-4">
+            @for (b of activeHostBookings; track b.id) {
+              <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                  <div class="flex items-center gap-3 md:w-1/4 shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-sm shrink-0">{{ guestInitials(b) }}</div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.userEmail }}</div>
+                      <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ b.status }} · {{ formatRelative(b.createdAt) }}</div>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm font-body">
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Listing</div>
+                      <div class="font-bold text-dark-text truncate">{{ b.listingTitle }}</div>
+                    </div>
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Dates</div>
+                      <div class="font-bold text-dark-text">{{ formatBookingDates(b) }}</div>
+                      <div class="text-xs text-muted-text">{{ b.nights }} {{ b.nights === 1 ? 'night' : 'nights' }} · {{ b.guests }} {{ b.guests === 1 ? 'guest' : 'guests' }}</div>
+                    </div>
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Payout</div>
+                      <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(b.total) }}</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <a [routerLink]="['/inbox', b.id]" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors inline-flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">forum</span>
+                      Message
+                    </a>
+                    <button type="button" (click)="openCancelModal(b)" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Pending requests (real bookings + seeded mock) -->
       <section>
         <div class="flex items-baseline justify-between gap-3 mb-4">
           <div>
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Inbox</span>
             <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Pending requests</h2>
           </div>
-          @if (requests.length > 0) {
-            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ requests.length }} waiting</span>
+          @if (requests.length + pendingHostBookings.length > 0) {
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ requests.length + pendingHostBookings.length }} waiting</span>
           }
         </div>
 
-        @if (requests.length === 0) {
+        <!-- Real pending bookings -->
+        @if (pendingHostBookings.length > 0) {
+          <div class="space-y-4 mb-4">
+            @for (b of pendingHostBookings; track b.id) {
+              <div class="bg-white rounded-2xl border border-trinidad/20 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                  <div class="flex items-center gap-3 md:w-1/4 shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-trinidad text-white flex items-center justify-center font-headline font-bold text-sm shrink-0">{{ guestInitials(b) }}</div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.userEmail }}</div>
+                      <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-trinidad">Real · {{ formatRelative(b.createdAt) }}</div>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm font-body">
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Listing</div>
+                      <div class="font-bold text-dark-text truncate">{{ b.listingTitle }}</div>
+                    </div>
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Dates</div>
+                      <div class="font-bold text-dark-text">{{ formatBookingDates(b) }}</div>
+                      <div class="text-xs text-muted-text">{{ b.nights }} {{ b.nights === 1 ? 'night' : 'nights' }} · {{ b.guests }} {{ b.guests === 1 ? 'guest' : 'guests' }}</div>
+                    </div>
+                    <div>
+                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Payout</div>
+                      <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(b.total) }}</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <a [routerLink]="['/inbox', b.id]" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors inline-flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">forum</span>
+                      Message
+                    </a>
+                    <button type="button" (click)="openDeclineModal(b)" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+                      Decline
+                    </button>
+                    <button type="button" (click)="approveBooking(b)" class="px-4 py-2.5 rounded-full bg-jungle-green text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(41,93,66,0.25)] transition-opacity">
+                      Approve
+                    </button>
+                  </div>
+                </div>
+                @if (b.requestMessage) {
+                  <div class="mt-4 pt-4 border-t border-dark-text/8 text-sm font-body text-muted-text italic">"{{ b.requestMessage }}"</div>
+                }
+              </div>
+            }
+          </div>
+        }
+        @if (requests.length > 0 && pendingHostBookings.length > 0) {
+          <div class="text-[0.65rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-3 mt-6">Sample requests</div>
+        }
+
+        @if (requests.length === 0 && pendingHostBookings.length === 0) {
           <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-10 text-center">
             <span class="w-14 h-14 mx-auto rounded-full bg-jungle-green/10 inline-flex items-center justify-center">
               <span class="material-symbols-outlined text-2xl text-jungle-green" style="font-variation-settings: 'FILL' 1;">inbox</span>
@@ -77,7 +181,7 @@
             <h3 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">All caught up</h3>
             <p class="text-sm font-body text-muted-text max-w-md mx-auto">No pending requests right now. We'll notify you when a guest reaches out.</p>
           </div>
-        } @else {
+        } @else if (requests.length > 0) {
           <div class="space-y-4">
             @for (req of requests; track req.id) {
               <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
@@ -180,5 +284,59 @@
     </div>
   </section>
 </main>
+
+@if (modalAction && modalTarget) {
+  <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="host-action-title">
+    <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-trinidad/10 mb-4">
+        <span class="material-symbols-outlined text-3xl text-trinidad">{{ modalAction === 'decline' ? 'do_not_disturb_on' : 'cancel' }}</span>
+      </div>
+      <h2 id="host-action-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">
+        {{ modalAction === 'decline' ? 'Decline this request?' : 'Cancel this reservation?' }}
+      </h2>
+      <p class="text-sm text-muted-text font-body leading-relaxed mb-5">
+        <span class="font-bold text-dark-text">{{ modalTarget.listingTitle }}</span> · {{ formatBookingDates(modalTarget) }}. The guest will be notified.
+      </p>
+
+      <div class="mb-3">
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Reason <span class="text-muted-text/70 normal-case font-normal">(optional)</span></div>
+        <div class="flex flex-wrap gap-2">
+          @for (preset of modalReasonPresets; track preset) {
+            <button type="button" (click)="pickModalReason(preset)"
+              [ngClass]="modalReason === preset ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
+              class="px-3 py-1.5 rounded-full border text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold transition-colors">
+              {{ preset }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (modalIsOtherSelected) {
+        <textarea [(ngModel)]="modalReason" name="modalReason" rows="3" maxlength="240"
+          placeholder="Tell the guest more…"
+          class="w-full bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none mb-5"></textarea>
+      } @else {
+        <div class="mb-5"></div>
+      }
+
+      <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+        <button type="button" (click)="closeModal()" [disabled]="modalSaving"
+          class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50 transition-colors">
+          {{ modalAction === 'decline' ? 'Keep pending' : 'Keep reservation' }}
+        </button>
+        <button type="button" (click)="confirmModal()" [disabled]="modalSaving"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+          @if (modalSaving) {
+            <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+            Saving…
+          } @else {
+            {{ modalAction === 'decline' ? 'Decline request' : 'Cancel reservation' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 <curbnturf-footer></curbnturf-footer>

@@ -1,11 +1,10 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '@cnt-workspace/ui';
-import { FooterComponent } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService } from '@cnt-workspace/data-access';
-import { BookingService } from '@cnt-workspace/data-access';
+import { Subscription } from 'rxjs';
+import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { SeoService, AuthService, BookingService, ToastService } from '@cnt-workspace/data-access';
 import { Booking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
@@ -13,20 +12,34 @@ type TripFilter = 'upcoming' | 'past' | 'all';
 @Component({
   selector: 'cnt-trips',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './trips.component.html',
 })
-export class TripsComponent implements OnInit {
+export class TripsComponent implements OnInit, OnDestroy {
   bookings: Booking[] = [];
   filter: TripFilter = 'upcoming';
   STATUS_META = STATUS_META;
   guestVerified = false;
 
+  /** Cancel modal state. */
+  cancelTarget: Booking | null = null;
+  cancelReason = '';
+  cancelling = false;
+  readonly cancelReasonPresets = ['Plans changed', 'Weather', 'Found another stay', 'Other'];
+
+  pickCancelReason(preset: string): void {
+    this.cancelReason = this.cancelReason === preset ? '' : preset;
+  }
+
+  private userEmail = '';
+  private sub: Subscription | null = null;
+
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
     private bookingSvc: BookingService,
     private seo: SeoService,
+    private toasts: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -37,11 +50,18 @@ export class TripsComponent implements OnInit {
       robots: 'noindex, nofollow',
     });
     const user = this.auth.currentUser;
-    if (user) {
-      this.bookings = this.bookingSvc.list(user.email);
-      this.guestVerified = !!user.verified;
-    }
+    if (!user) return;
+    this.userEmail = user.email;
+    this.guestVerified = !!user.verified;
+    // Live updates so cancel/modify reflects immediately without reload.
+    this.sub = this.bookingSvc.bookings$.subscribe(all => {
+      this.bookings = all
+        .filter(b => b.userEmail === this.userEmail)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    });
   }
+
+  ngOnDestroy(): void { this.sub?.unsubscribe(); }
 
   setFilter(f: TripFilter): void { this.filter = f; }
 
@@ -93,5 +113,37 @@ export class TripsComponent implements OnInit {
     if (d < 7) return `In ${d} days`;
     if (d < 30) return `In ${Math.round(d / 7)} weeks`;
     return `In ${Math.round(d / 30)} months`;
+  }
+
+  /** Can this booking still be cancelled? */
+  canCancel(b: Booking): boolean {
+    if (b.status === 'cancelled' || b.status === 'declined') return false;
+    return new Date(b.dates.start).getTime() > Date.now();
+  }
+
+  openCancel(b: Booking, event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.cancelTarget = b;
+    this.cancelReason = '';
+  }
+
+  closeCancel(): void {
+    if (this.cancelling) return;
+    this.cancelTarget = null;
+    this.cancelReason = '';
+  }
+
+  confirmCancel(): void {
+    if (!this.cancelTarget || this.cancelling) return;
+    this.cancelling = true;
+    const target = this.cancelTarget;
+    setTimeout(() => {
+      const updated = this.bookingSvc.cancel(target.id, this.cancelReason);
+      this.cancelling = false;
+      this.cancelTarget = null;
+      this.cancelReason = '';
+      if (updated) this.toasts.info(`Cancelled your stay at ${updated.listingTitle}.`);
+    }, 300);
   }
 }

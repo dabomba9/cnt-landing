@@ -1,9 +1,18 @@
 import { Listing, MOCK_LISTINGS } from '../listings/mock-listings.data';
+import { Booking } from '@cnt-workspace/models';
 
 /** Listings the current user "hosts" — picks the first 3 listings from the
  *  mock pool. Stable per-user (deterministic by ID) for demo consistency. */
 export function getMyListings(_userEmail: string): Listing[] {
   return MOCK_LISTINGS.slice(0, 3);
+}
+
+/** Real bookings (from BookingService) whose listing belongs to the host. */
+export function getHostBookings(hostUserEmail: string, allBookings: Booking[]): Booking[] {
+  const listingIds = new Set(getMyListings(hostUserEmail).map(l => l.id));
+  return allBookings
+    .filter(b => listingIds.has(b.listingId))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export interface HostStats {

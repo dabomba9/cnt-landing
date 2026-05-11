@@ -5,6 +5,17 @@ export type BookingStatus =
   | 'declined'
   | 'cancelled';
 
+/** Snapshot of an AddOn at booking time. Frozen so the host editing the
+ * listing later doesn't retroactively reprice existing bookings. */
+export interface BookingAddOn {
+  id: string;
+  label: string;
+  unit: 'per stay' | 'per night' | 'per person';
+  unitPrice: number;
+  /** Total billed for this line (unitPrice × multiplier at booking time). */
+  amount: number;
+}
+
 export interface Booking {
   id: string;
   userEmail: string;
@@ -33,6 +44,14 @@ export interface Booking {
   contact: { email: string; phone?: string };
   /** Optional opening note from the guest — surfaces in the inbox thread. */
   requestMessage?: string;
+  /** Optional reason supplied at cancel time — surfaces in the inbox thread. */
+  cancelReason?: string;
+  /** ISO when the booking was last modified (dates/guests/add-ons). */
+  modifiedAt?: string;
+  /** Snapshot of add-ons attached to this booking. */
+  addOns?: BookingAddOn[];
+  /** Sum of all add-on amounts at booking/modification time. */
+  addOnsTotal?: number;
 }
 
 export const STATUS_META: Record<BookingStatus, { label: string; color: string; bg: string }> = {

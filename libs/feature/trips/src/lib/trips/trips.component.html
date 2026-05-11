@@ -105,6 +105,14 @@
                       <div class="font-headline font-bold text-trinidad text-lg">${{ b.total }}</div>
                     </div>
                   </div>
+                  @if (canCancel(b)) {
+                    <div class="mt-3 pt-3 border-t border-dark-text/5 flex justify-end">
+                      <button type="button" (click)="openCancel(b, $event)"
+                        class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
+                        Cancel trip
+                      </button>
+                    </div>
+                  }
                 </div>
               </a>
             }
@@ -116,5 +124,57 @@
     </div>
   </section>
 </main>
+
+@if (cancelTarget) {
+  <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="cancel-trip-title">
+    <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeCancel()"></div>
+    <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-trinidad/10 mb-4">
+        <span class="material-symbols-outlined text-3xl text-trinidad">cancel</span>
+      </div>
+      <h2 id="cancel-trip-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Cancel this trip?</h2>
+      <p class="text-sm text-muted-text font-body leading-relaxed mb-5">
+        <span class="font-bold text-dark-text">{{ cancelTarget.listingTitle }}</span> · {{ datesLabel(cancelTarget) }}. The host will be notified.
+      </p>
+
+      <div class="mb-3">
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Reason <span class="text-muted-text/70 normal-case font-normal">(optional)</span></div>
+        <div class="flex flex-wrap gap-2">
+          @for (preset of cancelReasonPresets; track preset) {
+            <button type="button" (click)="pickCancelReason(preset)"
+              [ngClass]="cancelReason === preset ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
+              class="px-3 py-1.5 rounded-full border text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold transition-colors">
+              {{ preset }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (cancelReason === 'Other' || (cancelReason && !cancelReasonPresets.includes(cancelReason))) {
+        <textarea [(ngModel)]="cancelReason" name="cancelReason" rows="3" maxlength="240"
+          placeholder="Tell the host more…"
+          class="w-full bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none mb-5"></textarea>
+      } @else {
+        <div class="mb-5"></div>
+      }
+
+      <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+        <button type="button" (click)="closeCancel()" [disabled]="cancelling"
+          class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50 transition-colors">
+          Keep trip
+        </button>
+        <button type="button" (click)="confirmCancel()" [disabled]="cancelling"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+          @if (cancelling) {
+            <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+            Cancelling…
+          } @else {
+            Cancel trip
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 <curbnturf-footer></curbnturf-footer>
