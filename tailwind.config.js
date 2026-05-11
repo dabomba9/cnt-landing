@@ -4,7 +4,8 @@ const { join } = require('path');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}"
+    "./src/**/*.{html,ts}",
+    ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: "class",
   theme: {
