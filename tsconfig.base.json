@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@cnt-workspace/account": ["libs/feature/account/src/index.ts"],
       "@cnt-workspace/auth": ["libs/feature/auth/src/index.ts"],
       "@cnt-workspace/booking": ["libs/feature/booking/src/index.ts"],
       "@cnt-workspace/content": ["libs/feature/content/src/index.ts"],

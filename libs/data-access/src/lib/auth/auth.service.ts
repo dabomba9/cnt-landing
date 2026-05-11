@@ -4,6 +4,20 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export type IdType = 'drivers-license' | 'passport' | 'state-id';
 
+export interface NotifPrefs {
+  emailUpdates: boolean;
+  marketing: boolean;
+  hostResponses: boolean;
+  tripReminders: boolean;
+}
+
+export const DEFAULT_NOTIF_PREFS: NotifPrefs = {
+  emailUpdates: true,
+  marketing: false,
+  hostResponses: true,
+  tripReminders: true,
+};
+
 export interface User {
   email: string;
   /** btoa(password) — DEMO ONLY. Never ship this scheme to production. */
@@ -17,6 +31,9 @@ export interface User {
   /** Demo only — last 4 of the document id, no real ID stored. */
   idType?: IdType;
   idLastFour?: string;
+  /** Data-URL profile photo (mock). */
+  photoUrl?: string;
+  notifPrefs?: NotifPrefs;
 }
 
 export interface PublicUser {
@@ -29,7 +46,11 @@ export interface PublicUser {
   verifiedAt?: string;
   idType?: IdType;
   idLastFour?: string;
+  photoUrl?: string;
+  notifPrefs?: NotifPrefs;
 }
+
+export type ProfilePatch = Partial<Pick<User, 'firstName' | 'lastName' | 'phone' | 'photoUrl' | 'notifPrefs'>>;
 
 const USERS_KEY = 'cnt-users';
 const SESSION_KEY = 'cnt-session-email';
@@ -50,7 +71,7 @@ export class AuthService {
   private readonly _currentView$ = new BehaviorSubject<AppView>('guest');
   readonly currentView$: Observable<AppView> = this._currentView$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {
     this.hydrate();
     this.hydrateView();
   }
@@ -106,6 +127,43 @@ export class AuthService {
     }
     this.startSession(norm);
     return { ok: true, user: toPublic(found) };
+  }
+
+  /** Persist edits to the current user's editable profile fields. Mock: writes to localStorage. */
+  updateProfile(patch: ProfilePatch): PublicUser | null {
+    const current = this._currentUser$.value;
+    if (!current) return null;
+    const users = this.readUsers();
+    const idx = users.findIndex(u => u.email === current.email);
+    if (idx === -1) return null;
+    const cleaned: ProfilePatch = {};
+    if (patch.firstName !== undefined) cleaned.firstName = patch.firstName.trim();
+    if (patch.lastName !== undefined) cleaned.lastName = patch.lastName.trim();
+    if (patch.phone !== undefined) cleaned.phone = patch.phone.trim() || undefined;
+    if (patch.photoUrl !== undefined) cleaned.photoUrl = patch.photoUrl || undefined;
+    if (patch.notifPrefs !== undefined) cleaned.notifPrefs = patch.notifPrefs;
+    users[idx] = { ...users[idx], ...cleaned };
+    this.writeUsers(users);
+    this._currentUser$.next(toPublic(users[idx]));
+    return toPublic(users[idx]);
+  }
+
+  /** Change the current user's password. Requires current password for verification. */
+  updatePassword(currentPassword: string, nextPassword: string): { ok: true } | { ok: false; error: string } {
+    const current = this._currentUser$.value;
+    if (!current) return { ok: false, error: 'You must be signed in.' };
+    if (!nextPassword || nextPassword.length < 8) {
+      return { ok: false, error: 'New password must be at least 8 characters.' };
+    }
+    const users = this.readUsers();
+    const idx = users.findIndex(u => u.email === current.email);
+    if (idx === -1) return { ok: false, error: 'Account not found.' };
+    if (users[idx].passwordHash !== btoa(currentPassword)) {
+      return { ok: false, error: 'Current password is incorrect.' };
+    }
+    users[idx] = { ...users[idx], passwordHash: btoa(nextPassword) };
+    this.writeUsers(users);
+    return { ok: true };
   }
 
   /** Mark the current user as identity-verified. Mock: doesn't actually store the ID. */

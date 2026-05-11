@@ -104,7 +104,11 @@
 
                 <!-- Secondary group -->
                 <div class="border-t border-dark-text/8 py-1">
-                  <a routerLink="/search" [queryParams]="{ openRv: 1 }" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
+                  <a routerLink="/account" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
+                    <span class="material-symbols-outlined text-lg text-muted-text">manage_accounts</span>
+                    Account
+                  </a>
+                  <a routerLink="/account" fragment="rig" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-muted-text">rv_hookup</span>
                     My RV
                   </a>

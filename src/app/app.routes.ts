@@ -47,6 +47,11 @@ export const appRoutes: Route[] = [
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/host-dashboard').then(m => m.HostDashboardComponent),
   },
+  {
+    path: 'account',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/account').then(m => m.AccountComponent),
+  },
   { path: 'host/dashboard', redirectTo: 'hosting', pathMatch: 'full' },
   {
     path: 'search',

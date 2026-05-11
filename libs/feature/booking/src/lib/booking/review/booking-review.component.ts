@@ -13,6 +13,8 @@ import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail } from '@cnt-workspace/data-access';
 import { readMyRv, MyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
+import { PaymentMethodsService, PaymentMethod } from '@cnt-workspace/data-access';
+import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
 @Component({
@@ -47,12 +49,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   /** ID verify modal */
   idVerifyOpen = false;
 
-  /** Mock saved payment method */
-  selectedPaymentId: string = 'card-default';
-  paymentMethods = [
-    { id: 'card-default', label: 'Visa ending in 4242', icon: 'credit_card', isDefault: true },
-    { id: 'card-amex', label: 'Amex ending in 1005', icon: 'credit_card', isDefault: false },
-  ];
+  /** Saved payment methods — sourced from PaymentMethodsService. */
+  selectedPaymentId = '';
+  paymentMethods: PaymentMethod[] = [];
+  private paymentsSub: Subscription | null = null;
 
   /** Promo code mock */
   promoOpen = false;
@@ -73,13 +73,14 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   phoneTouched = false;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private route: ActivatedRoute,
     private router: Router,
     private auth: AuthService,
     private booking: BookingService,
     private seo: SeoService,
     private toasts: ToastService,
+    private payments: PaymentMethodsService,
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +113,13 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     if (Number.isFinite(g) && g > 0) this.guests = g;
 
     this.startLockTimer();
+
+    this.paymentsSub = this.payments.methods$.subscribe(methods => {
+      this.paymentMethods = methods;
+      if (!this.selectedPaymentId || !methods.some(m => m.id === this.selectedPaymentId)) {
+        this.selectedPaymentId = (methods.find(m => m.isDefault) || methods[0])?.id || '';
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -123,6 +131,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   ngOnDestroy(): void {
     if (this.lockInterval) clearInterval(this.lockInterval);
+    this.paymentsSub?.unsubscribe();
   }
 
   private startLockTimer(): void {

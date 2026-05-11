@@ -1,0 +1,51 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-8 md:py-12">
+
+      <div class="mb-8 md:mb-10">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Profile</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-3xl md:text-4xl">Account</h1>
+        @if (user) {
+          <p class="text-sm text-muted-text font-body mt-2">Signed in as <span class="font-bold text-dark-text">{{ user.firstName }} {{ user.lastName }}</span> · {{ user.email }}</p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+
+        <!-- Left rail / top tabs -->
+        <aside class="lg:col-span-3">
+          <nav class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-2 flex lg:flex-col gap-1 overflow-x-auto">
+            @for (item of navItems; track item.id) {
+              <button type="button" (click)="select(item.id)"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors shrink-0 lg:shrink"
+                [ngClass]="active === item.id ? 'bg-trinidad/10 text-trinidad' : 'text-dark-text hover:bg-cream/60'">
+                <span class="material-symbols-outlined text-lg" [class.text-trinidad]="active === item.id">{{ item.icon }}</span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-sm font-body font-bold leading-tight">{{ item.label }}</span>
+                  <span class="hidden lg:block text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-0.5">{{ item.description }}</span>
+                </span>
+              </button>
+            }
+          </nav>
+        </aside>
+
+        <!-- Right pane -->
+        <section class="lg:col-span-9 space-y-6">
+          @switch (active) {
+            @case ('personal')      { <cnt-account-personal-info></cnt-account-personal-info> }
+            @case ('security')      { <cnt-account-login-security></cnt-account-login-security> }
+            @case ('identity')      { <cnt-account-identity></cnt-account-identity> }
+            @case ('payments')      { <cnt-account-payments></cnt-account-payments> }
+            @case ('notifications') { <cnt-account-notifications></cnt-account-notifications> }
+            @case ('rig')           { <cnt-account-my-rig></cnt-account-my-rig> }
+          }
+        </section>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>
