@@ -21,7 +21,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private routerSub: Subscription | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private router: Router
   ) {}
 
