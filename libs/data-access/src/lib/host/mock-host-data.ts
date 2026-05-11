@@ -1,4 +1,4 @@
-import { Listing, MOCK_LISTINGS } from '../search-results/mock-listings.data';
+import { Listing, MOCK_LISTINGS } from '../listings/mock-listings.data';
 
 /** Listings the current user "hosts" — picks the first 3 listings from the
  *  mock pool. Stable per-user (deterministic by ID) for demo consistency. */

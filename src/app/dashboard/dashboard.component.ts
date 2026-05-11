@@ -6,12 +6,12 @@ import { gsap } from 'gsap';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { ListingCardComponent } from '../listing-card/listing-card.component';
-import { SeoService } from '../seo.service';
-import { AuthService, PublicUser } from '../auth/auth.service';
-import { BookingService } from '../booking/booking.service';
-import { Booking } from '../booking/booking.types';
-import { MyRv, readMyRv } from '../my-rv.util';
-import { Listing, MOCK_LISTINGS } from '../search-results/mock-listings.data';
+import { SeoService } from '@cnt-workspace/data-access';
+import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { BookingService } from '@cnt-workspace/data-access';
+import { Booking } from '@cnt-workspace/models';
+import { MyRv, readMyRv } from '@cnt-workspace/data-access';
+import { Listing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 import { DashboardGreetingComponent } from './widgets/greeting/greeting.component';
 import { StatTileComponent } from './widgets/stat-tile/stat-tile.component';
 import { UpcomingTripCardComponent } from './widgets/upcoming-trip/upcoming-trip.component';
@@ -20,7 +20,7 @@ import { MyRvSummaryWidgetComponent } from './widgets/my-rv-summary/my-rv-summar
 import { ActivityFeedComponent } from './widgets/activity-feed/activity-feed.component';
 import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.component';
 import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
-import { isMyRvSet } from '../my-rv.util';
+import { isMyRvSet } from '@cnt-workspace/data-access';
 
 const FAV_KEY = 'cnt-favorites';
 

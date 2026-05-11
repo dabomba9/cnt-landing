@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { FooterComponent } from '../../footer/footer.component';
-import { SeoService } from '../../seo.service';
-import { AuthService } from '../auth.service';
-import { ToastService } from '../../toast.service';
+import { SeoService } from '@cnt-workspace/data-access';
+import { AuthService } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-sign-in',

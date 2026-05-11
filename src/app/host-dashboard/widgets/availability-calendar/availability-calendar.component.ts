@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing, getListingDetail } from '../../../search-results/mock-listings.data';
+import { Listing, getListingDetail } from '@cnt-workspace/data-access';
 
 interface DayCell {
   date: number;

@@ -7,12 +7,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { FooterComponent } from '../../footer/footer.component';
 import { IdVerifyModalComponent } from '../../auth/id-verify-modal/id-verify-modal.component';
-import { SeoService } from '../../seo.service';
-import { AuthService, PublicUser } from '../../auth/auth.service';
-import { BookingService } from '../booking.service';
-import { ToastService } from '../../toast.service';
-import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail } from '../../search-results/mock-listings.data';
-import { readMyRv, MyRv, rvTypeLabel, isMyRvSet } from '../../my-rv.util';
+import { SeoService } from '@cnt-workspace/data-access';
+import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { BookingService } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail } from '@cnt-workspace/data-access';
+import { readMyRv, MyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 @Component({

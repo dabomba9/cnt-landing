@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Review } from '../search-results/mock-listings.data';
+import { Review } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-review-card',

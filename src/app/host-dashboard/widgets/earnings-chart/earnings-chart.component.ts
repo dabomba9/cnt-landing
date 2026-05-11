@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing } from '../../../search-results/mock-listings.data';
+import { Listing } from '@cnt-workspace/data-access';
 
 interface MonthBucket {
   label: string;       // 'Dec'

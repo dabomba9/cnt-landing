@@ -5,7 +5,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 export type TermsCategory = 'all' | 'guests' | 'hosts' | 'fees' | 'cancellation' | 'grow';

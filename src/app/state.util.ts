@@ -1,4 +1,4 @@
-import { Listing, MOCK_LISTINGS } from './search-results/mock-listings.data';
+import { Listing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 
 /** Two-letter US state abbreviation → URL slug. */
 export const ABBREV_TO_SLUG: Record<string, string> = {

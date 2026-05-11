@@ -1,7 +1,7 @@
 import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking, STATUS_META } from '../../../booking/booking.types';
+import { Booking, STATUS_META } from '@cnt-workspace/models';
 
 @Component({
   selector: 'cnt-upcoming-trip',

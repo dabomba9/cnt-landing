@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { PublicUser } from '../../../auth/auth.service';
+import { PublicUser } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-dashboard-greeting',

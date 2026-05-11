@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
-import { AddOn, CancellationTier, Listing, ListingDetail } from '../search-results/mock-listings.data';
-import { MyRv, emptyMyRv, hasMyRvPhotos } from '../my-rv.util';
+import { AddOn, CancellationTier, Listing, ListingDetail } from '@cnt-workspace/data-access';
+import { MyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 
 /**
  * Per-listing booking state shared between the sidebar widget and the mobile bar.

@@ -5,12 +5,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { FooterComponent } from '../../footer/footer.component';
 import { MiniMapComponent } from '../mini-map/mini-map.component';
-import { SeoService } from '../../seo.service';
-import { BookingService } from '../booking.service';
-import { Booking, STATUS_META } from '../booking.types';
-import { AuthService } from '../../auth/auth.service';
-import { MOCK_LISTINGS } from '../../search-results/mock-listings.data';
-import { ToastService } from '../../toast.service';
+import { SeoService } from '@cnt-workspace/data-access';
+import { BookingService } from '@cnt-workspace/data-access';
+import { Booking, STATUS_META } from '@cnt-workspace/models';
+import { AuthService } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 @Component({

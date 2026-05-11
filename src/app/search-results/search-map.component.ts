@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Listing, CATEGORY_META } from './mock-listings.data';
+import { Listing, CATEGORY_META } from '@cnt-workspace/data-access';
 import {
   TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
 } from './map-config';

@@ -5,10 +5,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
-import { AuthService, PublicUser } from '../auth/auth.service';
-import { SeoService } from '../seo.service';
-import { MessageService } from '../messaging/message.service';
-import { Thread, MessageAuthor } from '../messaging/message.types';
+import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { SeoService } from '@cnt-workspace/data-access';
+import { MessageService } from '@cnt-workspace/data-access';
+import { Thread, MessageAuthor } from '@cnt-workspace/models';
 
 @Component({
   selector: 'cnt-inbox',

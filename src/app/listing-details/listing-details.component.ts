@@ -5,17 +5,17 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 import {
   MOCK_LISTINGS, Listing, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
   ListingDetail, getListingDetail, CANCELLATION_TIER_META,
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
-} from '../search-results/mock-listings.data';
-import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '../my-rv.util';
+} from '@cnt-workspace/data-access';
+import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';

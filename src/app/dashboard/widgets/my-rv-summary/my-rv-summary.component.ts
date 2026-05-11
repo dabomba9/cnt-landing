@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '../../../my-rv.util';
+import { MyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-my-rv-summary',

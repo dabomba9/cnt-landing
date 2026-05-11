@@ -5,8 +5,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
   Listing, ListingDetail, CancellationTier,
-} from '../../search-results/mock-listings.data';
-import { MyRv, emptyMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '../../my-rv.util';
+} from '@cnt-workspace/data-access';
+import { MyRv, emptyMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
 /**

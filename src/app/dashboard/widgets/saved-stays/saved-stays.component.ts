@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Listing } from '../../../search-results/mock-listings.data';
+import { Listing } from '@cnt-workspace/data-access';
 import { ListingCardComponent } from '../../../listing-card/listing-card.component';
 
 @Component({

@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { RvType, RV_TYPES } from './search-results/mock-listings.data';
+import { RvType, RV_TYPES } from './listings/mock-listings.data';
 
 export const MY_RV_KEY = 'cnt-my-rv';
 

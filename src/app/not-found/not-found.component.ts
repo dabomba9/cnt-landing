@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-not-found',

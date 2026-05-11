@@ -1,13 +1,12 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { Message, MessageAuthor, Thread } from './message.types';
-import { Booking, BookingStatus } from '../booking/booking.types';
+import { Message, MessageAuthor, Thread, Booking, BookingStatus } from '@cnt-workspace/models';
 import { BookingService } from '../booking/booking.service';
 import { AuthService, PublicUser } from '../auth/auth.service';
-import { ToastService } from '../toast.service';
-import { getListingDetail, MOCK_LISTINGS } from '../search-results/mock-listings.data';
-import { getMyListings, getPendingRequests, HostRequest } from '../host-dashboard/mock-host-data';
+import { ToastService } from '../toast/toast.service';
+import { getListingDetail, MOCK_LISTINGS } from '../listings/mock-listings.data';
+import { getMyListings, getPendingRequests, HostRequest } from '../host/mock-host-data';
 
 const THREADS_KEY = 'cnt-messages';
 const REPLY_DELAY_MS = 10_000;

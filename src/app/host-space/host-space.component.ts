@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HomeLocationsComponent } from '../home/components/home-locations/home-locations.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 import { FooterComponent } from '../footer/footer.component';
 import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
 import { gsap } from 'gsap';

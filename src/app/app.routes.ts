@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { authGuard } from './auth/auth.guard';
+import { authGuard } from '@cnt-workspace/data-access';
 
 export const appRoutes: Route[] = [
   { path: '', component: HomeComponent },

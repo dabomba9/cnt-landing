@@ -10,7 +10,7 @@ import { HomeLocationsComponent } from './components/home-locations/home-locatio
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
 import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';
 import { HomeHeroComponent } from './components/home-hero/home-hero.component';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

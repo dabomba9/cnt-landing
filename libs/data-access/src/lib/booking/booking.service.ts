@@ -1,8 +1,8 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Booking } from './booking.types';
-import { ToastService } from '../toast.service';
+import { Booking } from '@cnt-workspace/models';
+import { ToastService } from '../toast/toast.service';
 
 const BOOKINGS_KEY = 'cnt-bookings';
 /** Demo wait time before a request-to-book gets a host decision. */

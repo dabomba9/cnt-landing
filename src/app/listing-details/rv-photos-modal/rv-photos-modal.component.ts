@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MyRv } from '../../my-rv.util';
-import { ToastService } from '../../toast.service';
+import { MyRv } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 type Step = 1 | 2;

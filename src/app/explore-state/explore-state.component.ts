@@ -6,12 +6,12 @@ import { Subscription } from 'rxjs';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { ListingCardComponent } from '../listing-card/listing-card.component';
-import { SeoService } from '../seo.service';
+import { SeoService } from '@cnt-workspace/data-access';
 import {
   Category,
   CATEGORY_META,
   Listing,
-} from '../search-results/mock-listings.data';
+} from '@cnt-workspace/data-access';
 import { listingsInState, SLUG_TO_NAME } from '../state.util';
 import { STATE_CONTENT, StateContent } from './state-content.data';
 

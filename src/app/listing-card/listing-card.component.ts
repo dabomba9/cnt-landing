@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Listing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '../search-results/mock-listings.data';
+import { Listing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-listing-card',

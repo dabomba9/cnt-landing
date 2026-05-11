@@ -1,9 +1,9 @@
 import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { Booking } from '../../../booking/booking.types';
-import { PublicUser } from '../../../auth/auth.service';
-import { MyRv, hasMyRvPhotos } from '../../../my-rv.util';
+import { Booking } from '@cnt-workspace/models';
+import { PublicUser } from '@cnt-workspace/data-access';
+import { MyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 
 interface PrepItem {
   key: 'verified' | 'rvphotos' | 'calendar' | 'contacted';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing } from '../../search-results/mock-listings.data';
+import { Listing } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
 /**

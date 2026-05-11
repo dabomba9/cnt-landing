@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { AuthService, PublicUser, AppView } from '../auth/auth.service';
-import { ToastService } from '../toast.service';
-import { MessageService } from '../messaging/message.service';
+import { AuthService, PublicUser, AppView } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
+import { MessageService } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 
 @Component({

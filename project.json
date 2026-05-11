@@ -21,12 +21,18 @@
           "./src/robots.txt",
           "./src/sitemap.xml",
           "./src/assets",
-          { "glob": "**/*", "input": "cnt-theme/images", "output": "/images" },
-          { "glob": "**/*", "input": "cnt-theme/fonts", "output": "/fonts" }
+          {
+            "glob": "**/*",
+            "input": "cnt-theme/images",
+            "output": "/images"
+          },
+          {
+            "glob": "**/*",
+            "input": "cnt-theme/fonts",
+            "output": "/fonts"
+          }
         ],
-        "styles": [
-          "./src/styles.scss"
-        ],
+        "styles": ["./src/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -84,7 +90,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectName}"],
       "options": {
-        "jestConfig": "jest.config.ts"
+        "jestConfig": "jest.config.app.ts"
       }
     },
     "serve-static": {

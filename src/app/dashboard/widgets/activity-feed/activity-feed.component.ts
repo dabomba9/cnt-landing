@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking } from '../../../booking/booking.types';
-import { PublicUser } from '../../../auth/auth.service';
+import { Booking } from '@cnt-workspace/models';
+import { PublicUser } from '@cnt-workspace/data-access';
 
 interface ActivityEvent {
   icon: string;

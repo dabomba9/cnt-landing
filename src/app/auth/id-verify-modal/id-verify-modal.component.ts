@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ViewChildren, QueryList, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, IdType } from '../auth.service';
-import { ToastService } from '../../toast.service';
+import { AuthService, IdType } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 interface IdOption {

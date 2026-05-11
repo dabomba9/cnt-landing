@@ -1,6 +1,23 @@
 {
   "permissions": {
     "allow": [
+      "Edit(/Users/dustinreed/projects/cnt-landing/**)",
+      "Write(/Users/dustinreed/projects/cnt-landing/**)",
+      "MultiEdit(/Users/dustinreed/projects/cnt-landing/**)",
+      "Bash(git mv *)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(mkdir *)",
+      "Bash(rm -rf libs/*)",
+      "Bash(rm libs/*)",
+      "Bash(npx nx *)",
+      "Bash(npx nx g *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(find *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
       "Bash(npx nx:*)",
       "Bash(lsof -ti:4200)",
       "Read(//tmp/**)",
@@ -9,7 +26,24 @@
       "Bash(python3 -c \"import sys; content = sys.stdin.read\\(\\); print\\(f''''Total length: {len\\(content\\)} characters''''\\); print\\(content\\)\")",
       "WebFetch(domain:cnt-website.webflow.io)",
       "Bash(kill 18322 30428)",
-      "Bash(grep -oE 'sticky.content[^;]{0,300}')"
+      "Bash(grep -oE 'sticky.content[^;]{0,300}')",
+      "Bash(npx http-server *)",
+      "Bash(pkill -f http-server)",
+      "Bash(./node_modules/.bin/nx build *)",
+      "Bash(git commit -m ' *)",
+      "Bash(awk '/^\\\\.__TRACKED_VAR__ *\\\\{/,/^}/' cnt-theme/css/cnt-theme.css)",
+      "Bash(awk ' *)",
+      "Bash(node -e ' *)",
+      "Bash(grep \"\\\\.html$\")",
+      "Bash(awk '/^export const RAW_LISTINGS|^export const MOCK_LISTINGS/{flag=1} flag && /lat:/{count++} END{print \"listings with lat:\", count}' /Users/dustinreed/projects/cnt-landing/src/app/search-results/mock-listings.data.ts)",
+      "Bash(grep -cE \"^  \\\\{ id:[0-9]+,.*lat:\" /Users/dustinreed/projects/cnt-landing/src/app/search-results/mock-listings.data.ts)",
+      "Bash(grep -cE \"^  \\\\{ id:[0-9]+,\" /Users/dustinreed/projects/cnt-landing/src/app/search-results/mock-listings.data.ts)",
+      "Bash(grep -nE \"^a\\\\s*\\\\{|^[ ]+a\\\\s*\\\\{|^a,|^a:\" /Users/dustinreed/projects/cnt-landing/src/styles.scss)"
+    ],
+    "additionalDirectories": [
+      "/tmp",
+      "/Users/dustinreed/projects/cnt-landing/src/app/auth",
+      "/Users/dustinreed/projects/cnt-landing/src/app/booking"
     ]
   }
 }

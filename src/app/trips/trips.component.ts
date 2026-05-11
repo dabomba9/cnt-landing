@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
-import { SeoService } from '../seo.service';
-import { AuthService } from '../auth/auth.service';
-import { BookingService } from '../booking/booking.service';
-import { Booking, STATUS_META } from '../booking/booking.types';
+import { SeoService } from '@cnt-workspace/data-access';
+import { AuthService } from '@cnt-workspace/data-access';
+import { BookingService } from '@cnt-workspace/data-access';
+import { Booking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
 
