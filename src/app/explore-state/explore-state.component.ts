@@ -3,9 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { NavbarComponent } from '../navbar/navbar.component';
-import { FooterComponent } from '../footer/footer.component';
-import { ListingCardComponent } from '../listing-card/listing-card.component';
+import { NavbarComponent } from '@cnt-workspace/ui';
+import { FooterComponent } from '@cnt-workspace/ui';
+import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import {
   Category,

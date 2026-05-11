@@ -3,10 +3,10 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HomeLocationsComponent } from '../home/components/home-locations/home-locations.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { NavbarComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
-import { FooterComponent } from '../footer/footer.component';
-import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
+import { FooterComponent } from '@cnt-workspace/ui';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 

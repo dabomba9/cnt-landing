@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Listing, Review, getListingDetail } from '@cnt-workspace/data-access';
-import { ReviewCardComponent } from '../../../review-card/review-card.component';
+import { ReviewCardComponent } from '@cnt-workspace/ui';
 
 interface RecentReview {
   review: Review;

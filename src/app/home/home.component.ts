@@ -2,10 +2,10 @@ import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID, HostL
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import { FooterComponent } from '../footer/footer.component';
-import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { FooterComponent } from '@cnt-workspace/ui';
+import { CinematicRollDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { NavbarComponent } from '@cnt-workspace/ui';
 import { HomeLocationsComponent } from './components/home-locations/home-locations.component';
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
 import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';

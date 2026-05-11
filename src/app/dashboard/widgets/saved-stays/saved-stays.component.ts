@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Listing } from '@cnt-workspace/data-access';
-import { ListingCardComponent } from '../../../listing-card/listing-card.component';
+import { ListingCardComponent } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-saved-stays',

@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
-import { ToastHostComponent } from './toast-host/toast-host.component';
+import { ToastHostComponent } from '@cnt-workspace/ui';
 
 @Component({
   standalone: true,

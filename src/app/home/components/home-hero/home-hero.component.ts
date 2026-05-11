@@ -4,7 +4,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MagneticBtnDirective } from '../../../directives/magnetic-btn.directive';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 

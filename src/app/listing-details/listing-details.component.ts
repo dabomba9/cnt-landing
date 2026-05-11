@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { FooterComponent } from '../footer/footer.component';
-import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
+import { NavbarComponent } from '@cnt-workspace/ui';
+import { FooterComponent } from '@cnt-workspace/ui';
+import { CinematicRollDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import {
   MOCK_LISTINGS, Listing, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
@@ -20,9 +20,9 @@ import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-li
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
 import { RvPhotosModalComponent } from './rv-photos-modal/rv-photos-modal.component';
-import { ListingCardComponent } from '../listing-card/listing-card.component';
-import { ReviewCardComponent } from '../review-card/review-card.component';
-import { AccordionCardComponent } from '../accordion-card/accordion-card.component';
+import { ListingCardComponent } from '@cnt-workspace/ui';
+import { ReviewCardComponent } from '@cnt-workspace/ui';
+import { AccordionCardComponent } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-workspace-listing-details',

@@ -17,7 +17,8 @@
     "paths": {
       "@cnt-workspace/data-access": ["libs/data-access/src/index.ts"],
       "@cnt-workspace/helpers": ["libs/helpers/src/index.ts"],
-      "@cnt-workspace/models": ["libs/shared/models/src/index.ts"]
+      "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
+      "@cnt-workspace/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { CinematicRollDirective } from '../../../directives/cinematic-roll.directive';
+import { CinematicRollDirective } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-home-locations',

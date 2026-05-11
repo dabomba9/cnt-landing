@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID, Eleme
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../navbar/navbar.component';
-import { FooterComponent } from '../../footer/footer.component';
+import { NavbarComponent } from '@cnt-workspace/ui';
+import { FooterComponent } from '@cnt-workspace/ui';
 import { MiniMapComponent } from '../mini-map/mini-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';

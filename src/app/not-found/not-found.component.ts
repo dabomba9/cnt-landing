@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { FooterComponent } from '../footer/footer.component';
+import { NavbarComponent } from '@cnt-workspace/ui';
+import { FooterComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 
 @Component({

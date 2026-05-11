@@ -4,8 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { CinematicRollDirective } from '@cnt-workspace/ui';
+import { NavbarComponent } from '@cnt-workspace/ui';
 import { SearchMapComponent } from './search-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -15,7 +15,7 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
 } from '@cnt-workspace/data-access';
 import { readMyRv, writeMyRv } from '@cnt-workspace/data-access';
-import { ListingCardComponent } from '../listing-card/listing-card.component';
+import { ListingCardComponent } from '@cnt-workspace/ui';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
 

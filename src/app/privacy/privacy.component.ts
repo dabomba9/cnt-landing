@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { FooterComponent } from '../footer/footer.component';
-import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { MagneticBtnDirective } from '../directives/magnetic-btn.directive';
+import { NavbarComponent } from '@cnt-workspace/ui';
+import { FooterComponent } from '@cnt-workspace/ui';
+import { CinematicRollDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 

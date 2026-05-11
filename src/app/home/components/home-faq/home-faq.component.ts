@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MagneticBtnDirective } from '../../../directives/magnetic-btn.directive';
+import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
