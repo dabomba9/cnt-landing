@@ -8,3 +8,4 @@ export * from './lib/accordion-card/accordion-card.component';
 export * from './lib/directives/cinematic-roll.directive';
 export * from './lib/directives/magnetic-btn.directive';
 export * from './lib/home-locations/home-locations.component';
+export * from './lib/map-config';

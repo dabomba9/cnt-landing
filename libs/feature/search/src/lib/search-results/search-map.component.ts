@@ -8,7 +8,7 @@ import 'leaflet.markercluster';
 import { Listing, CATEGORY_META } from '@cnt-workspace/data-access';
 import {
   TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
-} from './map-config';
+} from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-search-map',

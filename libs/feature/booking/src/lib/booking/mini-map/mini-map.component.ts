@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ViewChild, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
-import { TILE_URL, TILE_ATTRIBUTION } from '../../search-results/map-config';
+import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-mini-map',

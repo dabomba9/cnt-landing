@@ -15,17 +15,17 @@ export const appRoutes: Route[] = [
   {
     path: 'booking/review',
     canActivate: [authGuard],
-    loadComponent: () => import('./booking/review/booking-review.component').then(m => m.BookingReviewComponent),
+    loadComponent: () => import('@cnt-workspace/booking').then(m => m.BookingReviewComponent),
   },
   {
     path: 'booking/confirm/:id',
     canActivate: [authGuard],
-    loadComponent: () => import('./booking/confirm/booking-confirm.component').then(m => m.BookingConfirmComponent),
+    loadComponent: () => import('@cnt-workspace/booking').then(m => m.BookingConfirmComponent),
   },
   {
     path: 'trips',
     canActivate: [authGuard],
-    loadComponent: () => import('./trips/trips.component').then(m => m.TripsComponent),
+    loadComponent: () => import('@cnt-workspace/trips').then(m => m.TripsComponent),
   },
   {
     path: 'inbox',
@@ -51,12 +51,12 @@ export const appRoutes: Route[] = [
   {
     path: 'search',
     loadComponent: () =>
-      import('./search-results/search-results.component').then(m => m.SearchResultsComponent),
+      import('@cnt-workspace/search').then(m => m.SearchResultsComponent),
   },
   {
     path: 'listing',
     loadComponent: () =>
-      import('./listing-details/listing-details.component').then(m => m.ListingDetailsComponent),
+      import('@cnt-workspace/listing').then(m => m.ListingDetailsComponent),
   },
   {
     path: 'host',
