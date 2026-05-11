@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { HomeLocationsComponent } from '../home/components/home-locations/home-locations.component';
+import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';

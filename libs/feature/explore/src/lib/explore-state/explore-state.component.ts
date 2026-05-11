@@ -12,7 +12,7 @@ import {
   CATEGORY_META,
   Listing,
 } from '@cnt-workspace/data-access';
-import { listingsInState, SLUG_TO_NAME } from '../state.util';
+import { listingsInState, SLUG_TO_NAME } from '@cnt-workspace/data-access';
 import { STATE_CONTENT, StateContent } from './state-content.data';
 
 interface CategoryPill {

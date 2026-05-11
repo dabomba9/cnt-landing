@@ -15,8 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@cnt-workspace/auth": ["libs/feature/auth/src/index.ts"],
+      "@cnt-workspace/content": ["libs/feature/content/src/index.ts"],
       "@cnt-workspace/data-access": ["libs/data-access/src/index.ts"],
+      "@cnt-workspace/explore": ["libs/feature/explore/src/index.ts"],
       "@cnt-workspace/helpers": ["libs/helpers/src/index.ts"],
+      "@cnt-workspace/home": ["libs/feature/home/src/index.ts"],
+      "@cnt-workspace/host-space": ["libs/feature/host-space/src/index.ts"],
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
       "@cnt-workspace/ui": ["libs/ui/src/index.ts"]
     }

@@ -7,3 +7,4 @@ export * from './lib/seo/seo.service';
 export * from './lib/listings/mock-listings.data';
 export * from './lib/host/mock-host-data';
 export * from './lib/my-rv.util';
+export * from './lib/state.util';

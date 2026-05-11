@@ -6,7 +6,7 @@ import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { IdVerifyModalComponent } from '../../auth/id-verify-modal/id-verify-modal.component';
+import { IdVerifyModalComponent } from '@cnt-workspace/auth';
 import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, PublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';

@@ -6,7 +6,7 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
-import { HomeLocationsComponent } from './components/home-locations/home-locations.component';
+import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
 import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';
 import { HomeHeroComponent } from './components/home-hero/home-hero.component';
