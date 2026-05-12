@@ -5,11 +5,11 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
-import { ToastHostComponent } from '@cnt-workspace/ui';
+import { ToastHostComponent, BottomNavComponent } from '@cnt-workspace/ui';
 
 @Component({
   standalone: true,
-  imports: [RouterModule, ToastHostComponent],
+  imports: [RouterModule, ToastHostComponent, BottomNavComponent],
   selector: 'cnt-workspace-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

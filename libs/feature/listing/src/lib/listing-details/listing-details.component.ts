@@ -110,11 +110,16 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   private readonly SCROLL_DEBOUNCE_MS = 80;
   private readonly REVEAL_TOP_PX = 200;
 
+  /** True once user has scrolled past the hero photo block (~600px in). */
+  stickyTitleVisible = false;
+  private readonly STICKY_TITLE_THRESHOLD = 600;
+
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     const y = window.scrollY;
     const now = performance.now();
+    this.stickyTitleVisible = y > this.STICKY_TITLE_THRESHOLD;
     if (y < this.REVEAL_TOP_PX) {
       if (this.navHidden) this.navHidden = false;
       this.lastScrollY = y;

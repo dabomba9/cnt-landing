@@ -73,6 +73,9 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // Filter UI state
   openPill: FilterPill = null;
+  allFiltersOpen = false;
+  toggleAllFilters(): void { this.allFiltersOpen = !this.allFiltersOpen; }
+  closeAllFilters(): void { this.allFiltersOpen = false; }
   showMobileMap = false;
   viewMode: 'split' | 'map-only' = 'split';
   private readonly VIEW_MODE_KEY = 'cnt-search-view-mode';

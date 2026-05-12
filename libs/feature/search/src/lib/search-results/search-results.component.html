@@ -306,6 +306,16 @@
           }
         </div>
 
+        <!-- All filters trigger — Airbnb-style sheet -->
+        <button type="button" (click)="toggleAllFilters()"
+          class="cnt-pill cnt-pill-inactive">
+          <span class="material-symbols-outlined text-base">tune</span>
+          <span class="font-button">All filters</span>
+          @if (activeFilterCount > 0) {
+            <span class="ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.6rem] font-button font-bold">{{ activeFilterCount }}</span>
+          }
+        </button>
+
       </div>
     </div>
 
@@ -430,3 +440,123 @@
   </div>
   </div>
 </main>
+
+<!-- All filters sheet (Airbnb-style) -->
+@if (allFiltersOpen) {
+  <div class="fixed inset-0 z-[10000] flex" role="dialog" aria-modal="true" aria-labelledby="all-filters-title">
+    <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeAllFilters()"></div>
+    <div class="relative ml-auto bg-white w-full lg:max-w-md h-full flex flex-col shadow-[0_24px_48px_rgba(0,0,0,0.2)]">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-dark-text/8">
+        <h2 id="all-filters-title" class="font-headline font-bold text-dark-text text-lg">All filters</h2>
+        <button type="button" (click)="closeAllFilters()" class="w-9 h-9 rounded-full inline-flex items-center justify-center hover:bg-cream/60" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="flex-1 overflow-y-auto px-5 py-5 space-y-7">
+        <!-- Quick toggles -->
+        <div>
+          <div class="text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-3">Quick filters</div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" (click)="toggleInstantBookFilter()"
+              [ngClass]="filters.instantBookOnly ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/20 hover:border-trinidad'"
+              class="px-3 py-1.5 rounded-full border text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold transition-colors inline-flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">bolt</span>
+              Instant Book
+            </button>
+            <button type="button" (click)="togglePetsFilter()"
+              [ngClass]="filters.amenities.has('pets') ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/20 hover:border-trinidad'"
+              class="px-3 py-1.5 rounded-full border text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold transition-colors inline-flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">pets</span>
+              Pets
+            </button>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div>
+          <div class="text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-3">Price per night</div>
+          <div class="flex items-center gap-3">
+            <label class="flex-1 flex flex-col gap-1.5">
+              <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Min</span>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
+                <input type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onPriceChange()" [min]="PRICE_RANGE.min" [max]="filters.maxPrice"
+                  class="w-full bg-cream/60 border border-dark-text/15 rounded-md pl-7 pr-3 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad">
+              </div>
+            </label>
+            <span class="text-muted-text mt-5">—</span>
+            <label class="flex-1 flex flex-col gap-1.5">
+              <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Max</span>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-trinidad font-bold">$</span>
+                <input type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onPriceChange()" [min]="filters.minPrice" [max]="PRICE_RANGE.max"
+                  class="w-full bg-cream/60 border border-dark-text/15 rounded-md pl-7 pr-3 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad">
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Guests -->
+        <div>
+          <div class="text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-3">Guests</div>
+          <div class="flex items-center justify-between p-4 rounded-md bg-cream/40 border border-dark-text/8">
+            <div class="text-sm font-body text-dark-text">Party size</div>
+            <div class="flex items-center gap-3">
+              <button type="button" (click)="stepGuests(-1)" [disabled]="filters.guests <= 0"
+                class="w-9 h-9 rounded-full border border-dark-text/15 flex items-center justify-center hover:border-trinidad disabled:opacity-40">
+                <span class="material-symbols-outlined text-base">remove</span>
+              </button>
+              <span class="font-headline font-bold text-dark-text text-base w-10 text-center">{{ filters.guests || 'Any' }}</span>
+              <button type="button" (click)="stepGuests(1)"
+                class="w-9 h-9 rounded-full border border-dark-text/15 flex items-center justify-center hover:border-trinidad">
+                <span class="material-symbols-outlined text-base">add</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RV type -->
+        <div>
+          <div class="text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-3">RV type</div>
+          <div class="grid grid-cols-4 gap-2">
+            @for (t of RV_TYPES; track t.id) {
+              <button type="button" (click)="selectRvType(t.id)"
+                [ngClass]="filters.rvType === t.id ? 'bg-trinidad/10 border-trinidad text-trinidad' : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
+                class="border rounded-md p-2.5 flex flex-col items-center gap-1 transition-colors">
+                <img [src]="t.image" [alt]="t.label" class="h-8 w-auto object-contain">
+                <span class="text-[0.55rem] font-label uppercase tracking-[0.05em] font-bold leading-tight text-center">{{ t.label }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div>
+          <div class="text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-3">Amenities</div>
+          <div class="flex flex-wrap gap-2">
+            @for (a of AMENITY_GROUP; track a) {
+              <button type="button" (click)="toggleAmenity(a)"
+                [ngClass]="isAmenitySelected(a) ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/20 hover:border-trinidad'"
+                class="px-3 py-1.5 rounded-full border text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold transition-colors">
+                {{ AMENITY_LABELS[a] }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky footer -->
+      <div class="border-t border-dark-text/8 px-5 py-4 flex items-center justify-between gap-3 bg-white">
+        <button type="button" (click)="clearAllFilters()"
+          class="text-sm font-body font-bold text-dark-text underline underline-offset-4 hover:text-trinidad">Clear all</button>
+        <button type="button" (click)="closeAllFilters()"
+          class="px-6 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+          Show {{ filteredListings.length }} {{ filteredListings.length === 1 ? 'stay' : 'stays' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
