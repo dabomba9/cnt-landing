@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent, ListingCardComponent } from '@cnt-workspace/ui';
-import { Listing, MOCK_LISTINGS, SeoService, ToastService } from '@cnt-workspace/data-access';
+import { IListing, MOCK_LISTINGS, SeoService, ToastService } from '@cnt-workspace/data-access';
 
 const FAV_KEY = 'cnt-favorites';
 
@@ -40,7 +40,7 @@ export class WishlistsComponent implements OnInit {
     } catch { this.favoriteIds = new Set(); }
   }
 
-  get listings(): Listing[] {
+  get listings(): IListing[] {
     return MOCK_LISTINGS.filter(l => this.favoriteIds.has(l.id));
   }
 

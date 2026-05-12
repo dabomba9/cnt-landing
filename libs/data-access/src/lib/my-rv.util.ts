@@ -3,7 +3,7 @@ import { RvType, RV_TYPES } from './listings/mock-listings.data';
 
 export const MY_RV_KEY = 'cnt-my-rv';
 
-export interface MyRv {
+export interface IMyRv {
   type: RvType | null;
   length: number | null;   // feet
   height: number | null;
@@ -18,16 +18,16 @@ export interface MyRv {
   licensePhoto: string | null;
 }
 
-export function emptyMyRv(): MyRv {
+export function emptyMyRv(): IMyRv {
   return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null };
 }
 
-export function readMyRv(platformId: Object): MyRv {
+export function readMyRv(platformId: Object): IMyRv {
   if (!isPlatformBrowser(platformId)) return emptyMyRv();
   try {
     const raw = localStorage.getItem(MY_RV_KEY);
     if (!raw) return emptyMyRv();
-    const parsed = JSON.parse(raw) as Partial<MyRv>;
+    const parsed = JSON.parse(raw) as Partial<IMyRv>;
     return {
       type: parsed.type ?? null,
       length: typeof parsed.length === 'number' ? parsed.length : null,
@@ -45,7 +45,7 @@ export function readMyRv(platformId: Object): MyRv {
   }
 }
 
-export function writeMyRv(platformId: Object, rv: MyRv): void {
+export function writeMyRv(platformId: Object, rv: IMyRv): void {
   if (!isPlatformBrowser(platformId)) return;
   const isEmpty = !rv.type && !rv.length && !rv.height && !rv.width && !rv.year && !rv.make && !rv.model && !rv.licensePlate && !rv.rvPhoto && !rv.licensePhoto;
   if (isEmpty) {
@@ -56,17 +56,17 @@ export function writeMyRv(platformId: Object, rv: MyRv): void {
     localStorage.setItem(MY_RV_KEY, JSON.stringify(rv));
   } catch {
     // Likely QuotaExceeded from a large photo data URL — fall back to specs only.
-    const specsOnly: MyRv = { ...rv, rvPhoto: null, licensePhoto: null };
+    const specsOnly: IMyRv = { ...rv, rvPhoto: null, licensePhoto: null };
     localStorage.setItem(MY_RV_KEY, JSON.stringify(specsOnly));
   }
 }
 
-export function isMyRvSet(rv: MyRv): boolean {
+export function isMyRvSet(rv: IMyRv): boolean {
   return !!(rv.type || rv.length || rv.height || rv.width || rv.year || rv.make || rv.model || rv.licensePlate);
 }
 
 /** True when both required photos are attached to the My RV profile. */
-export function hasMyRvPhotos(rv: MyRv): boolean {
+export function hasMyRvPhotos(rv: IMyRv): boolean {
   return !!(rv.rvPhoto && rv.licensePhoto);
 }
 

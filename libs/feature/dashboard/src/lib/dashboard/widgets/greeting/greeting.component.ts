@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { PublicUser } from '@cnt-workspace/data-access';
+import { IPublicUser } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-dashboard-greeting',
@@ -46,7 +46,7 @@ import { PublicUser } from '@cnt-workspace/data-access';
   `,
 })
 export class DashboardGreetingComponent {
-  @Input() user: PublicUser | null = null;
+  @Input() user: IPublicUser | null = null;
   @Input() verified = false;
   @Input() memberSince?: string;
   @Output() switchView = new EventEmitter<void>();

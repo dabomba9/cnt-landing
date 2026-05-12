@@ -81,7 +81,7 @@ export const RV_TYPES: { id: RvType; label: string; image: string }[] = [
   { id: 'popup',           label: 'Popup Camper',    image: 'assets/images/Popup_CNT.svg' },
 ];
 
-export interface Listing {
+export interface IListing {
   id: number;
   title: string;
   location: string;
@@ -117,7 +117,7 @@ const A = {
   offgrid:  ['back-in','campfires','cell-coverage','pets','tents-allowed'] as Amenity[],
 };
 
-const RAW_LISTINGS: Omit<Listing, 'reviewCount' | 'instantBook'>[] = [
+const RAW_LISTINGS: Omit<IListing, 'reviewCount' | 'instantBook'>[] = [
   // California — wine country & coast
   { id:1,  title:'Heritage Oak Vineyard',     location:'St. Helena, CA',     lat:38.5052, lng:-122.4724, price:125, rating:4.9, category:'vineyard',   amenities:[...A.vineyard,'hot-tub'],         image:IMG.vineyard },
   { id:2,  title:'Whispering Pines Winery',   location:'Healdsburg, CA',     lat:38.6102, lng:-122.8694, price:95,  rating:4.7, category:'vineyard',   amenities:A.vineyard,                        image:IMG.vineyard },
@@ -231,7 +231,7 @@ const RAW_LISTINGS: Omit<Listing, 'reviewCount' | 'instantBook'>[] = [
 
 // Deterministic review count + instant-book flag derived from id so mock data is stable across reloads.
 // id=1 (Heritage Oak) is force-true; about 60% of others are instant-bookable.
-export const MOCK_LISTINGS: Listing[] = RAW_LISTINGS.map(l => ({
+export const MOCK_LISTINGS: IListing[] = RAW_LISTINGS.map(l => ({
   ...l,
   reviewCount: ((l.id * 17 + 23) % 380) + 12,
   instantBook: l.id === 1 ? true : ((l.id * 11 + 7) % 10) < 6,
@@ -270,7 +270,7 @@ export const BEST_VALUE_IDS: Set<number> = (() => {
 // LISTING DETAIL — extended fields for /listing detail page
 // =============================================================================
 
-export interface Host {
+export interface IHost {
   name: string;
   initials: string;
   avatar: string;          // image URL — photo of the host or a relevant scene
@@ -288,7 +288,7 @@ export const CANCELLATION_TIER_META: Record<CancellationTier, { label: string; s
   'exclusive':  { label: 'Exclusive',   summary: 'Non-refundable. No refunds for cancellations.',            color: '#A541A1' },
 };
 
-export interface Review {
+export interface IReview {
   authorName: string;
   authorInitials: string;
   date: string;            // "March 2026"
@@ -296,7 +296,7 @@ export interface Review {
   text: string;
 }
 
-export interface SubScores {
+export interface ISubScores {
   cleanliness: number;
   communication: number;
   hookups: number;
@@ -323,7 +323,7 @@ export const NEARBY_META: Record<NearbyType, { label: string; icon: string }> = 
   'restaurant':  { label: 'Restaurant',    icon: 'restaurant' },
 };
 
-export interface NearbyPoi {
+export interface INearbyPoi {
   type: NearbyType;
   name: string;
   distance: string;        // "0.8 mi"
@@ -360,12 +360,12 @@ export const CLEARANCE_META: Record<SlideoutClearance, { label: string }> = {
   'open':     { label: 'Open — slides clear' },
 };
 
-export interface ListingFaq {
+export interface IListingFaq {
   q: string;
   a: string;
 }
 
-export interface AddOn {
+export interface IAddOn {
   id: string;
   label: string;
   description: string;
@@ -374,7 +374,7 @@ export interface AddOn {
   unit: 'per stay' | 'per night' | 'per person';
 }
 
-export interface SiteSpecs {
+export interface ISiteSpecs {
   padType: PadType;
   padLength: number;        // feet
   maxRigLength: number;     // feet
@@ -386,26 +386,26 @@ export interface SiteSpecs {
   slideoutClearance: SlideoutClearance;
 }
 
-export interface ListingDetail {
+export interface IListingDetail {
   description: string;
-  host: Host;
+  host: IHost;
   photos: string[];
   houseRules: string[];
   cancellationTier: CancellationTier;
   maxGuests: number;        // e.g. 4 — total guests the site can accommodate
   maxStayNights: number;    // e.g. 14 — longest reservation allowed
-  subScores: SubScores;
-  reviews: Review[];
-  nearby: NearbyPoi[];
+  subScores: ISubScores;
+  reviews: IReview[];
+  nearby: INearbyPoi[];
   trustBadges: TrustBadge[];
   /** ISO YYYY-MM-DD strings — dates already booked / unavailable. */
   unavailableDates: string[];
-  siteSpecs: SiteSpecs;
-  addOns: AddOn[];
-  faqs: ListingFaq[];
+  siteSpecs: ISiteSpecs;
+  addOns: IAddOn[];
+  faqs: IListingFaq[];
 }
 
-const HOST_POOL: Pick<Host, 'name' | 'initials'>[] = [
+const HOST_POOL: Pick<IHost, 'name' | 'initials'>[] = [
   { name: 'Aaron R.',     initials: 'AR' },
   { name: 'Jenna M.',     initials: 'JM' },
   { name: 'Mike T.',      initials: 'MT' },
@@ -486,7 +486,7 @@ const HOST_BIOS: Record<Category, string> = {
   offgrid:     'Bought this land twenty years ago and has spent every weekend since making it the kind of quiet you can\'t buy in town. Hosts because the right people deserve to find it.',
 };
 
-const REVIEW_POOL: Pick<Review, 'authorName' | 'authorInitials' | 'text'>[] = [
+const REVIEW_POOL: Pick<IReview, 'authorName' | 'authorInitials' | 'text'>[] = [
   { authorName: 'Jamie & Pat',   authorInitials: 'JP', text: "Beautiful spot. Hookups were spotless, host left a handwritten welcome note, and the views at sunset were the kind you don't get at a campground. Already booked again." },
   { authorName: 'Renee K.',      authorInitials: 'RK', text: "Easily one of our favorite stays of the trip. Quiet, clean, and the host was around when we needed her and invisible when we didn't. Exactly what we look for." },
   { authorName: 'Doug M.',       authorInitials: 'DM', text: "Pull-through was generous, 50 amp held strong, and the WiFi reached the dinette. Host gave us a tip on a back road that saved us 40 minutes. Highly recommend." },
@@ -497,7 +497,7 @@ const REVIEW_POOL: Pick<Review, 'authorName' | 'authorInitials' | 'text'>[] = [
   { authorName: 'Priya S.',      authorInitials: 'PS', text: "Communication was top-notch from booking to checkout. Host responded within minutes every time. Would book again in a heartbeat." },
 ];
 
-const NEARBY_POOL: NearbyPoi[] = [
+const NEARBY_POOL: INearbyPoi[] = [
   { type: 'gas',        name: 'Shell',                   distance: '1.2 mi' },
   { type: 'grocery',    name: 'Country Market',          distance: '2.4 mi' },
   { type: 'dump',       name: 'Public dump station',     distance: '3.8 mi' },
@@ -505,14 +505,14 @@ const NEARBY_POOL: NearbyPoi[] = [
   { type: 'attraction', name: 'State park trailhead',    distance: '4.5 mi' },
 ];
 
-const COMMON_ADDONS: AddOn[] = [
+const COMMON_ADDONS: IAddOn[] = [
   { id: 'early-checkin',  label: 'Early check-in (12 PM)',   description: 'Arrive 2 hours earlier than standard.',           icon: 'login',         price: 25, unit: 'per stay' },
   { id: 'late-checkout',  label: 'Late check-out (1 PM)',    description: 'Stay 2 hours longer on departure day.',           icon: 'logout',        price: 25, unit: 'per stay' },
   { id: 'extra-vehicle',  label: 'Extra vehicle',            description: 'Bring a second vehicle (towable or otherwise).',  icon: 'directions_car',price: 15, unit: 'per night' },
   { id: 'pet-fee',        label: 'Pet fee',                  description: 'Up to two well-behaved pets.',                    icon: 'pets',          price: 20, unit: 'per stay' },
 ];
 
-const ADDONS_BY_CATEGORY: Record<Category, AddOn[]> = {
+const ADDONS_BY_CATEGORY: Record<Category, IAddOn[]> = {
   vineyard: [
     { id: 'tasting-flight',  label: 'Tasting flight',         description: 'Five-pour tasting at the cellar door.',           icon: 'wine_bar',      price: 45, unit: 'per person' },
     { id: 'cheese-board',    label: 'Cheese & charcuterie',   description: 'Local cheese, cured meats, and a fresh baguette.',icon: 'restaurant',    price: 35, unit: 'per stay' },
@@ -540,7 +540,7 @@ const ADDONS_BY_CATEGORY: Record<Category, AddOn[]> = {
   ],
 };
 
-const FAQS_BY_CATEGORY: Record<Category, ListingFaq[]> = {
+const FAQS_BY_CATEGORY: Record<Category, IListingFaq[]> = {
   vineyard: [
     { q: 'Can I taste wine on-site?', a: 'Yes — the tasting room is a short walk from the RV pad and welcomes guests during posted hours. Some hosts include a complimentary pour; others offer a discounted flight.' },
     { q: 'Is there cell service?', a: 'Coverage varies by carrier. Most guests report reliable 4G/LTE on at least one major network; the host will share specifics in your arrival message.' },
@@ -574,7 +574,7 @@ const FAQS_BY_CATEGORY: Record<Category, ListingFaq[]> = {
 };
 
 // Hand-authored detail for the marquee listing (id=1, Heritage Oak Vineyard).
-const HERITAGE_OAK_DETAIL: ListingDetail = {
+const HERITAGE_OAK_DETAIL: IListingDetail = {
   description: `Heritage Oak Vineyard has been growing Cabernet, Merlot, and Petite Sirah on the same hillside outside St. Helena since 1979. We host two RV sites year-round — both with full hookups, both shaded by the namesake oak — and we treat every guest the way we treat the people who pour our wine.
 
 You'll be steps from the production barn, a five-minute walk from the tasting room, and a short drive from Calistoga, Yountville, and the Oakville Grocery for everything in between. Mornings here are quiet — fog off the valley floor, herons on the pond. Afternoons are for tasting flights or a swim. Evenings end with whatever you've poured into one of the patio tumblers we leave for guests.
@@ -669,7 +669,7 @@ We're available all weekend and during business hours weekdays; outside that, yo
  * hand-authored content; everything else is generated deterministically from
  * the listing's id, category, and location so each page feels complete.
  */
-export function getListingDetail(listing: Listing): ListingDetail {
+export function getListingDetail(listing: IListing): IListingDetail {
   if (listing.id === 1) return HERITAGE_OAK_DETAIL;
 
   const hostBase = HOST_POOL[listing.id % HOST_POOL.length];
@@ -710,7 +710,7 @@ export function getListingDetail(listing: Listing): ListingDetail {
   };
 }
 
-function generateSiteSpecs(listing: Listing): SiteSpecs {
+function generateSiteSpecs(listing: IListing): ISiteSpecs {
   const padTypes: PadType[]   = ['gravel', 'grass', 'concrete', 'dirt'];
   const leveling: Leveling[]  = ['level', 'mostly-level', 'needs-blocks'];
   const sewers: SewerType[]   = ['full-hookup', 'dump-station', 'none'];
@@ -767,7 +767,7 @@ function generateUnavailableDates(id: number): string[] {
   return Array.from(out);
 }
 
-function generateSubScores(listing: Listing): SubScores {
+function generateSubScores(listing: IListing): ISubScores {
   // Sub-scores cluster around the listing's overall rating, with small deterministic deltas.
   const base = listing.rating;
   const jitter = (seed: number) => (((listing.id * seed) % 7) - 3) * 0.04;
@@ -781,7 +781,7 @@ function generateSubScores(listing: Listing): SubScores {
   };
 }
 
-function generateReviews(listing: Listing): Review[] {
+function generateReviews(listing: IListing): IReview[] {
   const months = [
     'May 2026', 'April 2026', 'March 2026', 'February 2026', 'January 2026',
     'December 2025', 'November 2025', 'October 2025', 'September 2025',
@@ -796,12 +796,12 @@ function generateReviews(listing: Listing): Review[] {
   });
 }
 
-function generateNearby(listing: Listing): NearbyPoi[] {
+function generateNearby(listing: IListing): INearbyPoi[] {
   const start = listing.id % NEARBY_POOL.length;
   return [0, 1, 2, 3, 4].map(i => NEARBY_POOL[(start + i) % NEARBY_POOL.length]);
 }
 
-function generateTrustBadges(listing: Listing): TrustBadge[] {
+function generateTrustBadges(listing: IListing): TrustBadge[] {
   const badges: TrustBadge[] = ['verified-host', 'id-checked', 'land-insured'];
   if (listing.rating >= 4.85 && listing.reviewCount >= 80) badges.push('superhost');
   return badges;

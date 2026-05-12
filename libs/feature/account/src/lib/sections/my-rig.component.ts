@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } from '@cnt-workspace/data-access';
+import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-account-my-rig',
@@ -112,7 +112,7 @@ import { MyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } 
   `,
 })
 export class MyRigSectionComponent implements OnInit {
-  rv: MyRv = emptyMyRv();
+  rv: IMyRv = emptyMyRv();
   readonly rvTypes = RV_TYPES;
   readonly dimensions: { key: 'length' | 'height' | 'width'; label: string }[] = [
     { key: 'length', label: 'Length' },

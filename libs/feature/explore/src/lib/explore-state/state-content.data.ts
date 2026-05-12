@@ -1,9 +1,9 @@
-export interface TopDestination {
+export interface ITopDestination {
   city: string;
   blurb: string;
 }
 
-export interface StateContent {
+export interface IStateContent {
   slug: string;
   name: string;
   abbrev: string;
@@ -11,12 +11,12 @@ export interface StateContent {
   /** Hero background image — relative path or full URL. */
   heroImage: string;
   intro: string[];
-  topDestinations: TopDestination[];
+  topDestinations: ITopDestination[];
   thingsToDo: string[];
   nearbyStates: string[];
 }
 
-export const STATE_CONTENT: Record<string, StateContent> = {
+export const STATE_CONTENT: Record<string, IStateContent> = {
   'arizona': {
     slug: 'arizona',
     name: 'Arizona',

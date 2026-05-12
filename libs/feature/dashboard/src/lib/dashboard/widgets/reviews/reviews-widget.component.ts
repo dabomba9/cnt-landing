@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking } from '@cnt-workspace/models';
-import { UserReview } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
+import { IUserReview } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-dashboard-reviews',
@@ -65,7 +65,7 @@ import { UserReview } from '@cnt-workspace/data-access';
                   <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.listingTitle }}</div>
                   <div class="text-xs text-muted-text font-body truncate">{{ datesLabel(b) }} · \${{ b.total }}</div>
                 </div>
-                <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad shrink-0">Review →</span>
+                <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad shrink-0">Review </span>
               </a>
             </li>
           }
@@ -80,10 +80,10 @@ import { UserReview } from '@cnt-workspace/data-access';
   `,
 })
 export class ReviewsWidgetComponent {
-  @Input() bookings: Booking[] = [];
-  @Input() reviews: UserReview[] = [];
+  @Input() bookings: IBooking[] = [];
+  @Input() reviews: IUserReview[] = [];
 
-  get needsReview(): Booking[] {
+  get needsReview(): IBooking[] {
     const now = Date.now();
     return this.bookings
       .filter(b => (b.status === 'confirmed' || b.status === 'approved')
@@ -96,7 +96,7 @@ export class ReviewsWidgetComponent {
     return this.reviews.length;
   }
 
-  datesLabel(b: Booking): string {
+  datesLabel(b: IBooking): string {
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
     const start = new Date(b.dates.start).toLocaleDateString('en-US', opts);
     const end = new Date(b.dates.end).toLocaleDateString('en-US', opts);

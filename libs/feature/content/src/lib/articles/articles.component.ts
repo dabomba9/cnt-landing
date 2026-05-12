@@ -11,7 +11,7 @@ import { gsap } from 'gsap';
 
 export type ArticleCategory = 'all' | 'travel-tips' | 'host-stories' | 'rv-life' | 'gear-reviews' | 'destinations';
 
-export interface ArticleCard {
+export interface IArticleCard {
   id: number;
   category: Exclude<ArticleCategory, 'all'>;
   title: string;
@@ -30,7 +30,7 @@ export const ARTICLE_CATEGORIES: { id: ArticleCategory; label: string; icon: str
   { id: 'destinations',  label: 'Destinations',   icon: 'explore' },
 ];
 
-const ARTICLES: ArticleCard[] = [
+const ARTICLES: IArticleCard[] = [
   { id:1, category:'destinations', title:'The Best Hidden RV Stays in Wine Country', excerpt:'Forty miles of vineyards, working farms, and quiet ranches across Napa, Sonoma, and Paso Robles — far from the crowds.', readTime:'8 min read', date:'2026-04-22', image:'assets/images/host_vineyard.webp' },
   { id:2, category:'travel-tips', title:'Boondocking 101: Everything First-Timers Need', excerpt:'Power management, water conservation, choosing the right site, and the unwritten etiquette of off-grid camping.', readTime:'12 min read', date:'2026-04-15', image:'assets/images/host_opportunity.webp' },
   { id:3, category:'host-stories', title:'How a Family Farm Turned Hosting into Their Best Crop', excerpt:'Meet the Hartleys — a fourth-generation Iowa farm now welcoming RVers and earning more than corn ever did.', readTime:'6 min read', date:'2026-04-08', image:'assets/images/host_farm.webp' },
@@ -77,7 +77,7 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  get filteredArticles(): ArticleCard[] {
+  get filteredArticles(): IArticleCard[] {
     const q = this.searchQuery.trim().toLowerCase();
     return ARTICLES.filter(a => {
       if (this.selectedCategory !== 'all' && a.category !== this.selectedCategory) return false;

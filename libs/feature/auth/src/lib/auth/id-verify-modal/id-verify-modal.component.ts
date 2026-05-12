@@ -5,7 +5,7 @@ import { AuthService, IdType } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
-interface IdOption {
+interface IIdOption {
   id: IdType;
   label: string;
   icon: string;
@@ -42,7 +42,7 @@ export class IdVerifyModalComponent implements OnChanges, AfterViewInit, OnDestr
   submitting = false;
   showLossGuard = false;
 
-  options: IdOption[] = [
+  options: IIdOption[] = [
     { id: 'drivers-license', label: "Driver's license", icon: 'badge',         hint: 'Most common — issued by your state DMV.' },
     { id: 'passport',        label: 'Passport',         icon: 'travel_explore', hint: 'US or international passports accepted.' },
     { id: 'state-id',        label: 'State ID',         icon: 'contact_page',   hint: 'Non-driver identity card.' },
@@ -236,7 +236,7 @@ export class IdVerifyModalComponent implements OnChanges, AfterViewInit, OnDestr
     this.unlockBody();
   }
 
-  selectedOption(): IdOption | null {
+  selectedOption(): IIdOption | null {
     return this.options.find(o => o.id === this.selectedType) || null;
   }
 

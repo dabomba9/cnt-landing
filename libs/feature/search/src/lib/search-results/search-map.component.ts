@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Listing, CATEGORY_META } from '@cnt-workspace/data-access';
+import { IListing, CATEGORY_META } from '@cnt-workspace/data-access';
 import {
   TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
 } from '@cnt-workspace/ui';
@@ -93,7 +93,7 @@ import {
 })
 export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
-  @Input() listings: Listing[] = [];
+  @Input() listings: IListing[] = [];
   @Input() hoveredId: number | null = null;
   @Input() popupId: number | null = null;
   @Input() favoriteIds: Set<number> = new Set<number>();
@@ -243,7 +243,7 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  private buildPopupHtml(listing: Listing): string {
+  private buildPopupHtml(listing: IListing): string {
     const photo = listing.image;
     const title = this.escapeHtml(listing.title);
     const location = this.escapeHtml(listing.location);

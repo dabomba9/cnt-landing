@@ -6,6 +6,7 @@ export * from './lib/toast/toast.service';
 export * from './lib/seo/seo.service';
 export * from './lib/listings/mock-listings.data';
 export * from './lib/host/mock-host-data';
+export * from './lib/host/host-listing-meta.service';
 export * from './lib/my-rv.util';
 export * from './lib/state.util';
 export * from './lib/payments/payment-methods.service';

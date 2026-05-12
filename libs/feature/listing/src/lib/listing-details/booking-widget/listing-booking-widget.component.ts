@@ -4,9 +4,9 @@ import { RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
-  Listing, ListingDetail, CancellationTier,
+  IListing, IListingDetail, CancellationTier,
 } from '@cnt-workspace/data-access';
-import { MyRv, emptyMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
 /**
@@ -24,13 +24,13 @@ import { BookingStateService } from '../booking-state.service';
   templateUrl: './listing-booking-widget.component.html',
 })
 export class ListingBookingWidgetComponent {
-  @Input({ required: true }) listing!: Listing;
-  @Input({ required: true }) detail!: ListingDetail;
+  @Input({ required: true }) listing!: IListing;
+  @Input({ required: true }) detail!: IListingDetail;
   @Input({ required: true }) cancellationMeta!: Record<CancellationTier, { label: string; summary: string; color: string }>;
-  @Input() myRv: MyRv = emptyMyRv();
+  @Input() myRv: IMyRv = emptyMyRv();
   /** Emits an updated MyRv when the user attaches/clears a required photo here.
       Parent persists via writeMyRv so the photos survive across listings. */
-  @Output() myRvChange = new EventEmitter<MyRv>();
+  @Output() myRvChange = new EventEmitter<IMyRv>();
   @Output() reserveClick = new EventEmitter<void>();
 
   constructor(public booking: BookingStateService) {}

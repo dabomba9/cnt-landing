@@ -1,11 +1,11 @@
 import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { Booking } from '@cnt-workspace/models';
-import { PublicUser } from '@cnt-workspace/data-access';
-import { MyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
+import { IPublicUser } from '@cnt-workspace/data-access';
+import { IMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 
-interface PrepItem {
+interface IPrepItem {
   key: 'verified' | 'rvphotos' | 'calendar' | 'contacted';
   icon: string;
   headline: string;
@@ -71,26 +71,26 @@ interface PrepItem {
   `,
 })
 export class TripPrepComponent {
-  @Input() set booking(value: Booking | null) {
+  @Input() set booking(value: IBooking | null) {
     this._booking = value;
     this.computeFlags();
   }
-  get booking(): Booking | null { return this._booking; }
-  private _booking: Booking | null = null;
+  get booking(): IBooking | null { return this._booking; }
+  private _booking: IBooking | null = null;
 
-  @Input() set user(value: PublicUser | null) {
+  @Input() set user(value: IPublicUser | null) {
     this._user = value;
     this.computeFlags();
   }
-  private _user: PublicUser | null = null;
+  private _user: IPublicUser | null = null;
 
-  @Input() set myRv(value: MyRv | null) {
+  @Input() set myRv(value: IMyRv | null) {
     this._myRv = value;
     this.computeFlags();
   }
-  private _myRv: MyRv | null = null;
+  private _myRv: IMyRv | null = null;
 
-  items: PrepItem[] = [];
+  items: IPrepItem[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,

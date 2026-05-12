@@ -1,6 +1,6 @@
 export type MessageAuthor = 'guest' | 'host' | 'system';
 
-export interface Message {
+export interface IMessage {
   id: string;
   threadId: string;
   author: MessageAuthor;
@@ -9,7 +9,7 @@ export interface Message {
   createdAt: string;
 }
 
-export interface Thread {
+export interface IThread {
   id: string;
   bookingId?: string;
   requestId?: string;
@@ -22,7 +22,7 @@ export interface Thread {
   hostEmail: string;
   hostName: string;
   hostInitials: string;
-  messages: Message[];
+  messages: IMessage[];
   createdAt: string;
   updatedAt: string;
   lastReadAt: Record<string, string>;

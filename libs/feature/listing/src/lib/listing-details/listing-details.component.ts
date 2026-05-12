@@ -8,15 +8,15 @@ import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import {
-  MOCK_LISTINGS, Listing, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
-  ListingDetail, getListingDetail, CANCELLATION_TIER_META,
+  MOCK_LISTINGS, IListing, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
+  IListingDetail, getListingDetail, CANCELLATION_TIER_META,
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
 } from '@cnt-workspace/data-access';
-import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService, ReviewService, UserReview } from '@cnt-workspace/data-access';
+import { AuthService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -39,8 +39,8 @@ import { AccordionCardComponent } from '@cnt-workspace/ui';
   styleUrl: './listing-details.component.scss',
 })
 export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
-  listing!: Listing;
-  detail!: ListingDetail;
+  listing!: IListing;
+  detail!: IListingDetail;
   CATEGORY_META = CATEGORY_META;
   AMENITY_LABELS = AMENITY_LABELS;
   AMENITY_ICONS = AMENITY_ICONS;
@@ -66,7 +66,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   lightboxStartIndex = 0;
 
   // My RV (from /search settings, persisted in localStorage)
-  myRv: MyRv = emptyMyRv();
+  myRv: IMyRv = emptyMyRv();
 
   // Reviews UI state
   reviewsExpanded = false;
@@ -96,7 +96,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   /** Persists changes to the My RV profile coming from the booking widget
       (photo attach/clear) so future bookings reuse the same photos. */
-  onMyRvChange(next: MyRv): void {
+  onMyRvChange(next: IMyRv): void {
     this.myRv = next;
     writeMyRv(this.platformId, next);
     this.booking.setMyRv(next);
@@ -132,14 +132,14 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   private bookingChangedSub?: { unsubscribe: () => void };
 
   /** Up to 3 listings in the same category as the current one, excluding self. */
-  get similarListings(): Listing[] {
+  get similarListings(): IListing[] {
     return MOCK_LISTINGS
       .filter(l => l.category === this.listing.category && l.id !== this.listing.id)
       .slice(0, 3);
   }
 
   /** Up to 3 other listings hosted by the same host (matched by name), excluding self. */
-  get hostListings(): Listing[] {
+  get hostListings(): IListing[] {
     const hostName = this.detail.host.name;
     return MOCK_LISTINGS
       .filter(l => l.id !== this.listing.id && getListingDetail(l).host.name === hostName)
@@ -171,7 +171,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** Map a UserReview into the listing's Review shape so the UI doesn't branch. */
-  private userReviewAsReview(r: UserReview): typeof this.detail.reviews[number] {
+  private userReviewAsReview(r: IUserReview): typeof this.detail.reviews[number] {
     const d = new Date(r.createdAt);
     const dateLabel = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     return {
@@ -218,7 +218,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** User reviews for this listing — keeps live via reviews$ subscription. */
-  userReviews: UserReview[] = [];
+  userReviews: IUserReview[] = [];
   private reviewsSub: Subscription | null = null;
 
   constructor(
@@ -437,7 +437,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** Modal saved photos → persist to MyRv profile, close, continue to /booking/review. */
-  onRvPhotosSaved(next: MyRv): void {
+  onRvPhotosSaved(next: IMyRv): void {
     this.onMyRvChange(next);
     this.rvPhotosOpen = false;
     this.proceedToReview();

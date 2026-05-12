@@ -2,11 +2,8 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NavbarComponent } from '@cnt-workspace/ui';
-import { FooterComponent } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService } from '@cnt-workspace/data-access';
-import { ToastService } from '@cnt-workspace/data-access';
+import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { AuthService, SeoService, ToastService, FederatedProvider } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-sign-up',
@@ -27,7 +24,7 @@ export class SignUpComponent implements OnInit {
   returnTo: string | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
     private route: ActivatedRoute,
     private router: Router,
@@ -45,11 +42,11 @@ export class SignUpComponent implements OnInit {
     this.returnTo = this.route.snapshot.queryParamMap.get('returnTo');
   }
 
-  onSubmit(event: Event): void {
+  async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
     this.error = null;
-    if (this.password.length < 6) {
-      this.error = 'Password must be at least 6 characters.';
+    if (this.password.length < 8) {
+      this.error = 'Password must be at least 8 characters.';
       return;
     }
     if (!this.isOver18) {
@@ -57,7 +54,7 @@ export class SignUpComponent implements OnInit {
       return;
     }
     this.submitting = true;
-    const result = this.auth.signUp({
+    const result = await this.auth.signUp({
       email: this.email,
       password: this.password,
       firstName: this.firstName,
@@ -69,19 +66,23 @@ export class SignUpComponent implements OnInit {
       this.error = result.error;
       return;
     }
+    if (result.needsConfirmation) {
+      this.toasts.info('Check your email for a 6-digit code.');
+      this.router.navigate(['/auth/confirm'], { queryParams: { email: this.email.trim().toLowerCase() } });
+      return;
+    }
+    // Rare: auto-confirmed pools won't hit the confirmation step.
     this.toasts.success(`Account created — welcome, ${result.user.firstName}!`);
     this.redirectAfterAuth();
   }
 
-  onGoogle(): void {
+  async onFederated(provider: FederatedProvider): Promise<void> {
     this.error = null;
-    this.submitting = true;
-    setTimeout(() => {
-      const result = this.auth.signInWithGoogle();
-      this.submitting = false;
-      this.toasts.success(`Welcome, ${result.user.firstName}!`);
-      this.redirectAfterAuth();
-    }, 400);
+    try {
+      await this.auth.signInWithProvider(provider);
+    } catch {
+      this.error = `Could not start ${provider} sign-in. Try again or use email.`;
+    }
   }
 
   private redirectAfterAuth(): void {

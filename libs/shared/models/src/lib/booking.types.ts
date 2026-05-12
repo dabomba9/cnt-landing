@@ -7,7 +7,7 @@ export type BookingStatus =
 
 /** Snapshot of an AddOn at booking time. Frozen so the host editing the
  * listing later doesn't retroactively reprice existing bookings. */
-export interface BookingAddOn {
+export interface IBookingAddOn {
   id: string;
   label: string;
   unit: 'per stay' | 'per night' | 'per person';
@@ -16,7 +16,7 @@ export interface BookingAddOn {
   amount: number;
 }
 
-export interface Booking {
+export interface IBooking {
   id: string;
   userEmail: string;
   listingId: number;
@@ -49,11 +49,13 @@ export interface Booking {
   /** ISO when the booking was last modified (dates/guests/add-ons). */
   modifiedAt?: string;
   /** Snapshot of add-ons attached to this booking. */
-  addOns?: BookingAddOn[];
+  addOns?: IBookingAddOn[];
   /** Sum of all add-on amounts at booking/modification time. */
   addOnsTotal?: number;
   /** ISO when the guest left a review for this completed trip. */
   reviewedAt?: string;
+  /** Reward credit dollars applied to this booking's total (subtracts from availableCredit). */
+  creditApplied?: number;
 }
 
 export const STATUS_META: Record<BookingStatus, { label: string; color: string; bg: string }> = {

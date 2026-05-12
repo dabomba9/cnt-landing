@@ -13,6 +13,26 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/auth').then(m => m.SignUpComponent),
   },
   {
+    path: 'auth/callback',
+    loadComponent: () => import('@cnt-workspace/auth').then(m => m.AuthCallbackComponent),
+  },
+  {
+    path: 'auth/confirm',
+    loadComponent: () => import('@cnt-workspace/auth').then(m => m.AuthConfirmComponent),
+  },
+  {
+    path: 'auth/redirect',
+    loadComponent: () => import('@cnt-workspace/auth').then(m => m.AuthRedirectComponent),
+  },
+  {
+    path: 'auth/forgot-password',
+    loadComponent: () => import('@cnt-workspace/auth').then(m => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'auth/reset-password',
+    loadComponent: () => import('@cnt-workspace/auth').then(m => m.ResetPasswordComponent),
+  },
+  {
     path: 'booking/review',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/booking').then(m => m.BookingReviewComponent),
@@ -46,6 +66,11 @@ export const appRoutes: Route[] = [
     path: 'hosting',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/host-dashboard').then(m => m.HostDashboardComponent),
+  },
+  {
+    path: 'hosting/listings',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/hosting-listings').then(m => m.HostingListingsComponent),
   },
   {
     path: 'account',

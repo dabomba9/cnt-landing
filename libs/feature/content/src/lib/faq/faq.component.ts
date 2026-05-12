@@ -11,7 +11,7 @@ import { gsap } from 'gsap';
 
 export type FaqCategory = 'guests' | 'hosts' | 'general';
 
-export interface FaqItem {
+export interface IFaqItem {
   id: number;
   category: FaqCategory;
   q: string;
@@ -25,7 +25,7 @@ export const FAQ_CATEGORIES: { id: FaqCategory | 'all'; label: string; icon: str
   { id: 'general', label: 'General',     icon: 'info' },
 ];
 
-const FAQS: FaqItem[] = [
+const FAQS: IFaqItem[] = [
   // ===== Guests =====
   { id: 1, category: 'guests', q: 'How do I book an RV spot?',
     a: 'Find a stay you love, pick your dates, and tap "Reserve". Your host approves or rejects within 2 hours when instant bookings is not enabled. Once confirmed you\'ll get arrival details and the host\'s contact info, and CurbNTurf processes payment from there.' },
@@ -138,7 +138,7 @@ export class FaqComponent implements OnInit, AfterViewInit {
     // Magnetic-button behavior now handled by MagneticBtnDirective
   }
 
-  get filteredFaqs(): FaqItem[] {
+  get filteredFaqs(): IFaqItem[] {
     const q = this.searchQuery.trim().toLowerCase();
     return FAQS.filter(item => {
       if (this.selectedCategory !== 'all' && item.category !== this.selectedCategory) return false;

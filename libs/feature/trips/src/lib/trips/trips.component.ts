@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
-import { SeoService, AuthService, BookingService, ToastService, ReviewService, UserReview, ReviewSubScores } from '@cnt-workspace/data-access';
-import { Booking, STATUS_META } from '@cnt-workspace/models';
+import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores } from '@cnt-workspace/data-access';
+import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
 
@@ -16,13 +16,13 @@ type TripFilter = 'upcoming' | 'past' | 'all';
   templateUrl: './trips.component.html',
 })
 export class TripsComponent implements OnInit, OnDestroy {
-  bookings: Booking[] = [];
+  bookings: IBooking[] = [];
   filter: TripFilter = 'upcoming';
   STATUS_META = STATUS_META;
   guestVerified = false;
 
   /** Cancel modal state. */
-  cancelTarget: Booking | null = null;
+  cancelTarget: IBooking | null = null;
   cancelReason = '';
   cancelling = false;
   readonly cancelReasonPresets = ['Plans changed', 'Weather', 'Found another stay', 'Other'];
@@ -32,13 +32,13 @@ export class TripsComponent implements OnInit, OnDestroy {
   }
 
   /** Review modal state. */
-  reviewTarget: Booking | null = null;
+  reviewTarget: IBooking | null = null;
   reviewRating = 5;
   reviewText = '';
-  reviewSubScores: ReviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
+  reviewSubScores: IReviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
   reviewSaving = false;
   /** Existing reviews keyed by bookingId — drives "Leave a review" vs "Edit review". */
-  reviewByBookingId: Record<string, UserReview> = {};
+  reviewByBookingId: Record<string, IUserReview> = {};
 
   private userEmail = '';
   private subs: Subscription[] = [];
@@ -89,7 +89,7 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   setFilter(f: TripFilter): void { this.filter = f; }
 
-  get filteredBookings(): Booking[] {
+  get filteredBookings(): IBooking[] {
     const now = Date.now();
     if (this.filter === 'upcoming') {
       return this.bookings.filter(b => new Date(b.dates.end).getTime() >= now && b.status !== 'cancelled');
@@ -110,7 +110,7 @@ export class TripsComponent implements OnInit, OnDestroy {
     return this.bookings.filter(b => new Date(b.dates.end).getTime() < now || b.status === 'cancelled').length;
   }
 
-  datesLabel(b: Booking): string {
+  datesLabel(b: IBooking): string {
     const start = new Date(b.dates.start);
     const end = new Date(b.dates.end);
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
@@ -118,13 +118,13 @@ export class TripsComponent implements OnInit, OnDestroy {
   }
 
   /** Days until check-in. Negative if past. Null if not applicable. */
-  daysUntil(b: Booking): number | null {
+  daysUntil(b: IBooking): number | null {
     const start = new Date(b.dates.start).getTime();
     const days = Math.ceil((start - Date.now()) / 86_400_000);
     return days;
   }
 
-  countdownLabel(b: Booking): string | null {
+  countdownLabel(b: IBooking): string | null {
     const d = this.daysUntil(b);
     if (d === null) return null;
     if (d < 0) {
@@ -140,12 +140,12 @@ export class TripsComponent implements OnInit, OnDestroy {
   }
 
   /** Can this booking still be cancelled? */
-  canCancel(b: Booking): boolean {
+  canCancel(b: IBooking): boolean {
     if (b.status === 'cancelled' || b.status === 'declined') return false;
     return new Date(b.dates.start).getTime() > Date.now();
   }
 
-  openCancel(b: Booking, event?: Event): void {
+  openCancel(b: IBooking, event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
     this.cancelTarget = b;
@@ -174,14 +174,14 @@ export class TripsComponent implements OnInit, OnDestroy {
   // ============ Review flow ============
 
   /** A completed (past) trip the user actually stayed at — eligible to be reviewed. */
-  canReview(b: Booking): boolean {
+  canReview(b: IBooking): boolean {
     if (b.status === 'cancelled' || b.status === 'declined' || b.status === 'pending') return false;
     return new Date(b.dates.end).getTime() < Date.now();
   }
 
-  hasReviewed(b: Booking): boolean { return !!this.reviewByBookingId[b.id]; }
+  hasReviewed(b: IBooking): boolean { return !!this.reviewByBookingId[b.id]; }
 
-  openReview(b: Booking, event?: Event): void {
+  openReview(b: IBooking, event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
     this.reviewTarget = b;
@@ -204,13 +204,13 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   setReviewRating(value: number): void { this.reviewRating = Math.max(1, Math.min(5, value)); }
 
-  setReviewSubScore(key: keyof ReviewSubScores, value: number): void {
+  setReviewSubScore(key: keyof IReviewSubScores, value: number): void {
     this.reviewSubScores = { ...this.reviewSubScores, [key]: Math.max(1, Math.min(5, value)) };
   }
 
   /** Helper exposed to the template for rendering star rows (1..5). */
   readonly stars = [1, 2, 3, 4, 5];
-  readonly subScoreLabels: Array<{ key: keyof ReviewSubScores; label: string }> = [
+  readonly subScoreLabels: Array<{ key: keyof IReviewSubScores; label: string }> = [
     { key: 'cleanliness',   label: 'Cleanliness' },
     { key: 'communication', label: 'Communication' },
     { key: 'location',      label: 'Location' },

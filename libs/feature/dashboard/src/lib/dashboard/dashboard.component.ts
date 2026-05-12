@@ -7,11 +7,11 @@ import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService, PublicUser } from '@cnt-workspace/data-access';
-import { BookingService, ReviewService, UserReview } from '@cnt-workspace/data-access';
-import { Booking } from '@cnt-workspace/models';
-import { MyRv, readMyRv } from '@cnt-workspace/data-access';
-import { Listing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
+import { BookingService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
+import { IMyRv, readMyRv } from '@cnt-workspace/data-access';
+import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 import { DashboardGreetingComponent } from './widgets/greeting/greeting.component';
 import { StatTileComponent } from '@cnt-workspace/ui';
 import { UpcomingTripCardComponent } from './widgets/upcoming-trip/upcoming-trip.component';
@@ -37,11 +37,11 @@ const FAV_KEY = 'cnt-favorites';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
-  user: PublicUser | null = null;
-  bookings: Booking[] = [];
-  myRv: MyRv | null = null;
-  savedListings: Listing[] = [];
-  userReviews: UserReview[] = [];
+  user: IPublicUser | null = null;
+  bookings: IBooking[] = [];
+  myRv: IMyRv | null = null;
+  savedListings: IListing[] = [];
+  userReviews: IUserReview[] = [];
   private bookingsSub: Subscription | null = null;
   private reviewsSub: Subscription | null = null;
 
@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     return [Math.max(0, r - 15), Math.max(0, r - 10), Math.max(0, r - 5), r];
   }
 
-  private readSavedListings(): Listing[] {
+  private readSavedListings(): IListing[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
       const raw = localStorage.getItem(FAV_KEY);
@@ -127,7 +127,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /** Bookings whose check-in is in the future and not cancelled/declined; soonest first. */
-  get upcomingTrip(): Booking | null {
+  get upcomingTrip(): IBooking | null {
     const now = Date.now();
     const upcoming = this.bookings
       .filter(b => b.status !== 'cancelled' && b.status !== 'declined')
@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** "Continue exploring" — 4 recommended listings.
       Strategy: prioritize same categories as the user's saved + booked listings, exclude already-saved/booked, fall back to top-rated. */
-  get recommendedListings(): Listing[] {
+  get recommendedListings(): IListing[] {
     const seen = new Set<number>();
     for (const l of this.savedListings) seen.add(l.id);
     for (const b of this.bookings) seen.add(b.listingId);
@@ -206,14 +206,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .reduce((sum, b) => sum + (b.nights || 0), 0);
   }
   get staysSaved(): number { return this.savedListings.length; }
-  /** Reward credit — $5/night × completed-AND-reviewed trips. */
+  get reviewsGiven(): number { return this.userReviews.length; }
+
+  /** Truly-empty account → trigger the welcome hero in place of upcoming-trip. */
+  get isBrandNewUser(): boolean {
+    return this.bookings.length === 0 && this.savedListings.length === 0;
+  }
+  /** Reward credit available to spend — earned ($5/night × reviewed) minus already-applied. */
   get rewardCredit(): number {
-    const now = Date.now();
-    const reviewedNights = this.bookings
-      .filter(b => (b.status === 'confirmed' || b.status === 'approved')
-                && new Date(b.dates.end).getTime() < now
-                && !!b.reviewedAt)
-      .reduce((sum, b) => sum + (b.nights || 0), 0);
-    return reviewedNights * 5;
+    return this.user ? this.bookingSvc.getAvailableCredit(this.user.email) : 0;
   }
 }

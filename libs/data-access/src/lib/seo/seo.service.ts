@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 
-export interface SeoConfig {
+export interface ISeoConfig {
   title: string;
   description: string;
   url: string;
@@ -50,7 +50,7 @@ export class SeoService {
     script.textContent = JSON.stringify(data);
   }
 
-  update(config: SeoConfig): void {
+  update(config: ISeoConfig): void {
     const ogType = config.type ?? 'website';
     const ogImage = config.image ?? DEFAULT_IMAGE;
     const fullUrl = `${BASE_URL}${config.url}`;

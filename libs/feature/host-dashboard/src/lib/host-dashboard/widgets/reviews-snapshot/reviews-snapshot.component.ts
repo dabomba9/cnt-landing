@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing, Review, getListingDetail } from '@cnt-workspace/data-access';
+import { IListing, IReview, getListingDetail } from '@cnt-workspace/data-access';
 import { ReviewCardComponent } from '@cnt-workspace/ui';
 
-interface RecentReview {
-  review: Review;
+interface IRecentReview {
+  review: IReview;
   listingTitle: string;
   listingId: number;
   rating: number;
@@ -46,13 +46,13 @@ interface RecentReview {
   `,
 })
 export class ReviewsSnapshotComponent {
-  @Input() set listings(value: Listing[]) {
+  @Input() set listings(value: IListing[]) {
     this._listings = value || [];
     this.compute();
   }
-  private _listings: Listing[] = [];
+  private _listings: IListing[] = [];
 
-  recent: RecentReview[] = [];
+  recent: IRecentReview[] = [];
   averageRating = '—';
   totalReviews = 0;
 
@@ -63,7 +63,7 @@ export class ReviewsSnapshotComponent {
       this.totalReviews = 0;
       return;
     }
-    const all: RecentReview[] = [];
+    const all: IRecentReview[] = [];
     let totalReviews = 0;
     let weightedSum = 0;
     for (const listing of this._listings) {

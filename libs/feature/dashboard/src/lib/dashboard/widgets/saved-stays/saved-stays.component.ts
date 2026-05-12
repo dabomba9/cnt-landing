@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Listing } from '@cnt-workspace/data-access';
+import { IListing } from '@cnt-workspace/data-access';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 
 @Component({
@@ -48,7 +48,7 @@ import { ListingCardComponent } from '@cnt-workspace/ui';
   `,
 })
 export class SavedStaysWidgetComponent {
-  @Input() savedListings: Listing[] = [];
+  @Input() savedListings: IListing[] = [];
   @ViewChild('track') trackEl?: ElementRef<HTMLDivElement>;
 
   scrollByCard(direction: 1 | -1): void {

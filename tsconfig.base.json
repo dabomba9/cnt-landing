@@ -28,6 +28,9 @@
         "libs/feature/host-dashboard/src/index.ts"
       ],
       "@cnt-workspace/host-space": ["libs/feature/host-space/src/index.ts"],
+      "@cnt-workspace/hosting-listings": [
+        "libs/feature/hosting-listings/src/index.ts"
+      ],
       "@cnt-workspace/inbox": ["libs/feature/inbox/src/index.ts"],
       "@cnt-workspace/listing": ["libs/feature/listing/src/index.ts"],
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],

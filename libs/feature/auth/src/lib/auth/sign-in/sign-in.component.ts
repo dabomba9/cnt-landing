@@ -2,11 +2,8 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NavbarComponent } from '@cnt-workspace/ui';
-import { FooterComponent } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService } from '@cnt-workspace/data-access';
-import { ToastService } from '@cnt-workspace/data-access';
+import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { AuthService, SeoService, ToastService, FederatedProvider } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-sign-in',
@@ -22,7 +19,7 @@ export class SignInComponent implements OnInit {
   returnTo: string | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
     private route: ActivatedRoute,
     private router: Router,
@@ -38,32 +35,33 @@ export class SignInComponent implements OnInit {
       robots: 'noindex, nofollow',
     });
     this.returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+    const prefillEmail = this.route.snapshot.queryParamMap.get('email');
+    if (prefillEmail) this.email = prefillEmail;
     if (this.auth.currentUser) this.redirectAfterAuth();
   }
 
-  onSubmit(event: Event): void {
+  async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
     this.error = null;
     this.submitting = true;
-    const result = this.auth.signIn(this.email, this.password);
+    const result = await this.auth.signIn(this.email, this.password);
     this.submitting = false;
     if (!result.ok) {
       this.error = result.error;
       return;
     }
-    this.toasts.success(`Welcome back, ${result.user.firstName}!`);
+    this.toasts.success(`Welcome back, ${result.user.firstName || result.user.email}!`);
     this.redirectAfterAuth();
   }
 
-  onGoogle(): void {
+  async onFederated(provider: FederatedProvider): Promise<void> {
     this.error = null;
-    this.submitting = true;
-    setTimeout(() => {
-      const result = this.auth.signInWithGoogle();
-      this.submitting = false;
-      this.toasts.success(`Welcome, ${result.user.firstName}!`);
-      this.redirectAfterAuth();
-    }, 400);
+    try {
+      await this.auth.signInWithProvider(provider);
+      // Redirect happens; this line rarely runs.
+    } catch (e) {
+      this.error = `Could not start ${provider} sign-in. Try again or use email.`;
+    }
   }
 
   private redirectAfterAuth(): void {

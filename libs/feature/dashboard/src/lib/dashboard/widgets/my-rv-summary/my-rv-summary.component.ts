@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-my-rv-summary',
@@ -61,7 +61,7 @@ import { MyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data
   `,
 })
 export class MyRvSummaryWidgetComponent {
-  @Input() myRv: MyRv | null = null;
+  @Input() myRv: IMyRv | null = null;
 
   get isSet(): boolean { return this.myRv ? isMyRvSet(this.myRv) : false; }
   get hasPhotos(): boolean { return this.myRv ? hasMyRvPhotos(this.myRv) : false; }

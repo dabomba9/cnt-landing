@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export interface PaymentMethod {
+export interface IPaymentMethod {
   id: string;
   label: string;
   icon: string;
@@ -13,29 +13,29 @@ export interface PaymentMethod {
 
 const PAYMENTS_KEY = 'cnt-payments';
 
-const DEFAULT_METHODS: PaymentMethod[] = [
+const DEFAULT_METHODS: IPaymentMethod[] = [
   { id: 'card-default', label: 'Visa ending in 4242', icon: 'credit_card', brand: 'visa', last4: '4242', isDefault: true },
   { id: 'card-amex',    label: 'Amex ending in 1005', icon: 'credit_card', brand: 'amex', last4: '1005', isDefault: false },
 ];
 
 @Injectable({ providedIn: 'root' })
 export class PaymentMethodsService {
-  private readonly _methods$ = new BehaviorSubject<PaymentMethod[]>([]);
-  readonly methods$: Observable<PaymentMethod[]> = this._methods$.asObservable();
+  private readonly _methods$ = new BehaviorSubject<IPaymentMethod[]>([]);
+  readonly methods$: Observable<IPaymentMethod[]> = this._methods$.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     this._methods$.next(this.read());
   }
 
-  list(): PaymentMethod[] {
+  list(): IPaymentMethod[] {
     return this._methods$.value;
   }
 
   /** Add a new mock card. Only the last 4 digits + brand are stored. */
-  add(input: { brand: PaymentMethod['brand']; last4: string; makeDefault?: boolean }): PaymentMethod {
+  add(input: { brand: IPaymentMethod['brand']; last4: string; makeDefault?: boolean }): IPaymentMethod {
     const id = `card-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const brandLabel = input.brand.charAt(0).toUpperCase() + input.brand.slice(1);
-    const card: PaymentMethod = {
+    const card: IPaymentMethod = {
       id,
       label: `${brandLabel} ending in ${input.last4}`,
       icon: 'credit_card',
@@ -63,7 +63,7 @@ export class PaymentMethodsService {
     this.write(next);
   }
 
-  private read(): PaymentMethod[] {
+  private read(): IPaymentMethod[] {
     if (!isPlatformBrowser(this.platformId)) return DEFAULT_METHODS;
     try {
       const raw = localStorage.getItem(PAYMENTS_KEY);
@@ -78,7 +78,7 @@ export class PaymentMethodsService {
     }
   }
 
-  private write(methods: PaymentMethod[]): void {
+  private write(methods: IPaymentMethod[]): void {
     if (isPlatformBrowser(this.platformId)) {
       try { localStorage.setItem(PAYMENTS_KEY, JSON.stringify(methods)); } catch {}
     }

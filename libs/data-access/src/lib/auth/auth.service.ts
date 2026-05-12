@@ -1,42 +1,39 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  signIn as cognitoSignIn,
+  signUp as cognitoSignUp,
+  confirmSignUp as cognitoConfirmSignUp,
+  resendSignUpCode as cognitoResendSignUpCode,
+  signOut as cognitoSignOut,
+  getCurrentUser as cognitoGetCurrentUser,
+  fetchUserAttributes as cognitoFetchUserAttributes,
+  updateUserAttributes as cognitoUpdateUserAttributes,
+  updatePassword as cognitoUpdatePassword,
+  resetPassword as cognitoResetPassword,
+  confirmResetPassword as cognitoConfirmResetPassword,
+  signInWithRedirect,
+} from 'aws-amplify/auth';
+import { Hub } from 'aws-amplify/utils';
 
 export type IdType = 'drivers-license' | 'passport' | 'state-id';
 
-export interface NotifPrefs {
+export interface INotifPrefs {
   emailUpdates: boolean;
   marketing: boolean;
   hostResponses: boolean;
   tripReminders: boolean;
 }
 
-export const DEFAULT_NOTIF_PREFS: NotifPrefs = {
+export const DEFAULT_NOTIF_PREFS: INotifPrefs = {
   emailUpdates: true,
   marketing: false,
   hostResponses: true,
   tripReminders: true,
 };
 
-export interface User {
-  email: string;
-  /** btoa(password) — DEMO ONLY. Never ship this scheme to production. */
-  passwordHash: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  createdAt: string;
-  verified?: boolean;
-  verifiedAt?: string;
-  /** Demo only — last 4 of the document id, no real ID stored. */
-  idType?: IdType;
-  idLastFour?: string;
-  /** Data-URL profile photo (mock). */
-  photoUrl?: string;
-  notifPrefs?: NotifPrefs;
-}
-
-export interface PublicUser {
+export interface IPublicUser {
   email: string;
   firstName: string;
   lastName: string;
@@ -47,204 +44,303 @@ export interface PublicUser {
   idType?: IdType;
   idLastFour?: string;
   photoUrl?: string;
-  notifPrefs?: NotifPrefs;
+  notifPrefs?: INotifPrefs;
 }
 
-export type ProfilePatch = Partial<Pick<User, 'firstName' | 'lastName' | 'phone' | 'photoUrl' | 'notifPrefs'>>;
-
-const USERS_KEY = 'cnt-users';
-const SESSION_KEY = 'cnt-session-email';
-const VIEW_KEY = 'cnt-view-mode'; // 'guest' | 'host'
+export type ProfilePatch = Partial<Pick<IPublicUser, 'firstName' | 'lastName' | 'phone' | 'photoUrl' | 'notifPrefs'>>;
 
 export type AppView = 'guest' | 'host';
+export type FederatedProvider = 'Google' | 'Apple' | 'Facebook';
 
-function toPublic(user: User): PublicUser {
-  const { passwordHash, ...rest } = user;
-  return rest;
+const VIEW_KEY = 'cnt-view-mode';
+/** Stores ID-verification + UI-only prefs that Cognito doesn't own (notifPrefs, photoUrl, idType, idLastFour). */
+const LOCAL_PROFILE_KEY = 'cnt-local-profile';
+
+interface ILocalProfile {
+  [email: string]: {
+    verified?: boolean;
+    verifiedAt?: string;
+    idType?: IdType;
+    idLastFour?: string;
+    photoUrl?: string;
+    notifPrefs?: INotifPrefs;
+  };
 }
+
+export type SignInResult = { ok: true; user: IPublicUser } | { ok: false; error: string };
+export type SignUpResult = { ok: true; user: IPublicUser; needsConfirmation: boolean } | { ok: false; error: string };
+export type CodeResult = { ok: true } | { ok: false; error: string };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly _currentUser$ = new BehaviorSubject<PublicUser | null>(null);
-  readonly currentUser$: Observable<PublicUser | null> = this._currentUser$.asObservable();
+  private readonly _currentUser$ = new BehaviorSubject<IPublicUser | null>(null);
+  readonly currentUser$: Observable<IPublicUser | null> = this._currentUser$.asObservable();
 
   private readonly _currentView$ = new BehaviorSubject<AppView>('guest');
   readonly currentView$: Observable<AppView> = this._currentView$.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
-    this.hydrate();
-    this.hydrateView();
+    if (isPlatformBrowser(this.platformId)) {
+      this.hydrateView();
+      // Restore session if a Cognito user is already signed in (page refresh).
+      this.refreshCurrentUser().catch(() => { /* not signed in — fine */ });
+      // React to federated-redirect sign-in completion.
+      Hub.listen('auth', ({ payload }) => {
+        if (payload.event === 'signedIn' || payload.event === 'tokenRefresh') {
+          this.refreshCurrentUser().catch(() => { /* swallow */ });
+        }
+        if (payload.event === 'signedOut') {
+          this._currentUser$.next(null);
+        }
+      });
+    }
   }
 
+  // ---- View toggle (unchanged — purely UI state) ----------------------
+
   get currentView(): AppView { return this._currentView$.value; }
+  get currentUser(): IPublicUser | null { return this._currentUser$.value; }
 
   setView(v: AppView): void {
     this._currentView$.next(v);
     if (isPlatformBrowser(this.platformId)) {
-      try { localStorage.setItem(VIEW_KEY, v); } catch {}
+      try { localStorage.setItem(VIEW_KEY, v); } catch { /* quota / disabled */ }
     }
   }
 
   private hydrateView(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
     const v = localStorage.getItem(VIEW_KEY);
     if (v === 'host' || v === 'guest') this._currentView$.next(v);
   }
 
-  get currentUser(): PublicUser | null {
-    return this._currentUser$.value;
-  }
+  // ---- Sign-up / confirm ----------------------------------------------
 
-  signUp(input: { email: string; password: string; firstName: string; lastName: string; phone?: string }): { ok: true; user: PublicUser } | { ok: false; error: string } {
+  async signUp(input: { email: string; password: string; firstName: string; lastName: string; phone?: string }): Promise<SignUpResult> {
     const email = input.email.trim().toLowerCase();
-    if (!email || !input.password || !input.firstName || !input.lastName) {
-      return { ok: false, error: 'Please fill out all required fields.' };
+    try {
+      const out = await cognitoSignUp({
+        username: email,
+        password: input.password,
+        options: {
+          userAttributes: {
+            email,
+            given_name: input.firstName.trim(),
+            family_name: input.lastName.trim(),
+            ...(input.phone ? { phone_number: input.phone.trim() } : {}),
+          },
+        },
+      });
+      // Build a temporary IPublicUser — we don't have createdAt until the user actually signs in.
+      const user: IPublicUser = {
+        email,
+        firstName: input.firstName.trim(),
+        lastName: input.lastName.trim(),
+        phone: input.phone?.trim() || undefined,
+        createdAt: new Date().toISOString(),
+      };
+      return { ok: true, user, needsConfirmation: !out.isSignUpComplete };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
     }
-    const users = this.readUsers();
-    if (users.some(u => u.email === email)) {
-      return { ok: false, error: 'An account with this email already exists.' };
-    }
-    const user: User = {
-      email,
-      passwordHash: btoa(input.password),
-      firstName: input.firstName.trim(),
-      lastName: input.lastName.trim(),
-      phone: input.phone?.trim() || undefined,
-      createdAt: new Date().toISOString(),
-    };
-    users.push(user);
-    this.writeUsers(users);
-    this.startSession(email);
-    return { ok: true, user: toPublic(user) };
   }
 
-  signIn(email: string, password: string): { ok: true; user: PublicUser } | { ok: false; error: string } {
-    const norm = email.trim().toLowerCase();
-    const users = this.readUsers();
-    const found = users.find(u => u.email === norm);
-    if (!found || found.passwordHash !== btoa(password)) {
-      return { ok: false, error: 'Email or password is incorrect.' };
+  async confirmSignUp(email: string, code: string): Promise<CodeResult> {
+    try {
+      await cognitoConfirmSignUp({ username: email.trim().toLowerCase(), confirmationCode: code.trim() });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
     }
-    this.startSession(norm);
-    return { ok: true, user: toPublic(found) };
   }
 
-  /** Persist edits to the current user's editable profile fields. Mock: writes to localStorage. */
-  updateProfile(patch: ProfilePatch): PublicUser | null {
+  async resendConfirmation(email: string): Promise<CodeResult> {
+    try {
+      await cognitoResendSignUpCode({ username: email.trim().toLowerCase() });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
+    }
+  }
+
+  // ---- Sign-in / sign-out ---------------------------------------------
+
+  async signIn(email: string, password: string): Promise<SignInResult> {
+    try {
+      const out = await cognitoSignIn({ username: email.trim().toLowerCase(), password });
+      if (!out.isSignedIn) {
+        return { ok: false, error: 'Additional sign-in step required (not supported in this build).' };
+      }
+      const user = await this.refreshCurrentUser();
+      return user ? { ok: true, user } : { ok: false, error: 'Sign-in succeeded but user load failed.' };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
+    }
+  }
+
+  async signInWithProvider(provider: FederatedProvider): Promise<void> {
+    // Redirects the browser away. After Cognito → /auth/callback completes the handshake.
+    await signInWithRedirect({ provider });
+  }
+
+  async signOut(): Promise<void> {
+    try { await cognitoSignOut(); } catch { /* swallow */ }
+    this._currentUser$.next(null);
+    this._currentView$.next('guest');
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.removeItem(VIEW_KEY); } catch { /* */ }
+    }
+  }
+
+  // ---- Forgot password -------------------------------------------------
+
+  async forgotPassword(email: string): Promise<CodeResult> {
+    try {
+      await cognitoResetPassword({ username: email.trim().toLowerCase() });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
+    }
+  }
+
+  async confirmForgotPassword(email: string, code: string, newPassword: string): Promise<CodeResult> {
+    try {
+      await cognitoConfirmResetPassword({
+        username: email.trim().toLowerCase(),
+        confirmationCode: code.trim(),
+        newPassword,
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
+    }
+  }
+
+  // ---- Profile updates -------------------------------------------------
+
+  async updateProfile(patch: ProfilePatch): Promise<IPublicUser | null> {
     const current = this._currentUser$.value;
     if (!current) return null;
-    const users = this.readUsers();
-    const idx = users.findIndex(u => u.email === current.email);
-    if (idx === -1) return null;
-    const cleaned: ProfilePatch = {};
-    if (patch.firstName !== undefined) cleaned.firstName = patch.firstName.trim();
-    if (patch.lastName !== undefined) cleaned.lastName = patch.lastName.trim();
-    if (patch.phone !== undefined) cleaned.phone = patch.phone.trim() || undefined;
-    if (patch.photoUrl !== undefined) cleaned.photoUrl = patch.photoUrl || undefined;
-    if (patch.notifPrefs !== undefined) cleaned.notifPrefs = patch.notifPrefs;
-    users[idx] = { ...users[idx], ...cleaned };
-    this.writeUsers(users);
-    this._currentUser$.next(toPublic(users[idx]));
-    return toPublic(users[idx]);
+    // Cognito-side attributes
+    const cognitoPatch: Record<string, string> = {};
+    if (patch.firstName !== undefined) cognitoPatch['given_name'] = patch.firstName.trim();
+    if (patch.lastName !== undefined)  cognitoPatch['family_name'] = patch.lastName.trim();
+    if (patch.phone !== undefined) {
+      const p = patch.phone.trim();
+      if (p) cognitoPatch['phone_number'] = p;
+    }
+    if (Object.keys(cognitoPatch).length > 0) {
+      try { await cognitoUpdateUserAttributes({ userAttributes: cognitoPatch }); }
+      catch (e) { console.warn('Cognito updateUserAttributes failed', e); return null; }
+    }
+    // Local-side prefs (photoUrl, notifPrefs)
+    if (patch.photoUrl !== undefined || patch.notifPrefs !== undefined) {
+      this.writeLocalProfile(current.email, {
+        ...(patch.photoUrl !== undefined ? { photoUrl: patch.photoUrl || undefined } : {}),
+        ...(patch.notifPrefs !== undefined ? { notifPrefs: patch.notifPrefs } : {}),
+      });
+    }
+    return this.refreshCurrentUser();
   }
 
-  /** Change the current user's password. Requires current password for verification. */
-  updatePassword(currentPassword: string, nextPassword: string): { ok: true } | { ok: false; error: string } {
-    const current = this._currentUser$.value;
-    if (!current) return { ok: false, error: 'You must be signed in.' };
-    if (!nextPassword || nextPassword.length < 8) {
+  async updatePassword(currentPassword: string, newPassword: string): Promise<{ ok: true } | { ok: false; error: string }> {
+    if (!newPassword || newPassword.length < 8) {
       return { ok: false, error: 'New password must be at least 8 characters.' };
     }
-    const users = this.readUsers();
-    const idx = users.findIndex(u => u.email === current.email);
-    if (idx === -1) return { ok: false, error: 'Account not found.' };
-    if (users[idx].passwordHash !== btoa(currentPassword)) {
-      return { ok: false, error: 'Current password is incorrect.' };
+    try {
+      await cognitoUpdatePassword({ oldPassword: currentPassword, newPassword });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: friendlyError(e) };
     }
-    users[idx] = { ...users[idx], passwordHash: btoa(nextPassword) };
-    this.writeUsers(users);
-    return { ok: true };
   }
 
-  /** Mark the current user as identity-verified. Mock: doesn't actually store the ID. */
-  markVerified(input: { idType: IdType; idLastFour?: string }): PublicUser | null {
+  /** ID verification stays mock — Cognito doesn't do KYC. Persists per-email in localStorage. */
+  markVerified(input: { idType: IdType; idLastFour?: string }): IPublicUser | null {
     const current = this._currentUser$.value;
     if (!current) return null;
-    const users = this.readUsers();
-    const idx = users.findIndex(u => u.email === current.email);
-    if (idx === -1) return null;
-    users[idx] = {
-      ...users[idx],
+    this.writeLocalProfile(current.email, {
       verified: true,
       verifiedAt: new Date().toISOString(),
       idType: input.idType,
       idLastFour: input.idLastFour,
-    };
-    this.writeUsers(users);
-    this._currentUser$.next(toPublic(users[idx]));
-    return toPublic(users[idx]);
+    });
+    // Refresh emits a new user with the local-profile fields merged in.
+    void this.refreshCurrentUser();
+    return this.assemble(current.email, this.readCognitoCache());
   }
 
-  /** Mock Google sign-in. In production this would call OAuth and exchange tokens. */
-  signInWithGoogle(profile?: { email?: string; firstName?: string; lastName?: string }): { ok: true; user: PublicUser } {
-    const email = (profile?.email || 'guest.google@curbnturf.demo').trim().toLowerCase();
-    const firstName = profile?.firstName || 'Google';
-    const lastName = profile?.lastName || 'Guest';
-    const users = this.readUsers();
-    let user = users.find(u => u.email === email);
-    if (!user) {
-      user = {
-        email,
-        passwordHash: btoa('google-oauth-mock'),
-        firstName,
-        lastName,
-        createdAt: new Date().toISOString(),
-      };
-      users.push(user);
-      this.writeUsers(users);
-    }
-    this.startSession(email);
-    return { ok: true, user: toPublic(user) };
-  }
+  // ---- Internal: load user from Cognito + merge local profile ----------
 
-  signOut(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem(VIEW_KEY);
-    }
-    this._currentUser$.next(null);
-    this._currentView$.next('guest');
-  }
-
-  private hydrate(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const email = localStorage.getItem(SESSION_KEY);
-    if (!email) return;
-    const found = this.readUsers().find(u => u.email === email);
-    if (found) this._currentUser$.next(toPublic(found));
-  }
-
-  private startSession(email: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(SESSION_KEY, email);
-    }
-    const found = this.readUsers().find(u => u.email === email);
-    if (found) this._currentUser$.next(toPublic(found));
-  }
-
-  private readUsers(): User[] {
-    if (!isPlatformBrowser(this.platformId)) return [];
+  private async refreshCurrentUser(): Promise<IPublicUser | null> {
     try {
-      const raw = localStorage.getItem(USERS_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
+      const cognitoUser = await cognitoGetCurrentUser();
+      const attrs = await cognitoFetchUserAttributes();
+      const merged = this.assemble(cognitoUser.signInDetails?.loginId || attrs.email || '', attrs);
+      this._currentUser$.next(merged);
+      return merged;
     } catch {
-      return [];
+      this._currentUser$.next(null);
+      return null;
     }
   }
 
-  private writeUsers(users: User[]): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  /** Latest known attribute set (cached on the BehaviorSubject) — used by markVerified's sync return. */
+  private readCognitoCache(): Record<string, string | undefined> {
+    const u = this._currentUser$.value;
+    if (!u) return {};
+    return {
+      email: u.email,
+      given_name: u.firstName,
+      family_name: u.lastName,
+      phone_number: u.phone,
+    };
   }
+
+  private assemble(email: string, attrs: Record<string, string | undefined>): IPublicUser {
+    const local = this.readLocalProfile()[email] || {};
+    return {
+      email,
+      firstName: attrs['given_name'] || '',
+      lastName:  attrs['family_name'] || '',
+      phone:     attrs['phone_number'] || undefined,
+      createdAt: new Date().toISOString(), // Cognito's "user.created_at" requires admin scope; fallback to "now-ish"
+      verified:    local.verified,
+      verifiedAt:  local.verifiedAt,
+      idType:      local.idType,
+      idLastFour:  local.idLastFour,
+      photoUrl:    local.photoUrl,
+      notifPrefs:  local.notifPrefs,
+    };
+  }
+
+  private readLocalProfile(): ILocalProfile {
+    if (!isPlatformBrowser(this.platformId)) return {};
+    try {
+      const raw = localStorage.getItem(LOCAL_PROFILE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  }
+
+  private writeLocalProfile(email: string, patch: ILocalProfile[string]): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const all = this.readLocalProfile();
+    all[email] = { ...(all[email] || {}), ...patch };
+    try { localStorage.setItem(LOCAL_PROFILE_KEY, JSON.stringify(all)); } catch { /* */ }
+  }
+}
+
+function friendlyError(e: unknown): string {
+  if (e && typeof e === 'object' && 'message' in e) {
+    const m = String((e as { message: unknown }).message);
+    // Common Cognito error messages — surface cleaner copy
+    if (m.includes('UsernameExistsException')) return 'An account with this email already exists.';
+    if (m.includes('NotAuthorizedException'))  return 'Email or password is incorrect.';
+    if (m.includes('UserNotFoundException'))   return 'Email or password is incorrect.';
+    if (m.includes('CodeMismatchException'))   return 'That code is incorrect.';
+    if (m.includes('ExpiredCodeException'))    return 'That code has expired. Request a new one.';
+    if (m.includes('InvalidPasswordException')) return 'Password doesn\'t meet the policy (min 8 chars + complexity).';
+    if (m.includes('LimitExceededException'))  return 'Too many attempts. Try again in a moment.';
+    return m;
+  }
+  return 'Something went wrong. Please try again.';
 }

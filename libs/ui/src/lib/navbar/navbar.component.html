@@ -79,20 +79,35 @@
                   }
                 </div>
 
-                <!-- Primary group -->
+                <!-- Primary group — branches on view -->
                 <div class="py-1">
-                  <a routerLink="/dashboard" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
-                    <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
-                    Dashboard
-                  </a>
-                  <a routerLink="/trips" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
-                    <span class="material-symbols-outlined text-lg text-dark-text">luggage</span>
-                    Trips
-                  </a>
-                  <a routerLink="/wishlists" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
-                    <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
-                    Wishlists
-                  </a>
+                  @if (view === 'host') {
+                    <a routerLink="/hosting" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
+                      Hosting
+                    </a>
+                    <a routerLink="/hosting/listings" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">storefront</span>
+                      Listings
+                    </a>
+                    <a routerLink="/hosting" fragment="active" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">event_available</span>
+                      Reservations
+                    </a>
+                  } @else {
+                    <a routerLink="/dashboard" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
+                      Dashboard
+                    </a>
+                    <a routerLink="/trips" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">luggage</span>
+                      Trips
+                    </a>
+                    <a routerLink="/wishlists" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
+                      Wishlists
+                    </a>
+                  }
                   <a routerLink="/inbox" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-dark-text">forum</span>
                     <span class="flex-1">Messages</span>

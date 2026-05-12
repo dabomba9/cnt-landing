@@ -1,4 +1,4 @@
-import { Listing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 
 /** Two-letter US state abbreviation → URL slug. */
 export const ABBREV_TO_SLUG: Record<string, string> = {
@@ -109,12 +109,12 @@ export const SLUG_TO_NAME: Record<string, string> = {
 };
 
 /** Parse "Napa, CA" → "california". Returns null when the abbreviation is unknown. */
-export function listingStateSlug(listing: Listing): string | null {
+export function listingStateSlug(listing: IListing): string | null {
   const m = listing.location.match(/,\s*([A-Z]{2})\s*$/);
   return m ? (ABBREV_TO_SLUG[m[1]] ?? null) : null;
 }
 
 /** All MOCK_LISTINGS that resolve to the given state slug. */
-export function listingsInState(slug: string): Listing[] {
+export function listingsInState(slug: string): IListing[] {
   return MOCK_LISTINGS.filter((l) => listingStateSlug(l) === slug);
 }

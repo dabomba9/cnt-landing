@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
-import { AuthService, PublicUser, SeoService } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser, SeoService } from '@cnt-workspace/data-access';
 import { PersonalInfoSectionComponent } from './sections/personal-info.component';
 import { LoginSecuritySectionComponent } from './sections/login-security.component';
 import { IdentitySectionComponent } from './sections/identity.component';
@@ -13,9 +13,9 @@ import { MyRigSectionComponent } from './sections/my-rig.component';
 
 type Section = 'personal' | 'security' | 'identity' | 'payments' | 'notifications' | 'rig';
 
-interface NavItem { id: Section; label: string; icon: string; description: string; }
+interface INavItem { id: Section; label: string; icon: string; description: string; }
 
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: INavItem[] = [
   { id: 'personal',      label: 'Personal info',     icon: 'person',           description: 'Name, phone, photo' },
   { id: 'security',      label: 'Login & security',  icon: 'lock',             description: 'Password, email' },
   { id: 'identity',      label: 'Identity',          icon: 'verified_user',    description: 'Verify your ID' },
@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent implements OnInit, OnDestroy {
-  user: PublicUser | null = null;
+  user: IPublicUser | null = null;
   active: Section = 'personal';
   readonly navItems = NAV_ITEMS;
   private subs: Subscription[] = [];

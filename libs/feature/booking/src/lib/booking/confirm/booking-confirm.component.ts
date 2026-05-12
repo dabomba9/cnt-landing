@@ -10,9 +10,9 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { MiniMapComponent } from '../mini-map/mini-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
-import { Booking, BookingAddOn, STATUS_META } from '@cnt-workspace/models';
+import { IBooking, IBookingAddOn, STATUS_META } from '@cnt-workspace/models';
 import { AuthService } from '@cnt-workspace/data-access';
-import { MOCK_LISTINGS, getListingDetail, AddOn } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS, getListingDetail, IAddOn } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
@@ -24,7 +24,7 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-confirm.component.scss'],
 })
 export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy {
-  booking: Booking | null = null;
+  booking: IBooking | null = null;
   STATUS_META = STATUS_META;
   guestVerified = false;
 
@@ -334,7 +334,7 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
   // ============ Add-ons (inside modify modal) ============
 
   /** All add-ons available on this booking's listing. */
-  get availableAddOns(): AddOn[] {
+  get availableAddOns(): IAddOn[] {
     if (!this.booking) return [];
     const listing = MOCK_LISTINGS.find(l => l.id === this.booking!.listingId);
     return listing ? getListingDetail(listing).addOns : [];
@@ -350,14 +350,14 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
   isEditingAddOnSelected(id: string): boolean { return this.editingAddOnIds.has(id); }
 
   /** Compute the billed amount for an add-on against the *modified* nights/guests. */
-  private addOnAmount(a: AddOn, nights: number, guests: number): number {
+  private addOnAmount(a: IAddOn, nights: number, guests: number): number {
     if (a.unit === 'per night') return a.price * Math.max(1, nights);
     if (a.unit === 'per person') return a.price * guests;
     return a.price;
   }
 
   /** Snapshot of currently-checked add-ons priced against the modified trip shape. */
-  private buildAddOnSnapshot(nights: number, guests: number): BookingAddOn[] {
+  private buildAddOnSnapshot(nights: number, guests: number): IBookingAddOn[] {
     return this.availableAddOns
       .filter(a => this.editingAddOnIds.has(a.id))
       .map(a => ({

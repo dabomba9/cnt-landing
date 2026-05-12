@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastService, Toast } from '@cnt-workspace/data-access';
+import { ToastService, IToast } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-toast-host',

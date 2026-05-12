@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing, getListingDetail } from '@cnt-workspace/data-access';
+import { IListing, getListingDetail } from '@cnt-workspace/data-access';
 
-interface DayCell {
+interface IDayCell {
   date: number;
   iso: string;
   state: 'past' | 'open' | 'booked' | 'today';
@@ -78,14 +78,14 @@ interface DayCell {
   `,
 })
 export class AvailabilityCalendarComponent {
-  @Input() set listings(value: Listing[]) {
+  @Input() set listings(value: IListing[]) {
     this._listings = value || [];
     this.compute();
   }
-  private _listings: Listing[] = [];
+  private _listings: IListing[] = [];
 
   weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-  cells: DayCell[] = [];
+  cells: IDayCell[] = [];
   monthLabel = '';
   openCount = 0;
   bookedCount = 0;
@@ -125,7 +125,7 @@ export class AvailabilityCalendarComponent {
     const startDay = first.getDay(); // 0-6, Sun = 0
     const todayIso = this.toIso(new Date());
 
-    const cells: DayCell[] = [];
+    const cells: IDayCell[] = [];
 
     // Leading days from previous month
     for (let i = startDay - 1; i >= 0; i--) {
@@ -138,7 +138,7 @@ export class AvailabilityCalendarComponent {
     for (let day = 1; day <= last.getDate(); day++) {
       const d = new Date(this.viewYear, this.viewMonth, day);
       const iso = this.toIso(d);
-      let state: DayCell['state'];
+      let state: IDayCell['state'];
       if (iso === todayIso) state = 'today';
       else if (d.getTime() < Date.now() - 86_400_000) state = 'past';
       else if (unavailable.has(iso)) { state = 'booked'; bookedCount++; }

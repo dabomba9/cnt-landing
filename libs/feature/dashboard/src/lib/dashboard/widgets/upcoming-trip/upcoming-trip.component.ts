@@ -1,7 +1,7 @@
 import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking, STATUS_META } from '@cnt-workspace/models';
+import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 @Component({
   selector: 'cnt-upcoming-trip',
@@ -47,7 +47,7 @@ import { Booking, STATUS_META } from '@cnt-workspace/models';
                 <div class="text-sm font-body font-bold text-dark-text mt-0.5">{{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }}</div>
               </div>
             </div>
-            <!-- Host + weather row -->
+            <!-- IHost + weather row -->
             <div class="flex items-center gap-3 mt-5">
               <div class="flex items-center gap-2 min-w-0">
                 <div class="w-8 h-8 rounded-full bg-jungle-green text-white flex items-center justify-center text-[10px] font-headline font-bold shrink-0">{{ hostInitials }}</div>
@@ -98,7 +98,7 @@ import { Booking, STATUS_META } from '@cnt-workspace/models';
   `,
 })
 export class UpcomingTripCardComponent {
-  @Input() booking: Booking | null = null;
+  @Input() booking: IBooking | null = null;
   STATUS_META = STATUS_META;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}

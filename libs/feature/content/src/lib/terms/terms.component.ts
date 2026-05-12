@@ -10,7 +10,7 @@ import { gsap } from 'gsap';
 
 export type TermsCategory = 'all' | 'guests' | 'hosts' | 'fees' | 'cancellation' | 'grow';
 
-export interface TermsSection {
+export interface ITermsSection {
   id: number;
   category: Exclude<TermsCategory, 'all'>;
   title: string;
@@ -26,7 +26,7 @@ export const TERMS_CATEGORIES: { id: TermsCategory; label: string; icon: string 
   { id: 'grow',         label: 'Grow Program',  icon: 'trending_up' },
 ];
 
-export const TERMS_SECTIONS: TermsSection[] = [
+export const TERMS_SECTIONS: ITermsSection[] = [
   { id: 1, category: 'guests',       title: 'Guest Agreement',                     date: '06/2019' },
   { id: 2, category: 'hosts',        title: 'Host Agreement',                      date: '06/2019' },
   { id: 3, category: 'fees',         title: 'CurbNTurf Cash / Account Balance',    date: '02/2022' },
@@ -72,7 +72,7 @@ export class TermsComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  get filteredSections(): TermsSection[] {
+  get filteredSections(): ITermsSection[] {
     if (this.selectedCategory === 'all') return TERMS_SECTIONS;
     return TERMS_SECTIONS.filter(s => s.category === this.selectedCategory);
   }

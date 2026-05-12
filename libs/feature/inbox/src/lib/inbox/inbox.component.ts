@@ -5,10 +5,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { SeoService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
-import { Thread, MessageAuthor } from '@cnt-workspace/models';
+import { IThread, MessageAuthor } from '@cnt-workspace/models';
 
 @Component({
   selector: 'cnt-inbox',
@@ -18,8 +18,8 @@ import { Thread, MessageAuthor } from '@cnt-workspace/models';
   styleUrls: ['./inbox.component.scss'],
 })
 export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
-  user: PublicUser | null = null;
-  threads: Thread[] = [];
+  user: IPublicUser | null = null;
+  threads: IThread[] = [];
   activeThreadId: string | null = null;
   composeBody = '';
   private subs: Subscription[] = [];
@@ -79,39 +79,39 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  get activeThread(): Thread | null {
+  get activeThread(): IThread | null {
     if (!this.activeThreadId) return null;
     return this.threads.find(t => t.id === this.activeThreadId) ?? null;
   }
 
   /** Author label for the *current user* writing in this thread.
    * Delegates to MessageService so that hosts-by-listing-ownership are honored too. */
-  authorForCurrentUser(t: Thread): MessageAuthor | null {
+  authorForCurrentUser(t: IThread): MessageAuthor | null {
     if (!this.user) return null;
     return this.msg.roleForUser(t, this.user.email);
   }
 
   /** Display name of the counter-party (the other participant). */
-  counterpartyName(t: Thread): string {
+  counterpartyName(t: IThread): string {
     const me = this.authorForCurrentUser(t);
     if (me === 'guest') return t.hostName;
     if (me === 'host') return t.guestName;
     return t.hostName;
   }
 
-  counterpartyInitials(t: Thread): string {
+  counterpartyInitials(t: IThread): string {
     const me = this.authorForCurrentUser(t);
     if (me === 'guest') return t.hostInitials;
     if (me === 'host') return t.guestInitials;
     return t.hostInitials;
   }
 
-  unreadCount(t: Thread): number {
+  unreadCount(t: IThread): number {
     if (!this.user) return 0;
     return this.msg.isUnread(t, this.user.email) ? 1 : 0;
   }
 
-  selectThread(t: Thread): void {
+  selectThread(t: IThread): void {
     this.router.navigate(['/inbox', t.id]);
   }
 
@@ -144,7 +144,7 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     return `${Math.round(diff / 86_400_000)}d`;
   }
 
-  preview(t: Thread): string {
+  preview(t: IThread): string {
     const last = t.messages[t.messages.length - 1];
     if (!last) return 'No messages yet.';
     const prefix = last.author === 'system' ? '' : last.author === this.authorForCurrentUser(t) ? 'You: ' : '';

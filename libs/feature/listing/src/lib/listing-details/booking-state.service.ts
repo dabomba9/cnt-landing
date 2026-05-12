@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
-import { AddOn, CancellationTier, Listing, ListingDetail } from '@cnt-workspace/data-access';
-import { MyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
+import { IAddOn, CancellationTier, IListing, IListingDetail } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 
 /**
  * Per-listing booking state shared between the sidebar widget and the mobile bar.
@@ -16,13 +16,13 @@ export class BookingStateService {
   // Per-listing config (set via setListing)
   private unavailableSet = new Set<string>();
   maxGuests = 2;
-  addOns: AddOn[] = [];
+  addOns: IAddOn[] = [];
   cancellationTier: CancellationTier = 'moderate';
   nightlyPrice = 0;
   /** Whether the current listing supports instant book. Photos aren't required when true. */
   instantBook = false;
   /** Latest snapshot of the user's My RV profile (read by the widget; tracked here so canBook is correct). */
-  myRv: MyRv = emptyMyRv();
+  myRv: IMyRv = emptyMyRv();
 
   // Booking state
   readonly today = new Date();
@@ -39,7 +39,7 @@ export class BookingStateService {
   readonly changed = new EventEmitter<void>();
 
   /** Bind per-listing data. Resets transient errors but preserves user-entered booking state. */
-  setListing(listing: Listing, detail: ListingDetail): void {
+  setListing(listing: IListing, detail: IListingDetail): void {
     this.unavailableSet = new Set(detail.unavailableDates);
     this.maxGuests = detail.maxGuests;
     this.addOns = detail.addOns;
@@ -50,7 +50,7 @@ export class BookingStateService {
   }
 
   /** Track the user's MyRv profile so canBook reflects whether photos are present. */
-  setMyRv(rv: MyRv): void {
+  setMyRv(rv: IMyRv): void {
     this.myRv = rv;
   }
 

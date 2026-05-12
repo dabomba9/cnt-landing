@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { PaymentMethodsService, PaymentMethod, ToastService } from '@cnt-workspace/data-access';
+import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-account-payments',
@@ -74,9 +74,9 @@ import { PaymentMethodsService, PaymentMethod, ToastService } from '@cnt-workspa
   `,
 })
 export class PaymentsSectionComponent implements OnInit, OnDestroy {
-  methods: PaymentMethod[] = [];
+  methods: IPaymentMethod[] = [];
   addOpen = false;
-  newBrand: PaymentMethod['brand'] = 'visa';
+  newBrand: IPaymentMethod['brand'] = 'visa';
   newLast4 = '';
   newMakeDefault = false;
   private sub: Subscription | null = null;

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking } from '@cnt-workspace/models';
-import { PublicUser } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
+import { IPublicUser, IUserReview } from '@cnt-workspace/data-access';
 
-interface ActivityEvent {
+interface IActivityEvent {
   icon: string;
   iconColor: 'jungle-green' | 'trinidad' | 'gold' | 'muted-text';
   headline: string;
@@ -13,9 +13,9 @@ interface ActivityEvent {
   link?: { path: string | (string | number)[]; query?: Record<string, string | number> };
 }
 
-interface ActivityGroup {
+interface IActivityGroup {
   label: string;
-  events: ActivityEvent[];
+  events: IActivityEvent[];
 }
 
 @Component({
@@ -86,21 +86,26 @@ interface ActivityGroup {
   `,
 })
 export class ActivityFeedComponent {
-  @Input() set bookings(value: Booking[]) {
+  @Input() set bookings(value: IBooking[]) {
     this._bookings = value || [];
     this.recompute();
   }
-  @Input() set user(value: PublicUser | null) {
+  @Input() set user(value: IPublicUser | null) {
     this._user = value;
     this.recompute();
   }
-  events: ActivityEvent[] = [];
-  groups: ActivityGroup[] = [];
-  private _bookings: Booking[] = [];
-  private _user: PublicUser | null = null;
+  @Input() set reviews(value: IUserReview[]) {
+    this._reviews = value || [];
+    this.recompute();
+  }
+  events: IActivityEvent[] = [];
+  groups: IActivityGroup[] = [];
+  private _bookings: IBooking[] = [];
+  private _user: IPublicUser | null = null;
+  private _reviews: IUserReview[] = [];
 
   private recompute(): void {
-    const out: ActivityEvent[] = [];
+    const out: IActivityEvent[] = [];
     for (const b of this._bookings) {
       const created = new Date(b.createdAt).getTime();
       if (b.instantBook) {
@@ -150,6 +155,18 @@ export class ActivityFeedComponent {
         });
       }
     }
+    for (const r of this._reviews) {
+      const b = this._bookings.find(x => x.id === r.bookingId);
+      const listingTitle = b?.listingTitle || 'a stay';
+      out.push({
+        icon: 'star',
+        iconColor: 'gold',
+        headline: `You reviewed ${listingTitle}`,
+        subline: `${r.rating}/5 stars — earned $5/night credit`,
+        ts: new Date(r.createdAt).getTime(),
+        link: b ? { path: ['/booking/confirm', b.id] } : undefined,
+      });
+    }
     if (this._user?.verified && this._user.verifiedAt) {
       out.push({
         icon: 'verified_user',
@@ -163,12 +180,12 @@ export class ActivityFeedComponent {
     this.groups = this.bucketEvents(this.events);
   }
 
-  private bucketEvents(events: ActivityEvent[]): ActivityGroup[] {
+  private bucketEvents(events: IActivityEvent[]): IActivityGroup[] {
     if (!events.length) return [];
     const todayCut = new Date(); todayCut.setHours(0, 0, 0, 0);
     const todayStart = todayCut.getTime();
     const weekStart = todayStart - 7 * 86_400_000;
-    const buckets: Record<string, ActivityEvent[]> = { Today: [], 'This week': [], Earlier: [] };
+    const buckets: Record<string, IActivityEvent[]> = { Today: [], 'This week': [], Earlier: [] };
     for (const e of events) {
       if (e.ts >= todayStart) buckets['Today'].push(e);
       else if (e.ts >= weekStart) buckets['This week'].push(e);

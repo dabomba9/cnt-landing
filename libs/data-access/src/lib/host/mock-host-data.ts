@@ -1,21 +1,21 @@
-import { Listing, MOCK_LISTINGS } from '../listings/mock-listings.data';
-import { Booking } from '@cnt-workspace/models';
+import { IListing, MOCK_LISTINGS } from '../listings/mock-listings.data';
+import { IBooking } from '@cnt-workspace/models';
 
 /** Listings the current user "hosts" — picks the first 3 listings from the
  *  mock pool. Stable per-user (deterministic by ID) for demo consistency. */
-export function getMyListings(_userEmail: string): Listing[] {
+export function getMyListings(_userEmail: string): IListing[] {
   return MOCK_LISTINGS.slice(0, 3);
 }
 
 /** Real bookings (from BookingService) whose listing belongs to the host. */
-export function getHostBookings(hostUserEmail: string, allBookings: Booking[]): Booking[] {
+export function getHostBookings(hostUserEmail: string, allBookings: IBooking[]): IBooking[] {
   const listingIds = new Set(getMyListings(hostUserEmail).map(l => l.id));
   return allBookings
     .filter(b => listingIds.has(b.listingId))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-export interface HostStats {
+export interface IHostStats {
   earningsThisMonth: number;
   earningsYearToDate: number;
   upcomingNights: number;
@@ -24,7 +24,7 @@ export interface HostStats {
   totalReviews: number;
 }
 
-export function getHostStats(listings: Listing[]): HostStats {
+export function getHostStats(listings: IListing[]): IHostStats {
   if (listings.length === 0) {
     return { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
   }
@@ -42,7 +42,7 @@ export function getHostStats(listings: Listing[]): HostStats {
   };
 }
 
-export interface HostRequest {
+export interface IHostRequest {
   id: string;
   guestName: string;
   guestInitials: string;
@@ -60,7 +60,7 @@ export interface HostRequest {
 }
 
 /** A few seeded mock pending requests for demo. */
-export function getPendingRequests(listings: Listing[]): HostRequest[] {
+export function getPendingRequests(listings: IListing[]): IHostRequest[] {
   if (listings.length === 0) return [];
   const now = Date.now();
   return [

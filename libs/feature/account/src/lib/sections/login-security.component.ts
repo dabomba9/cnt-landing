@@ -70,13 +70,13 @@ export class LoginSecuritySectionComponent {
     return !!(this.current && this.next && this.confirm);
   }
 
-  save(): void {
+  async save(): Promise<void> {
     this.error = null;
     if (this.next !== this.confirm) {
       this.error = "New passwords don't match.";
       return;
     }
-    const result = this.auth.updatePassword(this.current, this.next);
+    const result = await this.auth.updatePassword(this.current, this.next);
     if (result.ok) {
       this.toasts.success('Password updated.');
       this.current = ''; this.next = ''; this.confirm = '';

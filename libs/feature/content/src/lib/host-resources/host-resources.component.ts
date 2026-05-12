@@ -8,7 +8,7 @@ import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
-interface ResourceCard {
+interface IResourceCard {
   title: string;
   body: string;
   icon: string;
@@ -24,7 +24,7 @@ interface ResourceCard {
   styleUrl: './host-resources.component.scss',
 })
 export class HostResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
-  resources: ResourceCard[] = [
+  resources: IResourceCard[] = [
     {
       title: 'Become a host',
       body: 'Start your listing in minutes. Earnings calculator, tier picker, and the full host onboarding flow.',

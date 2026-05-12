@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Review } from '@cnt-workspace/data-access';
+import { IReview } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-review-card',
@@ -9,5 +9,5 @@ import { Review } from '@cnt-workspace/data-access';
   templateUrl: './review-card.component.html',
 })
 export class ReviewCardComponent {
-  @Input({ required: true }) review!: Review;
+  @Input({ required: true }) review!: IReview;
 }

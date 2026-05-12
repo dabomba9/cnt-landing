@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MyRv, emptyMyRv } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
@@ -16,10 +16,10 @@ type Step = 1 | 2;
 export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() open = false;
   /** Current MyRv state — modal seeds itself from this and emits the next state on success. */
-  @Input() myRv: MyRv | null = null;
+  @Input() myRv: IMyRv | null = null;
   @Output() closed = new EventEmitter<void>();
   /** Fires once both photos are attached and the user submits. Carries the updated MyRv. */
-  @Output() saved = new EventEmitter<MyRv>();
+  @Output() saved = new EventEmitter<IMyRv>();
 
   @ViewChild('modalRoot') modalRoot?: ElementRef<HTMLDivElement>;
   @ViewChild('successCheck') successCheck?: ElementRef<HTMLDivElement>;
@@ -157,7 +157,7 @@ export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestr
       const dwell = reduced ? 350 : 700;
       setTimeout(() => {
         this.toasts.success('Photos saved to your RV profile.');
-        const base: MyRv = this.myRv || emptyMyRv();
+        const base: IMyRv = this.myRv || emptyMyRv();
         this.saved.emit({ ...base, rvPhoto: this.rvPreview, licensePhoto: this.licensePreview });
         this.reset();
       }, dwell);

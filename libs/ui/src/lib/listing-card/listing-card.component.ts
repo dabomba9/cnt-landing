@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Listing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
+import { IListing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-listing-card',
@@ -10,7 +10,7 @@ import { Listing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_I
   templateUrl: './listing-card.component.html',
 })
 export class ListingCardComponent {
-  @Input({ required: true }) listing!: Listing;
+  @Input({ required: true }) listing!: IListing;
   @Input() isFavorite = false;
   /** Optional. When > 0, the price chip reveals a "$price × N nights = $total" bubble on hover. */
   @Input() nights = 0;

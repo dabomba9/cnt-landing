@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { IdVerifyModalComponent } from '@cnt-workspace/auth';
-import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-account-identity',
@@ -45,7 +45,7 @@ import { AuthService, PublicUser } from '@cnt-workspace/data-access';
   `,
 })
 export class IdentitySectionComponent implements OnInit, OnDestroy {
-  user: PublicUser | null = null;
+  user: IPublicUser | null = null;
   modalOpen = false;
   private sub: Subscription | null = null;
 

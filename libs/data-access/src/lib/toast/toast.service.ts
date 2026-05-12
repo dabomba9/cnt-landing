@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export type ToastTone = 'success' | 'info' | 'warn' | 'error';
 
-export interface Toast {
+export interface IToast {
   id: number;
   message: string;
   tone: ToastTone;
@@ -16,12 +16,12 @@ export interface Toast {
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   private nextId = 1;
-  private readonly _toasts$ = new BehaviorSubject<Toast[]>([]);
-  readonly toasts$: Observable<Toast[]> = this._toasts$.asObservable();
+  private readonly _toasts$ = new BehaviorSubject<IToast[]>([]);
+  readonly toasts$: Observable<IToast[]> = this._toasts$.asObservable();
 
   show(message: string, tone: ToastTone = 'info', opts: { actionLabel?: string; action?: () => void; durationMs?: number } = {}): number {
     const id = this.nextId++;
-    const toast: Toast = { id, message, tone, actionLabel: opts.actionLabel, action: opts.action };
+    const toast: IToast = { id, message, tone, actionLabel: opts.actionLabel, action: opts.action };
     this._toasts$.next([...this._toasts$.value, toast]);
     setTimeout(() => this.dismiss(id), opts.durationMs ?? 4000);
     return id;

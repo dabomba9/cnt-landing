@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
-import { AuthService, PublicUser, AppView } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser, AppView } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   searchQuery = '';
   favoritesCount = 0;
   unreadMessages = 0;
-  user: PublicUser | null = null;
+  user: IPublicUser | null = null;
   view: AppView = 'guest';
   private lastScrollY = 0;
   private unreadSub: Subscription | null = null;
@@ -72,8 +72,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleUserMenu(): void { this.userMenuOpen = !this.userMenuOpen; }
   closeUserMenu(): void { this.userMenuOpen = false; }
 
-  signOut(): void {
-    this.auth.signOut();
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
     this.userMenuOpen = false;
     this.toasts.info('Signed out.');
     this.router.navigate(['/']);

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-interface QuickAction {
+interface IQuickAction {
   label: string;
   icon: string;
   routerLink: string | string[];
@@ -33,8 +33,8 @@ export class QuickActionsComponent {
   @Input() rvSet = false;
   @Input() verified = false;
 
-  get actions(): QuickAction[] {
-    const list: QuickAction[] = [
+  get actions(): IQuickAction[] {
+    const list: IQuickAction[] = [
       { label: 'Plan a trip', icon: 'add', routerLink: '/search', primary: true },
     ];
     if (!this.verified) {

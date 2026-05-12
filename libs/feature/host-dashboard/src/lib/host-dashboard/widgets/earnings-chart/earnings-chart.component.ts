@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Listing } from '@cnt-workspace/data-access';
+import { IListing } from '@cnt-workspace/data-access';
 
-interface MonthBucket {
+interface IMonthBucket {
   label: string;       // 'Dec'
   shortYear: string;   // ''25
   amount: number;
@@ -65,13 +65,13 @@ interface MonthBucket {
   `,
 })
 export class EarningsChartComponent {
-  @Input() set listings(value: Listing[]) {
+  @Input() set listings(value: IListing[]) {
     this._listings = value || [];
     this.compute();
   }
-  private _listings: Listing[] = [];
+  private _listings: IListing[] = [];
 
-  months: MonthBucket[] = [];
+  months: IMonthBucket[] = [];
   total = 0;
   average = 0;
 

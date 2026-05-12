@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Booking, BookingAddOn } from '@cnt-workspace/models';
+import { IBooking, IBookingAddOn } from '@cnt-workspace/models';
 import { ToastService } from '../toast/toast.service';
 
 const BOOKINGS_KEY = 'cnt-bookings';
@@ -12,8 +12,8 @@ const APPROVAL_RATE = 0.85;
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
-  private readonly _bookings$ = new BehaviorSubject<Booking[]>([]);
-  readonly bookings$: Observable<Booking[]> = this._bookings$.asObservable();
+  private readonly _bookings$ = new BehaviorSubject<IBooking[]>([]);
+  readonly bookings$: Observable<IBooking[]> = this._bookings$.asObservable();
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(
@@ -26,23 +26,23 @@ export class BookingService {
   }
 
   /** All bookings for one user, newest first. */
-  list(userEmail: string): Booking[] {
+  list(userEmail: string): IBooking[] {
     return this.read()
       .filter(b => b.userEmail === userEmail)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
-  getById(id: string): Booking | null {
+  getById(id: string): IBooking | null {
     return this.read().find(b => b.id === id) ?? null;
   }
 
-  createBooking(input: Omit<Booking, 'id' | 'createdAt'>): Booking {
+  createBooking(input: Omit<IBooking, 'id' | 'createdAt'>): IBooking {
     const id = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
       ? crypto.randomUUID()
       : `b-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const now = Date.now();
     const isPending = input.status === 'pending';
-    const booking: Booking = {
+    const booking: IBooking = {
       ...input,
       id,
       createdAt: new Date(now).toISOString(),
@@ -55,7 +55,7 @@ export class BookingService {
     return booking;
   }
 
-  cancel(id: string, reason?: string): Booking | null {
+  cancel(id: string, reason?: string): IBooking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
@@ -70,8 +70,25 @@ export class BookingService {
     return all[idx];
   }
 
+  /**
+   * Available reward credit for a user, in dollars. $5/night × completed-AND-reviewed
+   * nights, minus any creditApplied across all the user's bookings (so spent credit
+   * doesn't get re-spent).
+   */
+  getAvailableCredit(userEmail: string): number {
+    const all = this.read().filter(b => b.userEmail === userEmail);
+    const now = Date.now();
+    const earned = all
+      .filter(b => (b.status === 'confirmed' || b.status === 'approved')
+                && new Date(b.dates.end).getTime() < now
+                && !!b.reviewedAt)
+      .reduce((sum, b) => sum + (b.nights || 0), 0) * 5;
+    const spent = all.reduce((sum, b) => sum + (b.creditApplied || 0), 0);
+    return Math.max(0, earned - spent);
+  }
+
   /** Flag a completed booking as reviewed. Called after a successful Review save. */
-  markReviewed(id: string): Booking | null {
+  markReviewed(id: string): IBooking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
@@ -81,7 +98,7 @@ export class BookingService {
   }
 
   /** Host-initiated decision on a pending request — approve or decline. */
-  hostDecide(id: string, decision: 'approved' | 'declined', reason?: string): Booking | null {
+  hostDecide(id: string, decision: 'approved' | 'declined', reason?: string): IBooking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
@@ -103,7 +120,7 @@ export class BookingService {
   }
 
   /** Host-initiated cancellation on an already-approved/confirmed booking. */
-  hostCancel(id: string, reason?: string): Booking | null {
+  hostCancel(id: string, reason?: string): IBooking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
@@ -128,8 +145,8 @@ export class BookingService {
    */
   modify(
     id: string,
-    patch: { start?: string; end?: string; guests?: number; addOns?: BookingAddOn[] },
-  ): Booking | null {
+    patch: { start?: string; end?: string; guests?: number; addOns?: IBookingAddOn[] },
+  ): IBooking | null {
     const all = this.read();
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
@@ -168,7 +185,7 @@ export class BookingService {
 
   // ---- Host-decision state machine (mock) ------------------------------
 
-  private replayPendingDecisions(bookings: Booking[]): void {
+  private replayPendingDecisions(bookings: IBooking[]): void {
     if (!isPlatformBrowser(this.platformId)) return;
     for (const b of bookings) {
       if (b.status !== 'pending' || !b.decisionAt) continue;
@@ -201,7 +218,7 @@ export class BookingService {
     const booking = all[idx];
     if (booking.status !== 'pending') return; // user already cancelled or otherwise moved on
     const approved = Math.random() < APPROVAL_RATE;
-    const next: Booking = { ...booking, status: approved ? 'approved' : 'declined' };
+    const next: IBooking = { ...booking, status: approved ? 'approved' : 'declined' };
     all[idx] = next;
     this.write(all);
     if (approved) {
@@ -213,7 +230,7 @@ export class BookingService {
 
   // ---- Storage ---------------------------------------------------------
 
-  private read(): Booking[] {
+  private read(): IBooking[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
       const raw = localStorage.getItem(BOOKINGS_KEY);
@@ -224,7 +241,7 @@ export class BookingService {
     }
   }
 
-  private write(bookings: Booking[]): void {
+  private write(bookings: IBooking[]): void {
     if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
     this._bookings$.next(bookings);

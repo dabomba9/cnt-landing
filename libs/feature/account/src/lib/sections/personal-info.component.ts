@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, PublicUser, ToastService } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser, ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-account-personal-info',
@@ -80,7 +80,7 @@ export class PersonalInfoSectionComponent implements OnInit {
     this.hydrate(this.auth.currentUser);
   }
 
-  private hydrate(u: PublicUser | null): void {
+  private hydrate(u: IPublicUser | null): void {
     this.firstName = u?.firstName || '';
     this.lastName = u?.lastName || '';
     this.phone = u?.phone || '';
@@ -123,12 +123,12 @@ export class PersonalInfoSectionComponent implements OnInit {
 
   reset(): void { this.hydrate(this.auth.currentUser); }
 
-  save(): void {
+  async save(): Promise<void> {
     if (!this.firstName.trim() || !this.lastName.trim()) {
       this.toasts.error('First and last name are required.');
       return;
     }
-    const updated = this.auth.updateProfile({
+    const updated = await this.auth.updateProfile({
       firstName: this.firstName,
       lastName: this.lastName,
       phone: this.phone,

@@ -1,12 +1,12 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { Message, MessageAuthor, Thread, Booking, BookingStatus } from '@cnt-workspace/models';
+import { IMessage, MessageAuthor, IThread, IBooking, BookingStatus } from '@cnt-workspace/models';
 import { BookingService } from '../booking/booking.service';
-import { AuthService, PublicUser } from '../auth/auth.service';
+import { AuthService, IPublicUser } from '../auth/auth.service';
 import { ToastService } from '../toast/toast.service';
 import { getListingDetail, MOCK_LISTINGS } from '../listings/mock-listings.data';
-import { getMyListings, getPendingRequests, HostRequest } from '../host/mock-host-data';
+import { getMyListings, getPendingRequests, IHostRequest } from '../host/mock-host-data';
 
 const THREADS_KEY = 'cnt-messages';
 const REPLY_DELAY_MS = 10_000;
@@ -43,8 +43,8 @@ function newId(prefix: string): string {
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
-  private readonly _threads$ = new BehaviorSubject<Thread[]>([]);
-  readonly threads$: Observable<Thread[]> = this._threads$.asObservable();
+  private readonly _threads$ = new BehaviorSubject<IThread[]>([]);
+  readonly threads$: Observable<IThread[]> = this._threads$.asObservable();
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
   private lastSeenStatus = new Map<string, BookingStatus>();
   private lastSeenModifiedAt = new Map<string, string | undefined>();
@@ -73,7 +73,7 @@ export class MessageService {
   }
 
   /** What role does this user play in this thread? null = no relationship. */
-  roleForUser(t: Thread, email: string): 'guest' | 'host' | null {
+  roleForUser(t: IThread, email: string): 'guest' | 'host' | null {
     if (t.guestEmail === email) return 'guest';
     if (t.hostEmail === email) return 'host';
     if (this.isHostOfListing(t.listingId, email)) return 'host';
@@ -81,20 +81,20 @@ export class MessageService {
   }
 
   /** The thread participant key to use for lastReadAt — matches stored thread emails. */
-  private readKeyFor(t: Thread, email: string): string | null {
+  private readKeyFor(t: IThread, email: string): string | null {
     const role = this.roleForUser(t, email);
     if (role === 'guest') return t.guestEmail;
     if (role === 'host') return t.hostEmail;
     return null;
   }
 
-  threadsForUser(email: string): Thread[] {
+  threadsForUser(email: string): IThread[] {
     return this._threads$.value
       .filter(t => this.roleForUser(t, email) !== null)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
-  getThread(id: string): Thread | null {
+  getThread(id: string): IThread | null {
     return this._threads$.value.find(t => t.id === id) ?? null;
   }
 
@@ -104,7 +104,7 @@ export class MessageService {
     );
   }
 
-  isUnread(t: Thread, email: string): boolean {
+  isUnread(t: IThread, email: string): boolean {
     if (t.messages.length === 0) return false;
     const last = t.messages[t.messages.length - 1];
     if (last.author === 'system') return false;
@@ -128,7 +128,7 @@ export class MessageService {
     this.write(all);
   }
 
-  sendMessage(threadId: string, author: MessageAuthor, body: string): Message | null {
+  sendMessage(threadId: string, author: MessageAuthor, body: string): IMessage | null {
     const trimmed = body.trim();
     if (!trimmed) return null;
     const all = this.read();
@@ -136,7 +136,7 @@ export class MessageService {
     if (idx === -1) return null;
     const t = all[idx];
     const authorName = author === 'guest' ? t.guestName : author === 'host' ? t.hostName : 'CurbNTurf';
-    const msg: Message = {
+    const msg: IMessage = {
       id: newId('m'),
       threadId,
       author,
@@ -145,7 +145,7 @@ export class MessageService {
       createdAt: new Date().toISOString(),
     };
     const senderEmail = author === 'guest' ? t.guestEmail : t.hostEmail;
-    const updated: Thread = {
+    const updated: IThread = {
       ...t,
       messages: [...t.messages, msg],
       updatedAt: msg.createdAt,
@@ -167,7 +167,7 @@ export class MessageService {
   }
 
   /** Idempotent — only seeds a thread for a mock host-request if we haven't already. */
-  ensureThreadForRequest(req: HostRequest, hostUser: PublicUser): Thread {
+  ensureThreadForRequest(req: IHostRequest, hostUser: IPublicUser): IThread {
     const id = `req-${req.id}`;
     const existing = this.getThread(id);
     if (existing) return existing;
@@ -175,7 +175,7 @@ export class MessageService {
     const photo = listing ? getListingDetail(listing).photos[0] : '';
     const hostName = `${hostUser.firstName} ${hostUser.lastName}`.trim();
     const now = new Date().toISOString();
-    const messages: Message[] = [];
+    const messages: IMessage[] = [];
     if (req.message) {
       messages.push({
         id: newId('m'),
@@ -186,7 +186,7 @@ export class MessageService {
         createdAt: req.receivedAt,
       });
     }
-    const thread: Thread = {
+    const thread: IThread = {
       id,
       requestId: req.id,
       listingId: req.listingId,
@@ -211,7 +211,7 @@ export class MessageService {
 
   // ---- Booking reconciliation ------------------------------------------
 
-  private reconcileBookings(bookings: Booking[]): void {
+  private reconcileBookings(bookings: IBooking[]): void {
     const all = this.read();
     const byBookingId = new Map(all.filter(t => t.bookingId).map(t => [t.bookingId!, t]));
     let mutated = false;
@@ -256,8 +256,8 @@ export class MessageService {
     if (mutated) this.write(all);
   }
 
-  private appendSystem(thread: Thread, body: string): Thread {
-    const sys: Message = {
+  private appendSystem(thread: IThread, body: string): IThread {
+    const sys: IMessage = {
       id: newId('m'),
       threadId: thread.id,
       author: 'system',
@@ -268,7 +268,7 @@ export class MessageService {
     return { ...thread, messages: [...thread.messages, sys], updatedAt: sys.createdAt };
   }
 
-  private modifyBody(b: Booking): string {
+  private modifyBody(b: IBooking): string {
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
     const start = new Date(b.dates.start).toLocaleDateString('en-US', opts);
     const end = new Date(b.dates.end).toLocaleDateString('en-US', opts);
@@ -279,15 +279,15 @@ export class MessageService {
     return `${base} · Add-ons: ${names}.`;
   }
 
-  private buildThreadFromBooking(b: Booking): Thread {
+  private buildThreadFromBooking(b: IBooking): IThread {
     const hostEmail = deriveHostEmail(b.listingId);
     const hostName = b.hostName || 'Host';
     const guestUser = this.auth.currentUser;
     const guestName = guestUser && guestUser.email === b.userEmail
       ? `${guestUser.firstName} ${guestUser.lastName}`.trim()
       : b.userEmail;
-    const messages: Message[] = [];
-    const requestMessage = (b as Booking & { requestMessage?: string }).requestMessage;
+    const messages: IMessage[] = [];
+    const requestMessage = (b as IBooking & { requestMessage?: string }).requestMessage;
     if (requestMessage) {
       messages.push({
         id: newId('m'),
@@ -329,7 +329,7 @@ export class MessageService {
     };
   }
 
-  private systemBodyForStatus(status: BookingStatus, b: Booking): string | null {
+  private systemBodyForStatus(status: BookingStatus, b: IBooking): string | null {
     switch (status) {
       case 'approved': return `${b.hostName} approved the request — your stay is locked in.`;
       case 'declined': return `${b.hostName} declined the request.`;
@@ -345,7 +345,7 @@ export class MessageService {
 
   // ---- Host-side request thread seeding --------------------------------
 
-  private seedHostRequestThreads(user: PublicUser): void {
+  private seedHostRequestThreads(user: IPublicUser): void {
     const myListings = getMyListings(user.email);
     if (myListings.length === 0) return;
     const requests = getPendingRequests(myListings);
@@ -381,7 +381,7 @@ export class MessageService {
     if (!author || author === 'system') return;
     const pool = author === 'host' ? HOST_REPLY_POOL : GUEST_REPLY_POOL;
     const body = pool[Math.floor(Math.random() * pool.length)];
-    const msg: Message = {
+    const msg: IMessage = {
       id: newId('m'),
       threadId,
       author,
@@ -411,7 +411,7 @@ export class MessageService {
 
   // ---- Storage ---------------------------------------------------------
 
-  private read(): Thread[] {
+  private read(): IThread[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
       const raw = localStorage.getItem(THREADS_KEY);
@@ -422,7 +422,7 @@ export class MessageService {
     }
   }
 
-  private write(threads: Thread[]): void {
+  private write(threads: IThread[]): void {
     if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem(THREADS_KEY, JSON.stringify(threads));
     this._threads$.next(threads);

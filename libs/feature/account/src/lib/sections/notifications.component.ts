@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, NotifPrefs, DEFAULT_NOTIF_PREFS, ToastService } from '@cnt-workspace/data-access';
+import { AuthService, INotifPrefs, DEFAULT_NOTIF_PREFS, ToastService } from '@cnt-workspace/data-access';
 
-interface Toggle { id: keyof NotifPrefs; label: string; description: string; }
+interface IToggle { id: keyof INotifPrefs; label: string; description: string; }
 
-const TOGGLES: Toggle[] = [
+const TOGGLES: IToggle[] = [
   { id: 'emailUpdates',   label: 'Booking & account emails', description: 'Confirmations, receipts, support replies.' },
   { id: 'hostResponses',  label: 'Host responses',           description: "Notify me when a host approves, declines, or messages." },
   { id: 'tripReminders',  label: 'Trip reminders',           description: 'Nudges before check-in and check-out.' },
@@ -42,7 +42,7 @@ const TOGGLES: Toggle[] = [
 })
 export class NotificationsSectionComponent implements OnInit {
   readonly toggles = TOGGLES;
-  prefs: NotifPrefs = { ...DEFAULT_NOTIF_PREFS };
+  prefs: INotifPrefs = { ...DEFAULT_NOTIF_PREFS };
   private debounce: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private auth: AuthService, private toasts: ToastService) {}
@@ -53,8 +53,8 @@ export class NotificationsSectionComponent implements OnInit {
 
   onChange(): void {
     if (this.debounce) clearTimeout(this.debounce);
-    this.debounce = setTimeout(() => {
-      this.auth.updateProfile({ notifPrefs: { ...this.prefs } });
+    this.debounce = setTimeout(async () => {
+      await this.auth.updateProfile({ notifPrefs: { ...this.prefs } });
       this.toasts.success('Notification preferences saved.');
     }, 400);
   }

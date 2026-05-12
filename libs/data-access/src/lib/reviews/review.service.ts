@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export interface ReviewSubScores {
+export interface IReviewSubScores {
   cleanliness: number;
   communication: number;
   location: number;
@@ -10,7 +10,7 @@ export interface ReviewSubScores {
   value: number;
 }
 
-export interface UserReview {
+export interface IUserReview {
   id: string;
   bookingId: string;
   listingId: number;
@@ -19,7 +19,7 @@ export interface UserReview {
   authorInitials: string;
   rating: number;          // 1–5 (overall)
   text: string;
-  subScores: ReviewSubScores;
+  subScores: IReviewSubScores;
   createdAt: string;
 }
 
@@ -32,40 +32,40 @@ function newId(): string {
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
-  private readonly _reviews$ = new BehaviorSubject<UserReview[]>([]);
-  readonly reviews$: Observable<UserReview[]> = this._reviews$.asObservable();
+  private readonly _reviews$ = new BehaviorSubject<IUserReview[]>([]);
+  readonly reviews$: Observable<IUserReview[]> = this._reviews$.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     this._reviews$.next(this.read());
   }
 
-  list(): UserReview[] { return this._reviews$.value; }
+  list(): IUserReview[] { return this._reviews$.value; }
 
-  forBooking(bookingId: string): UserReview | null {
+  forBooking(bookingId: string): IUserReview | null {
     return this._reviews$.value.find(r => r.bookingId === bookingId) ?? null;
   }
 
-  forListing(listingId: number): UserReview[] {
+  forListing(listingId: number): IUserReview[] {
     return this._reviews$.value
       .filter(r => r.listingId === listingId)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
-  forUser(email: string): UserReview[] {
+  forUser(email: string): IUserReview[] {
     return this._reviews$.value.filter(r => r.userEmail === email);
   }
 
-  upsert(input: Omit<UserReview, 'id' | 'createdAt'> & { id?: string }): UserReview {
+  upsert(input: Omit<IUserReview, 'id' | 'createdAt'> & { id?: string }): IUserReview {
     const now = new Date().toISOString();
     const all = this.read();
     const existing = all.findIndex(r => r.bookingId === input.bookingId);
     if (existing !== -1) {
-      const merged: UserReview = { ...all[existing], ...input, id: all[existing].id, createdAt: all[existing].createdAt };
+      const merged: IUserReview = { ...all[existing], ...input, id: all[existing].id, createdAt: all[existing].createdAt };
       all[existing] = merged;
       this.write(all);
       return merged;
     }
-    const review: UserReview = {
+    const review: IUserReview = {
       id: input.id || newId(),
       ...input,
       createdAt: now,
@@ -80,7 +80,7 @@ export class ReviewService {
     this.write(next);
   }
 
-  private read(): UserReview[] {
+  private read(): IUserReview[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
       const raw = localStorage.getItem(REVIEWS_KEY);
@@ -89,7 +89,7 @@ export class ReviewService {
     } catch { return []; }
   }
 
-  private write(reviews: UserReview[]): void {
+  private write(reviews: IUserReview[]): void {
     if (isPlatformBrowser(this.platformId)) {
       try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews)); } catch {}
     }

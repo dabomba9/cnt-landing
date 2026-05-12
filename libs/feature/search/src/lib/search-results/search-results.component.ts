@@ -11,7 +11,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  MOCK_LISTINGS, Listing, Category, CATEGORY_META,
+  MOCK_LISTINGS, IListing, Category, CATEGORY_META,
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
 } from '@cnt-workspace/data-access';
 import { readMyRv, writeMyRv } from '@cnt-workspace/data-access';
@@ -20,7 +20,7 @@ import { ListingCardComponent } from '@cnt-workspace/ui';
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
 
 /** Query-string shape for /search. All fields optional; values arrive as strings from Angular Router. */
-export interface SearchQueryParams {
+export interface ISearchQueryParams {
   mode?: 'destination' | 'roadtrip';
   dest?: string;
   start?: string;
@@ -53,7 +53,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
   styleUrl: './search-results.component.css',
 })
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
-  searchParams: SearchQueryParams = {};
+  searchParams: ISearchQueryParams = {};
   private scrollTriggers: ScrollTrigger[] = [];
 
   // Listings
@@ -209,17 +209,17 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   // ============ Computed ============
 
   /** Listings that pass every filter except the map viewport — used for map pins. */
-  get pinListings(): Listing[] {
+  get pinListings(): IListing[] {
     return this.listings.filter(l => this.passesNonViewportFilters(l));
   }
 
   /** Mirrors `getListingDetail.maxGuests` formula so we can filter without the full detail. */
-  private listingMaxGuests(l: Listing): number {
+  private listingMaxGuests(l: IListing): number {
     return 2 + ((l.id * 5) % 5);
   }
 
   /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.). */
-  private passesNonViewportFilters(l: Listing): boolean {
+  private passesNonViewportFilters(l: IListing): boolean {
     if (this.pinnedIds && !this.pinnedIds.has(l.id)) return false;
     if (this.filters.instantBookOnly && !l.instantBook) return false;
     if (this.filters.guests > 0 && this.listingMaxGuests(l) < this.filters.guests) return false;
@@ -240,7 +240,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return true;
   }
 
-  get filteredListings(): Listing[] {
+  get filteredListings(): IListing[] {
     const filtered = this.listings.filter(l => {
       if (this.mapBounds) {
         const b = this.mapBounds;
@@ -256,7 +256,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.applySort(filtered);
   }
 
-  private applySort(items: Listing[]): Listing[] {
+  private applySort(items: IListing[]): IListing[] {
     const list = [...items];
     switch (this.sortBy) {
       case 'instant-book':  list.sort((a, b) => Number(b.instantBook) - Number(a.instantBook)); break;
@@ -279,7 +279,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return list;
   }
 
-  private distance(l: Listing): number {
+  private distance(l: IListing): number {
     if (!this.userLocation) return 0;
     const dLat = l.lat - this.userLocation.lat;
     const dLng = l.lng - this.userLocation.lng;

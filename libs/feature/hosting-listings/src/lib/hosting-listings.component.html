@@ -1,0 +1,114 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%]">
+    <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-12">
+
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+        <div>
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Your stand</span>
+          <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-3xl md:text-4xl">Listings <span class="text-muted-text font-body font-bold text-2xl">({{ visibleRows.length }})</span></h1>
+          <p class="text-sm text-muted-text font-body mt-2">Edit, pause, or archive everything you host.</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          @if (archivedCount > 0) {
+            <button type="button" (click)="showArchived = !showArchived"
+              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-dark-text/8 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">{{ showArchived ? 'visibility_off' : 'visibility' }}</span>
+              {{ showArchived ? 'Hide' : 'Show' }} archived ({{ archivedCount }})
+            </button>
+          }
+          <a [routerLink]="['/hosting/new']" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
+            <span class="material-symbols-outlined text-base">add</span>
+            Add a listing
+          </a>
+        </div>
+      </div>
+
+      @if (visibleRows.length === 0) {
+        <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-12 text-center">
+          <span class="w-14 h-14 mx-auto rounded-full bg-trinidad/10 inline-flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl text-trinidad">add_business</span>
+          </span>
+          <h2 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">No listings yet</h2>
+          <p class="text-sm font-body text-muted-text max-w-md mx-auto mb-5">Open your land to RV travelers and start earning. Create your first listing in under 10 minutes.</p>
+          <a [routerLink]="['/hosting/new']" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+            Create your first listing
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </a>
+        </div>
+      } @else {
+        <div class="space-y-4">
+          @for (row of visibleRows; track row.listing.id) {
+            <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]"
+              [class.opacity-60]="row.archived">
+              <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <!-- Photo -->
+                <div class="md:w-32 w-full h-24 md:h-20 rounded-md overflow-hidden bg-cream shrink-0">
+                  @if (row.listing.image) {
+                    <img [src]="row.listing.image" [alt]="row.listing.title" class="w-full h-full object-cover">
+                  }
+                </div>
+                <!-- Content -->
+                <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm font-body">
+                  <div class="md:col-span-2 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6rem] font-button uppercase tracking-[0.1em] font-bold"
+                        [ngClass]="{
+                          'bg-jungle-green/10 text-jungle-green': statusLabel(row).tone === 'live',
+                          'bg-gold/20 text-dark-text':           statusLabel(row).tone === 'paused',
+                          'bg-dark-text/10 text-muted-text':     statusLabel(row).tone === 'archived'
+                        }">
+                        {{ statusLabel(row).label }}
+                      </span>
+                      <span class="inline-flex items-center gap-1 text-[0.65rem] text-muted-text font-body">
+                        <span class="material-symbols-outlined text-[14px] text-gold" style="font-variation-settings: 'FILL' 1;">star</span>
+                        {{ row.listing.rating }} · {{ row.listing.reviewCount }} reviews
+                      </span>
+                    </div>
+                    <div class="font-bold text-dark-text truncate">{{ row.listing.title }}</div>
+                    <div class="text-xs text-muted-text truncate">{{ row.listing.location }}</div>
+                  </div>
+                  <div>
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Upcoming</div>
+                    <div class="font-bold text-dark-text">{{ row.upcomingCount }} {{ row.upcomingCount === 1 ? 'booking' : 'bookings' }}</div>
+                  </div>
+                  <div>
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">This month</div>
+                    <div class="font-headline font-bold text-trinidad text-base leading-none">{{ formatCurrency(row.monthEarnings) }}</div>
+                  </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <a [routerLink]="['/listing']" [queryParams]="{ id: row.listing.id }" target="_blank"
+                    class="w-10 h-10 inline-flex items-center justify-center rounded-full border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad transition-colors"
+                    title="View as guest">
+                    <span class="material-symbols-outlined text-base">open_in_new</span>
+                  </a>
+                  <a [routerLink]="editPath(row.listing.id)" [queryParams]="editQuery(row.listing.id)"
+                    class="w-10 h-10 inline-flex items-center justify-center rounded-full border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad transition-colors"
+                    title="Edit listing">
+                    <span class="material-symbols-outlined text-base">edit</span>
+                  </a>
+                  @if (!row.archived) {
+                    <button type="button" (click)="togglePaused(row)"
+                      class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+                      {{ row.paused ? 'Resume' : 'Pause' }}
+                    </button>
+                  }
+                  <button type="button" (click)="toggleArchived(row)"
+                    class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                    {{ row.archived ? 'Restore' : 'Archive' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

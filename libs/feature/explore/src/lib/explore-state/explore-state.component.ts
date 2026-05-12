@@ -10,12 +10,12 @@ import { SeoService } from '@cnt-workspace/data-access';
 import {
   Category,
   CATEGORY_META,
-  Listing,
+  IListing,
 } from '@cnt-workspace/data-access';
 import { listingsInState, SLUG_TO_NAME } from '@cnt-workspace/data-access';
-import { STATE_CONTENT, StateContent } from './state-content.data';
+import { STATE_CONTENT, IStateContent } from './state-content.data';
 
-interface CategoryPill {
+interface ICategoryPill {
   id: Category;
   label: string;
   count: number;
@@ -38,11 +38,11 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
   private favoriteSet = new Set<number>();
   private routeSub?: Subscription;
 
-  state: StateContent | null = null;
-  allInState: Listing[] = [];
-  filteredListings: Listing[] = [];
+  state: IStateContent | null = null;
+  allInState: IListing[] = [];
+  filteredListings: IListing[] = [];
   selectedCategory: Category | null = null;
-  categoryPills: CategoryPill[] = [];
+  categoryPills: ICategoryPill[] = [];
 
   // Stat strip values
   listingCount = 0;
@@ -163,7 +163,7 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
 
   // ---- SEO --------------------------------------------------------------
 
-  private applySeo(content: StateContent): void {
+  private applySeo(content: IStateContent): void {
     const heroImg = this.seo.absUrl(content.heroImage);
 
     this.seo.update({

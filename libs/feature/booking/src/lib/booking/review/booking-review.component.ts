@@ -8,13 +8,13 @@ import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { IdVerifyModalComponent } from '@cnt-workspace/auth';
 import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService, PublicUser } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
-import { MOCK_LISTINGS, Listing, getListingDetail, ListingDetail, AddOn } from '@cnt-workspace/data-access';
-import { readMyRv, MyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
-import { PaymentMethodsService, PaymentMethod } from '@cnt-workspace/data-access';
-import { BookingAddOn } from '@cnt-workspace/models';
+import { MOCK_LISTINGS, IListing, getListingDetail, IListingDetail, IAddOn } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
+import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
+import { IBookingAddOn } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
@@ -26,10 +26,10 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-review.component.scss'],
 })
 export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit {
-  listing: Listing | null = null;
-  detail: ListingDetail | null = null;
-  user: PublicUser | null = null;
-  myRv: MyRv | null = null;
+  listing: IListing | null = null;
+  detail: IListingDetail | null = null;
+  user: IPublicUser | null = null;
+  myRv: IMyRv | null = null;
 
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -38,6 +38,9 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   /** Selected add-on IDs, hydrated from `?addOns=...` query param. */
   selectedAddOnIds = new Set<string>();
+
+  /** Reward credit available to spend on this booking. */
+  availableCredit = 0;
 
   /** Form */
   contactEmail = '';
@@ -55,7 +58,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   /** Saved payment methods — sourced from PaymentMethodsService. */
   selectedPaymentId = '';
-  paymentMethods: PaymentMethod[] = [];
+  paymentMethods: IPaymentMethod[] = [];
   private paymentsSub: Subscription | null = null;
 
   /** Promo code mock */
@@ -123,6 +126,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
     this.startLockTimer();
 
+    if (this.user) {
+      this.availableCredit = this.booking.getAvailableCredit(this.user.email);
+    }
+
     this.paymentsSub = this.payments.methods$.subscribe(methods => {
       this.paymentMethods = methods;
       if (!this.selectedPaymentId || !methods.some(m => m.id === this.selectedPaymentId)) {
@@ -178,13 +185,13 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   /** AddOn objects the user picked, in the order they appear on the listing. */
-  get selectedAddOns(): AddOn[] {
+  get selectedAddOns(): IAddOn[] {
     if (!this.detail) return [];
     return this.detail.addOns.filter(a => this.selectedAddOnIds.has(a.id));
   }
 
   /** Per-line snapshot ({ ...AddOn, amount }) using the current nights/guests multipliers. */
-  get addOnSnapshots(): BookingAddOn[] {
+  get addOnSnapshots(): IBookingAddOn[] {
     return this.selectedAddOns.map(a => ({
       id: a.id,
       label: a.label,
@@ -194,7 +201,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     }));
   }
 
-  private addOnAmount(a: AddOn): number {
+  private addOnAmount(a: IAddOn): number {
     if (a.unit === 'per night') return a.price * Math.max(1, this.nights);
     if (a.unit === 'per person') return a.price * this.guests;
     return a.price;
@@ -225,8 +232,18 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return this.promoApplied?.amount || 0;
   }
 
-  get total(): number {
+  /** Pre-credit total used to cap the credit redemption. */
+  get totalBeforeCredit(): number {
     return Math.max(0, this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee + this.taxes - this.promoDiscount);
+  }
+
+  /** Credit actually applied — capped at the pre-credit total. */
+  get creditApplied(): number {
+    return Math.min(this.availableCredit, this.totalBeforeCredit);
+  }
+
+  get total(): number {
+    return Math.max(0, this.totalBeforeCredit - this.creditApplied);
   }
 
   get hasValidState(): boolean {
@@ -410,6 +427,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
         requestMessage: !this.listing!.instantBook && this.noteToHost.trim() ? this.noteToHost.trim() : undefined,
         addOns: this.addOnSnapshots.length > 0 ? this.addOnSnapshots : undefined,
         addOnsTotal: this.addOnsTotal || undefined,
+        creditApplied: this.creditApplied > 0 ? this.creditApplied : undefined,
       });
       this.submitting = false;
       this.toasts.success(this.listing!.instantBook ? 'Booking confirmed!' : 'Request sent — host has 24h to respond.');
