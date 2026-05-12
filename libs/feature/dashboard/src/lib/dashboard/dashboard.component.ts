@@ -21,6 +21,7 @@ import { ActivityFeedComponent } from './widgets/activity-feed/activity-feed.com
 import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.component';
 import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
 import { ReviewsWidgetComponent } from './widgets/reviews/reviews-widget.component';
+import { SpendingSummaryComponent } from './widgets/spending-summary/spending-summary.component';
 import { isMyRvSet } from '@cnt-workspace/data-access';
 
 const FAV_KEY = 'cnt-favorites';
@@ -32,7 +33,7 @@ const FAV_KEY = 'cnt-favorites';
     CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
     SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
-    QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent,
+    QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent, SpendingSummaryComponent,
   ],
   templateUrl: './dashboard.component.html',
 })
@@ -139,12 +140,19 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Verified flag from current user. */
   get verified(): boolean { return !!this.user?.verified; }
 
-  /** Show trip-prep checklist when there's an upcoming booking starting within 14 days. */
+  /** Show trip-prep checklist when there's an upcoming booking starting within 14 days
+   *  AND the user has notifPrefs.tripReminders enabled (default true). */
   get showTripPrep(): boolean {
+    if (this.user?.notifPrefs?.tripReminders === false) return false;
     const t = this.upcomingTrip;
     if (!t) return false;
     const days = Math.ceil((new Date(t.dates.start).getTime() - Date.now()) / 86_400_000);
     return days >= 0 && days <= 14;
+  }
+
+  /** notifPrefs.marketing gate (default true) — used to hide promo callouts. */
+  get marketingEnabled(): boolean {
+    return this.user?.notifPrefs?.marketing !== false;
   }
 
   /** True when MyRv profile has any specs set. */

@@ -82,6 +82,11 @@ export const appRoutes: Route[] = [
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/wishlists').then(m => m.WishlistsComponent),
   },
+  {
+    path: 'refer',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/refer').then(m => m.ReferComponent),
+  },
   { path: 'host/dashboard', redirectTo: 'hosting', pathMatch: 'full' },
   {
     path: 'search',

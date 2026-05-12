@@ -40,6 +40,11 @@ export class SignUpComponent implements OnInit {
       robots: 'noindex, nofollow',
     });
     this.returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+    // Persist referral attribution from ?ref= for credit-unlock once backend wiring lands.
+    const ref = this.route.snapshot.queryParamMap.get('ref');
+    if (ref && isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem('cnt-referred-by', ref); } catch { /* quota */ }
+    }
   }
 
   async onSubmit(event: Event): Promise<void> {

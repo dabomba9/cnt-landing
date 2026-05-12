@@ -34,6 +34,7 @@
       "@cnt-workspace/inbox": ["libs/feature/inbox/src/index.ts"],
       "@cnt-workspace/listing": ["libs/feature/listing/src/index.ts"],
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
+      "@cnt-workspace/refer": ["libs/feature/refer/src/index.ts"],
       "@cnt-workspace/search": ["libs/feature/search/src/index.ts"],
       "@cnt-workspace/trips": ["libs/feature/trips/src/index.ts"],
       "@cnt-workspace/ui": ["libs/ui/src/index.ts"],

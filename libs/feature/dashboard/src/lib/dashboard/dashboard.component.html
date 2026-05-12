@@ -24,7 +24,7 @@
         <cnt-stat-tile label="Reward credit" tone="gold"     [value]="'$' + rewardCredit" icon="redeem" [spark]="rewardSpark" trend="$5/night after reviews"></cnt-stat-tile>
       </div>
 
-      <!-- Reward credit callout — explainer when none, redemption hint when available -->
+      <!-- Reward credit callout — explainer when none, redemption hint when available. -->
       @if (rewardCredit === 0) {
         <div class="dashboard-anim flex flex-col md:flex-row md:items-center gap-4 p-5 md:p-6 rounded-2xl bg-jungle-green/5 border border-gold/40">
           <span class="w-12 h-12 rounded-full bg-gold/30 inline-flex items-center justify-center shrink-0" style="color: #b3760e;">
@@ -121,6 +121,13 @@
         <cnt-saved-stays [savedListings]="savedListings"></cnt-saved-stays>
       </section>
 
+      <!-- Spending summary -->
+      @if (bookings.length > 0) {
+        <section class="dashboard-anim">
+          <cnt-dashboard-spending [bookings]="bookings"></cnt-dashboard-spending>
+        </section>
+      }
+
       <!-- My rig + activity feed -->
       <div class="dashboard-anim grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         <section class="lg:col-span-1">
@@ -139,8 +146,8 @@
         </section>
       </div>
 
-      <!-- Continue exploring (recommendations) -->
-      @if (recommendedListings.length > 0) {
+      <!-- Continue exploring (recommendations) — gated by notifPrefs.marketing. -->
+      @if (recommendedListings.length > 0 && marketingEnabled) {
         <section class="dashboard-anim">
           <div class="flex items-baseline justify-between gap-3 mb-4">
             <div>

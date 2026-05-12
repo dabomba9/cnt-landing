@@ -1,13 +1,23 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
+type TripView = 'list' | 'calendar';
+
+interface IMonthCell {
+  date: Date;
+  inMonth: boolean;
+  isToday: boolean;
+  bookings: IBooking[];
+}
+
+const VIEW_KEY = 'cnt-trips-view-mode';
 
 @Component({
   selector: 'cnt-trips',
@@ -20,6 +30,12 @@ export class TripsComponent implements OnInit, OnDestroy {
   filter: TripFilter = 'upcoming';
   STATUS_META = STATUS_META;
   guestVerified = false;
+
+  /** List ↔ calendar toggle, persisted to localStorage. */
+  viewMode: TripView = 'list';
+  /** Currently-visible month in calendar mode. */
+  calendarMonth: Date = new Date();
+  readonly weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   /** Cancel modal state. */
   cancelTarget: IBooking | null = null;
@@ -51,6 +67,7 @@ export class TripsComponent implements OnInit, OnDestroy {
     private seo: SeoService,
     private toasts: ToastService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +100,75 @@ export class TripsComponent implements OnInit, OnDestroy {
     // Honor ?filter=past to switch tabs from the dashboard widget link.
     const f = this.route.snapshot.queryParamMap.get('filter');
     if (f === 'past' || f === 'upcoming' || f === 'all') this.filter = f;
+    // Restore last-used view (list vs calendar).
+    if (isPlatformBrowser(this.platformId)) {
+      const saved = localStorage.getItem(VIEW_KEY);
+      if (saved === 'calendar' || saved === 'list') this.viewMode = saved;
+    }
+  }
+
+  setView(v: TripView): void {
+    this.viewMode = v;
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(VIEW_KEY, v); } catch { /* ignore quota */ }
+    }
+  }
+
+  prevMonth(): void {
+    this.calendarMonth = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth() - 1, 1);
+  }
+  nextMonth(): void {
+    this.calendarMonth = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth() + 1, 1);
+  }
+  goToday(): void { this.calendarMonth = new Date(); }
+
+  get calendarMonthLabel(): string {
+    return this.calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  /** 42 cells covering the visible month, Sunday-first. */
+  get monthCells(): IMonthCell[] {
+    const year = this.calendarMonth.getFullYear();
+    const month = this.calendarMonth.getMonth();
+    const first = new Date(year, month, 1);
+    const startOffset = first.getDay(); // 0=Sun
+    const gridStart = new Date(year, month, 1 - startOffset);
+    const today = new Date();
+    const todayKey = today.toDateString();
+    const cells: IMonthCell[] = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
+      const dayBookings = this.bookings.filter(b => {
+        const s = new Date(b.dates.start);
+        const e = new Date(b.dates.end);
+        return d >= new Date(s.getFullYear(), s.getMonth(), s.getDate())
+          && d <= new Date(e.getFullYear(), e.getMonth(), e.getDate());
+      });
+      cells.push({
+        date: d,
+        inMonth: d.getMonth() === month,
+        isToday: d.toDateString() === todayKey,
+        bookings: dayBookings,
+      });
+    }
+    return cells;
+  }
+
+  /** Tailwind bar classes for a booking based on status + recency. */
+  barClassFor(b: IBooking): string {
+    if (b.status === 'cancelled' || b.status === 'declined') {
+      return 'bg-transparent border border-dashed border-muted-text/40 text-muted-text';
+    }
+    if (b.status === 'pending') return 'bg-gold/70 text-dark-text';
+    const past = new Date(b.dates.end).getTime() < Date.now();
+    if (past) return 'bg-muted-text/30 text-dark-text';
+    return 'bg-trinidad text-white';
+  }
+
+  /** Click a calendar cell → route to its booking (first one if multiple). */
+  onDayClick(cell: IMonthCell): void {
+    if (cell.bookings.length === 0) return;
+    this.router.navigate(['/booking/confirm', cell.bookings[0].id]);
   }
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }

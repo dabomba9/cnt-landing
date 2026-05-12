@@ -398,11 +398,12 @@ export class MessageService {
     };
     this.write(all);
 
-    // Toast only if the current user is the recipient.
-    const me = this.auth.currentUser?.email;
-    if (me) {
+    // Toast only if the current user is the recipient AND has notifPrefs.hostResponses enabled.
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
       const recipientEmail = author === 'host' ? t.guestEmail : t.hostEmail;
-      if (recipientEmail === me) {
+      const hostResponsesOn = currentUser.notifPrefs?.hostResponses !== false; // default true
+      if (recipientEmail === currentUser.email && hostResponsesOn) {
         const senderName = author === 'host' ? t.hostName : t.guestName;
         this.toasts.info(`New message from ${senderName}`);
       }

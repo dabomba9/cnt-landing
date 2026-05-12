@@ -1,0 +1,145 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
+  <section class="px-[2%] py-10 md:py-14">
+    <div class="max-w-[64rem] mx-auto px-4 md:px-8">
+
+      <!-- Hero -->
+      <div class="text-center mb-10 md:mb-14">
+        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-3">Rewards</span>
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl mb-4">Give $25, get $25.</h1>
+        <p class="text-muted-text text-base md:text-lg font-body max-w-2xl mx-auto leading-relaxed">
+          Share CurbNTurf with friends who'd love a quiet vineyard, farm, or off-grid stay. They get $25 off their first booking — you get $25 in credit once they stay.
+        </p>
+      </div>
+
+      <!-- Share card -->
+      <div class="bg-white rounded-3xl border border-dark-text/8 shadow-[0_8px_24px_rgba(0,0,0,0.04)] p-6 md:p-10 mb-8"
+        style="background: radial-gradient(ellipse at 95% 0%, rgba(251, 215, 132, 0.25) 0%, transparent 55%), #ffffff;">
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-center">
+
+          <!-- Code + link -->
+          <div class="lg:col-span-3">
+            <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Your referral code</div>
+            <div class="flex items-center gap-3 mb-5">
+              <div class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight select-all">
+                {{ referralCode || '—' }}
+              </div>
+              <button type="button" (click)="copyCode()" [disabled]="!referralCode"
+                class="inline-flex items-center gap-1.5 px-4 py-3 rounded-md bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
+                <span class="material-symbols-outlined text-base">content_copy</span>
+                Copy
+              </button>
+            </div>
+
+            <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Share link</div>
+            <div class="flex items-center gap-3">
+              <div class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 font-body text-dark-text text-xs md:text-sm truncate select-all">
+                {{ shareUrl }}
+              </div>
+              <button type="button" (click)="copyLink()" [disabled]="!referralCode"
+                class="inline-flex items-center gap-1.5 px-4 py-3 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
+                <span class="material-symbols-outlined text-base">link</span>
+                Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- Stat block -->
+          <div class="lg:col-span-2 grid grid-cols-2 gap-3">
+            <div class="rounded-md bg-jungle-green/5 border border-jungle-green/15 p-4 text-center">
+              <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green mb-1">Friends joined</div>
+              <div class="font-headline font-bold text-jungle-green text-3xl leading-none">{{ signedUpCount }}</div>
+            </div>
+            <div class="rounded-md bg-trinidad/5 border border-trinidad/15 p-4 text-center">
+              <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad mb-1">Credit earned</div>
+              <div class="font-headline font-bold text-trinidad text-3xl leading-none">${{ potentialCredit }}</div>
+            </div>
+            <div class="col-span-2 rounded-md bg-gold/15 border border-gold/40 p-3 text-center" style="color: #b3760e;">
+              <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">{{ pendingCount }} pending invites</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Share buttons -->
+        <div class="mt-7 pt-6 border-t border-dark-text/8">
+          <div class="text-[0.6rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-3">Share via</div>
+          <div class="flex flex-wrap gap-2">
+            <a [href]="mailtoHref"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">mail</span>
+              Email
+            </a>
+            <a [href]="twitterHref" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">share</span>
+              X / Twitter
+            </a>
+            <a [href]="facebookHref" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">share</span>
+              Facebook
+            </a>
+            <a [href]="whatsappHref" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-base">forum</span>
+              WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email-invite + friends list -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-white rounded-2xl border border-dark-text/8 p-6 md:p-7">
+          <h2 class="font-headline font-bold text-dark-text text-xl tracking-tight mb-1">Invite by email</h2>
+          <p class="text-sm text-muted-text font-body mb-4">We'll send a personal invite with your code.</p>
+          <form (ngSubmit)="sendInvite()" class="flex flex-col sm:flex-row gap-2">
+            <input type="email" name="inviteEmail" [(ngModel)]="inviteEmail" placeholder="friend@email.com"
+              class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all" />
+            <button type="submit"
+              class="inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+              Send invite
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-dark-text/8 p-6 md:p-7">
+          <div class="flex items-baseline justify-between gap-3 mb-3">
+            <h2 class="font-headline font-bold text-dark-text text-xl tracking-tight">Friends you've referred</h2>
+            <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">{{ referrals.length }}</span>
+          </div>
+          @if (referrals.length === 0) {
+            <p class="text-sm text-muted-text font-body">No invites yet — share your link to get started.</p>
+          } @else {
+            <ul class="divide-y divide-dark-text/8">
+              @for (r of referrals; track r.email) {
+                <li class="flex items-center justify-between gap-3 py-3">
+                  <div class="min-w-0 flex-1">
+                    <div class="font-body text-dark-text text-sm truncate">{{ r.email }}</div>
+                    <div class="text-[0.65rem] text-muted-text font-body">{{ formatReferredAt(r.referredAt) }}</div>
+                  </div>
+                  <span class="shrink-0 px-2.5 py-1 rounded-full text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
+                    [ngClass]="r.status === 'signed-up' ? 'bg-jungle-green/10 text-jungle-green' : 'bg-gold/20 text-[#b3760e]'">
+                    {{ r.status === 'signed-up' ? 'Joined' : 'Invited' }}
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <!-- Terms note -->
+      <p class="text-xs text-muted-text/80 font-body text-center mt-8 leading-relaxed max-w-xl mx-auto">
+        Credit is applied after your friend completes their first stay. Limit one signup credit per email. CurbNTurf reserves the right to revoke credits for fraudulent referrals.
+      </p>
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>
