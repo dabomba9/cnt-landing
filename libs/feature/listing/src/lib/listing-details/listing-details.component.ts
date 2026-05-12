@@ -13,7 +13,7 @@ import {
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel, pushRecentlyViewed } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
@@ -256,6 +256,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         this.myRv = readMyRv(this.platformId);
         this.booking.setMyRv(this.myRv);
         this.currentListingId = newListing.id;
+        pushRecentlyViewed(this.platformId, newListing.id);
 
         this.reviewsSub?.unsubscribe();
         this.reviewsSub = this.reviewSvc.reviews$.subscribe(all => {

@@ -121,6 +121,24 @@
         <cnt-saved-stays [savedListings]="savedListings"></cnt-saved-stays>
       </section>
 
+      <!-- Recently viewed -->
+      @if (recentlyViewedListings.length > 0) {
+        <section class="dashboard-anim">
+          <div class="flex items-baseline justify-between gap-3 mb-4">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Recently viewed</span>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Pick up where you left off</h2>
+            </div>
+            <a routerLink="/search" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">Browse all →</a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @for (l of recentlyViewedListings; track l.id) {
+              <cnt-listing-card [listing]="l"></cnt-listing-card>
+            }
+          </div>
+        </section>
+      }
+
       <!-- Spending summary -->
       @if (bookings.length > 0) {
         <section class="dashboard-anim">

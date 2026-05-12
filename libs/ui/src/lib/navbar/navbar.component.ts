@@ -7,6 +7,7 @@ import { CinematicRollDirective } from '../directives/cinematic-roll.directive';
 import { AuthService, IPublicUser, AppView } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
+import { NotificationService, INotification } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,13 +27,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unreadMessages = 0;
   user: IPublicUser | null = null;
   view: AppView = 'guest';
+
+  /** Notifications dropdown. */
+  notificationsOpen = false;
+  notifications: INotification[] = [];
+  unreadNotifications = 0;
+
   private lastScrollY = 0;
   private unreadSub: Subscription | null = null;
+  private notifSub: Subscription | null = null;
   private readonly TRANSPARENT_THRESHOLD = 80;
   private readonly FAV_KEY = 'cnt-favorites';
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('userMenuWrapper') userMenuWrapper?: ElementRef<HTMLDivElement>;
+  @ViewChild('notificationsWrapper') notificationsWrapper?: ElementRef<HTMLDivElement>;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -40,6 +49,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private toasts: ToastService,
     private msg: MessageService,
+    private notifSvc: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -55,22 +65,69 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
     });
     this.auth.currentView$.subscribe(v => (this.view = v));
+    this.notifSub = this.notifSvc.notifications$.subscribe(list => {
+      this.notifications = list;
+      this.unreadNotifications = list.filter(n => !n.read).length;
+    });
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(e => {
         this.isHome = e.urlAfterRedirects === '/' || e.urlAfterRedirects.startsWith('/?');
         this.mobileNavOpen = false;
         this.userMenuOpen = false;
+        this.notificationsOpen = false;
         this.hydrateFavoritesCount();
       });
   }
 
   ngOnDestroy(): void {
     this.unreadSub?.unsubscribe();
+    this.notifSub?.unsubscribe();
   }
 
-  toggleUserMenu(): void { this.userMenuOpen = !this.userMenuOpen; }
+  toggleUserMenu(): void { this.userMenuOpen = !this.userMenuOpen; this.notificationsOpen = false; }
   closeUserMenu(): void { this.userMenuOpen = false; }
+
+  toggleNotifications(): void {
+    this.notificationsOpen = !this.notificationsOpen;
+    this.userMenuOpen = false;
+  }
+  closeNotifications(): void { this.notificationsOpen = false; }
+
+  onNotificationClick(n: INotification): void {
+    this.notifSvc.markRead(n.id);
+    this.notificationsOpen = false;
+    this.router.navigateByUrl(n.routerLink);
+  }
+
+  markAllNotificationsRead(): void {
+    this.notifSvc.markAllRead(this.notifications);
+  }
+
+  /** Tailwind text-* color class for a notification icon based on its tone. */
+  notifIconClass(n: INotification): string {
+    switch (n.tone) {
+      case 'trinidad': return 'text-trinidad bg-trinidad/10';
+      case 'jungle':   return 'text-jungle-green bg-jungle-green/10';
+      case 'gold':     return 'bg-gold/20';
+      default:         return 'text-muted-text bg-cream/60';
+    }
+  }
+
+  notifIconStyle(n: INotification): Record<string, string> | null {
+    // Inline color for the gold tone — the brand gold doesn't have a built-in text utility.
+    return n.tone === 'gold' ? { color: '#b3760e' } : null;
+  }
+
+  notifTimeLabel(iso: string): string {
+    const ms = Date.now() - new Date(iso).getTime();
+    if (ms < 60_000) return 'just now';
+    if (ms < 3_600_000) return `${Math.floor(ms / 60_000)}m ago`;
+    if (ms < 86_400_000) return `${Math.floor(ms / 3_600_000)}h ago`;
+    if (ms < 7 * 86_400_000) return `${Math.floor(ms / 86_400_000)}d ago`;
+    try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    catch { return ''; }
+  }
 
   async signOut(): Promise<void> {
     await this.auth.signOut();
@@ -149,14 +206,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.lastScrollY = currentScrollY;
   }
 
-  /** Close the user dropdown when clicking anywhere outside of it (including on the navbar itself). */
+  /** Close any open popovers when clicking outside their wrappers. */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.userMenuOpen) return;
-    const wrapper = this.userMenuWrapper?.nativeElement;
-    if (!wrapper) return;
-    if (!wrapper.contains(event.target as Node)) {
-      this.userMenuOpen = false;
+    if (this.userMenuOpen) {
+      const w = this.userMenuWrapper?.nativeElement;
+      if (w && !w.contains(event.target as Node)) this.userMenuOpen = false;
+    }
+    if (this.notificationsOpen) {
+      const w = this.notificationsWrapper?.nativeElement;
+      if (w && !w.contains(event.target as Node)) this.notificationsOpen = false;
     }
   }
 
@@ -164,6 +223,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.userMenuOpen) this.userMenuOpen = false;
+    if (this.notificationsOpen) this.notificationsOpen = false;
   }
 
   @HostListener('document:keydown', ['$event'])

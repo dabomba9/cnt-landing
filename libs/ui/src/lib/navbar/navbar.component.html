@@ -48,6 +48,67 @@
             </div>
           </a>
         } @else {
+          <div #notificationsWrapper class="relative ml-3 hidden md:block">
+            <button type="button" (click)="toggleNotifications()" [attr.aria-expanded]="notificationsOpen" aria-label="Notifications"
+              class="relative w-10 h-10 rounded-full bg-white border border-dark-text/10 text-dark-text flex items-center justify-center hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-xl" [style.font-variation-settings]="unreadNotifications > 0 ? '\'FILL\' 1' : null">notifications</span>
+              @if (unreadNotifications > 0) {
+                <span class="absolute -top-1 -right-1 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-trinidad text-white text-[0.6rem] font-button font-bold flex items-center justify-center">
+                  {{ unreadNotifications > 9 ? '9+' : unreadNotifications }}
+                </span>
+              }
+            </button>
+
+            @if (notificationsOpen) {
+              <div class="absolute right-0 top-full mt-2 z-50 w-[22rem] max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-dark-text/10 shadow-[0_16px_40px_rgba(0,0,0,0.12)] overflow-hidden">
+                <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-dark-text/8">
+                  <div>
+                    <span class="text-trinidad font-label uppercase tracking-[0.12em] text-[0.6rem] font-bold block">Recent</span>
+                    <h3 class="font-headline font-bold text-dark-text text-base tracking-tight leading-tight">Notifications</h3>
+                  </div>
+                  @if (unreadNotifications > 0) {
+                    <button type="button" (click)="markAllNotificationsRead()"
+                      class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                      Mark all read
+                    </button>
+                  }
+                </div>
+
+                @if (notifications.length === 0) {
+                  <div class="px-4 py-10 text-center">
+                    <span class="material-symbols-outlined text-3xl text-muted-text" aria-hidden="true">notifications_off</span>
+                    <p class="text-sm text-muted-text font-body mt-2">You're all caught up.</p>
+                  </div>
+                } @else {
+                  <ul class="max-h-[26rem] overflow-y-auto divide-y divide-dark-text/8">
+                    @for (n of notifications; track n.id) {
+                      <li>
+                        <button type="button" (click)="onNotificationClick(n)"
+                          [class.bg-trinidad]="false"
+                          class="w-full text-left flex items-start gap-3 px-4 py-3 hover:bg-cream/60 transition-colors relative"
+                          [class.bg-cream]="!n.read">
+                          <span class="shrink-0 w-9 h-9 rounded-full inline-flex items-center justify-center"
+                            [ngClass]="notifIconClass(n)"
+                            [ngStyle]="notifIconStyle(n)">
+                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">{{ n.icon }}</span>
+                          </span>
+                          <div class="flex-1 min-w-0">
+                            <div class="font-body text-sm text-dark-text leading-tight"
+                              [class.font-bold]="!n.read">{{ n.title }}</div>
+                            <div class="text-xs text-muted-text font-body mt-0.5 truncate">{{ n.subtitle }}</div>
+                            <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-1">{{ notifTimeLabel(n.timestamp) }}</div>
+                          </div>
+                          @if (!n.read) {
+                            <span class="absolute right-3 top-3 w-2 h-2 rounded-full bg-trinidad"></span>
+                          }
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+            }
+          </div>
           <div #userMenuWrapper class="relative ml-3">
             <button type="button" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen" aria-label="Account menu"
               class="relative w-10 h-10 rounded-full bg-trinidad text-white flex items-center justify-center font-button font-bold text-sm hover:opacity-95 transition-opacity">

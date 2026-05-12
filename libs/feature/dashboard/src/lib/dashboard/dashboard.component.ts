@@ -10,7 +10,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
-import { IMyRv, readMyRv } from '@cnt-workspace/data-access';
+import { IMyRv, readMyRv, readRecentlyViewed } from '@cnt-workspace/data-access';
 import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 import { DashboardGreetingComponent } from './widgets/greeting/greeting.component';
 import { StatTileComponent } from '@cnt-workspace/ui';
@@ -162,6 +162,18 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   onSwitchToHosting(): void {
     this.auth.setView('host');
     this.router.navigate(['/hosting']);
+  }
+
+  /** Listings the user visited recently, minus anything saved or already booked. */
+  get recentlyViewedListings(): IListing[] {
+    const seen = new Set<number>();
+    for (const l of this.savedListings) seen.add(l.id);
+    for (const b of this.bookings) seen.add(b.listingId);
+    return readRecentlyViewed(this.platformId)
+      .filter(id => !seen.has(id))
+      .map(id => MOCK_LISTINGS.find(l => l.id === id))
+      .filter((l): l is IListing => !!l)
+      .slice(0, 4);
   }
 
   /** "Continue exploring" — 4 recommended listings.
