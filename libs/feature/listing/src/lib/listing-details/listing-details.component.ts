@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { CinematicRollDirective } from '@cnt-workspace/ui';
@@ -15,7 +16,7 @@ import {
 import { MyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService } from '@cnt-workspace/data-access';
+import { AuthService, ReviewService, UserReview } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -169,9 +170,27 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return { passes: true, label: `Fits your ${typeStr}` };
   }
 
-  /** Reviews sorted by current sort key (returns a stable copy — does not mutate detail.reviews). */
+  /** Map a UserReview into the listing's Review shape so the UI doesn't branch. */
+  private userReviewAsReview(r: UserReview): typeof this.detail.reviews[number] {
+    const d = new Date(r.createdAt);
+    const dateLabel = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    return {
+      authorName: r.authorName,
+      authorInitials: r.authorInitials,
+      date: dateLabel,
+      rating: r.rating,
+      text: r.text || '(No comment)',
+    };
+  }
+
+  /** Reviews sorted by current sort key. Real user reviews are prepended (most recent first). */
   get sortedReviews(): typeof this.detail.reviews {
-    const reviews = [...this.detail.reviews];
+    const real = this.userReviews
+      .slice()
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map(r => this.userReviewAsReview(r));
+    const mocked = [...this.detail.reviews];
+    const reviews = [...real, ...mocked];
     if (this.reviewSort === 'top-rated') {
       reviews.sort((a, b) => b.rating - a.rating);
     }
@@ -198,6 +217,10 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return Math.max(1, new Date().getFullYear() - this.detail.host.joinedYear);
   }
 
+  /** User reviews for this listing — keeps live via reviews$ subscription. */
+  userReviews: UserReview[] = [];
+  private reviewsSub: Subscription | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -205,6 +228,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     private seo: SeoService,
     @Inject(BookingStateService) public booking: BookingStateService,
     private auth: AuthService,
+    private reviewSvc: ReviewService,
   ) {}
 
   private currentListingId = -1;
@@ -227,6 +251,11 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         this.myRv = readMyRv(this.platformId);
         this.booking.setMyRv(this.myRv);
         this.currentListingId = newListing.id;
+
+        this.reviewsSub?.unsubscribe();
+        this.reviewsSub = this.reviewSvc.reviews$.subscribe(all => {
+          this.userReviews = all.filter(r => r.listingId === this.currentListingId);
+        });
 
         const heroImage = this.seo.absUrl(this.detail.photos[0]);
         this.seo.update({
@@ -459,6 +488,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnDestroy(): void {
     this.sectionObserver?.disconnect();
     this.bookingChangedSub?.unsubscribe();
+    this.reviewsSub?.unsubscribe();
     this.seo.setStructuredData(null);
   }
 

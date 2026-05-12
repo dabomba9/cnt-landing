@@ -70,6 +70,16 @@ export class BookingService {
     return all[idx];
   }
 
+  /** Flag a completed booking as reviewed. Called after a successful Review save. */
+  markReviewed(id: string): Booking | null {
+    const all = this.read();
+    const idx = all.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    all[idx] = { ...all[idx], reviewedAt: new Date().toISOString() };
+    this.write(all);
+    return all[idx];
+  }
+
   /** Host-initiated decision on a pending request — approve or decline. */
   hostDecide(id: string, decision: 'approved' | 'declined', reason?: string): Booking | null {
     const all = this.read();

@@ -8,7 +8,7 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, PublicUser } from '@cnt-workspace/data-access';
-import { BookingService } from '@cnt-workspace/data-access';
+import { BookingService, ReviewService, UserReview } from '@cnt-workspace/data-access';
 import { Booking } from '@cnt-workspace/models';
 import { MyRv, readMyRv } from '@cnt-workspace/data-access';
 import { Listing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
@@ -20,6 +20,7 @@ import { MyRvSummaryWidgetComponent } from './widgets/my-rv-summary/my-rv-summar
 import { ActivityFeedComponent } from './widgets/activity-feed/activity-feed.component';
 import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.component';
 import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
+import { ReviewsWidgetComponent } from './widgets/reviews/reviews-widget.component';
 import { isMyRvSet } from '@cnt-workspace/data-access';
 
 const FAV_KEY = 'cnt-favorites';
@@ -31,7 +32,7 @@ const FAV_KEY = 'cnt-favorites';
     CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
     SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
-    QuickActionsComponent, TripPrepComponent,
+    QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent,
   ],
   templateUrl: './dashboard.component.html',
 })
@@ -40,13 +41,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   bookings: Booking[] = [];
   myRv: MyRv | null = null;
   savedListings: Listing[] = [];
+  userReviews: UserReview[] = [];
   private bookingsSub: Subscription | null = null;
+  private reviewsSub: Subscription | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthService,
     private router: Router,
     private bookingSvc: BookingService,
+    private reviewSvc: ReviewService,
     private seo: SeoService,
   ) {}
 
@@ -64,10 +68,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const email = this.user?.email;
       this.bookings = email ? all.filter(b => b.userEmail === email) : [];
     });
+    this.reviewsSub = this.reviewSvc.reviews$.subscribe(all => {
+      const email = this.user?.email;
+      this.userReviews = email ? all.filter(r => r.userEmail === email) : [];
+    });
   }
 
   ngOnDestroy(): void {
     this.bookingsSub?.unsubscribe();
+    this.reviewsSub?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -197,12 +206,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .reduce((sum, b) => sum + (b.nights || 0), 0);
   }
   get staysSaved(): number { return this.savedListings.length; }
-  /** Reward credit stub — $5/night × completed trips. */
+  /** Reward credit — $5/night × completed-AND-reviewed trips. */
   get rewardCredit(): number {
     const now = Date.now();
-    const completedNights = this.bookings
-      .filter(b => (b.status === 'confirmed' || b.status === 'approved') && new Date(b.dates.end).getTime() < now)
+    const reviewedNights = this.bookings
+      .filter(b => (b.status === 'confirmed' || b.status === 'approved')
+                && new Date(b.dates.end).getTime() < now
+                && !!b.reviewedAt)
       .reduce((sum, b) => sum + (b.nights || 0), 0);
-    return completedNights * 5;
+    return reviewedNights * 5;
   }
 }

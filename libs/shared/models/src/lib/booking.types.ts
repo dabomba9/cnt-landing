@@ -52,6 +52,8 @@ export interface Booking {
   addOns?: BookingAddOn[];
   /** Sum of all add-on amounts at booking/modification time. */
   addOnsTotal?: number;
+  /** ISO when the guest left a review for this completed trip. */
+  reviewedAt?: string;
 }
 
 export const STATUS_META: Record<BookingStatus, { label: string; color: string; bg: string }> = {

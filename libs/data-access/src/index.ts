@@ -9,3 +9,4 @@ export * from './lib/host/mock-host-data';
 export * from './lib/my-rv.util';
 export * from './lib/state.util';
 export * from './lib/payments/payment-methods.service';
+export * from './lib/reviews/review.service';

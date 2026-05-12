@@ -112,6 +112,28 @@
                         Cancel trip
                       </button>
                     </div>
+                  } @else if (canReview(b)) {
+                    <div class="mt-3 pt-3 border-t border-dark-text/5 flex items-center justify-between gap-2">
+                      @if (hasReviewed(b)) {
+                        <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green inline-flex items-center gap-1">
+                          <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified</span>
+                          Reviewed
+                        </div>
+                        <button type="button" (click)="openReview(b, $event)"
+                          class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
+                          Edit review
+                        </button>
+                      } @else {
+                        <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad inline-flex items-center gap-1">
+                          <span class="material-symbols-outlined text-base">redeem</span>
+                          Earn $5/night credit
+                        </span>
+                        <button type="button" (click)="openReview(b, $event)"
+                          class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                          Leave a review →
+                        </button>
+                      }
+                    </div>
                   }
                 </div>
               </a>
@@ -170,6 +192,84 @@
             Cancelling…
           } @else {
             Cancel trip
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (reviewTarget) {
+  <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="review-title">
+    <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeReview()"></div>
+    <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold/20 mb-4" style="color: #b3760e;">
+        <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">star</span>
+      </div>
+      <h2 id="review-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Review your stay</h2>
+      <p class="text-sm text-muted-text font-body leading-relaxed mb-5">
+        <span class="font-bold text-dark-text">{{ reviewTarget.listingTitle }}</span> · {{ datesLabel(reviewTarget) }}
+      </p>
+
+      <div class="mb-5">
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Overall rating</div>
+        <div class="flex items-center gap-1">
+          @for (s of stars; track s) {
+            <button type="button" (click)="setReviewRating(s)"
+              class="w-10 h-10 inline-flex items-center justify-center rounded-md hover:bg-cream/60 transition-colors"
+              [class.text-trinidad]="reviewRating >= s"
+              [class.text-muted-text]="reviewRating < s"
+              [attr.aria-label]="s + ' stars'">
+              <span class="material-symbols-outlined text-2xl" [style.font-variation-settings]="reviewRating >= s ? '\'FILL\' 1' : null">star</span>
+            </button>
+          }
+          <span class="ml-3 text-sm font-body text-dark-text font-bold">{{ reviewRating }}/5</span>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-3">Sub-scores</div>
+        <div class="space-y-2">
+          @for (s of subScoreLabels; track s.key) {
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-sm font-body text-dark-text flex-1">{{ s.label }}</span>
+              <div class="flex items-center gap-0.5">
+                @for (star of stars; track star) {
+                  <button type="button" (click)="setReviewSubScore(s.key, star)"
+                    class="w-7 h-7 inline-flex items-center justify-center hover:bg-cream/60 rounded-md transition-colors"
+                    [attr.aria-label]="s.label + ' ' + star + ' stars'">
+                    <span class="material-symbols-outlined text-base"
+                      [class.text-trinidad]="reviewSubScores[s.key] >= star"
+                      [class.text-muted-text]="reviewSubScores[s.key] < star"
+                      [style.font-variation-settings]="reviewSubScores[s.key] >= star ? '\'FILL\' 1' : null">star</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <label class="flex flex-col gap-2 mb-6">
+        <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Your review <span class="text-muted-text/70 normal-case font-normal">(optional)</span></span>
+        <textarea [(ngModel)]="reviewText" name="reviewText" rows="4" maxlength="600"
+          placeholder="What stood out about your stay?"
+          class="bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none"></textarea>
+        <span class="text-[0.6rem] text-muted-text/70 font-body text-right">{{ reviewText.length }}/600</span>
+      </label>
+
+      <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+        <button type="button" (click)="closeReview()" [disabled]="reviewSaving"
+          class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50 transition-colors">
+          Cancel
+        </button>
+        <button type="button" (click)="confirmReview()" [disabled]="reviewSaving"
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+          @if (reviewSaving) {
+            <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+            Saving…
+          } @else {
+            Submit review
           }
         </button>
       </div>
