@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IListing,
-  getMyListings, getHostStats, getPendingRequests, getHostBookings, IHostStats, IHostRequest,
+  getMyListings, getHostStats, getHostBookings, IHostStats,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.component';
@@ -31,8 +31,6 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   user: IPublicUser | null = null;
   listings: IListing[] = [];
   stats: IHostStats = { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
-  /** Seeded mock requests — kept so a fresh demo isn't empty. */
-  requests: IHostRequest[] = [];
   /** Real bookings against this host's listings. */
   hostBookings: IBooking[] = [];
   private subs: Subscription[] = [];
@@ -68,11 +66,10 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     this.user = this.auth.currentUser;
     if (this.user) {
       this.listings = getMyListings(this.user.email);
-      this.stats = getHostStats(this.listings);
-      this.requests = getPendingRequests(this.listings);
       this.subs.push(
         this.bookings.bookings$.subscribe(all => {
           this.hostBookings = this.user ? getHostBookings(this.user.email, all) : [];
+          this.stats = getHostStats(this.listings, this.hostBookings);
         }),
       );
     }
@@ -120,13 +117,6 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
   }
 
-  formatRequestDates(req: IHostRequest): string {
-    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
-    const start = new Date(req.startDate).toLocaleDateString('en-US', opts);
-    const end = new Date(req.endDate).toLocaleDateString('en-US', opts);
-    return `${start} – ${end}`;
-  }
-
   formatBookingDates(b: IBooking): string {
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
     const start = new Date(b.dates.start).toLocaleDateString('en-US', opts);
@@ -154,6 +144,11 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
       .filter(b => (b.status === 'approved' || b.status === 'confirmed') && new Date(b.dates.end).getTime() >= now);
   }
 
+  /** Real revenue-counting bookings for the chart — confirmed + approved. */
+  get countableHostBookings(): IBooking[] {
+    return this.hostBookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+  }
+
   /** Cancelled / declined real bookings in the last 30 days, max 5. */
   get cancelledHostBookings(): IBooking[] {
     const cutoff = Date.now() - 30 * 86_400_000;
@@ -167,18 +162,6 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     const local = (b.userEmail || '').split('@')[0] || '?';
     const parts = local.split(/[._-]+/).filter(Boolean);
     return ((parts[0]?.[0] || '') + (parts[1]?.[0] || local[1] || '')).toUpperCase();
-  }
-
-  /** ===== Mock request actions (unchanged demo behavior) ===== */
-
-  approveRequest(req: IHostRequest): void {
-    this.requests = this.requests.filter(r => r.id !== req.id);
-    this.toasts.success(`Approved ${req.guestName}'s request.`);
-  }
-
-  declineRequest(req: IHostRequest): void {
-    this.requests = this.requests.filter(r => r.id !== req.id);
-    this.toasts.info(`Declined ${req.guestName}'s request.`);
   }
 
   /** ===== Real booking actions ===== */

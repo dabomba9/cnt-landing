@@ -10,13 +10,7 @@
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">{{ timeGreeting }}, host</span>
           <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl">{{ user?.firstName || 'Host' }}, here's your stand</h1>
           <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 text-xs text-muted-text font-body">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-trinidad/10 text-trinidad text-[0.6rem] font-button uppercase tracking-[0.12em] font-bold">
-              <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">campaign</span>
-              Hosting view
-            </span>
             <span>{{ listings.length }} active {{ listings.length === 1 ? 'listing' : 'listings' }}</span>
-            <span class="hidden md:inline-block w-1 h-1 rounded-full bg-muted-text/40"></span>
-            <span class="hidden md:inline">{{ todayLabel }}</span>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
@@ -33,10 +27,10 @@
 
       <!-- Stat tiles -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-        <cnt-stat-tile label="This month"   tone="trinidad" [value]="formatCurrency(stats.earningsThisMonth)" icon="payments"   trend="Estimated payout"></cnt-stat-tile>
-        <cnt-stat-tile label="Year to date" tone="jungle"   [value]="formatCurrency(stats.earningsYearToDate)" icon="account_balance_wallet" trend="Across all stays"></cnt-stat-tile>
-        <cnt-stat-tile label="Occupancy"    tone="gold"     [value]="stats.occupancyRate + '%'" icon="event_available" trend="Last 30 days"></cnt-stat-tile>
-        <cnt-stat-tile label="Avg rating"   tone="neutral"  [value]="stats.averageRating || '—'" icon="star" [trend]="stats.totalReviews + ' reviews'"></cnt-stat-tile>
+        <cnt-stat-tile label="This month"   tone="trinidad" [value]="formatCurrency(stats.earningsThisMonth)" icon="payments"   [trend]="stats.earningsThisMonth === 0 ? 'No payouts yet' : 'Confirmed + approved'"></cnt-stat-tile>
+        <cnt-stat-tile label="Year to date" tone="jungle"   [value]="formatCurrency(stats.earningsYearToDate)" icon="account_balance_wallet" [trend]="stats.earningsYearToDate === 0 ? 'Since Jan 1' : 'Across all stays'"></cnt-stat-tile>
+        <cnt-stat-tile label="Occupancy"    tone="trinidad" [value]="stats.occupancyRate + '%'" icon="event_available" trend="Last 90 days"></cnt-stat-tile>
+        <cnt-stat-tile label="Avg rating"   tone="gold"     [value]="stats.averageRating || 'Not yet rated'" icon="star" [trend]="stats.totalReviews + ' reviews'"></cnt-stat-tile>
       </div>
 
       <!-- Earnings + Calendar -->
@@ -46,7 +40,7 @@
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Performance</span>
             <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Earnings trend</h2>
           </div>
-          <cnt-earnings-chart [listings]="listings"></cnt-earnings-chart>
+          <cnt-earnings-chart [listings]="listings" [bookings]="countableHostBookings"></cnt-earnings-chart>
         </section>
         <section class="lg:col-span-1">
           <div class="mb-4">
@@ -109,23 +103,22 @@
         </section>
       }
 
-      <!-- Pending requests (real bookings + seeded mock) -->
+      <!-- Pending requests -->
       <section>
         <div class="flex items-baseline justify-between gap-3 mb-4">
           <div>
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Inbox</span>
             <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Pending requests</h2>
           </div>
-          @if (requests.length + pendingHostBookings.length > 0) {
-            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ requests.length + pendingHostBookings.length }} waiting</span>
+          @if (pendingHostBookings.length > 0) {
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ pendingHostBookings.length }} waiting</span>
           }
         </div>
 
-        <!-- Real pending bookings -->
         @if (pendingHostBookings.length > 0) {
-          <div class="space-y-4 mb-4">
+          <div class="space-y-4">
             @for (b of pendingHostBookings; track b.id) {
-              <div class="bg-white rounded-2xl border border-trinidad/20 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
+              <div class="bg-white rounded-2xl border border-trinidad/20 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-4 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                   <div class="flex items-center gap-3 md:w-1/4 shrink-0">
                     <div class="w-12 h-12 rounded-full bg-trinidad text-white flex items-center justify-center font-headline font-bold text-sm shrink-0">{{ guestInitials(b) }}</div>
@@ -176,75 +169,13 @@
               </div>
             }
           </div>
-        }
-        @if (requests.length > 0 && pendingHostBookings.length > 0) {
-          <div class="text-[0.65rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-3 mt-6">Sample requests</div>
-        }
-
-        @if (requests.length === 0 && pendingHostBookings.length === 0) {
+        } @else {
           <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-10 text-center">
             <span class="w-14 h-14 mx-auto rounded-full bg-jungle-green/10 inline-flex items-center justify-center">
               <span class="material-symbols-outlined text-2xl text-jungle-green" style="font-variation-settings: 'FILL' 1;">inbox</span>
             </span>
             <h3 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">All caught up</h3>
             <p class="text-sm font-body text-muted-text max-w-md mx-auto">No pending requests right now. We'll notify you when a guest reaches out.</p>
-          </div>
-        } @else if (requests.length > 0) {
-          <div class="space-y-4">
-            @for (req of requests; track req.id) {
-              <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 md:p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.07)]">
-                <div class="flex flex-col md:flex-row md:items-center gap-4">
-                  <!-- Guest -->
-                  <div class="flex items-center gap-3 md:w-1/4 shrink-0">
-                    <div class="w-12 h-12 rounded-full bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-sm shrink-0 relative">
-                      {{ req.guestInitials }}
-                      @if (req.guestVerified) {
-                        <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-jungle-green text-white ring-2 ring-white flex items-center justify-center">
-                          <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">check</span>
-                        </span>
-                      }
-                    </div>
-                    <div class="min-w-0">
-                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ req.guestName }}</div>
-                      <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ formatRelative(req.receivedAt) }}</div>
-                    </div>
-                  </div>
-                  <!-- Stay -->
-                  <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm font-body">
-                    <div class="md:col-span-2">
-                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Listing</div>
-                      <div class="font-bold text-dark-text truncate">{{ req.listingTitle }}</div>
-                    </div>
-                    <div>
-                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Dates</div>
-                      <div class="font-bold text-dark-text">{{ formatRequestDates(req) }}</div>
-                      <div class="text-xs text-muted-text">{{ req.nights }} {{ req.nights === 1 ? 'night' : 'nights' }} · {{ req.guests }} {{ req.guests === 1 ? 'guest' : 'guests' }}</div>
-                    </div>
-                    <div>
-                      <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Payout</div>
-                      <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(req.total) }}</div>
-                      <div class="text-xs text-muted-text">{{ req.rigSummary }}</div>
-                    </div>
-                  </div>
-                  <!-- Actions -->
-                  <div class="flex items-center gap-2 shrink-0">
-                    <a [routerLink]="['/inbox', 'req-' + req.id]" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors inline-flex items-center gap-1.5">
-                      <span class="material-symbols-outlined text-[16px]">forum</span>
-                      Message
-                    </a>
-                    <button type="button" (click)="declineRequest(req)" class="px-4 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
-                      Decline
-                    </button>
-                    <button type="button" (click)="approveRequest(req)" class="px-4 py-2.5 rounded-full bg-jungle-green text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(41,93,66,0.25)] transition-opacity">
-                      Approve
-                    </button>
-                  </div>
-                </div>
-                @if (req.message) {
-                  <div class="mt-4 pt-4 border-t border-dark-text/8 text-sm font-body text-muted-text italic">"{{ req.message }}"</div>
-                }
-              </div>
-            }
           </div>
         }
       </section>

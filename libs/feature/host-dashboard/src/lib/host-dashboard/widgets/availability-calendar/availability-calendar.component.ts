@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { IListing, getListingDetail } from '@cnt-workspace/data-access';
 
 interface IDayCell {
@@ -12,10 +13,10 @@ interface IDayCell {
 @Component({
   selector: 'cnt-availability-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">
-      <div class="flex items-center justify-between gap-3 mb-5">
+      <div class="flex items-center justify-between gap-3 mb-3">
         <div>
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block mb-1">Availability</span>
           <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight leading-tight">{{ monthLabel }}</h3>
@@ -31,6 +32,18 @@ interface IDayCell {
           </button>
         </div>
       </div>
+
+      <a routerLink="/hosting/listings" class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline mb-4">
+        Manage availability
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </a>
+
+      @if (hasNoListings) {
+        <div class="rounded-xl bg-cream/40 border border-dark-text/8 px-4 py-6 text-center mb-3">
+          <span class="material-symbols-outlined text-2xl text-muted-text" aria-hidden="true">event_available</span>
+          <p class="text-sm text-muted-text font-body mt-1.5">No listings yet — availability will appear once you publish your first space.</p>
+        </div>
+      }
 
       <!-- Weekday headers -->
       <div class="grid grid-cols-7 gap-1 mb-2">
@@ -88,6 +101,9 @@ export class AvailabilityCalendarComponent {
   cells: IDayCell[] = [];
   monthLabel = '';
   openCount = 0;
+
+  get hasNoListings(): boolean { return this._listings.length === 0; }
+
   bookedCount = 0;
 
   private viewYear = new Date().getFullYear();

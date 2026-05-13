@@ -24,19 +24,54 @@ export interface IHostStats {
   totalReviews: number;
 }
 
-export function getHostStats(listings: IListing[]): IHostStats {
-  if (listings.length === 0) {
-    return { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
-  }
-  // Mock formulas based on listing data
-  const avgPrice = listings.reduce((s, l) => s + l.price, 0) / listings.length;
+/** Derive host KPIs from real bookings + listings. No formula filler. */
+export function getHostStats(listings: IListing[], hostBookings: IBooking[]): IHostStats {
   const totalReviews = listings.reduce((s, l) => s + l.reviewCount, 0);
-  const averageRating = +(listings.reduce((s, l) => s + l.rating, 0) / listings.length).toFixed(2);
+  const averageRating = listings.length === 0
+    ? 0
+    : +(listings.reduce((s, l) => s + l.rating, 0) / listings.length).toFixed(2);
+
+  if (listings.length === 0) {
+    return { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating, totalReviews };
+  }
+
+  const now = Date.now();
+  const monthStart = new Date();
+  monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+  const yearStart = new Date(new Date().getFullYear(), 0, 1).getTime();
+  const ninetyDaysAgo = now - 90 * 86_400_000;
+
+  const counted = hostBookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+
+  let earningsThisMonth = 0;
+  let earningsYearToDate = 0;
+  let upcomingNights = 0;
+  let bookedNightsLast90 = 0;
+
+  for (const b of counted) {
+    const start = new Date(b.dates.start).getTime();
+    const end = new Date(b.dates.end).getTime();
+    if (start >= monthStart.getTime()) earningsThisMonth += b.total || 0;
+    if (start >= yearStart) earningsYearToDate += b.total || 0;
+    if (start >= now) upcomingNights += b.nights || 0;
+    // Occupancy: overlap of [start, end] with [ninetyDaysAgo, now]
+    const overlapStart = Math.max(start, ninetyDaysAgo);
+    const overlapEnd = Math.min(end, now);
+    if (overlapEnd > overlapStart) {
+      bookedNightsLast90 += Math.ceil((overlapEnd - overlapStart) / 86_400_000);
+    }
+  }
+
+  const availableNights = listings.length * 90;
+  const occupancyRate = availableNights === 0
+    ? 0
+    : Math.min(100, Math.round((bookedNightsLast90 / availableNights) * 100));
+
   return {
-    earningsThisMonth: Math.round(avgPrice * listings.length * 4),
-    earningsYearToDate: Math.round(avgPrice * listings.length * 32),
-    upcomingNights: 12,
-    occupancyRate: 78,
+    earningsThisMonth: Math.round(earningsThisMonth),
+    earningsYearToDate: Math.round(earningsYearToDate),
+    upcomingNights,
+    occupancyRate,
     averageRating,
     totalReviews,
   };
@@ -59,41 +94,7 @@ export interface IHostRequest {
   message?: string;
 }
 
-/** A few seeded mock pending requests for demo. */
-export function getPendingRequests(listings: IListing[]): IHostRequest[] {
-  if (listings.length === 0) return [];
-  const now = Date.now();
-  return [
-    {
-      id: 'req-1',
-      guestName: 'Sarah & Mike',
-      guestInitials: 'SM',
-      guestVerified: true,
-      listingId: listings[0].id,
-      listingTitle: listings[0].title,
-      startDate: new Date(now + 7 * 86_400_000).toISOString(),
-      endDate: new Date(now + 10 * 86_400_000).toISOString(),
-      nights: 3,
-      guests: 2,
-      rigSummary: 'Class C · 28 ft',
-      total: listings[0].price * 3,
-      receivedAt: new Date(now - 2 * 3_600_000).toISOString(),
-      message: 'Hi! Looks beautiful — does the dump station accommodate Class C?',
-    },
-    {
-      id: 'req-2',
-      guestName: 'Marcus B.',
-      guestInitials: 'MB',
-      guestVerified: false,
-      listingId: listings[Math.min(1, listings.length - 1)].id,
-      listingTitle: listings[Math.min(1, listings.length - 1)].title,
-      startDate: new Date(now + 14 * 86_400_000).toISOString(),
-      endDate: new Date(now + 17 * 86_400_000).toISOString(),
-      nights: 3,
-      guests: 4,
-      rigSummary: 'Travel Trailer · 24 ft',
-      total: listings[Math.min(1, listings.length - 1)].price * 3,
-      receivedAt: new Date(now - 26 * 3_600_000).toISOString(),
-    },
-  ];
+/** Reserved — seeded demo requests removed in favor of real pending bookings. */
+export function getPendingRequests(_listings: IListing[]): IHostRequest[] {
+  return [];
 }

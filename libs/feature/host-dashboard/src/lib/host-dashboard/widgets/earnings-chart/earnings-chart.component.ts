@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IListing } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
 
 interface IMonthBucket {
   label: string;       // 'Dec'
@@ -27,8 +28,14 @@ interface IMonthBucket {
         </div>
       </div>
 
+      @if (hasNoData) {
+        <div class="rounded-xl bg-cream/40 border border-dark-text/8 px-5 py-8 text-center mb-2">
+          <span class="material-symbols-outlined text-3xl text-muted-text" aria-hidden="true">trending_up</span>
+          <p class="text-sm text-muted-text font-body mt-2">No earnings yet — your monthly revenue will show up here after your first confirmed stay.</p>
+        </div>
+      }
       <!-- Bars -->
-      <div class="flex items-end justify-between gap-2 md:gap-3 h-[160px]">
+      <div class="flex items-end justify-between gap-2 md:gap-3 h-[160px]" [class.opacity-30]="hasNoData">
         @for (m of months; track m.label; let i = $index) {
           <button type="button" (click)="selectMonth(i)"
             class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
@@ -113,7 +120,12 @@ export class EarningsChartComponent {
     this._listings = value || [];
     this.compute();
   }
+  @Input() set bookings(value: IBooking[]) {
+    this._bookings = value || [];
+    this.compute();
+  }
   private _listings: IListing[] = [];
+  private _bookings: IBooking[] = [];
 
   months: IMonthBucket[] = [];
   total = 0;
@@ -168,40 +180,38 @@ export class EarningsChartComponent {
   }
 
   private compute(): void {
-    const baseline = this._listings.reduce((s, l) => s + l.price, 0);
-    if (baseline === 0) {
-      this.months = [];
-      this.total = 0;
-      this.average = 0;
-      return;
-    }
-    // Generate 6 monthly buckets ending in current month, with seasonality
-    // (RV travel peaks in summer). Deterministic per listing count.
-    const seed = this._listings.length;
-    const seasonal = [0.6, 0.7, 0.85, 1.0, 1.1, 0.95]; // last 6 months → most recent rightmost
     const now = new Date();
     const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'short' });
     this.months = [];
     let total = 0;
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const factor = seasonal[5 - i] * (0.9 + (seed % 3) * 0.05);
-      const amount = Math.round(baseline * 6 * factor);
-      // Mock bookings: 2-3 nights per stay implied by listing price baseline
-      const avgNightly = baseline / Math.max(1, this._listings.length);
-      const bookings = Math.max(1, Math.round(amount / (avgNightly * 2.5)));
+      const monthStart = d.getTime();
+      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime();
+      let amount = 0;
+      let count = 0;
+      for (const b of this._bookings) {
+        const start = new Date(b.dates.start).getTime();
+        if (start >= monthStart && start < monthEnd) {
+          amount += b.total || 0;
+          count++;
+        }
+      }
       this.months.push({
         label: monthFmt.format(d),
         shortYear: `'${d.getFullYear().toString().slice(-2)}`,
-        amount,
+        amount: Math.round(amount),
         date: d,
-        bookings,
+        bookings: count,
       });
       total += amount;
     }
-    this.total = total;
+    this.total = Math.round(total);
     this.average = Math.round(total / 6);
   }
+
+  /** True when there's no booking activity to chart yet — drives the empty state. */
+  get hasNoData(): boolean { return this.total === 0; }
 
   /** Height percentage for a bar (0–100). */
   heightPct(amount: number): number {

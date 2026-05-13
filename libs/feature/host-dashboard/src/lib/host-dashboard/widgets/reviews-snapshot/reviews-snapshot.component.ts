@@ -35,7 +35,7 @@ interface IRecentReview {
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           @for (item of recent; track $index) {
-            <div class="rounded-xl bg-cream/40 border border-dark-text/8 p-4">
+            <div>
               <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-2 truncate">{{ item.listingTitle }}</div>
               <cnt-review-card [review]="item.review"></cnt-review-card>
             </div>
