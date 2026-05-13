@@ -44,13 +44,6 @@
         <h1 class="review-anim font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl">Almost there.</h1>
         <p class="review-anim text-muted-text text-base font-body mt-2">Take one last look — we'll lock everything in once you confirm.</p>
 
-        @if (lockTimer > 0) {
-          <div class="review-anim inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-trinidad/10 border border-trinidad/20 text-trinidad text-[0.7rem] uppercase tracking-[0.12em] font-button font-bold">
-            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">lock_clock</span>
-            We're holding this price for you · {{ lockTimerLabel }}
-          </div>
-        }
-
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 mt-10">
 
           <!-- Left: trip + contact + payment + terms -->
@@ -130,14 +123,20 @@
                   }
                 </div>
 
-                <!-- Rig (read-only — link back to MyRv if user wants to edit) -->
-                <a [routerLink]="['/listing']" [queryParams]="{ id: listing!.id }" class="flex items-center gap-3 p-3 rounded-xl border border-dark-text/8 hover:border-trinidad/40 transition-colors no-underline">
-                  <span class="material-symbols-outlined text-jungle-green">rv_hookup</span>
+                <!-- Rig (read-only — link back to /account#rig if user wants to edit) -->
+                <a routerLink="/account" fragment="rig"
+                  class="flex items-center gap-3 p-3 rounded-xl border transition-colors no-underline"
+                  [ngClass]="isMyRvComplete ? 'border-dark-text/8 hover:border-trinidad/40' : 'border-trinidad/40 bg-trinidad/5'">
+                  <span class="material-symbols-outlined" [ngClass]="isMyRvComplete ? 'text-jungle-green' : 'text-trinidad'">rv_hookup</span>
                   <div class="flex-1 min-w-0">
                     <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold">Your rig</div>
-                    <div class="text-sm font-body font-bold text-dark-text truncate">{{ rvSummary }}</div>
+                    @if (isMyRvComplete) {
+                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ rvSummary }}</div>
+                    } @else {
+                      <div class="text-sm font-body font-bold text-dark-text">Add your {{ rigMissingLabel }} to book.</div>
+                    }
                   </div>
-                  <span class="material-symbols-outlined text-base text-trinidad">edit</span>
+                  <span class="material-symbols-outlined text-base text-trinidad">arrow_forward</span>
                 </a>
               </div>
             </div>
@@ -234,10 +233,37 @@
                     }
                   </label>
                 }
-                <button type="button" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-dark-text/20 text-muted-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
-                  <span class="material-symbols-outlined text-base">add</span>
-                  Add another card
-                </button>
+                @if (!addCardOpen) {
+                  <button type="button" (click)="addCardOpen = true" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-dark-text/20 text-muted-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                    <span class="material-symbols-outlined text-base">add</span>
+                    Add another card
+                  </button>
+                } @else {
+                  <div class="p-4 rounded-xl bg-cream/40 border border-dark-text/8">
+                    <div class="text-sm font-body font-bold text-dark-text mb-3">Add a card</div>
+                    <div class="grid grid-cols-2 gap-3">
+                      <label class="flex flex-col gap-1">
+                        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] text-muted-text">Brand</span>
+                        <select name="newCardBrand" [(ngModel)]="newCardBrand" class="bg-white border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body">
+                          <option value="visa">Visa</option>
+                          <option value="mastercard">Mastercard</option>
+                          <option value="amex">Amex</option>
+                          <option value="discover">Discover</option>
+                        </select>
+                      </label>
+                      <label class="flex flex-col gap-1">
+                        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] text-muted-text">Last 4</span>
+                        <input type="text" inputmode="numeric" maxlength="4" name="newCardLast4" [(ngModel)]="newCardLast4" placeholder="4242"
+                          class="bg-white border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body">
+                      </label>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-3">
+                      <button type="button" (click)="cancelAddCard()" class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text">Cancel</button>
+                      <button type="button" (click)="addCard()" [disabled]="!canAddCard"
+                        class="px-5 py-2.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed">Add card</button>
+                    </div>
+                  </div>
+                }
               </div>
             </div>
 
@@ -364,7 +390,7 @@
                     <button type="button" (click)="promoOpen = true" class="text-trinidad text-xs font-bold hover:underline mt-3">Have a promo code?</button>
                   } @else {
                     <div class="mt-3 flex gap-2">
-                      <input [(ngModel)]="promoCode" placeholder="WELCOME10" class="flex-1 bg-cream/60 border border-dark-text/15 rounded-lg px-3 py-2 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green uppercase">
+                      <input [(ngModel)]="promoCode" name="promoCode" placeholder="Try WELCOME10 or TURF20" class="flex-1 bg-cream/60 border border-dark-text/15 rounded-lg px-3 py-2 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green uppercase">
                       <button type="button" (click)="applyPromo()" class="px-4 py-2 rounded-lg bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">Apply</button>
                     </div>
                   }

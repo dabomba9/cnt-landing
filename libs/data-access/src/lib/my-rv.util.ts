@@ -61,8 +61,31 @@ export function writeMyRv(platformId: Object, rv: IMyRv): void {
   }
 }
 
+/** Lightweight "anything filled" check — used for UI hints. */
 export function isMyRvSet(rv: IMyRv): boolean {
   return !!(rv.type || rv.length || rv.height || rv.width || rv.year || rv.make || rv.model || rv.licensePlate);
+}
+
+/** Strict completeness check — every field a host needs to confirm fit. Required to book any listing. */
+export function isMyRvComplete(rv: IMyRv): boolean {
+  return !!(
+    rv.type &&
+    typeof rv.length === 'number' && rv.length > 0 &&
+    typeof rv.height === 'number' && rv.height > 0 &&
+    typeof rv.width  === 'number' && rv.width  > 0 &&
+    rv.licensePlate && rv.licensePlate.trim().length > 0
+  );
+}
+
+/** Itemized list of the fields still missing for full completeness — drives error copy. */
+export function myRvMissingFields(rv: IMyRv): string[] {
+  const missing: string[] = [];
+  if (!rv.type) missing.push('RV type');
+  if (!(typeof rv.length === 'number' && rv.length > 0)) missing.push('length');
+  if (!(typeof rv.height === 'number' && rv.height > 0)) missing.push('height');
+  if (!(typeof rv.width  === 'number' && rv.width  > 0)) missing.push('width');
+  if (!(rv.licensePlate && rv.licensePlate.trim().length > 0)) missing.push('license plate');
+  return missing;
 }
 
 /** True when both required photos are attached to the My RV profile. */

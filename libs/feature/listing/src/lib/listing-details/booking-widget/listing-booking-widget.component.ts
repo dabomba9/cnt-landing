@@ -6,7 +6,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {
   IListing, IListingDetail, CancellationTier,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
 /**
@@ -39,6 +39,14 @@ export class ListingBookingWidgetComponent {
 
   get isMyRvSet(): boolean { return isMyRvSet(this.myRv); }
   get hasMyRvPhotos(): boolean { return hasMyRvPhotos(this.myRv); }
+  /** Full rig profile (type, dims, plate) — required for ALL bookings, instant or not. */
+  get isMyRvComplete(): boolean { return isMyRvComplete(this.myRv); }
+  get rigMissingLabel(): string {
+    const missing = myRvMissingFields(this.myRv);
+    if (missing.length === 0) return '';
+    if (missing.length === 1) return missing[0];
+    return missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
+  }
 
   /** Photos are required to book a non-instant-book listing. Instant Book skips the check entirely. */
   get photosRequired(): boolean { return !this.listing.instantBook && !this.hasMyRvPhotos; }

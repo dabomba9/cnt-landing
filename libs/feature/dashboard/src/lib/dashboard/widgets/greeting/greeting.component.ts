@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IPublicUser } from '@cnt-workspace/data-access';
+import { IBooking } from '@cnt-workspace/models';
 
 @Component({
   selector: 'cnt-dashboard-greeting',
@@ -14,7 +15,7 @@ import { IPublicUser } from '@cnt-workspace/data-access';
       <div class="min-w-0">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">{{ timeGreeting }}</span>
         <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl">
-          {{ user?.firstName || 'There' }}, ready for the next stop?
+          {{ headline }}
         </h1>
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 text-xs text-muted-text font-body">
           @if (verified) {
@@ -42,6 +43,8 @@ export class DashboardGreetingComponent {
   @Input() user: IPublicUser | null = null;
   @Input() verified = false;
   @Input() memberSince?: string;
+  /** Used to drive a countdown headline when a trip is within a week. */
+  @Input() upcomingTrip: IBooking | null = null;
 
   /** Time-of-day greeting based on the user's local clock. */
   get timeGreeting(): string {
@@ -49,5 +52,17 @@ export class DashboardGreetingComponent {
     if (h < 12) return 'Good morning';
     if (h < 18) return 'Good afternoon';
     return 'Good evening';
+  }
+
+  /** Hero headline — countdown when a trip is imminent, otherwise the generic prompt. */
+  get headline(): string {
+    const name = this.user?.firstName || 'There';
+    if (this.upcomingTrip) {
+      const days = Math.ceil((new Date(this.upcomingTrip.dates.start).getTime() - Date.now()) / 86_400_000);
+      if (days === 0) return `Trip day, ${name}.`;
+      if (days === 1) return `Tomorrow's the day, ${name}.`;
+      if (days > 0 && days <= 7) return `T-minus ${days} days, ${name}.`;
+    }
+    return `${name}, ready for the next stop?`;
   }
 }

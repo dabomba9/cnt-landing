@@ -190,6 +190,12 @@
                     <span class="material-symbols-outlined text-lg text-muted-text">manage_accounts</span>
                     Account settings
                   </a>
+                  @if (view !== 'host') {
+                    <a routerLink="/account" fragment="rig" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-muted-text">rv_hookup</span>
+                      My Rig
+                    </a>
+                  }
                   <a routerLink="/refer" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-muted-text">card_giftcard</span>
                     Refer a friend

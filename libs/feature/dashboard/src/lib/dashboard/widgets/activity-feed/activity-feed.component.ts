@@ -28,7 +28,7 @@ interface IActivityGroup {
         <p class="text-sm font-body text-muted-text">No activity yet — book a stay or save a listing to see it here.</p>
       } @else {
         <div class="space-y-5">
-          @for (g of groups; track g.label) {
+          @for (g of visibleGroups; track g.label) {
             <div>
               <div class="text-[0.6rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-2">{{ g.label }}</div>
               <ul class="divide-y divide-dark-text/8">
@@ -41,6 +41,15 @@ interface IActivityGroup {
             </div>
           }
         </div>
+        @if (canExpand) {
+          <div class="mt-5 pt-4 border-t border-dark-text/8 flex justify-center">
+            <button type="button" (click)="showAll = !showAll"
+              class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline inline-flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">{{ showAll ? 'expand_less' : 'expand_more' }}</span>
+              {{ showAll ? 'Show less' : 'Show all (' + events.length + ')' }}
+            </button>
+          </div>
+        }
       }
     </div>
 
@@ -98,11 +107,22 @@ export class ActivityFeedComponent {
     this._reviews = value || [];
     this.recompute();
   }
+  /** All sorted events (post-recompute), max 8. */
   events: IActivityEvent[] = [];
-  groups: IActivityGroup[] = [];
+  /** Show-all toggle — collapsed view caps at 5 items. */
+  showAll = false;
+  readonly COLLAPSED_LIMIT = 5;
   private _bookings: IBooking[] = [];
   private _user: IPublicUser | null = null;
   private _reviews: IUserReview[] = [];
+
+  get visibleEvents(): IActivityEvent[] {
+    return this.showAll ? this.events : this.events.slice(0, this.COLLAPSED_LIMIT);
+  }
+  get visibleGroups(): IActivityGroup[] {
+    return this.bucketEvents(this.visibleEvents);
+  }
+  get canExpand(): boolean { return this.events.length > this.COLLAPSED_LIMIT; }
 
   private recompute(): void {
     const out: IActivityEvent[] = [];
@@ -168,7 +188,6 @@ export class ActivityFeedComponent {
       });
     }
     this.events = out.sort((a, b) => b.ts - a.ts).slice(0, 8);
-    this.groups = this.bucketEvents(this.events);
   }
 
   private bucketEvents(events: IActivityEvent[]): IActivityGroup[] {

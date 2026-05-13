@@ -13,7 +13,7 @@ import {
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, rvTypeLabel, pushRecentlyViewed } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
@@ -24,6 +24,7 @@ import { RvPhotosModalComponent } from './rv-photos-modal/rv-photos-modal.compon
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { ReviewCardComponent } from '@cnt-workspace/ui';
 import { AccordionCardComponent } from '@cnt-workspace/ui';
+import { MiniMapComponent } from '@cnt-workspace/booking';
 
 @Component({
   selector: 'cnt-workspace-listing-details',
@@ -33,6 +34,7 @@ import { AccordionCardComponent } from '@cnt-workspace/ui';
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
     ListingCardComponent, ReviewCardComponent, AccordionCardComponent, RvPhotosModalComponent,
+    MiniMapComponent,
   ],
   providers: [BookingStateService],
   templateUrl: './listing-details.component.html',
@@ -106,7 +108,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   navHidden = false;
   private lastScrollY = 0;
   private lastScrollTime = 0;
-  private readonly SCROLL_THRESHOLD = 24;
+  private readonly SCROLL_THRESHOLD = 72;
   private readonly SCROLL_DEBOUNCE_MS = 80;
   private readonly REVEAL_TOP_PX = 200;
 
@@ -234,6 +236,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     @Inject(BookingStateService) public booking: BookingStateService,
     private auth: AuthService,
     private reviewSvc: ReviewService,
+    private toasts: ToastService,
   ) {}
 
   private currentListingId = -1;
@@ -433,8 +436,20 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   requestBooking(): void {
     if (!this.booking.canBook) return;
-    // Gate: non-Instant-Book listings need the user's RV + license-plate photos.
-    // If they're missing, open the photos modal first; on success it'll re-fire requestBooking.
+    // Gate 1: complete rig profile required for ALL bookings (instant or not).
+    if (!isMyRvComplete(this.myRv)) {
+      const missing = myRvMissingFields(this.myRv);
+      const label = missing.length === 1
+        ? missing[0]
+        : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
+      this.toasts.info(`Add your ${label} to book this stay.`);
+      this.router.navigate(['/account'], {
+        fragment: 'rig',
+        queryParams: { returnTo: this.router.url },
+      });
+      return;
+    }
+    // Gate 2: non-Instant-Book listings additionally need RV + plate photos.
     if (!this.listing.instantBook && !this.booking.hasPhotosForBooking) {
       this.rvPhotosOpen = true;
       return;

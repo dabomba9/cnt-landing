@@ -12,7 +12,7 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IListing, getListingDetail, IListingDetail, IAddOn } from '@cnt-workspace/data-access';
-import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
 import { IBookingAddOn } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
@@ -61,14 +61,15 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   paymentMethods: IPaymentMethod[] = [];
   private paymentsSub: Subscription | null = null;
 
+  /** Inline add-card form (mirrors /account → Payments). */
+  addCardOpen = false;
+  newCardBrand: IPaymentMethod['brand'] = 'visa';
+  newCardLast4 = '';
+
   /** Promo code mock */
   promoOpen = false;
   promoCode = '';
   promoApplied: { code: string; amount: number } | null = null;
-
-  /** Price-lock countdown */
-  lockTimer = 15 * 60; // seconds
-  private lockInterval: ReturnType<typeof setInterval> | null = null;
 
   readonly SERVICE_FEE_RATE = 0.15;
   readonly CLEANING_FEE = 35;
@@ -124,7 +125,6 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
       this.selectedAddOnIds = new Set(addOnsParam.split(',').filter(Boolean));
     }
 
-    this.startLockTimer();
 
     if (this.user) {
       this.availableCredit = this.booking.getAvailableCredit(this.user.email);
@@ -146,25 +146,22 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngOnDestroy(): void {
-    if (this.lockInterval) clearInterval(this.lockInterval);
     this.paymentsSub?.unsubscribe();
   }
 
-  private startLockTimer(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.lockInterval = setInterval(() => {
-      if (this.lockTimer <= 0) {
-        if (this.lockInterval) clearInterval(this.lockInterval);
-        return;
-      }
-      this.lockTimer--;
-    }, 1000);
+  /** Inline add-card form (mirrors /account → Payments). */
+  get canAddCard(): boolean { return /^\d{4}$/.test(this.newCardLast4); }
+  cancelAddCard(): void {
+    this.addCardOpen = false;
+    this.newCardLast4 = '';
+    this.newCardBrand = 'visa';
   }
-
-  get lockTimerLabel(): string {
-    const m = Math.floor(this.lockTimer / 60);
-    const s = this.lockTimer % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
+  addCard(): void {
+    if (!this.canAddCard) return;
+    const added = this.payments.add({ brand: this.newCardBrand, last4: this.newCardLast4, makeDefault: false });
+    this.selectedPaymentId = added.id;
+    this.toasts.success('Card added.');
+    this.cancelAddCard();
   }
 
   /** Total nights, integer ≥ 0. */
@@ -250,6 +247,15 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return !!(this.listing && this.detail && this.nights > 0);
   }
 
+  /** Rig completeness — required to book any stay. */
+  get isMyRvComplete(): boolean { return !!this.myRv && isMyRvComplete(this.myRv); }
+  get rigMissingLabel(): string {
+    const missing = this.myRv ? myRvMissingFields(this.myRv) : ['RV type', 'length', 'height', 'width', 'license plate'];
+    if (missing.length === 0) return '';
+    if (missing.length === 1) return missing[0];
+    return missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
+  }
+
   get rvSummary(): string {
     if (!this.myRv || !isMyRvSet(this.myRv)) return 'Not set';
     const type = rvTypeLabel(this.myRv.type);
@@ -315,6 +321,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     if (!this.contactEmail || this.fieldErrors.email) return false;
     if (this.fieldErrors.phone) return false;
     if (!this.acceptedTerms) return false;
+    if (!this.isMyRvComplete) return false;
     return true;
   }
 

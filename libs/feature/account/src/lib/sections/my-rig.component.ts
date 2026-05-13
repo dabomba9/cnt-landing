@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService } from '@cnt-workspace/data-access';
+import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-account-my-rig',
@@ -12,11 +12,18 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
       <div>
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Your rig</span>
         <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight mb-1">My RV</h2>
-        <p class="text-xs text-muted-text font-body">Hosts use this to make sure their site fits your setup.</p>
+        <p class="text-xs text-muted-text font-body">Hosts use this to confirm fit. <span class="text-trinidad font-bold">RV type, dimensions, and license plate are required to book any stay.</span></p>
       </div>
 
+      @if (!isComplete && hasAny) {
+        <div class="rounded-xl bg-trinidad/5 border border-trinidad/30 p-3 flex items-start gap-2 text-sm font-body text-dark-text">
+          <span class="material-symbols-outlined text-base shrink-0 mt-0.5 text-trinidad">error</span>
+          <span class="flex-1">Still needed: <span class="font-bold">{{ missingLabel }}</span>.</span>
+        </div>
+      }
+
       <div>
-        <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">RV type</div>
+        <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">RV type <span class="text-trinidad">*</span></div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           @for (t of rvTypes; track t.id) {
             <button type="button" (click)="rv.type = (rv.type === t.id ? null : t.id)"
@@ -48,7 +55,7 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
               class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
           </label>
           <label class="flex flex-col gap-2">
-            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">License plate</span>
+            <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">License plate <span class="text-trinidad">*</span></span>
             <input type="text" [(ngModel)]="rv.licensePlate" name="licensePlate" placeholder="ABC-1234" maxlength="10"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body uppercase focus:outline-none focus:border-jungle-green">
           </label>
@@ -56,7 +63,7 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
       </div>
 
       <div>
-        <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Dimensions</div>
+        <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Dimensions <span class="text-trinidad">*</span></div>
         <div class="grid grid-cols-3 gap-3">
           @for (f of dimensions; track f.key) {
             <label class="flex flex-col gap-2">
@@ -139,8 +146,21 @@ export class MyRigSectionComponent implements OnInit {
     this.toasts.info('My Rig cleared.');
   }
 
+  get isComplete(): boolean { return isMyRvComplete(this.rv); }
+  get hasAny(): boolean { return !!(this.rv.type || this.rv.length || this.rv.height || this.rv.width || this.rv.licensePlate); }
+  get missingLabel(): string {
+    const missing = myRvMissingFields(this.rv);
+    if (missing.length === 0) return '';
+    if (missing.length === 1) return missing[0];
+    return missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
+  }
+
   save(): void {
     writeMyRv(this.platformId, { ...this.rv, type: this.rv.type as RvType | null });
-    this.toasts.success('Rig details saved.');
+    if (this.isComplete) {
+      this.toasts.success('Rig details saved — ready to book.');
+    } else {
+      this.toasts.info(`Saved. Add ${this.missingLabel} to book a stay.`);
+    }
   }
 }

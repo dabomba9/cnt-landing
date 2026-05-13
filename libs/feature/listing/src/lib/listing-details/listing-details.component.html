@@ -182,33 +182,45 @@
 
           <!-- Host info row (compact) -->
           <div class="flex items-center gap-4 py-4 border-b border-dark-text/10">
-            <div class="shrink-0 w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
+            <div class="relative shrink-0 w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
               <img [src]="detail.host.avatar" [alt]="detail.host.name" class="w-full h-full object-cover">
             </div>
-            <div>
-              <div class="font-headline font-bold text-dark-text text-base">Hosted by {{ detail.host.name }}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline font-bold text-dark-text text-base">Hosted by {{ detail.host.name }}</span>
+                @if (detail.trustBadges.includes('verified-host')) {
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.12em] font-bold">
+                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    Verified
+                  </span>
+                }
+              </div>
               <div class="text-sm text-muted-text font-body">{{ hostingYears }} {{ hostingYears === 1 ? 'year' : 'years' }} hosting · Replies within {{ detail.host.responseHours }}h</div>
             </div>
           </div>
 
           <!-- Trust badges row -->
-          @if (listing.instantBook || detail.trustBadges.length > 0) {
-            <div class="flex flex-wrap gap-2">
-              @if (listing.instantBook) {
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-trinidad rounded-full"
-                  title="Instant Book — your booking confirms automatically when dates are available">
-                  <span class="material-symbols-outlined text-base text-white" style="font-variation-settings: 'FILL' 1;">bolt</span>
-                  <span class="text-xs font-body font-bold text-white">Instant Book</span>
-                </div>
-              }
-              @for (badge of detail.trustBadges; track badge) {
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-cream rounded-full border border-dark-text/10">
-                  <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">{{ TRUST_BADGE_META[badge].icon }}</span>
-                  <span class="text-xs font-body font-bold text-dark-text">{{ TRUST_BADGE_META[badge].label }}</span>
-                </div>
-              }
-            </div>
-          }
+          <div class="flex flex-wrap gap-2">
+            @if (listing.instantBook) {
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-trinidad rounded-full"
+                title="Instant Book — your booking confirms automatically when dates are available">
+                <span class="material-symbols-outlined text-base text-white" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                <span class="text-xs font-body font-bold text-white">Instant Book</span>
+              </div>
+            } @else {
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-cream rounded-full border border-dark-text/10"
+                title="Request-to-book — your dates wait for host approval">
+                <span class="material-symbols-outlined text-base text-muted-text">schedule</span>
+                <span class="text-xs font-body font-bold text-dark-text">Request to book · replies in {{ detail.host.responseHours }}h</span>
+              </div>
+            }
+            @for (badge of detail.trustBadges; track badge) {
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-cream rounded-full border border-dark-text/10">
+                <span class="material-symbols-outlined text-base text-jungle-green" style="font-variation-settings: 'FILL' 1;">{{ TRUST_BADGE_META[badge].icon }}</span>
+                <span class="text-xs font-body font-bold text-dark-text">{{ TRUST_BADGE_META[badge].label }}</span>
+              </div>
+            }
+          </div>
 
           <!-- About this stay (bare prose, no card) -->
           <div>
@@ -494,18 +506,8 @@
             <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-2">{{ listing.location }}</h2>
             <p class="text-muted-text text-sm font-body mb-6">Exact address shared after your booking is confirmed.</p>
 
-            <div class="relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-dark-text/10 listing-map-bg">
-              <!-- Decorative pin -->
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center">
-                <span class="material-symbols-outlined text-6xl text-trinidad" style="font-variation-settings: 'FILL' 1; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));">location_on</span>
-                <div class="mt-2 px-3 py-1 bg-white/95 backdrop-blur-sm rounded-full shadow-md">
-                  <span class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">{{ listing.location }}</span>
-                </div>
-              </div>
-              <!-- "Coming soon" subtle note bottom-right -->
-              <div class="absolute bottom-3 right-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full">
-                <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Interactive map coming soon</span>
-              </div>
+            <div class="rounded-2xl overflow-hidden border border-dark-text/10 listing-mini-map-wrap">
+              <cnt-mini-map [lat]="listing.lat" [lng]="listing.lng" [label]="listing.location"></cnt-mini-map>
             </div>
 
             <!-- What's nearby -->
