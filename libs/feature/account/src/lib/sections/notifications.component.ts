@@ -6,10 +6,10 @@ import { AuthService, INotifPrefs, DEFAULT_NOTIF_PREFS, ToastService } from '@cn
 interface IToggle { id: keyof INotifPrefs; label: string; description: string; }
 
 const TOGGLES: IToggle[] = [
-  { id: 'emailUpdates',   label: 'Booking & account emails', description: 'Confirmations, receipts, support replies.' },
-  { id: 'hostResponses',  label: 'Host responses',           description: "Notify me when a host approves, declines, or messages." },
-  { id: 'tripReminders',  label: 'Trip reminders',           description: 'Nudges before check-in and check-out.' },
-  { id: 'marketing',      label: 'Marketing emails',         description: 'New stays, seasonal trips, host stories.' },
+  { id: 'emailUpdates',   label: 'Booking & account emails', description: "Booking confirmations, payout receipts, and account changes. We don't recommend turning these off." },
+  { id: 'hostResponses',  label: 'Host responses',           description: 'Toast notifications and bell badge when a host or guest replies to your message.' },
+  { id: 'tripReminders',  label: 'Trip reminders',           description: 'Pre-trip prep checklist on the dashboard and reminder emails before check-in.' },
+  { id: 'marketing',      label: 'Marketing emails',         description: "Personalized stay recommendations and seasonal offers. Affects 'Continue exploring' on the dashboard." },
 ];
 
 @Component({

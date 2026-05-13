@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService, ToastService } from '@cnt-workspace/data-access';
 
 @Component({
@@ -44,14 +45,27 @@ import { AuthService, ToastService } from '@cnt-workspace/data-access';
           </label>
         </div>
         @if (error) {
-          <div class="mt-4 rounded-xl bg-trinidad/5 border border-trinidad/30 p-3 text-trinidad text-sm font-body inline-flex items-center gap-2"><span class="material-symbols-outlined text-base">error</span>{{ error }}</div>
+          <div class="mt-4 rounded-xl bg-trinidad/5 border border-trinidad/30 p-3 text-trinidad text-sm font-body flex items-start gap-2">
+            <span class="material-symbols-outlined text-base shrink-0 mt-0.5">error</span>
+            <span class="flex-1">{{ error }}</span>
+          </div>
         }
         <div class="flex justify-end gap-3 mt-6 pt-5 border-t border-dark-text/8">
           <button type="button" (click)="save()" [disabled]="!canSave"
-            class="px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
+            class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
             Update password
           </button>
         </div>
+      </div>
+
+      <div class="pt-6 border-t border-dark-text/8">
+        <h3 class="font-headline font-bold text-dark-text text-lg mb-1">Sign out</h3>
+        <p class="text-xs text-muted-text font-body mb-4">End your session on this browser. You can sign back in anytime.</p>
+        <button type="button" (click)="signOut()" [disabled]="signingOut"
+          class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad disabled:opacity-50 transition-colors inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">logout</span>
+          {{ signingOut ? 'Signing out…' : 'Sign out of this device' }}
+        </button>
       </div>
     </div>
   `,
@@ -61,8 +75,17 @@ export class LoginSecuritySectionComponent {
   next = '';
   confirm = '';
   error: string | null = null;
+  signingOut = false;
 
-  constructor(private auth: AuthService, private toasts: ToastService) {}
+  constructor(private auth: AuthService, private toasts: ToastService, private router: Router) {}
+
+  async signOut(): Promise<void> {
+    if (this.signingOut) return;
+    this.signingOut = true;
+    await this.auth.signOut();
+    this.toasts.info('Signed out.');
+    this.router.navigate(['/']);
+  }
 
   get email(): string { return this.auth.currentUser?.email || ''; }
 

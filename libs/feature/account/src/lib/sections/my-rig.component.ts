@@ -35,17 +35,17 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
           <label class="flex flex-col gap-2">
             <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Year</span>
             <input type="number" [(ngModel)]="rv.year" name="year" placeholder="2024" min="1900" max="2100"
-              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+              class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
           </label>
           <label class="flex flex-col gap-2">
             <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Make</span>
             <input type="text" [(ngModel)]="rv.make" name="make" placeholder="Winnebago"
-              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+              class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
           </label>
           <label class="flex flex-col gap-2">
             <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Model</span>
             <input type="text" [(ngModel)]="rv.model" name="model" placeholder="Revel"
-              class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+              class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
           </label>
           <label class="flex flex-col gap-2">
             <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">License plate</span>
@@ -73,7 +73,7 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
       <div>
         <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Photos</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="rounded-md border border-dashed border-dark-text/20 p-4 bg-cream/30">
+          <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30">
             <div class="text-xs font-body font-bold text-dark-text mb-2">RV photo</div>
             @if (rv.rvPhoto) {
               <img [src]="rv.rvPhoto" alt="RV photo" class="w-full h-32 object-cover rounded-md mb-2">
@@ -87,7 +87,7 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
               <button type="button" (click)="rv.rvPhoto = null" class="ml-2 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad">Remove</button>
             }
           </div>
-          <div class="rounded-md border border-dashed border-dark-text/20 p-4 bg-cream/30">
+          <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30">
             <div class="text-xs font-body font-bold text-dark-text mb-2">License plate</div>
             @if (rv.licensePhoto) {
               <img [src]="rv.licensePhoto" alt="License plate" class="w-full h-32 object-cover rounded-md mb-2">
@@ -106,7 +106,7 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService }
 
       <div class="flex justify-end gap-3 pt-5 border-t border-dark-text/8">
         <button type="button" (click)="clear()" class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Clear</button>
-        <button type="button" (click)="save()" class="px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">Save</button>
+        <button type="button" (click)="save()" class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">Save</button>
       </div>
     </div>
   `,

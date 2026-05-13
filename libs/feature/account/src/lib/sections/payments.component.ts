@@ -14,6 +14,14 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
       <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight mb-1">Payment methods</h2>
       <p class="text-xs text-muted-text font-body mb-6">Cards saved here pre-fill the checkout. Demo only — no real billing.</p>
 
+      @if (methods.length === 0 && !addOpen) {
+        <div class="rounded-xl bg-cream/40 border border-dark-text/8 px-5 py-8 text-center mb-3">
+          <span class="material-symbols-outlined text-3xl text-muted-text" aria-hidden="true">credit_card</span>
+          <h3 class="font-headline font-bold text-dark-text text-base mt-2 mb-1">No payment methods</h3>
+          <p class="text-sm text-muted-text font-body">Add a card to speed up checkout next time.</p>
+        </div>
+      }
+
       <div class="space-y-3">
         @for (m of methods; track m.id) {
           <div class="flex items-center gap-3 p-4 rounded-xl border border-dark-text/8 bg-cream/30">
@@ -46,7 +54,7 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label class="flex flex-col gap-1">
               <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Brand</span>
-              <select name="brand" [(ngModel)]="newBrand" class="bg-white border border-dark-text/15 rounded-lg px-3 py-2.5 text-sm font-body">
+              <select name="brand" [(ngModel)]="newBrand" class="bg-white border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body">
                 <option value="visa">Visa</option>
                 <option value="mastercard">Mastercard</option>
                 <option value="amex">Amex</option>
@@ -56,7 +64,7 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
             <label class="flex flex-col gap-1">
               <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Last 4 digits</span>
               <input type="text" maxlength="4" name="last4" [(ngModel)]="newLast4" placeholder="4242"
-                class="bg-white border border-dark-text/15 rounded-lg px-3 py-2.5 text-sm font-body">
+                class="bg-white border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body">
             </label>
           </div>
           <label class="flex items-center gap-2 mt-3 cursor-pointer">
@@ -64,9 +72,9 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
             <span class="text-xs font-body text-dark-text">Set as default</span>
           </label>
           <div class="flex justify-end gap-2 mt-4">
-            <button type="button" (click)="cancelAdd()" class="px-4 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text">Cancel</button>
+            <button type="button" (click)="cancelAdd()" class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text">Cancel</button>
             <button type="button" (click)="add()" [disabled]="!canAdd"
-              class="px-5 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed">Add card</button>
+              class="px-5 py-2.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed">Add card</button>
           </div>
         </div>
       }

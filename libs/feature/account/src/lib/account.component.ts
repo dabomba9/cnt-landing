@@ -11,14 +11,14 @@ import { PaymentsSectionComponent } from './sections/payments.component';
 import { NotificationsSectionComponent } from './sections/notifications.component';
 import { MyRigSectionComponent } from './sections/my-rig.component';
 
-type Section = 'personal' | 'security' | 'identity' | 'payments' | 'notifications' | 'rig';
+type Section = 'personal' | 'identity' | 'security' | 'payments' | 'notifications' | 'rig';
 
 interface INavItem { id: Section; label: string; icon: string; description: string; }
 
 const NAV_ITEMS: INavItem[] = [
   { id: 'personal',      label: 'Personal info',     icon: 'person',           description: 'Name, phone, photo' },
-  { id: 'security',      label: 'Login & security',  icon: 'lock',             description: 'Password, email' },
   { id: 'identity',      label: 'Identity',          icon: 'verified_user',    description: 'Verify your ID' },
+  { id: 'security',      label: 'Login & security',  icon: 'lock',             description: 'Password, sign out' },
   { id: 'payments',      label: 'Payments',          icon: 'credit_card',      description: 'Cards on file' },
   { id: 'notifications', label: 'Notifications',     icon: 'notifications',    description: 'What we send you' },
   { id: 'rig',           label: 'My Rig',            icon: 'rv_hookup',        description: 'RV type, dimensions, photos' },

@@ -56,7 +56,7 @@ import { AuthService, IPublicUser, ToastService } from '@cnt-workspace/data-acce
       <div class="flex justify-end gap-3 mt-6 pt-5 border-t border-dark-text/8">
         <button type="button" (click)="reset()" class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Reset</button>
         <button type="button" (click)="save()" [disabled]="!isDirty"
-          class="px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
+          class="px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
           Save changes
         </button>
       </div>
