@@ -9,15 +9,42 @@ import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
 type TripView = 'list' | 'calendar';
+type TripBarState = 'past' | 'in-progress' | 'upcoming' | 'pending' | 'cancelled';
 
-interface IMonthCell {
+interface IDayCell {
   date: Date;
+  iso: string;
   inMonth: boolean;
   isToday: boolean;
+  isWeekend: boolean;
+  /** Bookings covering this day — drives mobile dot mode + day-selection panel. */
   bookings: IBooking[];
+  /** Distinct status tones for the dot row, derived from bookings (max 3 dots). */
+  dotStates: TripBarState[];
+}
+
+interface IBarSegment {
+  booking: IBooking;
+  /** 1-7 — CSS grid-column-start. */
+  startCol: number;
+  /** 1-7 — width in columns. */
+  span: number;
+  /** 0-based row within the week (laid out below day numbers). */
+  lane: number;
+  /** True when this segment is the booking's actual start day (renders the label). */
+  isStart: boolean;
+  state: TripBarState;
+}
+
+interface ICalendarWeek {
+  days: IDayCell[];   // length 7
+  bars: IBarSegment[];
+  /** Lanes occupied — drives week container height. */
+  laneCount: number;
 }
 
 const VIEW_KEY = 'cnt-trips-view-mode';
+const MAX_LANES = 3;
 
 @Component({
   selector: 'cnt-trips',
@@ -35,6 +62,8 @@ export class TripsComponent implements OnInit, OnDestroy {
   viewMode: TripView = 'list';
   /** Currently-visible month in calendar mode. */
   calendarMonth: Date = new Date();
+  /** ISO YYYY-MM-DD of the day selected for the detail panel. */
+  selectedDayIso: string | null = null;
   readonly weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   /** Cancel modal state. */
@@ -116,60 +145,204 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   prevMonth(): void {
     this.calendarMonth = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth() - 1, 1);
+    this.selectedDayIso = null;
   }
   nextMonth(): void {
     this.calendarMonth = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth() + 1, 1);
+    this.selectedDayIso = null;
   }
-  goToday(): void { this.calendarMonth = new Date(); }
+  goToday(): void {
+    this.calendarMonth = new Date();
+    this.selectedDayIso = this.isoKey(new Date());
+  }
 
   get calendarMonthLabel(): string {
     return this.calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   }
 
-  /** 42 cells covering the visible month, Sunday-first. */
-  get monthCells(): IMonthCell[] {
+  /** ISO YYYY-MM-DD using local time (matches what hosts/guests see in their tz). */
+  private isoKey(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  /** Strip time-of-day from a Date (returns a new Date at local midnight). */
+  private dayStart(d: Date): Date {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  /** Booking → status tone, taking start/end into account. */
+  private barState(b: IBooking): TripBarState {
+    if (b.status === 'cancelled' || b.status === 'declined') return 'cancelled';
+    if (b.status === 'pending') return 'pending';
+    const now = Date.now();
+    const start = new Date(b.dates.start).getTime();
+    const end = new Date(b.dates.end).getTime();
+    if (end < now) return 'past';
+    if (start <= now && now <= end) return 'in-progress';
+    return 'upcoming';
+  }
+
+  /** 6 weeks of day cells + booking segments laid out across them. */
+  get calendarWeeks(): ICalendarWeek[] {
     const year = this.calendarMonth.getFullYear();
     const month = this.calendarMonth.getMonth();
-    const first = new Date(year, month, 1);
-    const startOffset = first.getDay(); // 0=Sun
+    const startOffset = new Date(year, month, 1).getDay();
     const gridStart = new Date(year, month, 1 - startOffset);
-    const today = new Date();
-    const todayKey = today.toDateString();
-    const cells: IMonthCell[] = [];
-    for (let i = 0; i < 42; i++) {
-      const d = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
-      const dayBookings = this.bookings.filter(b => {
-        const s = new Date(b.dates.start);
-        const e = new Date(b.dates.end);
-        return d >= new Date(s.getFullYear(), s.getMonth(), s.getDate())
-          && d <= new Date(e.getFullYear(), e.getMonth(), e.getDate());
+    const todayKey = this.isoKey(new Date());
+
+    // Pre-compute eligible bookings (with at least one day in the visible 6-week window).
+    const gridEnd = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + 41);
+    const visible = this.bookings.filter(b => {
+      const s = this.dayStart(new Date(b.dates.start));
+      const e = this.dayStart(new Date(b.dates.end));
+      return e >= gridStart && s <= gridEnd;
+    }).sort((a, b) => new Date(a.dates.start).getTime() - new Date(b.dates.start).getTime());
+
+    const weeks: ICalendarWeek[] = [];
+    for (let w = 0; w < 6; w++) {
+      const weekStart = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + w * 7);
+      const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+
+      // Build day cells for this week
+      const days: IDayCell[] = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + i);
+        const iso = this.isoKey(d);
+        const dayBookings = visible.filter(b => {
+          const s = this.dayStart(new Date(b.dates.start)).getTime();
+          const e = this.dayStart(new Date(b.dates.end)).getTime();
+          return d.getTime() >= s && d.getTime() <= e;
+        });
+        // De-duplicate dot states preserving precedence: in-progress > pending > upcoming > past > cancelled
+        const order: TripBarState[] = ['in-progress', 'pending', 'upcoming', 'past', 'cancelled'];
+        const set = new Set(dayBookings.map(b => this.barState(b)));
+        const dotStates = order.filter(s => set.has(s)).slice(0, 3);
+        days.push({
+          date: d,
+          iso,
+          inMonth: d.getMonth() === month,
+          isToday: iso === todayKey,
+          isWeekend: i === 0 || i === 6,
+          bookings: dayBookings,
+          dotStates,
+        });
+      }
+
+      // Build bar segments — booking intersected with this week's range
+      const candidates = visible.filter(b => {
+        const s = this.dayStart(new Date(b.dates.start));
+        const e = this.dayStart(new Date(b.dates.end));
+        return e >= weekStart && s <= weekEnd;
       });
-      cells.push({
-        date: d,
-        inMonth: d.getMonth() === month,
-        isToday: d.toDateString() === todayKey,
-        bookings: dayBookings,
-      });
+      // Lane assignment: greedy — for each booking, pick the lowest lane that doesn't overlap
+      const lanes: Array<Array<{ start: number; end: number }>> = [];
+      const bars: IBarSegment[] = [];
+      for (const b of candidates) {
+        const s = this.dayStart(new Date(b.dates.start));
+        const e = this.dayStart(new Date(b.dates.end));
+        const segStart = s < weekStart ? weekStart : s;
+        const segEnd   = e > weekEnd   ? weekEnd   : e;
+        const startCol = Math.floor((segStart.getTime() - weekStart.getTime()) / 86_400_000) + 1; // 1-7
+        const endCol   = Math.floor((segEnd.getTime()   - weekStart.getTime()) / 86_400_000) + 1;
+        const span = endCol - startCol + 1;
+        // Find a lane with no overlap
+        let lane = 0;
+        for (; lane < MAX_LANES; lane++) {
+          const placed = lanes[lane] || [];
+          if (placed.every(r => endCol < r.start || startCol > r.end)) break;
+        }
+        if (lane >= MAX_LANES) continue; // overflow handled by the day's "+N more" hint
+        if (!lanes[lane]) lanes[lane] = [];
+        lanes[lane].push({ start: startCol, end: endCol });
+        bars.push({
+          booking: b,
+          startCol,
+          span,
+          lane,
+          isStart: segStart.getTime() === s.getTime(),
+          state: this.barState(b),
+        });
+      }
+
+      weeks.push({ days, bars, laneCount: Math.max(1, lanes.length) });
     }
-    return cells;
+    return weeks;
   }
 
-  /** Tailwind bar classes for a booking based on status + recency. */
-  barClassFor(b: IBooking): string {
-    if (b.status === 'cancelled' || b.status === 'declined') {
-      return 'bg-transparent border border-dashed border-muted-text/40 text-muted-text';
-    }
-    if (b.status === 'pending') return 'bg-gold/70 text-dark-text';
-    const past = new Date(b.dates.end).getTime() < Date.now();
-    if (past) return 'bg-muted-text/30 text-dark-text';
-    return 'bg-trinidad text-white';
+  /** Booking events for the visible month — agenda strip + mobile day list. */
+  get monthBookings(): IBooking[] {
+    const year = this.calendarMonth.getFullYear();
+    const month = this.calendarMonth.getMonth();
+    const monthStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month + 1, 0);
+    return this.bookings.filter(b => {
+      const s = this.dayStart(new Date(b.dates.start));
+      const e = this.dayStart(new Date(b.dates.end));
+      return e >= monthStart && s <= monthEnd;
+    }).sort((a, b) => new Date(a.dates.start).getTime() - new Date(b.dates.start).getTime());
   }
 
-  /** Click a calendar cell → route to its booking (first one if multiple). */
-  onDayClick(cell: IMonthCell): void {
-    if (cell.bookings.length === 0) return;
-    this.router.navigate(['/booking/confirm', cell.bookings[0].id]);
+  /** The currently-selected day's bookings, for the inline detail panel. */
+  get selectedDayBookings(): IBooking[] {
+    if (!this.selectedDayIso) return [];
+    return this.bookings.filter(b => {
+      const s = this.dayStart(new Date(b.dates.start));
+      const e = this.dayStart(new Date(b.dates.end));
+      const sel = new Date(this.selectedDayIso + 'T00:00:00');
+      return sel >= s && sel <= e;
+    });
   }
+
+  get selectedDayLabel(): string {
+    if (!this.selectedDayIso) return '';
+    const d = new Date(this.selectedDayIso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+
+  /** Tailwind bar tone classes by state (used by both spans and dots). */
+  barToneClass(state: TripBarState): string {
+    switch (state) {
+      case 'cancelled':   return 'bg-transparent border border-dashed border-muted-text/40 text-muted-text';
+      case 'pending':     return 'bg-gold/70 text-dark-text';
+      case 'past':        return 'bg-muted-text/30 text-dark-text';
+      case 'in-progress': return 'bg-jungle-green text-white';
+      default:            return 'bg-trinidad text-white';
+    }
+  }
+
+  dotToneClass(state: TripBarState): string {
+    switch (state) {
+      case 'cancelled':   return 'bg-muted-text/40';
+      case 'pending':     return 'bg-gold';
+      case 'past':        return 'bg-muted-text/50';
+      case 'in-progress': return 'bg-jungle-green';
+      default:            return 'bg-trinidad';
+    }
+  }
+
+  /** Hover-tooltip text for a booking bar. */
+  barTooltip(b: IBooking): string {
+    return `${b.listingTitle} · ${this.datesLabel(b)} · ${STATUS_META[b.status].label}`;
+  }
+
+  /** Click a day cell → open the detail panel for that day. */
+  selectDay(day: IDayCell): void {
+    this.selectedDayIso = this.selectedDayIso === day.iso ? null : day.iso;
+  }
+
+  /** Click a bar segment → open the day panel anchored on its start day. */
+  selectBar(bar: IBarSegment): void {
+    const start = this.dayStart(new Date(bar.booking.dates.start));
+    this.selectedDayIso = this.isoKey(start);
+  }
+
+  closeDayPanel(): void { this.selectedDayIso = null; }
+
+  /** Booking-in-progress flag for inline labels. */
+  isInProgress(b: IBooking): boolean { return this.barState(b) === 'in-progress'; }
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }
 

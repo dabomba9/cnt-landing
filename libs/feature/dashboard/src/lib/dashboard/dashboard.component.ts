@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -49,7 +49,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private auth: AuthService,
-    private router: Router,
     private bookingSvc: BookingService,
     private reviewSvc: ReviewService,
     private seo: SeoService,
@@ -97,24 +96,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  // ---- Sparkline series helpers (mock 4-week trends derived from stable inputs) ----
-  get tripsSpark(): number[] {
-    const t = this.tripsTaken;
-    return [Math.max(0, t - 3), Math.max(0, t - 2), Math.max(0, t - 1), t];
-  }
-  get nightsSpark(): number[] {
-    const n = this.nightsBooked;
-    return [Math.max(0, n - 5), Math.max(0, n - 3), Math.max(0, n - 1), n];
-  }
-  get savedSpark(): number[] {
-    const s = this.staysSaved;
-    return [Math.max(0, s - 2), Math.max(0, s - 1), s, s];
-  }
-  get rewardSpark(): number[] {
-    const r = this.rewardCredit;
-    return [Math.max(0, r - 15), Math.max(0, r - 10), Math.max(0, r - 5), r];
-  }
-
   private readSavedListings(): IListing[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     try {
@@ -157,12 +138,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** True when MyRv profile has any specs set. */
   get rvSet(): boolean { return this.myRv ? isMyRvSet(this.myRv) : false; }
-
-  /** Flip to hosting view from the greeting CTA. */
-  onSwitchToHosting(): void {
-    this.auth.setView('host');
-    this.router.navigate(['/hosting']);
-  }
 
   /** Listings the user visited recently, minus anything saved or already booked. */
   get recentlyViewedListings(): IListing[] {
@@ -216,7 +191,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   get tripsTaken(): number {
     const now = Date.now();
     return this.bookings.filter(b => {
-      if (b.status === 'declined') return false;
+      if (b.status === 'declined' || b.status === 'cancelled') return false;
       return new Date(b.dates.end).getTime() < now;
     }).length;
   }

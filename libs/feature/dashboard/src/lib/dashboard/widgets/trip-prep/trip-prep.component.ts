@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { IBooking } from '@cnt-workspace/models';
 import { IPublicUser } from '@cnt-workspace/data-access';
-import { IMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
+import { IMyRv, hasMyRvPhotos, downloadBookingIcs } from '@cnt-workspace/data-access';
 
 interface IPrepItem {
   key: 'verified' | 'rvphotos' | 'calendar' | 'contacted';
@@ -169,25 +169,6 @@ export class TripPrepComponent {
 
   private downloadIcs(): void {
     if (!this._booking || !isPlatformBrowser(this.platformId)) return;
-    const b = this._booking;
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    const ics = [
-      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CurbNTurf//Booking//EN',
-      'BEGIN:VEVENT',
-      `UID:${b.id}@curbnturf`,
-      `DTSTAMP:${fmt(new Date())}`,
-      `DTSTART:${fmt(new Date(b.dates.start))}`,
-      `DTEND:${fmt(new Date(b.dates.end))}`,
-      `SUMMARY:CurbNTurf — ${b.listingTitle}`,
-      `LOCATION:${b.listingLocation}`,
-      'END:VEVENT', 'END:VCALENDAR',
-    ].join('\r\n');
-    const blob = new Blob([ics], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `curbnturf-${b.id.slice(0, 8)}.ics`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadBookingIcs(this._booking);
   }
 }

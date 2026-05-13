@@ -192,46 +192,133 @@
             }
           </div>
 
-          <!-- Day grid -->
-          <div class="grid grid-cols-7 gap-1">
-            @for (cell of monthCells; track cell.date.getTime()) {
-              <button type="button"
-                (click)="onDayClick(cell)"
-                [disabled]="cell.bookings.length === 0"
-                [ngClass]="cell.inMonth ? 'bg-cream/30' : 'bg-transparent'"
-                [class.ring-2]="cell.bookings.length > 0"
-                [class.ring-trinidad]="cell.bookings.length > 0"
-                [class.cursor-pointer]="cell.bookings.length > 0"
-                [class.hover:shadow-md]="cell.bookings.length > 0"
-                class="relative min-h-[4.5rem] md:min-h-[5.5rem] rounded-md p-1.5 flex flex-col items-start text-left transition-shadow disabled:cursor-default">
-                <div class="flex items-center gap-1 mb-1">
-                  <span
-                    [ngClass]="cell.inMonth ? 'text-dark-text' : 'text-muted-text/40'"
-                    [class.font-bold]="cell.isToday"
-                    class="text-xs font-body">{{ cell.date.getDate() }}</span>
-                  @if (cell.isToday) {
-                    <span class="w-1.5 h-1.5 rounded-full bg-jungle-green"></span>
+          <!-- Day grid (md+): per-week rows with spanning booking bars -->
+          <div class="hidden md:block space-y-1">
+            @for (week of calendarWeeks; track $index) {
+              <div class="grid grid-cols-7 gap-1 relative"
+                [style.grid-template-rows]="'2rem repeat(' + week.laneCount + ', 1.35rem) auto'">
+                <!-- Day shells: each spans every row of its column. Click to select. -->
+                @for (day of week.days; track day.iso; let i = $index) {
+                  <button type="button"
+                    (click)="selectDay(day)"
+                    [style.grid-column]="(i + 1).toString()"
+                    [style.grid-row]="'1 / -1'"
+                    [ngClass]="day.isWeekend ? 'bg-cream/50' : (day.inMonth ? 'bg-cream/20' : 'bg-transparent')"
+                    [class.ring-2]="day.isToday || selectedDayIso === day.iso"
+                    [class.ring-jungle-green]="day.isToday && selectedDayIso !== day.iso"
+                    [class.ring-trinidad]="selectedDayIso === day.iso"
+                    class="rounded-md text-left transition-shadow hover:shadow-sm">
+                    <span
+                      [ngClass]="day.inMonth ? 'text-dark-text' : 'text-muted-text/40'"
+                      [class.font-bold]="day.isToday"
+                      class="text-xs font-body block px-1.5 pt-1.5">{{ day.date.getDate() }}</span>
+                  </button>
+                }
+
+                <!-- Spanning booking bars (DOM-ordered after shells so they stack on top) -->
+                @for (bar of week.bars; track $index) {
+                  <button type="button"
+                    (click)="selectBar(bar); $event.stopPropagation()"
+                    [title]="barTooltip(bar.booking)"
+                    [style.grid-column]="bar.startCol + ' / span ' + bar.span"
+                    [style.grid-row]="(bar.lane + 2).toString()"
+                    [ngClass]="barToneClass(bar.state)"
+                    class="relative z-10 text-[0.6rem] uppercase tracking-[0.08em] font-button font-bold px-1.5 leading-[1.35rem] truncate rounded-sm hover:opacity-90 transition-opacity self-start text-left mx-0.5">
+                    @if (bar.isStart) {
+                      {{ bar.booking.listingTitle }}
+                      @if (bar.state === 'in-progress') {
+                        <span class="ml-1 text-[0.5rem] opacity-90">· On trip</span>
+                      }
+                    } @else {
+                      <span class="opacity-70">↳ {{ bar.booking.listingTitle }}</span>
+                    }
+                  </button>
+                }
+
+                <!-- "+N more" hint when lanes overflowed -->
+                @for (day of week.days; track day.iso; let i = $index) {
+                  @if (day.bookings.length > week.laneCount && day.bookings.length > 3) {
+                    <span
+                      [style.grid-column]="(i + 1).toString()"
+                      [style.grid-row]="(week.laneCount + 2).toString()"
+                      class="relative z-10 text-[0.55rem] text-muted-text font-body px-1.5 leading-none pointer-events-none">
+                      +{{ day.bookings.length - week.laneCount }} more
+                    </span>
                   }
-                </div>
-                <div class="w-full flex flex-col gap-0.5">
-                  @for (b of cell.bookings.slice(0, 2); track b.id) {
-                    <div [ngClass]="barClassFor(b)"
-                      class="w-full text-[0.55rem] uppercase tracking-[0.08em] font-button font-bold px-1 py-0.5 rounded leading-tight truncate"
-                      [title]="b.listingTitle + ' · ' + STATUS_META[b.status].label">
-                      {{ b.listingTitle }}
-                    </div>
-                  }
-                  @if (cell.bookings.length > 2) {
-                    <span class="text-[0.55rem] text-muted-text font-body">+{{ cell.bookings.length - 2 }} more</span>
-                  }
-                </div>
-              </button>
+                }
+              </div>
             }
           </div>
+
+          <!-- Mobile: compact dots grid (one row of weeks, no spans) -->
+          <div class="md:hidden grid grid-cols-7 gap-1">
+            @for (week of calendarWeeks; track $index) {
+              @for (day of week.days; track day.iso) {
+                <button type="button"
+                  (click)="selectDay(day)"
+                  [ngClass]="day.isWeekend ? 'bg-cream/50' : (day.inMonth ? 'bg-cream/20' : 'bg-transparent')"
+                  [class.ring-2]="day.isToday || selectedDayIso === day.iso"
+                  [class.ring-jungle-green]="day.isToday && selectedDayIso !== day.iso"
+                  [class.ring-trinidad]="selectedDayIso === day.iso"
+                  class="min-h-[3.25rem] rounded-md flex flex-col items-center justify-between p-1.5 transition-shadow">
+                  <span
+                    [ngClass]="day.inMonth ? 'text-dark-text' : 'text-muted-text/40'"
+                    [class.font-bold]="day.isToday"
+                    class="text-xs font-body">{{ day.date.getDate() }}</span>
+                  <span class="flex gap-0.5 mb-0.5 min-h-[6px]">
+                    @for (s of day.dotStates; track s) {
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="dotToneClass(s)"></span>
+                    }
+                  </span>
+                </button>
+              }
+            }
+          </div>
+
+          <!-- Selected-day inline detail panel -->
+          @if (selectedDayIso && selectedDayBookings.length > 0) {
+            <div class="mt-4 rounded-xl bg-cream/40 border border-dark-text/8 p-4 md:p-5">
+              <div class="flex items-baseline justify-between gap-3 mb-3">
+                <h3 class="font-headline font-bold text-dark-text text-base md:text-lg tracking-tight">{{ selectedDayLabel }}</h3>
+                <button type="button" (click)="closeDayPanel()"
+                  class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-dark-text">
+                  Close ×
+                </button>
+              </div>
+              <ul class="space-y-2">
+                @for (b of selectedDayBookings; track b.id) {
+                  <li>
+                    <a [routerLink]="['/booking/confirm', b.id]" class="flex items-center gap-3 p-3 rounded-lg bg-white border border-dark-text/8 hover:border-trinidad/40 hover:shadow-sm transition-all no-underline">
+                      <img [src]="b.listingPhoto" [alt]="b.listingTitle" class="w-12 h-12 rounded-md object-cover shrink-0">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-body font-bold text-dark-text text-sm truncate">{{ b.listingTitle }}</span>
+                          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold"
+                            [ngClass]="STATUS_META[b.status].bg"
+                            [style.color]="STATUS_META[b.status].color">{{ STATUS_META[b.status].label }}</span>
+                          @if (isInProgress(b)) {
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold bg-jungle-green/10 text-jungle-green">On trip</span>
+                          }
+                        </div>
+                        <div class="text-xs text-muted-text font-body">{{ datesLabel(b) }} · {{ b.nights }} {{ b.nights === 1 ? 'night' : 'nights' }} · ${{ b.total }}</div>
+                      </div>
+                      <span class="material-symbols-outlined text-base text-muted-text">chevron_right</span>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          } @else if (selectedDayIso) {
+            <div class="mt-4 rounded-xl bg-cream/40 border border-dark-text/8 p-4 md:p-5 text-center">
+              <span class="text-sm text-muted-text font-body">No trips on {{ selectedDayLabel }}.</span>
+              <button type="button" (click)="closeDayPanel()" class="ml-2 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Close</button>
+            </div>
+          }
 
           <!-- Legend -->
           <div class="mt-5 pt-4 border-t border-dark-text/8 flex flex-wrap gap-4 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
             <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="w-3 h-2.5 rounded bg-trinidad"></span> Upcoming</span>
+            <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="w-3 h-2.5 rounded bg-jungle-green"></span> On trip</span>
             <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="w-3 h-2.5 rounded bg-gold/70"></span> Pending</span>
             <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="w-3 h-2.5 rounded bg-muted-text/30"></span> Past</span>
             <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="w-3 h-2.5 rounded border border-dashed border-muted-text/40"></span> Cancelled</span>

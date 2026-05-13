@@ -6,8 +6,7 @@
 
       <!-- Greeting -->
       <div class="dashboard-anim">
-        <cnt-dashboard-greeting [user]="user" [verified]="verified" [memberSince]="memberSince"
-          (switchView)="onSwitchToHosting()"></cnt-dashboard-greeting>
+        <cnt-dashboard-greeting [user]="user" [verified]="verified" [memberSince]="memberSince"></cnt-dashboard-greeting>
       </div>
 
       <!-- Quick actions -->
@@ -16,12 +15,11 @@
       </div>
 
       <!-- Stat tiles -->
-      <div class="dashboard-anim grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
-        <cnt-stat-tile label="Trips taken"   tone="jungle"   [value]="tripsTaken"   icon="luggage" [spark]="tripsSpark"  [trend]="tripsTaken === 0 ? 'No trips yet' : 'All-time'"></cnt-stat-tile>
-        <cnt-stat-tile label="Nights booked" tone="trinidad" [value]="nightsBooked" icon="bed"     [spark]="nightsSpark" [trend]="nightsBooked === 0 ? 'Plan your first stay' : 'Across all bookings'"></cnt-stat-tile>
-        <cnt-stat-tile label="Reviews given" tone="jungle"   [value]="reviewsGiven" icon="reviews" [trend]="reviewsGiven === 0 ? 'Earn $5/night credit' : 'Thanks for sharing'"></cnt-stat-tile>
-        <cnt-stat-tile label="Stays saved"   tone="neutral"  [value]="staysSaved"   icon="favorite" [spark]="savedSpark"  [trend]="staysSaved === 0 ? 'Tap a heart to save' : 'In your wishlist'"></cnt-stat-tile>
-        <cnt-stat-tile label="Reward credit" tone="gold"     [value]="'$' + rewardCredit" icon="redeem" [spark]="rewardSpark" trend="$5/night after reviews"></cnt-stat-tile>
+      <div class="dashboard-anim grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <cnt-stat-tile label="Trips taken"   tone="jungle"   [value]="tripsTaken"   icon="luggage"  [trend]="tripsTaken === 0 ? 'No trips yet' : 'All-time'"></cnt-stat-tile>
+        <cnt-stat-tile label="Nights booked" tone="trinidad" [value]="nightsBooked" icon="bed"      [trend]="nightsBooked === 0 ? 'Plan your first stay' : 'Across all bookings'"></cnt-stat-tile>
+        <cnt-stat-tile label="Stays saved"   tone="neutral"  [value]="staysSaved"   icon="favorite" [trend]="staysSaved === 0 ? 'Tap a heart to save' : 'In your wishlist'"></cnt-stat-tile>
+        <cnt-stat-tile label="Reviews given" tone="jungle"   [value]="reviewsGiven" icon="reviews"  [trend]="reviewsGiven === 0 ? 'Earn $5/night credit' : 'Thanks for sharing'"></cnt-stat-tile>
       </div>
 
       <!-- Reward credit callout — explainer when none, redemption hint when available. -->
@@ -53,6 +51,24 @@
             <span class="material-symbols-outlined text-base">arrow_forward</span>
           </a>
         </div>
+      }
+
+      <!-- Recently viewed — surfaces just under the reward callout so guests can resume browsing -->
+      @if (recentlyViewedListings.length > 0) {
+        <section class="dashboard-anim">
+          <div class="flex items-baseline justify-between gap-3 mb-4">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Recently viewed</span>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Pick up where you left off</h2>
+            </div>
+            <a routerLink="/search" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">Browse all →</a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @for (l of recentlyViewedListings; track l.id) {
+              <cnt-listing-card [listing]="l"></cnt-listing-card>
+            }
+          </div>
+        </section>
       }
 
       <!-- First-time-user hero — replaces upcoming-trip section when account is empty -->
@@ -120,24 +136,6 @@
         </div>
         <cnt-saved-stays [savedListings]="savedListings"></cnt-saved-stays>
       </section>
-
-      <!-- Recently viewed -->
-      @if (recentlyViewedListings.length > 0) {
-        <section class="dashboard-anim">
-          <div class="flex items-baseline justify-between gap-3 mb-4">
-            <div>
-              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Recently viewed</span>
-              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Pick up where you left off</h2>
-            </div>
-            <a routerLink="/search" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">Browse all →</a>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            @for (l of recentlyViewedListings; track l.id) {
-              <cnt-listing-card [listing]="l"></cnt-listing-card>
-            }
-          </div>
-        </section>
-      }
 
       <!-- Spending summary -->
       @if (bookings.length > 0) {

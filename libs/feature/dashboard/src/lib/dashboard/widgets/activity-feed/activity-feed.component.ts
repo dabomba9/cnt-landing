@@ -167,15 +167,6 @@ export class ActivityFeedComponent {
         link: b ? { path: ['/booking/confirm', b.id] } : undefined,
       });
     }
-    if (this._user?.verified && this._user.verifiedAt) {
-      out.push({
-        icon: 'verified_user',
-        iconColor: 'jungle-green',
-        headline: `Identity verified`,
-        subline: `Verified guest badge added to your profile`,
-        ts: new Date(this._user.verifiedAt).getTime(),
-      });
-    }
     this.events = out.sort((a, b) => b.ts - a.ts).slice(0, 8);
     this.groups = this.bucketEvents(this.events);
   }

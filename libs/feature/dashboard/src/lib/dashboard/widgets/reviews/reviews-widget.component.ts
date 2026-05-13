@@ -13,7 +13,7 @@ import { IUserReview } from '@cnt-workspace/data-access';
       <div class="flex items-baseline justify-between gap-3 p-5 md:p-6 pb-3">
         <div>
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Feedback</span>
-          <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight leading-tight">Reviews</h3>
+          <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight leading-tight">Trip reviews</h3>
         </div>
         @if (submittedCount > 0) {
           <a routerLink="/trips" [queryParams]="{ filter: 'past' }" class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0">

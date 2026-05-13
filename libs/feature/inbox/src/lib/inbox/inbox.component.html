@@ -32,34 +32,78 @@
 
           <!-- Threads list -->
           <aside class="inbox-list" [class.inbox-list--hidden]="activeThread !== null">
-            <ul class="divide-y divide-dark-text/8">
-              @for (t of threads; track t.id) {
-                <li>
-                  <button type="button" (click)="selectThread(t)"
-                    class="w-full text-left flex items-start gap-3 px-4 md:px-5 py-4 hover:bg-cream/50 transition-colors"
-                    [class.bg-cream]="activeThreadId === t.id">
-                    <div class="relative w-12 h-12 rounded-full overflow-hidden shrink-0 bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-sm">
-                      @if (t.listingPhoto) {
-                        <img [src]="t.listingPhoto" [alt]="t.listingTitle" class="w-full h-full object-cover">
-                      } @else {
-                        <span>{{ counterpartyInitials(t) }}</span>
-                      }
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-baseline justify-between gap-2">
-                        <div class="text-sm font-body font-bold text-dark-text truncate">{{ counterpartyName(t) }}</div>
-                        <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text shrink-0">{{ formatRelative(t.updatedAt) }}</div>
-                      </div>
-                      <div class="text-xs text-muted-text font-body truncate">{{ t.listingTitle }}</div>
-                      <div class="text-xs text-dark-text font-body mt-1 line-clamp-1" [class.font-bold]="unreadCount(t) > 0">{{ preview(t) }}</div>
-                    </div>
-                    @if (unreadCount(t) > 0) {
-                      <span class="w-2 h-2 mt-2 rounded-full bg-trinidad shrink-0" aria-label="Unread"></span>
-                    }
+
+            <!-- Search + filter bar -->
+            <div class="sticky top-0 z-10 bg-white border-b border-dark-text/8 px-3 md:px-4 py-3 space-y-2">
+              <label class="relative block">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-base text-muted-text pointer-events-none">search</span>
+                <input type="search" name="search" [(ngModel)]="searchQuery"
+                  placeholder="Search by name or listing…"
+                  class="w-full pl-9 pr-9 py-2 rounded-full bg-cream/60 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all" />
+                @if (searchQuery) {
+                  <button type="button" (click)="clearSearch()" aria-label="Clear search"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-cream/80">
+                    <span class="material-symbols-outlined text-base text-muted-text">close</span>
                   </button>
-                </li>
-              }
-            </ul>
+                }
+              </label>
+              <div class="inline-flex p-0.5 rounded-full bg-cream/60 border border-dark-text/10">
+                <button type="button" (click)="setFilter('all')"
+                  [ngClass]="listFilter === 'all' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  All <span class="text-[0.55rem] opacity-70">({{ threads.length }})</span>
+                </button>
+                <button type="button" (click)="setFilter('unread')"
+                  [ngClass]="listFilter === 'unread' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  Unread <span class="text-[0.55rem] opacity-70">({{ totalUnread }})</span>
+                </button>
+              </div>
+            </div>
+
+            @if (filteredThreads.length === 0) {
+              <div class="px-6 py-10 text-center">
+                <span class="material-symbols-outlined text-3xl text-muted-text" aria-hidden="true">filter_list_off</span>
+                <p class="text-sm text-muted-text font-body mt-2">No threads match.</p>
+              </div>
+            } @else {
+              <ul class="divide-y divide-dark-text/8">
+                @for (t of filteredThreads; track t.id) {
+                  <li>
+                    <button type="button" (click)="selectThread(t)"
+                      class="relative w-full text-left flex items-start gap-3 px-4 md:px-5 py-3 md:py-4 hover:bg-cream/50 transition-colors"
+                      [class.bg-cream]="activeThreadId === t.id || unreadCount(t) > 0">
+                      @if (unreadCount(t) > 0) {
+                        <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-trinidad" aria-hidden="true"></span>
+                      }
+                      <div class="relative w-11 h-11 md:w-12 md:h-12 rounded-full overflow-hidden shrink-0 bg-jungle-green text-white flex items-center justify-center font-headline font-bold text-sm">
+                        @if (t.listingPhoto) {
+                          <img [src]="t.listingPhoto" [alt]="t.listingTitle" class="w-full h-full object-cover">
+                        } @else {
+                          <span>{{ counterpartyInitials(t) }}</span>
+                        }
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline justify-between gap-2">
+                          <div class="text-sm font-body truncate"
+                            [class.font-bold]="unreadCount(t) > 0"
+                            [class.font-semibold]="unreadCount(t) === 0"
+                            [class.text-dark-text]="true">{{ counterpartyName(t) }}</div>
+                          <div class="flex items-center gap-1.5 shrink-0">
+                            @if (unreadCount(t) > 0) {
+                              <span class="w-2 h-2 rounded-full bg-trinidad" aria-label="Unread"></span>
+                            }
+                            <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ formatRelative(t.updatedAt) }}</div>
+                          </div>
+                        </div>
+                        <div class="text-xs text-muted-text font-body truncate">{{ t.listingTitle }}</div>
+                        <div class="text-xs text-dark-text font-body mt-1 line-clamp-1" [class.font-bold]="unreadCount(t) > 0">{{ preview(t) }}</div>
+                      </div>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
           </aside>
 
           <!-- Active thread -->
@@ -90,34 +134,91 @@
                   <div class="text-sm font-body font-bold text-dark-text truncate">{{ counterpartyName(activeThread) }}</div>
                   <div class="text-xs text-muted-text font-body truncate">{{ activeThread.listingTitle }}</div>
                 </div>
-                @if (activeThread.bookingId) {
-                  <a [routerLink]="['/booking/confirm', activeThread.bookingId]" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline shrink-0 hidden sm:inline-flex items-center gap-1">
-                    View booking
-                    <span class="material-symbols-outlined text-base">arrow_forward</span>
-                  </a>
-                }
               </header>
 
-              <div #thread class="inbox-thread__messages px-4 md:px-6 py-5 space-y-3">
-                @for (m of activeThread.messages; track m.id) {
-                  @if (m.author === 'system') {
-                    <div class="text-center text-[0.7rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text py-2">{{ m.body }}</div>
-                  } @else {
-                    @if (m.author === authorForCurrentUser(activeThread)) {
-                      <div class="flex justify-end">
-                        <div class="max-w-[85%] rounded-2xl rounded-br-md bg-trinidad text-white px-4 py-2.5 text-sm font-body leading-relaxed shadow-sm">
-                          {{ m.body }}
-                          <div class="text-[0.6rem] text-white/70 mt-1 text-right">{{ formatTime(m.createdAt) }}</div>
-                        </div>
+              <!-- Booking context strip -->
+              @if (activeBooking) {
+                <a [routerLink]="['/booking/confirm', activeBooking.id]"
+                  class="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-dark-text/8 bg-cream/30 hover:bg-cream/60 transition-colors no-underline">
+                  <span class="w-9 h-9 rounded-full bg-white border border-dark-text/10 inline-flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">luggage</span>
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-body font-bold text-dark-text">{{ bookingDateRange(activeBooking) }}</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold"
+                        [ngClass]="bookingStatusMeta(activeBooking.status).bg"
+                        [style.color]="bookingStatusMeta(activeBooking.status).color">
+                        {{ bookingStatusMeta(activeBooking.status).label }}
+                      </span>
+                    </div>
+                    <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-0.5">{{ activeBooking.nights }} {{ activeBooking.nights === 1 ? 'night' : 'nights' }} · ${{ activeBooking.total }}</div>
+                  </div>
+                  <span class="material-symbols-outlined text-lg text-muted-text shrink-0">chevron_right</span>
+                </a>
+              }
+
+              <div #thread class="inbox-thread__messages px-4 md:px-6 py-5">
+                @for (row of streamRows; track row.key) {
+                  @switch (row.kind) {
+
+                    @case ('divider') {
+                      <div class="relative flex items-center my-4">
+                        <span class="flex-1 h-px bg-dark-text/8"></span>
+                        <span class="px-3 text-[0.6rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text">{{ row.dividerLabel }}</span>
+                        <span class="flex-1 h-px bg-dark-text/8"></span>
                       </div>
-                    } @else {
-                      <div class="flex justify-start">
-                        <div class="max-w-[85%] rounded-2xl rounded-bl-md bg-cream/80 border border-dark-text/8 text-dark-text px-4 py-2.5 text-sm font-body leading-relaxed">
-                          {{ m.body }}
-                          <div class="text-[0.6rem] text-muted-text mt-1">{{ formatTime(m.createdAt) }}</div>
+                    }
+
+                    @case ('message') {
+                      @if (row.message!.author === 'system') {
+                        <div class="flex justify-center my-2">
+                          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold"
+                            [ngClass]="systemPillClass(systemMeta(row.message!.body))"
+                            [ngStyle]="systemPillStyle(systemMeta(row.message!.body))">
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ systemMeta(row.message!.body).icon }}</span>
+                            {{ row.message!.body }}
+                          </span>
+                        </div>
+                      } @else if (row.message!.author === authorForCurrentUser(activeThread)) {
+                        <div class="flex justify-end" [class.mt-3]="row.isFirstInRun" [class.mt-0.5]="!row.isFirstInRun">
+                          <div class="max-w-[85%] px-4 py-2 text-sm font-body leading-relaxed shadow-sm bg-trinidad text-white"
+                            [class.rounded-2xl]="row.isFirstInRun"
+                            [class.rounded-br-md]="row.isFirstInRun"
+                            [class.rounded-l-2xl]="!row.isFirstInRun"
+                            [class.rounded-r-md]="!row.isFirstInRun">
+                            {{ row.message!.body }}
+                            @if (row.showTimestamp) {
+                              <div class="text-[0.6rem] text-white/70 mt-1 text-right">{{ formatTime(row.message!.createdAt) }}</div>
+                            }
+                          </div>
+                        </div>
+                      } @else {
+                        <div class="flex justify-start" [class.mt-3]="row.isFirstInRun" [class.mt-0.5]="!row.isFirstInRun">
+                          <div class="max-w-[85%] px-4 py-2 text-sm font-body leading-relaxed bg-cream/80 border border-dark-text/8 text-dark-text"
+                            [class.rounded-2xl]="row.isFirstInRun"
+                            [class.rounded-bl-md]="row.isFirstInRun"
+                            [class.rounded-r-2xl]="!row.isFirstInRun"
+                            [class.rounded-l-md]="!row.isFirstInRun">
+                            {{ row.message!.body }}
+                            @if (row.showTimestamp) {
+                              <div class="text-[0.6rem] text-muted-text mt-1">{{ formatTime(row.message!.createdAt) }}</div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    }
+
+                    @case ('typing') {
+                      <div class="flex justify-start mt-3" aria-label="Typing">
+                        <div class="px-4 py-2.5 rounded-2xl rounded-bl-md bg-cream/80 border border-dark-text/8 inline-flex items-center gap-1">
+                          <span class="typing-dot"></span>
+                          <span class="typing-dot"></span>
+                          <span class="typing-dot"></span>
                         </div>
                       </div>
                     }
+
                   }
                 }
               </div>

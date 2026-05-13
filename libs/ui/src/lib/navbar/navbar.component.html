@@ -112,7 +112,11 @@
           <div #userMenuWrapper class="relative ml-3">
             <button type="button" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen" aria-label="Account menu"
               class="relative w-10 h-10 rounded-full bg-trinidad text-white flex items-center justify-center font-button font-bold text-sm hover:opacity-95 transition-opacity">
-              {{ userInitials }}
+              @if (user.photoUrl) {
+                <img [src]="user.photoUrl" [alt]="userInitials" class="absolute inset-0 w-full h-full rounded-full object-cover">
+              } @else {
+                {{ userInitials }}
+              }
               @if (user.verified) {
                 <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-jungle-green text-white ring-2 ring-white flex items-center justify-center" aria-label="Verified">
                   <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">check</span>
