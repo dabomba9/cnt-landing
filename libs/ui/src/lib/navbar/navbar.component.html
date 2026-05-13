@@ -146,6 +146,7 @@
 
                 <!-- Primary group — branches on view -->
                 <div class="py-1">
+                  <div class="px-4 pt-1 pb-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text/70">{{ view === 'host' ? 'Hosting' : 'Travel' }}</div>
                   @if (view === 'host') {
                     <a routerLink="/hosting" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                       <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
@@ -155,7 +156,7 @@
                       <span class="material-symbols-outlined text-lg text-dark-text">storefront</span>
                       Listings
                     </a>
-                    <a routerLink="/hosting" fragment="active" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                    <a routerLink="/hosting" fragment="reservations" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                       <span class="material-symbols-outlined text-lg text-dark-text">event_available</span>
                       Reservations
                     </a>
@@ -182,15 +183,12 @@
                   </a>
                 </div>
 
-                <!-- Secondary group -->
+                <!-- Account group -->
                 <div class="border-t border-dark-text/8 py-1">
+                  <div class="px-4 pt-1 pb-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text/70">Account</div>
                   <a routerLink="/account" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-muted-text">manage_accounts</span>
-                    Account
-                  </a>
-                  <a routerLink="/account" fragment="rig" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
-                    <span class="material-symbols-outlined text-lg text-muted-text">rv_hookup</span>
-                    My RV
+                    Account settings
                   </a>
                   <a routerLink="/refer" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-muted-text">card_giftcard</span>
@@ -202,30 +200,20 @@
                   </a>
                 </div>
 
-                <!-- Become a host promo -->
-                <a routerLink="/host" (click)="closeUserMenu()" class="block border-t border-dark-text/8 px-4 py-3 hover:bg-cream/60 transition-colors">
-                  <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-full bg-trinidad/10 inline-flex items-center justify-center shrink-0">
-                      <span class="material-symbols-outlined text-base text-trinidad">campaign</span>
-                    </span>
-                    <div class="flex-1 min-w-0">
-                      <div class="text-sm font-body font-bold text-dark-text leading-tight">Become a host</div>
-                      <div class="text-xs text-muted-text font-body leading-snug mt-0.5">Earn from your land — pull in extra income.</div>
+                <!-- Become a host promo — guests only -->
+                @if (view !== 'host') {
+                  <a routerLink="/host" (click)="closeUserMenu()" class="block border-t border-dark-text/8 px-4 py-3 hover:bg-cream/60 transition-colors">
+                    <div class="flex items-center gap-3">
+                      <span class="w-9 h-9 rounded-full bg-trinidad/10 inline-flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-base text-trinidad">campaign</span>
+                      </span>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-sm font-body font-bold text-dark-text leading-tight">Become a host</div>
+                        <div class="text-xs text-muted-text font-body leading-snug mt-0.5">Earn from your land — pull in extra income.</div>
+                      </div>
                     </div>
-                  </div>
-                </a>
-
-                <!-- Tertiary -->
-                <div class="border-t border-dark-text/8 py-1">
-                  <a routerLink="/articles" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-text hover:bg-cream/60 hover:text-dark-text transition-colors">
-                    <span class="material-symbols-outlined text-lg">menu_book</span>
-                    Articles
                   </a>
-                  <a routerLink="/grow" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body text-muted-text hover:bg-cream/60 hover:text-dark-text transition-colors">
-                    <span class="material-symbols-outlined text-lg">park</span>
-                    Grow Program
-                  </a>
-                </div>
+                }
 
                 <!-- Sign out -->
                 <button type="button" (click)="signOut()" class="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm font-body text-dark-text hover:bg-cream/60 border-t border-dark-text/8 transition-colors">

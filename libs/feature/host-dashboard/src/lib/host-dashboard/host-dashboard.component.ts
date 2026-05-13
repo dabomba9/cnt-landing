@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent } from '@cnt-workspace/ui';
 import {
@@ -50,6 +50,7 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
+    private route: ActivatedRoute,
     private router: Router,
     private seo: SeoService,
     private toasts: ToastService,
@@ -81,6 +82,15 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
       this.countdownInterval = setInterval(() => this.tickCountdowns(), 1000);
       this.tickCountdowns();
     }
+
+    // Honor #reservations fragment from navbar dropdown deep-link.
+    this.subs.push(
+      this.route.fragment.subscribe(f => {
+        if (!f || !isPlatformBrowser(this.platformId)) return;
+        // Defer a tick so the section renders before we look for it.
+        setTimeout(() => document.getElementById(f)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }),
+    );
   }
 
   ngOnDestroy(): void {
