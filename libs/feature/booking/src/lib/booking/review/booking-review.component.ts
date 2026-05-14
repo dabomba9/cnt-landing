@@ -378,6 +378,8 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     this.error = null;
     this.validateEmail();
     this.validatePhone();
+    // Re-read myRv at click time — the user may have edited it in another tab.
+    this.myRv = readMyRv(this.platformId);
     if (!this.hasValidState || !this.listing || !this.detail || !this.user) {
       this.error = 'Missing booking details. Start over from the listing.';
       return;
@@ -388,6 +390,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     if (this.fieldErrors.email || !this.contactEmail) {
       this.error = 'A valid contact email is required.';
+      return;
+    }
+    if (!this.isMyRvComplete) {
+      this.error = `Add your ${this.rigMissingLabel} before booking.`;
       return;
     }
     // Gate first booking on identity verification.

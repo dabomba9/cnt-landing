@@ -245,13 +245,17 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       const found = MOCK_LISTINGS.find(l => l.id === id);
       const newListing = found || MOCK_LISTINGS[0];
 
+      // Always refresh myRv on route change — the user may have just saved
+      // their rig on /account#rig and been bounced back here. We want the
+      // sidebar alert + Reserve gate to reflect the latest profile.
+      this.myRv = readMyRv(this.platformId);
+      this.booking.setMyRv(this.myRv);
+
       // Only reset listing-scoped state when the listing actually changes
       if (newListing.id !== this.currentListingId) {
         this.listing = newListing;
         this.detail = getListingDetail(this.listing);
         this.booking.setListing(this.listing, this.detail);
-        this.myRv = readMyRv(this.platformId);
-        this.booking.setMyRv(this.myRv);
         this.currentListingId = newListing.id;
         pushRecentlyViewed(this.platformId, newListing.id);
 
@@ -424,6 +428,10 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   requestBooking(): void {
     if (!this.booking.canBook) return;
+    // Re-read myRv from storage at click time so the gate sees the latest
+    // profile even if the user mutated it in another tab / via /account.
+    this.myRv = readMyRv(this.platformId);
+    this.booking.setMyRv(this.myRv);
     // Gate 1: complete rig profile required for ALL bookings (instant or not).
     if (!isMyRvComplete(this.myRv)) {
       const missing = myRvMissingFields(this.myRv);
