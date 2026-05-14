@@ -19,24 +19,65 @@
         <div class="dashboard-anim grid grid-cols-3 gap-4 md:gap-5">
           <cnt-stat-tile label="Trips taken"   tone="jungle"   [value]="tripsTaken"   icon="luggage"  [trend]="tripsTaken === 0 ? 'No trips yet' : 'All-time'"></cnt-stat-tile>
           <cnt-stat-tile label="Nights booked" tone="trinidad" [value]="nightsBooked" icon="bed"      [trend]="nightsBooked === 0 ? 'Plan your first stay' : 'Across all bookings'"></cnt-stat-tile>
-          <cnt-stat-tile label="Reviews given" tone="jungle"   [value]="reviewsGiven" icon="reviews"  [trend]="reviewsGiven === 0 ? 'Earn $5/night credit' : 'Thanks for sharing'"></cnt-stat-tile>
+          <cnt-stat-tile label="Reviews given" tone="jungle"   [value]="reviewsGiven" icon="reviews"  [trend]="reviewsGiven === 0 ? 'Earn $' + creditPerNight + '/night credit' : 'Thanks for sharing'"></cnt-stat-tile>
         </div>
 
         <!-- Reward credit callout — full card for new users, compact pill once they've reviewed 2+ stays. -->
         @if (rewardCredit > 0 && reviewsGiven >= 2) {
-          <a routerLink="/search" class="dashboard-anim inline-flex items-center gap-2 px-4 py-2 rounded-full bg-trinidad/5 border border-trinidad/30 text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 transition-colors">
-            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">redeem</span>
-            ${{ rewardCredit }} credit · applied at checkout
-            <span class="material-symbols-outlined text-sm">arrow_forward</span>
-          </a>
+          <div class="dashboard-anim space-y-3">
+            <button type="button" (click)="toggleCreditBreakdown()" [attr.aria-expanded]="creditBreakdownOpen"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-trinidad/5 border border-trinidad/30 text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 transition-colors">
+              <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">redeem</span>
+              ${{ rewardCredit }} credit · applied at checkout
+              <span class="material-symbols-outlined text-sm">{{ creditBreakdownOpen ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+            @if (creditBreakdownOpen) {
+              <div role="region" aria-label="Credit breakdown" cntFocusTrap (escape)="closeCreditBreakdown()"
+                class="rounded-2xl border border-dark-text/8 bg-white p-5 md:p-6">
+                <div class="flex items-baseline justify-between mb-3">
+                  <div class="font-headline font-bold text-dark-text text-lg">Credit breakdown</div>
+                  <button type="button" (click)="closeCreditBreakdown()"
+                    class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-dark-text">Close ×</button>
+                </div>
+                @if (earnedEntries.length > 0) {
+                  <div class="text-[0.6rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-2">Earned (${{ totalEarned }})</div>
+                  <ul class="space-y-2 mb-4">
+                    @for (e of earnedEntries; track e.bookingId) {
+                      <li class="flex items-center justify-between text-sm font-body">
+                        <span class="text-dark-text truncate flex-1">{{ e.listingTitle }}</span>
+                        <span class="text-[0.65rem] text-muted-text shrink-0 mx-3">{{ creditEntryDate(e.date) }}</span>
+                        <span class="text-jungle-green font-bold shrink-0">+${{ e.amount }}</span>
+                      </li>
+                    }
+                  </ul>
+                }
+                @if (spentEntries.length > 0) {
+                  <div class="text-[0.6rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-2 mt-4">Spent (${{ totalSpent }})</div>
+                  <ul class="space-y-2 mb-4">
+                    @for (e of spentEntries; track e.bookingId) {
+                      <li class="flex items-center justify-between text-sm font-body">
+                        <span class="text-dark-text truncate flex-1">{{ e.listingTitle }}</span>
+                        <span class="text-[0.65rem] text-muted-text shrink-0 mx-3">{{ creditEntryDate(e.date) }}</span>
+                        <span class="text-trinidad font-bold shrink-0">−${{ e.amount }}</span>
+                      </li>
+                    }
+                  </ul>
+                }
+                <div class="flex items-center justify-between pt-3 border-t border-dark-text/8">
+                  <span class="text-sm font-body font-bold text-dark-text">Available</span>
+                  <span class="font-headline font-bold text-trinidad text-lg">${{ rewardCredit }}</span>
+                </div>
+              </div>
+            }
+          </div>
         } @else if (rewardCredit === 0) {
           <div class="dashboard-anim flex flex-col md:flex-row md:items-center gap-4 p-5 md:p-6 rounded-2xl bg-jungle-green/5 border border-gold/40">
           <span class="w-12 h-12 rounded-full bg-gold/30 inline-flex items-center justify-center shrink-0" style="color: #b3760e;">
             <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">redeem</span>
           </span>
           <div class="flex-1 min-w-0">
-            <div class="font-headline font-bold text-dark-text text-lg leading-tight">Earn your first $5/night credit</div>
-            <p class="text-xs text-muted-text font-body leading-relaxed mt-1">Book a stay → leave a 5-star review when you're back → credit is applied to your next trip. Stack it.</p>
+            <div class="font-headline font-bold text-dark-text text-lg leading-tight">Earn your first ${{ creditPerNight }}/night credit</div>
+            <p class="text-xs text-muted-text font-body leading-relaxed mt-1">Book a stay → leave a review when you're back → credit is applied to your next trip. Stack it.</p>
           </div>
           <a routerLink="/search" class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
             Start a trip

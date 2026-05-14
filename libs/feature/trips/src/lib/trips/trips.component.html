@@ -135,10 +135,24 @@
                   } @else if (canReview(b)) {
                     <div class="mt-3 pt-3 border-t border-dark-text/5 flex items-center justify-between gap-2">
                       @if (hasReviewed(b)) {
-                        <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green inline-flex items-center gap-1">
-                          <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified</span>
-                          Reviewed
-                        </div>
+                        @if (creditEarnedFor(b); as earn) {
+                          @if (earn.alreadyEarned) {
+                            <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text inline-flex items-center gap-1">
+                              <span class="material-symbols-outlined text-base">verified</span>
+                              Reviewed · already earned
+                            </div>
+                          } @else {
+                            <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green inline-flex items-center gap-1">
+                              <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">redeem</span>
+                              Earned ${{ earn.amount }} credit
+                            </div>
+                          }
+                        } @else {
+                          <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified</span>
+                            Reviewed
+                          </div>
+                        }
                         <button type="button" (click)="openReview(b, $event)"
                           class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
                           Edit review
@@ -146,7 +160,7 @@
                       } @else {
                         <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad inline-flex items-center gap-1">
                           <span class="material-symbols-outlined text-base">redeem</span>
-                          Earn $5/night credit
+                          Earn ${{ creditPerNight }}/night credit
                         </span>
                         <button type="button" (click)="openReview(b, $event)"
                           class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
@@ -436,12 +450,19 @@
         </div>
       </div>
 
-      <label class="flex flex-col gap-2 mb-6">
-        <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Your review <span class="text-muted-text/70 normal-case font-normal">(optional)</span></span>
+      <label class="flex flex-col gap-2 mb-3">
+        <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Your review</span>
         <textarea [(ngModel)]="reviewText" name="reviewText" rows="4" maxlength="600"
-          placeholder="What stood out about your stay?"
+          [placeholder]="'Tell us a few words to earn $' + (reviewTarget && reviewTarget.nights ? reviewTarget.nights * creditPerNight : creditPerNight) + ' credit (' + minReviewChars + '+ chars)'"
           class="bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none"></textarea>
-        <span class="text-[0.6rem] text-muted-text/70 font-body text-right">{{ reviewText.length }}/600</span>
+        <div class="flex items-center justify-between text-[0.6rem] font-body">
+          @if (reviewText.trim().length < minReviewChars && reviewTarget && !reviewTarget.reviewedAt) {
+            <span class="text-trinidad">Add a few more words to earn ${{ (reviewTarget.nights || 0) * creditPerNight }} credit.</span>
+          } @else {
+            <span></span>
+          }
+          <span class="text-muted-text/70">{{ reviewText.length }}/600</span>
+        </div>
       </label>
 
       <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">

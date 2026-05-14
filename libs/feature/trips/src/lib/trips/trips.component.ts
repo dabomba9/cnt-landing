@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
-import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores } from '@cnt-workspace/data-access';
+import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
@@ -485,6 +485,9 @@ export class TripsComponent implements OnInit, OnDestroy {
     this.reviewSaving = true;
     const authorName = `${user.firstName} ${user.lastName}`.trim();
     const authorInitials = ((user.firstName?.[0] || '') + (user.lastName?.[0] || '')).toUpperCase() || authorName.slice(0, 2).toUpperCase();
+    const wasAlreadyReviewed = !!target.reviewedAt;
+    const trimmedText = this.reviewText.trim();
+    const qualifiesByText = trimmedText.length >= MIN_REVIEW_CHARS_FOR_CREDIT;
     setTimeout(() => {
       this.reviewSvc.upsert({
         bookingId: target.id,
@@ -493,13 +496,45 @@ export class TripsComponent implements OnInit, OnDestroy {
         authorName,
         authorInitials,
         rating: this.reviewRating,
-        text: this.reviewText.trim(),
+        text: trimmedText,
         subScores: this.reviewSubScores,
       });
-      this.bookingSvc.markReviewed(target.id);
+
+      // Mark the booking reviewed only when the text earns credit. Edits that
+      // upgrade a too-short review can still flip this on later.
+      if (qualifiesByText) this.bookingSvc.markReviewed(target.id);
+
+      // Choose the right toast for the moment.
+      let toastMsg = 'Review updated.';
+      if (!wasAlreadyReviewed) {
+        const updated = this.bookingSvc.getById(target.id);
+        const earnedCredit = qualifiesByText && updated ? this.bookingSvc.qualifiesForCredit(updated) : false;
+        if (qualifiesByText && earnedCredit) {
+          toastMsg = `Review saved · earned $${(target.nights || 0) * REVIEW_CREDIT_PER_NIGHT} in credit.`;
+        } else if (qualifiesByText && !earnedCredit) {
+          // Per-listing cap kicked in (repeat stay).
+          toastMsg = 'Review saved — thanks for sharing.';
+        } else {
+          toastMsg = `Review saved. Add a few words to earn $${(target.nights || 0) * REVIEW_CREDIT_PER_NIGHT}.`;
+        }
+      }
+
       this.reviewSaving = false;
       this.reviewTarget = null;
-      this.toasts.success('Review saved — thanks for sharing.');
+      this.toasts.success(toastMsg);
     }, 300);
+  }
+
+  readonly creditPerNight = REVIEW_CREDIT_PER_NIGHT;
+  readonly minReviewChars = MIN_REVIEW_CHARS_FOR_CREDIT;
+
+  /** Earn label for a past-trip card when the user has already reviewed it. */
+  creditEarnedFor(b: IBooking): { amount: number; alreadyEarned: boolean } | null {
+    if (!b.reviewedAt) return null;
+    const qualifies = this.bookingSvc.qualifiesForCredit(b);
+    return {
+      amount: (b.nights || 0) * REVIEW_CREDIT_PER_NIGHT,
+      alreadyEarned: !qualifies,
+    };
   }
 }

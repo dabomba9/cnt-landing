@@ -373,14 +373,18 @@
                       <span>−${{ promoApplied.amount }}</span>
                     </div>
                   }
-                  @if (creditApplied > 0) {
-                    <div class="flex justify-between text-trinidad">
+                  @if (availableCredit > 0) {
+                    <div class="flex justify-between" [class.text-trinidad]="useCredit" [class.text-muted-text]="!useCredit">
                       <span class="inline-flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">redeem</span>
                         Reward credit
                       </span>
-                      <span>−${{ creditApplied }}</span>
+                      <span>{{ useCredit ? '−$' + creditApplied : 'Saved for later' }}</span>
                     </div>
+                    <label class="flex items-start gap-2 text-[0.65rem] text-muted-text font-body cursor-pointer">
+                      <input type="checkbox" [(ngModel)]="useCredit" name="useCredit" class="mt-0.5 w-3.5 h-3.5 accent-trinidad cursor-pointer">
+                      <span>Apply my ${{ availableCredit }} credit to this booking</span>
+                    </label>
                   }
                 </div>
 

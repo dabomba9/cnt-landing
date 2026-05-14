@@ -235,8 +235,12 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return Math.max(0, this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee + this.taxes - this.promoDiscount);
   }
 
-  /** Credit actually applied — capped at the pre-credit total. */
+  /** User toggle — save credit for later vs. apply it to this booking (defaults on). */
+  useCredit = true;
+
+  /** Credit actually applied — capped at the pre-credit total. Honors the useCredit toggle. */
   get creditApplied(): number {
+    if (!this.useCredit) return 0;
     return Math.min(this.availableCredit, this.totalBeforeCredit);
   }
 

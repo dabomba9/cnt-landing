@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IBooking } from '@cnt-workspace/models';
-import { IPublicUser, IUserReview } from '@cnt-workspace/data-access';
+import { IPublicUser, IUserReview, REVIEW_CREDIT_PER_NIGHT } from '@cnt-workspace/data-access';
 
 interface IActivityEvent {
   icon: string;
@@ -182,7 +182,7 @@ export class ActivityFeedComponent {
         icon: 'star',
         iconColor: 'gold',
         headline: `You reviewed ${listingTitle}`,
-        subline: `${r.rating}/5 stars — earned $5/night credit`,
+        subline: `${r.rating}/5 stars — earned $${REVIEW_CREDIT_PER_NIGHT}/night credit`,
         ts: new Date(r.createdAt).getTime(),
         link: b ? { path: ['/booking/confirm', b.id] } : undefined,
       });

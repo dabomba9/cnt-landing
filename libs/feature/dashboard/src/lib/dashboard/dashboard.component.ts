@@ -8,12 +8,12 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
-import { BookingService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
+import { BookingService, ReviewService, IUserReview, REVIEW_CREDIT_PER_NIGHT, ICreditEntry } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { IMyRv, readMyRv, readRecentlyViewed } from '@cnt-workspace/data-access';
 import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 import { DashboardGreetingComponent } from './widgets/greeting/greeting.component';
-import { StatTileComponent } from '@cnt-workspace/ui';
+import { StatTileComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import { UpcomingTripCardComponent } from './widgets/upcoming-trip/upcoming-trip.component';
 import { SavedStaysWidgetComponent } from './widgets/saved-stays/saved-stays.component';
 import { MyRvSummaryWidgetComponent } from './widgets/my-rv-summary/my-rv-summary.component';
@@ -32,6 +32,7 @@ import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
     DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
     SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
     QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent, SpendingSummaryComponent,
+    FocusTrapDirective,
   ],
   templateUrl: './dashboard.component.html',
 })
@@ -201,8 +202,27 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   get isBrandNewUser(): boolean {
     return this.bookings.length === 0 && this.savedListings.length === 0;
   }
-  /** Reward credit available to spend — earned ($5/night × reviewed) minus already-applied. */
+  /** Reward credit available to spend — earned per-night × reviewed minus already-applied. */
   get rewardCredit(): number {
     return this.user ? this.bookingSvc.getAvailableCredit(this.user.email) : 0;
+  }
+  readonly creditPerNight = REVIEW_CREDIT_PER_NIGHT;
+
+  /** Toggle state for the credit breakdown disclosure. */
+  creditBreakdownOpen = false;
+  toggleCreditBreakdown(): void { this.creditBreakdownOpen = !this.creditBreakdownOpen; }
+  closeCreditBreakdown(): void { this.creditBreakdownOpen = false; }
+
+  get creditHistory(): ICreditEntry[] {
+    return this.user ? this.bookingSvc.getCreditHistory(this.user.email) : [];
+  }
+  get earnedEntries(): ICreditEntry[] { return this.creditHistory.filter(e => e.type === 'earned'); }
+  get spentEntries(): ICreditEntry[] { return this.creditHistory.filter(e => e.type === 'spent'); }
+  get totalEarned(): number { return this.earnedEntries.reduce((s, e) => s + e.amount, 0); }
+  get totalSpent(): number { return this.spentEntries.reduce((s, e) => s + e.amount, 0); }
+
+  creditEntryDate(iso: string): string {
+    try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+    catch { return ''; }
   }
 }

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IBooking } from '@cnt-workspace/models';
-import { IUserReview } from '@cnt-workspace/data-access';
+import { IUserReview, REVIEW_CREDIT_PER_NIGHT } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-dashboard-reviews',
@@ -38,7 +38,7 @@ import { IUserReview } from '@cnt-workspace/data-access';
 
       @if (needsReview.length === 0 && submittedCount === 0) {
         <div class="px-5 md:px-6 pb-6 pt-3">
-          <p class="text-xs text-muted-text font-body">No completed stays yet. After your first trip, leave a review here to earn $5/night credit.</p>
+          <p class="text-xs text-muted-text font-body">No completed stays yet. After your first trip, leave a review here to earn \${{ creditPerNight }}/night credit.</p>
         </div>
       } @else if (needsReview.length === 0) {
         <div class="px-5 md:px-6 pb-6 pt-3 flex items-start gap-3">
@@ -82,6 +82,7 @@ import { IUserReview } from '@cnt-workspace/data-access';
 export class ReviewsWidgetComponent {
   @Input() bookings: IBooking[] = [];
   @Input() reviews: IUserReview[] = [];
+  readonly creditPerNight = REVIEW_CREDIT_PER_NIGHT;
 
   get needsReview(): IBooking[] {
     const now = Date.now();

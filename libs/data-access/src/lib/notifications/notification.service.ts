@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { IBooking } from '@cnt-workspace/models';
-import { BookingService } from '../booking/booking.service';
+import { BookingService, REVIEW_CREDIT_PER_NIGHT } from '../booking/booking.service';
 import { MessageService } from '../messaging/message.service';
 import { ReviewService, IUserReview } from '../reviews/review.service';
 import { AuthService, AppView, IPublicUser } from '../auth/auth.service';
@@ -199,7 +199,7 @@ export class NotificationService {
             kind: 'review_eligible',
             icon: 'redeem',
             tone: 'gold',
-            title: 'Earn $5/night credit',
+            title: `Earn $${REVIEW_CREDIT_PER_NIGHT}/night credit`,
             subtitle: `Leave a review for ${b.listingTitle}`,
             timestamp: b.dates.end,
             routerLink: `/trips?review=${b.id}`,

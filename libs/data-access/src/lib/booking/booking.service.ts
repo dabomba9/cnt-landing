@@ -10,6 +10,20 @@ const DECISION_WAIT_MS = 30_000;
 /** Probability the host approves the booking. Remainder declines. */
 const APPROVAL_RATE = 0.85;
 
+/** Dollars credited per reviewed night. Centralized so every copy + formula stays in sync. */
+export const REVIEW_CREDIT_PER_NIGHT = 5;
+/** Minimum trimmed review text length required to actually earn the credit. */
+export const MIN_REVIEW_CHARS_FOR_CREDIT = 20;
+
+/** One row in the user's credit ledger — drives the breakdown disclosure on /dashboard. */
+export interface ICreditEntry {
+  type: 'earned' | 'spent';
+  amount: number;
+  bookingId: string;
+  listingTitle: string;
+  date: string;       // ISO
+}
+
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private readonly _bookings$ = new BehaviorSubject<IBooking[]>([]);
@@ -71,20 +85,70 @@ export class BookingService {
   }
 
   /**
-   * Available reward credit for a user, in dollars. $5/night × completed-AND-reviewed
-   * nights, minus any creditApplied across all the user's bookings (so spent credit
-   * doesn't get re-spent).
+   * Bookings that qualify a user to earn credit — completed, confirmed/approved,
+   * reviewed, and the FIRST reviewed booking per listing (anti-fraud lite — repeat
+   * stays at the same listing earn once).
    */
-  getAvailableCredit(userEmail: string): number {
-    const all = this.read().filter(b => b.userEmail === userEmail);
+  private earningBookings(userEmail: string): IBooking[] {
     const now = Date.now();
-    const earned = all
-      .filter(b => (b.status === 'confirmed' || b.status === 'approved')
+    const reviewed = this.read()
+      .filter(b => b.userEmail === userEmail
+                && (b.status === 'confirmed' || b.status === 'approved')
                 && new Date(b.dates.end).getTime() < now
                 && !!b.reviewedAt)
-      .reduce((sum, b) => sum + (b.nights || 0), 0) * 5;
-    const spent = all.reduce((sum, b) => sum + (b.creditApplied || 0), 0);
+      .sort((a, b) => (a.reviewedAt || '').localeCompare(b.reviewedAt || ''));
+    const seenListings = new Set<number>();
+    const earners: IBooking[] = [];
+    for (const b of reviewed) {
+      if (seenListings.has(b.listingId)) continue;
+      seenListings.add(b.listingId);
+      earners.push(b);
+    }
+    return earners;
+  }
+
+  /** True when this booking is the user's first reviewed stay at that listing. */
+  qualifiesForCredit(booking: IBooking): boolean {
+    return this.earningBookings(booking.userEmail).some(b => b.id === booking.id);
+  }
+
+  /**
+   * Available reward credit for a user, in dollars. Earned = nights from each
+   * qualifying booking × REVIEW_CREDIT_PER_NIGHT. Spent = creditApplied across all
+   * bookings. Always non-negative.
+   */
+  getAvailableCredit(userEmail: string): number {
+    const earnedNights = this.earningBookings(userEmail)
+      .reduce((sum, b) => sum + (b.nights || 0), 0);
+    const earned = earnedNights * REVIEW_CREDIT_PER_NIGHT;
+    const spent = this.read()
+      .filter(b => b.userEmail === userEmail)
+      .reduce((sum, b) => sum + (b.creditApplied || 0), 0);
     return Math.max(0, earned - spent);
+  }
+
+  /** Chronological credit ledger — earned + spent entries, newest first. */
+  getCreditHistory(userEmail: string): ICreditEntry[] {
+    const entries: ICreditEntry[] = [];
+    for (const b of this.earningBookings(userEmail)) {
+      entries.push({
+        type: 'earned',
+        amount: (b.nights || 0) * REVIEW_CREDIT_PER_NIGHT,
+        bookingId: b.id,
+        listingTitle: b.listingTitle,
+        date: b.reviewedAt || b.dates.end,
+      });
+    }
+    for (const b of this.read().filter(x => x.userEmail === userEmail && (x.creditApplied || 0) > 0)) {
+      entries.push({
+        type: 'spent',
+        amount: b.creditApplied || 0,
+        bookingId: b.id,
+        listingTitle: b.listingTitle,
+        date: b.createdAt,
+      });
+    }
+    return entries.sort((a, b) => b.date.localeCompare(a.date));
   }
 
   /** Flag a completed booking as reviewed. Called after a successful Review save. */
