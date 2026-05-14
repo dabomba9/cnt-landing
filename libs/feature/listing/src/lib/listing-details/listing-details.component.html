@@ -1,33 +1,5 @@
 <cnt-navbar></cnt-navbar>
 
-<!-- Sticky title bar — appears once user scrolls past the hero photo block -->
-@if (listing) {
-  <div class="hidden md:block fixed top-20 left-0 right-0 z-30 bg-white border-b border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-transform duration-300"
-    [class.translate-y-0]="stickyTitleVisible"
-    [class.-translate-y-full]="!stickyTitleVisible">
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-3 flex items-center justify-between gap-4">
-      <div class="flex-1 min-w-0">
-        <div class="text-sm font-headline font-bold text-dark-text truncate">{{ listing.title }}</div>
-        <div class="text-xs text-muted-text font-body truncate flex items-center gap-2">
-          <span class="material-symbols-outlined text-[14px] text-gold" style="font-variation-settings: 'FILL' 1;">star</span>
-          <span>{{ listing.rating }}</span>
-          <span class="opacity-50">·</span>
-          <span>{{ listing.location }}</span>
-        </div>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="text-right">
-          <div class="text-base font-headline font-bold text-trinidad leading-none">${{ listing.price }}<span class="text-xs text-muted-text font-body font-normal"> / night</span></div>
-        </div>
-        <button type="button" (click)="scrollToAnchor('photos')"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
-          Reserve
-        </button>
-      </div>
-    </div>
-  </div>
-}
-
 <main class="pt-24 md:pt-28 pb-24 md:pb-0 min-h-screen bg-cream bg-grid-subtle">
 
   <!-- ================= Title row (Airbnb-style: simple title + actions) ================= -->

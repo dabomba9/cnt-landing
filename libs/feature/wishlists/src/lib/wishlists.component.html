@@ -4,17 +4,26 @@
   <section class="px-[2%]">
     <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-12">
 
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
-        <div>
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 md:mb-8">
+        <div class="min-w-0">
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Saved</span>
           <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-3xl md:text-4xl">Wishlists</h1>
-          <p class="text-sm text-muted-text font-body mt-2">
-            @if (listings.length > 0) {
-              {{ listings.length }} stay{{ listings.length === 1 ? '' : 's' }} you saved for later
-            } @else {
-              Tap the heart on any listing to save it here.
-            }
-          </p>
+          @if (listings.length > 0) {
+            <p class="text-sm text-muted-text font-body mt-2">
+              <span class="text-dark-text font-bold">{{ listings.length }}</span> {{ listings.length === 1 ? 'stay' : 'stays' }}
+              @if (categoryBreakdown.length > 0) {
+                ·
+                @for (c of categoryBreakdown.slice(0, 3); track c.category; let last = $last; let i = $index) {
+                  <span>{{ c.count }} {{ c.label.toLowerCase() }}{{ c.count === 1 ? '' : 's' }}</span>{{ !last ? ' · ' : '' }}
+                }
+                @if (categoryBreakdown.length > 3) {
+                  · +{{ categoryBreakdown.length - 3 }} more
+                }
+              }
+            </p>
+          } @else {
+            <p class="text-sm text-muted-text font-body mt-2">Tap the heart on any listing to save it for later.</p>
+          }
         </div>
         @if (listings.length > 0) {
           <div class="flex items-center gap-2 shrink-0">
@@ -32,24 +41,92 @@
         }
       </div>
 
+      <!-- Undo banner — shown for 5s after Clear all -->
+      @if (clearedSnapshot) {
+        <div class="mb-5 flex items-center gap-3 p-3 rounded-2xl bg-trinidad/5 border border-trinidad/30">
+          <span class="material-symbols-outlined text-base text-trinidad">history</span>
+          <span class="flex-1 text-sm font-body text-dark-text">Cleared {{ clearedSnapshot.length }} {{ clearedSnapshot.length === 1 ? 'stay' : 'stays' }}.</span>
+          <button type="button" (click)="undoClear()"
+            class="px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+            Undo
+          </button>
+        </div>
+      }
+
       @if (listings.length === 0) {
         <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-12 text-center">
           <span class="w-16 h-16 mx-auto rounded-full bg-trinidad/10 inline-flex items-center justify-center">
             <span class="material-symbols-outlined text-3xl text-trinidad" style="font-variation-settings: 'FILL' 1;">favorite</span>
           </span>
           <h2 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">No saved stays yet</h2>
-          <p class="text-sm font-body text-muted-text max-w-md mx-auto mb-5">Save stays you love by tapping the heart on any listing. They'll wait here for you to come back.</p>
-          <a routerLink="/search" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
-            Browse stays
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-          </a>
+          <p class="text-sm font-body text-muted-text max-w-md mx-auto mb-5">Tap the heart on any listing to save it for later.</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a routerLink="/search" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+              Browse stays
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </a>
+            @if (hasRecentlyViewed) {
+              <a routerLink="/dashboard" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                Continue from recently viewed
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </a>
+            }
+          </div>
         </div>
       } @else {
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          @for (l of listings; track l.id) {
-            <cnt-listing-card [listing]="l" [isFavorite]="isFavorite(l.id)" (favoriteToggle)="onFavoriteToggle(l.id, $event)"></cnt-listing-card>
-          }
-        </div>
+        <!-- Filter + sort row — only renders when there's enough to slice -->
+        @if (showFilterRow) {
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
+            <div class="flex flex-wrap items-center gap-1.5">
+              @if (availableCategories.length > 1) {
+                @for (cat of availableCategories; track cat) {
+                  <button type="button" (click)="toggleCategory(cat)"
+                    [ngClass]="selectedCategories.has(cat) ? 'bg-dark-text text-white border-dark-text' : 'bg-white text-dark-text border-dark-text/15'"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors hover:border-trinidad">
+                    {{ CATEGORY_META[cat].label }}
+                    <span class="text-[0.55rem] opacity-70">{{ countFor(cat) }}</span>
+                  </button>
+                }
+                @if (filtersActive) {
+                  <button type="button" (click)="resetFilters()"
+                    class="ml-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                    Clear filters
+                  </button>
+                }
+              }
+            </div>
+            @if (listings.length > 1) {
+              <label class="flex items-center gap-2 shrink-0">
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Sort</span>
+                <select [(ngModel)]="sort" (change)="onSortChange()" name="sort"
+                  class="bg-white border border-dark-text/15 rounded-full px-3 py-1.5 text-xs font-body text-dark-text focus:outline-none focus:border-trinidad">
+                  <option value="newest">Newest saved</option>
+                  <option value="oldest">Oldest saved</option>
+                  <option value="price-asc">Price · low to high</option>
+                  <option value="price-desc">Price · high to low</option>
+                  <option value="rating-desc">Top rated</option>
+                </select>
+              </label>
+            }
+          </div>
+        }
+
+        @if (filteredListings.length === 0) {
+          <div class="bg-white rounded-2xl border border-dark-text/8 p-10 text-center">
+            <span class="material-symbols-outlined text-3xl text-muted-text">filter_list_off</span>
+            <p class="text-sm font-body text-muted-text mt-2">No saved stays match these filters.</p>
+            <button type="button" (click)="resetFilters()"
+              class="mt-3 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+              Reset filters
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @for (l of filteredListings; track l.id) {
+              <cnt-listing-card [listing]="l" [isFavorite]="isFavorite(l.id)" (favoriteToggle)="onFavoriteToggle(l.id, $event)"></cnt-listing-card>
+            }
+          </div>
+        }
       }
 
     </div>

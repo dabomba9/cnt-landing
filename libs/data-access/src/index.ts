@@ -11,6 +11,7 @@ export * from './lib/host/host-listing-meta.service';
 export * from './lib/host/host-availability.service';
 export * from './lib/my-rv.util';
 export * from './lib/recently-viewed.util';
+export * from './lib/favorites.util';
 export * from './lib/state.util';
 export * from './lib/payments/payment-methods.service';
 export * from './lib/reviews/review.service';

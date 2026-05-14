@@ -1,19 +1,46 @@
 import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent, ListingCardComponent } from '@cnt-workspace/ui';
-import { IListing, MOCK_LISTINGS, SeoService, ToastService } from '@cnt-workspace/data-access';
+import {
+  IListing, MOCK_LISTINGS, SeoService, ToastService,
+  Category, CATEGORY_META,
+  readFavorites, removeFavorite, clearFavorites, writeFavorites, IFavorite,
+  readRecentlyViewed,
+} from '@cnt-workspace/data-access';
 
-const FAV_KEY = 'cnt-favorites';
+type WishlistSort = 'newest' | 'oldest' | 'price-asc' | 'price-desc' | 'rating-desc';
+
+const VIEW_KEY = 'cnt-wishlists-view';
+const UNDO_WINDOW_MS = 5000;
+
+interface ICategoryCount { category: Category; label: string; count: number; }
 
 @Component({
   selector: 'cnt-wishlists',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent],
   templateUrl: './wishlists.component.html',
 })
 export class WishlistsComponent implements OnInit {
+  /** Raw favorites with timestamps — newest first by util contract. */
+  favorites: IFavorite[] = [];
   favoriteIds = new Set<number>();
+
+  /** Filter + sort state, persisted to localStorage. */
+  selectedCategories = new Set<Category>();
+  sort: WishlistSort = 'newest';
+
+  /** Undo state for Clear all. */
+  clearedSnapshot: IFavorite[] | null = null;
+  private undoTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Cross-reference to drive the "Continue from recently viewed" empty-state link. */
+  hasRecentlyViewed = false;
+
+  CATEGORY_META = CATEGORY_META;
+  readonly allCategories: Category[] = ['vineyard', 'farm', 'brewery', 'attraction', 'offgrid'];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -29,47 +56,140 @@ export class WishlistsComponent implements OnInit {
       robots: 'noindex, nofollow',
     });
     this.hydrate();
+    this.hydrateView();
+    this.hasRecentlyViewed = readRecentlyViewed(this.platformId).length > 0;
   }
 
   private hydrate(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    try {
-      const raw = localStorage.getItem(FAV_KEY);
-      const ids: number[] = raw ? JSON.parse(raw) : [];
-      this.favoriteIds = new Set(Array.isArray(ids) ? ids : []);
-    } catch { this.favoriteIds = new Set(); }
+    this.favorites = readFavorites(this.platformId);
+    this.favoriteIds = new Set(this.favorites.map(f => f.id));
   }
 
-  get listings(): IListing[] {
-    return MOCK_LISTINGS.filter(l => this.favoriteIds.has(l.id));
+  private hydrateView(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const raw = localStorage.getItem(VIEW_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { sort?: WishlistSort; categories?: Category[] };
+      if (parsed.sort) this.sort = parsed.sort;
+      if (Array.isArray(parsed.categories)) this.selectedCategories = new Set(parsed.categories);
+    } catch { /* ignore */ }
   }
+
+  private persistView(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      localStorage.setItem(VIEW_KEY, JSON.stringify({
+        sort: this.sort,
+        categories: [...this.selectedCategories],
+      }));
+    } catch { /* quota */ }
+  }
+
+  /** All saved listings (no filters) — drives the count, the breakdown, and the deep-link. */
+  get listings(): IListing[] {
+    const byId = new Map(MOCK_LISTINGS.map(l => [l.id, l]));
+    return this.favorites
+      .map(f => byId.get(f.id))
+      .filter((l): l is IListing => !!l);
+  }
+
+  /** Listings after category filter + sort. */
+  get filteredListings(): IListing[] {
+    let out = this.listings;
+    if (this.selectedCategories.size > 0) {
+      out = out.filter(l => this.selectedCategories.has(l.category));
+    }
+    // savedAt lookup for the two date sorts
+    const savedAtById = new Map(this.favorites.map(f => [f.id, f.savedAt]));
+    switch (this.sort) {
+      case 'oldest':
+        return [...out].sort((a, b) => (savedAtById.get(a.id) || '').localeCompare(savedAtById.get(b.id) || ''));
+      case 'price-asc':
+        return [...out].sort((a, b) => a.price - b.price);
+      case 'price-desc':
+        return [...out].sort((a, b) => b.price - a.price);
+      case 'rating-desc':
+        return [...out].sort((a, b) => b.rating - a.rating);
+      case 'newest':
+      default:
+        return [...out].sort((a, b) => (savedAtById.get(b.id) || '').localeCompare(savedAtById.get(a.id) || ''));
+    }
+  }
+
+  /** Category breakdown for the header — top 3 + "+N more". */
+  get categoryBreakdown(): ICategoryCount[] {
+    const counts = new Map<Category, number>();
+    for (const l of this.listings) counts.set(l.category, (counts.get(l.category) || 0) + 1);
+    return [...counts.entries()]
+      .map(([category, count]) => ({ category, label: CATEGORY_META[category].label, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  get filtersActive(): boolean { return this.selectedCategories.size > 0; }
+
+  /** Categories the user actually has saves in — pills render only for these. */
+  get availableCategories(): Category[] {
+    return this.allCategories.filter(c => this.countFor(c) > 0);
+  }
+
+  /** Show the filter+sort row only when there's something to slice. */
+  get showFilterRow(): boolean {
+    return this.listings.length > 1 || this.availableCategories.length > 1;
+  }
+
+  /** Count of saved listings per category — drives chip badges. */
+  countFor(category: Category): number {
+    return this.listings.filter(l => l.category === category).length;
+  }
+
+  toggleCategory(category: Category): void {
+    if (this.selectedCategories.has(category)) this.selectedCategories.delete(category);
+    else this.selectedCategories.add(category);
+    this.selectedCategories = new Set(this.selectedCategories);
+    this.persistView();
+  }
+
+  resetFilters(): void {
+    this.selectedCategories = new Set();
+    this.sort = 'newest';
+    this.persistView();
+  }
+
+  onSortChange(): void { this.persistView(); }
 
   isFavorite(id: number): boolean { return this.favoriteIds.has(id); }
 
   onFavoriteToggle(id: number, event: MouseEvent): void {
     event.stopPropagation();
-    this.favoriteIds.delete(id);
-    this.favoriteIds = new Set(this.favoriteIds);
-    this.persist();
+    removeFavorite(this.platformId, id);
+    this.hydrate();
   }
 
+  /** Clear-all → snapshot, wipe, allow Undo for 5s. */
   clearAll(): void {
-    if (this.favoriteIds.size === 0) return;
-    if (isPlatformBrowser(this.platformId) && !window.confirm('Remove all stays from your wishlist?')) return;
-    this.favoriteIds = new Set();
-    this.persist();
-    this.toasts.info('Wishlist cleared.');
+    if (this.favorites.length === 0) return;
+    this.clearedSnapshot = [...this.favorites];
+    clearFavorites(this.platformId);
+    this.hydrate();
+    this.toasts.info(`Cleared ${this.clearedSnapshot.length} ${this.clearedSnapshot.length === 1 ? 'stay' : 'stays'}.`);
+    if (this.undoTimer) clearTimeout(this.undoTimer);
+    this.undoTimer = setTimeout(() => { this.clearedSnapshot = null; this.undoTimer = null; }, UNDO_WINDOW_MS);
   }
 
-  private persist(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    try { localStorage.setItem(FAV_KEY, JSON.stringify([...this.favoriteIds])); } catch {}
+  undoClear(): void {
+    if (!this.clearedSnapshot) return;
+    writeFavorites(this.platformId, this.clearedSnapshot);
+    this.hydrate();
+    this.toasts.success('Wishlist restored.');
+    this.clearedSnapshot = null;
+    if (this.undoTimer) { clearTimeout(this.undoTimer); this.undoTimer = null; }
   }
 
   get mapLinkQueryParams() {
     return { ids: [...this.favoriteIds].join(',') };
   }
 
-  /** Listen for the listing-card's storage event so adds in other tabs surface here too. */
+  /** Listen for storage events from other tabs/components so saves elsewhere surface here. */
   @HostListener('window:storage') onStorage(): void { this.hydrate(); }
 }

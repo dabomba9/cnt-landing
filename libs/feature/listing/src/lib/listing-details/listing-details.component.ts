@@ -13,7 +13,7 @@ import {
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService } from '@cnt-workspace/data-access';
+import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
@@ -56,7 +56,6 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Favorite state (mirrors /search behavior)
   favorited = false;
-  private readonly FAV_KEY = 'cnt-favorites';
   private favoriteSet = new Set<number>();
 
   // Content section state
@@ -112,16 +111,11 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   private readonly SCROLL_DEBOUNCE_MS = 80;
   private readonly REVEAL_TOP_PX = 200;
 
-  /** True once user has scrolled past the hero photo block (~600px in). */
-  stickyTitleVisible = false;
-  private readonly STICKY_TITLE_THRESHOLD = 600;
-
   @HostListener('window:scroll')
   onWindowScroll(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     const y = window.scrollY;
     const now = performance.now();
-    this.stickyTitleVisible = y > this.STICKY_TITLE_THRESHOLD;
     if (y < this.REVEAL_TOP_PX) {
       if (this.navHidden) this.navHidden = false;
       this.lastScrollY = y;
@@ -383,18 +377,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   // ---- Favorite ----
   private hydrateFavorite(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      this.favoriteSet = new Set();
-      this.favorited = false;
-      return;
-    }
-    const raw = localStorage.getItem(this.FAV_KEY);
-    try {
-      this.favoriteSet = new Set(raw ? (JSON.parse(raw) as number[]) : []);
-    } catch {
-      this.favoriteSet = new Set();
-    }
-    this.favorited = this.favoriteSet.has(this.listing.id);
+    this.favoriteSet = readFavoriteIds(this.platformId);
+    this.favorited = !!this.listing && this.favoriteSet.has(this.listing.id);
   }
 
   toggleFavorite(event: MouseEvent): void {
@@ -410,11 +394,15 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   toggleListingFavorite(id: number, event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
-    if (this.favoriteSet.has(id)) this.favoriteSet.delete(id);
-    else this.favoriteSet.add(id);
+    if (this.favoriteSet.has(id)) {
+      removeFavorite(this.platformId, id);
+      this.favoriteSet.delete(id);
+    } else {
+      addFavorite(this.platformId, id);
+      this.favoriteSet.add(id);
+    }
+    this.favoriteSet = new Set(this.favoriteSet);
     if (id === this.listing?.id) this.favorited = this.favoriteSet.has(id);
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.FAV_KEY, JSON.stringify([...this.favoriteSet]));
   }
 
   share(): void {

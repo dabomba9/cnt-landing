@@ -22,9 +22,7 @@ import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.com
 import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
 import { ReviewsWidgetComponent } from './widgets/reviews/reviews-widget.component';
 import { SpendingSummaryComponent } from './widgets/spending-summary/spending-summary.component';
-import { isMyRvSet } from '@cnt-workspace/data-access';
-
-const FAV_KEY = 'cnt-favorites';
+import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-dashboard',
@@ -97,15 +95,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private readSavedListings(): IListing[] {
-    if (!isPlatformBrowser(this.platformId)) return [];
-    try {
-      const raw = localStorage.getItem(FAV_KEY);
-      const ids: number[] = raw ? JSON.parse(raw) : [];
-      const set = new Set(ids);
-      return MOCK_LISTINGS.filter(l => set.has(l.id));
-    } catch {
-      return [];
-    }
+    const favorites = readFavorites(this.platformId);
+    const orderById = new Map(favorites.map((f, i) => [f.id, i]));
+    return MOCK_LISTINGS
+      .filter(l => orderById.has(l.id))
+      .sort((a, b) => (orderById.get(a.id) ?? 0) - (orderById.get(b.id) ?? 0));
   }
 
   /** Bookings whose check-in is in the future and not cancelled/declined; soonest first. */

@@ -8,6 +8,7 @@ import { AuthService, IPublicUser, AppView } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
 import { NotificationService, INotification } from '@cnt-workspace/data-access';
+import { readFavorites } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -37,7 +38,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private unreadSub: Subscription | null = null;
   private notifSub: Subscription | null = null;
   private readonly TRANSPARENT_THRESHOLD = 80;
-  private readonly FAV_KEY = 'cnt-favorites';
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('userMenuWrapper') userMenuWrapper?: ElementRef<HTMLDivElement>;
@@ -182,14 +182,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private hydrateFavoritesCount(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    try {
-      const raw = localStorage.getItem(this.FAV_KEY);
-      const arr = raw ? JSON.parse(raw) : [];
-      this.favoritesCount = Array.isArray(arr) ? arr.length : 0;
-    } catch {
-      this.favoritesCount = 0;
-    }
+    this.favoritesCount = readFavorites(this.platformId).length;
   }
 
   @HostListener('window:storage')

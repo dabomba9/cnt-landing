@@ -7,6 +7,7 @@ import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
+import { readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import {
   Category,
   CATEGORY_META,
@@ -34,7 +35,6 @@ interface ICategoryPill {
   templateUrl: './explore-state.component.html',
 })
 export class ExploreStateComponent implements OnInit, OnDestroy {
-  private readonly FAV_KEY = 'cnt-favorites';
   private favoriteSet = new Set<number>();
   private routeSub?: Subscription;
 
@@ -138,27 +138,18 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
   }
 
   toggleFavorite(id: number, _event: MouseEvent): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    if (this.favoriteSet.has(id)) this.favoriteSet.delete(id);
-    else this.favoriteSet.add(id);
-    try {
-      localStorage.setItem(this.FAV_KEY, JSON.stringify([...this.favoriteSet]));
-    } catch {
-      /* ignore */
+    if (this.favoriteSet.has(id)) {
+      removeFavorite(this.platformId, id);
+      this.favoriteSet.delete(id);
+    } else {
+      addFavorite(this.platformId, id);
+      this.favoriteSet.add(id);
     }
+    this.favoriteSet = new Set(this.favoriteSet);
   }
 
   private hydrateFavorites(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      this.favoriteSet = new Set();
-      return;
-    }
-    try {
-      const raw = localStorage.getItem(this.FAV_KEY);
-      this.favoriteSet = new Set(raw ? (JSON.parse(raw) as number[]) : []);
-    } catch {
-      this.favoriteSet = new Set();
-    }
+    this.favoriteSet = readFavoriteIds(this.platformId);
   }
 
   // ---- SEO --------------------------------------------------------------

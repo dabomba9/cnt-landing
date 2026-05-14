@@ -15,7 +15,7 @@ import { ListingCardComponent } from '@cnt-workspace/ui';
           <span class="material-symbols-outlined text-2xl text-trinidad" aria-hidden="true" style="font-variation-settings: 'FILL' 0;">favorite</span>
         </span>
         <h3 class="font-headline font-bold text-xl mt-4 mb-2 text-dark-text">No saved stays yet</h3>
-        <p class="text-sm font-body text-muted-text mb-5 max-w-md mx-auto">Tap the heart on any listing to keep track of stays you're considering.</p>
+        <p class="text-sm font-body text-muted-text mb-5 max-w-md mx-auto">Tap the heart on any listing to save it for later.</p>
         <a routerLink="/search" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_8px_20px_rgba(227,83,13,0.2)]">
           Browse stays
           <span class="material-symbols-outlined text-base">arrow_forward</span>

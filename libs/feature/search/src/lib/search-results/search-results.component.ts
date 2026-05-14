@@ -15,6 +15,7 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
 } from '@cnt-workspace/data-access';
 import { readMyRv, writeMyRv } from '@cnt-workspace/data-access';
+import { readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
@@ -63,7 +64,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   /** Map viewport bounds; when set, listings are filtered to those within view. */
   mapBounds: { north: number; south: number; east: number; west: number } | null = null;
   favorites = new Set<number>();
-  private readonly FAV_KEY = 'cnt-favorites';
   CATEGORY_META = CATEGORY_META;
 
   // Filter constants exposed to template
@@ -146,11 +146,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
         this.pinnedIds = null;
       }
     });
+    this.favorites = readFavoriteIds(this.platformId);
     if (isPlatformBrowser(this.platformId)) {
-      const raw = localStorage.getItem(this.FAV_KEY);
-      if (raw) {
-        try { this.favorites = new Set(JSON.parse(raw) as number[]); } catch {}
-      }
       // Restore last view-mode + mobile-map preference so the layout persists across visits.
       const vm = localStorage.getItem(this.VIEW_MODE_KEY);
       if (vm === 'split' || vm === 'map-only') this.viewMode = vm;
@@ -168,6 +165,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   /** True when /search was deep-linked from /wishlists with ?ids=... */
   get wishlistMode(): boolean { return this.pinnedIds !== null && this.pinnedIds.size > 0; }
+  /** Count of listings pinned by ?ids=... — drives the banner copy. */
+  get pinnedCount(): number { return this.pinnedIds?.size ?? 0; }
 
   /** Drop the ?ids= filter and show full results again. */
   clearWishlistFilter(): void {
@@ -186,13 +185,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private setFavorite(id: number, next: boolean): void {
-    if (next) this.favorites.add(id);
-    else this.favorites.delete(id);
+    if (next) {
+      addFavorite(this.platformId, id);
+      this.favorites.add(id);
+    } else {
+      removeFavorite(this.platformId, id);
+      this.favorites.delete(id);
+    }
     // Make the Set reference change so child components re-evaluate when needed.
     this.favorites = new Set(this.favorites);
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.FAV_KEY, JSON.stringify([...this.favorites]));
-    }
   }
 
   ngAfterViewInit(): void {
