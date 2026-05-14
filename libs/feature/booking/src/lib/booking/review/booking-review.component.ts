@@ -6,6 +6,7 @@ import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
+import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { IdVerifyModalComponent } from '@cnt-workspace/auth';
 import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
@@ -21,7 +22,7 @@ import { gsap } from 'gsap';
 @Component({
   selector: 'cnt-booking-review',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, NavbarComponent, FooterComponent, IdVerifyModalComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, NavbarComponent, FooterComponent, IdVerifyModalComponent, FocusTrapDirective],
   templateUrl: './booking-review.component.html',
   styleUrls: ['./booking-review.component.scss'],
 })

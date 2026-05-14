@@ -366,7 +366,7 @@
     @if (cancelOpen) {
       <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
         <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeCancelModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
+        <div cntFocusTrap (escape)="closeCancelModal()" class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
           <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-trinidad/10 mb-4">
             <span class="material-symbols-outlined text-3xl text-trinidad">cancel</span>
           </div>
@@ -404,7 +404,7 @@
     @if (modifyOpen) {
       <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modify-title">
         <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeModifyModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full p-6 md:p-8">
+        <div cntFocusTrap (escape)="closeModifyModal()" class="relative bg-white rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full p-6 md:p-8">
           <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-jungle-green/10 mb-4">
             <span class="material-symbols-outlined text-3xl text-jungle-green">edit_calendar</span>
           </div>

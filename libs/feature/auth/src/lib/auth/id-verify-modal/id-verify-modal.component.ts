@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, IdType } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
+import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 
 interface IIdOption {
@@ -17,7 +18,7 @@ type Step = 1 | 2 | 3 | 4; // 4 = success micro-pause
 @Component({
   selector: 'cnt-id-verify-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FocusTrapDirective],
   templateUrl: './id-verify-modal.component.html',
   styleUrls: ['./id-verify-modal.component.scss'],
 })

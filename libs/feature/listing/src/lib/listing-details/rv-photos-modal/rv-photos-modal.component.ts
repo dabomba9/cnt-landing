@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDes
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { IMyRv, emptyMyRv } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
+import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 
 type Step = 1 | 2;
@@ -9,7 +10,7 @@ type Step = 1 | 2;
 @Component({
   selector: 'cnt-rv-photos-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FocusTrapDirective],
   templateUrl: './rv-photos-modal.component.html',
   styleUrls: ['./rv-photos-modal.component.scss'],
 })

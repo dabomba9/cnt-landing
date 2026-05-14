@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
@@ -24,6 +24,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
   imports: [
     CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
+    FocusTrapDirective,
   ],
   templateUrl: './host-dashboard.component.html',
 })

@@ -1,5 +1,5 @@
 @if (open) {
-  <div id="lightbox-root" role="dialog" aria-modal="true" [attr.aria-label]="'Photo gallery — ' + title"
+  <div cntFocusTrap id="lightbox-root" role="dialog" aria-modal="true" [attr.aria-label]="'Photo gallery — ' + title"
     class="fixed inset-0 z-[var(--z-modal)] bg-black/95 flex flex-col" (click)="close()">
     <!-- Top bar -->
     <div class="flex items-center justify-between px-6 py-4 text-white">

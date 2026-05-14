@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
@@ -49,7 +49,7 @@ const MAX_LANES = 3;
 @Component({
   selector: 'cnt-trips',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, FocusTrapDirective],
   templateUrl: './trips.component.html',
 })
 export class TripsComponent implements OnInit, OnDestroy {

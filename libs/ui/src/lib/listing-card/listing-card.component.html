@@ -55,7 +55,7 @@
       (click)="onFavoriteClick($event)"
       [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
       [attr.aria-pressed]="isFavorite"
-      class="favorite-btn absolute top-3 right-3 z-20 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform">
+      class="favorite-btn absolute top-3 right-3 z-20 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2">
       <span class="material-symbols-outlined text-[20px]"
         [class.text-trinidad]="isFavorite"
         [class.text-dark-text]="!isFavorite"

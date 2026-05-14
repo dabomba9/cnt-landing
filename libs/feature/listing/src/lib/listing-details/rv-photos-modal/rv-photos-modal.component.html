@@ -2,7 +2,7 @@
   <div class="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="rvphotos-title">
     <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="attemptClose()"></div>
 
-    <div #modalRoot class="cnt-rv-modal-shell relative bg-white rounded-t-3xl sm:rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] overflow-y-auto">
+    <div #modalRoot cntFocusTrap (escape)="attemptClose()" class="cnt-rv-modal-shell relative bg-white rounded-t-3xl sm:rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] overflow-y-auto">
 
       <!-- Mobile pull handle -->
       <div class="sm:hidden pt-2 pb-1 flex justify-center" aria-hidden="true">

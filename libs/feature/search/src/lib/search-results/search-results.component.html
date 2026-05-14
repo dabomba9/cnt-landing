@@ -38,7 +38,7 @@
             <span class="font-button">{{ sortBy !== 'recommended' ? currentSortLabel : 'Sort' }}</span>
           </button>
           @if (openPill === 'sort') {
-            <div class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
+            <div role="dialog" aria-label="Sort options" cntFocusTrap (escape)="closePill()" class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
               <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
                 <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Sort By</span>
                 <button type="button" (click)="clearSort()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
@@ -105,7 +105,7 @@
             {{ activePillSummary.dates || 'Dates' }}
           </button>
           @if (openPill === 'dates') {
-            <div class="filter-panel filter-panel--anchor-left filter-panel--dates" (click)="$event.stopPropagation()">
+            <div role="dialog" aria-label="Dates" cntFocusTrap (escape)="closePill()" class="filter-panel filter-panel--anchor-left filter-panel--dates" (click)="$event.stopPropagation()">
               <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
                 <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Trip Dates</span>
                 <button type="button" (click)="clearDates()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
@@ -130,7 +130,7 @@
             {{ activePillSummary.price || 'Price' }}
           </button>
           @if (openPill === 'price') {
-            <div class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
+            <div role="dialog" aria-label="Price range" cntFocusTrap (escape)="closePill()" class="filter-panel filter-panel--anchor-left" (click)="$event.stopPropagation()">
             <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
               <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Price Per Night</span>
               <button type="button" (click)="clearPrice()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
@@ -172,7 +172,7 @@
             {{ activePillSummary.rv || 'My RV' }}
           </button>
           @if (openPill === 'rv') {
-            <div class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
+            <div role="dialog" aria-label="My RV" cntFocusTrap (escape)="closePill()" class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
             <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
               <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">My RV Setup</span>
               <button type="button" (click)="clearRvSetup()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
@@ -283,7 +283,7 @@
             <span class="font-button">{{ activePillSummary.amenities || 'Amenities' }}</span>
           </button>
           @if (openPill === 'amenities') {
-            <div class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
+            <div role="dialog" aria-label="Amenities" cntFocusTrap (escape)="closePill()" class="filter-panel filter-panel--wide filter-panel--anchor-right" (click)="$event.stopPropagation()">
             <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
               <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Select amenities you need on site</span>
               <button type="button" (click)="clearAmenities()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
+import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { MiniMapComponent } from '../mini-map/mini-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
@@ -19,7 +20,7 @@ import { gsap } from 'gsap';
 @Component({
   selector: 'cnt-booking-confirm',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, NavbarComponent, FooterComponent, MiniMapComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, NavbarComponent, FooterComponent, MiniMapComponent, FocusTrapDirective],
   templateUrl: './booking-confirm.component.html',
   styleUrls: ['./booking-confirm.component.scss'],
 })

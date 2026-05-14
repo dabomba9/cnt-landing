@@ -141,6 +141,14 @@ a:focus {
   transform: rotateY(-180deg);
 }
 
+/* A11y: visible focus ring on the 3D button wrapper, drawn outside the rounded edge */
+.btn-3d-wrap:focus-visible,
+.btn-3d-wrap:focus-within {
+  outline: 2px solid rgb(227 83 13 / 0.55); /* trinidad */
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+
 /* ===== Pill button (filter pills, sort options, FAQ category tabs) ============
    Compose with state classes: `.cnt-pill .cnt-pill-active` or `.cnt-pill .cnt-pill-inactive`.
    Use `[ngClass]` to swap state.

@@ -75,7 +75,7 @@
                   </button>
                   @if (openEditor === 'dates') {
                     <div class="fixed inset-0 z-20" (click)="closeEditor()"></div>
-                    <div class="review-popover">
+                    <div role="dialog" aria-label="Edit dates" cntFocusTrap (escape)="closeEditor()" class="review-popover">
                       <div class="flex items-center justify-between mb-2 px-1">
                         <span class="text-[0.7rem] font-label uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
                         <button type="button" (click)="closeEditor()" class="text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:underline">Done</button>
@@ -99,7 +99,7 @@
                   </button>
                   @if (openEditor === 'guests') {
                     <div class="fixed inset-0 z-20" (click)="closeEditor()"></div>
-                    <div class="review-popover" style="min-width: 16rem;">
+                    <div role="dialog" aria-label="Edit guests" cntFocusTrap (escape)="closeEditor()" class="review-popover" style="min-width: 16rem;">
                       <div class="flex items-center justify-between mb-3">
                         <span class="text-[0.7rem] font-label uppercase tracking-[0.14em] text-dark-text font-bold">Guests</span>
                         <span class="text-[0.65rem] text-muted-text font-body">Max {{ detail!.maxGuests }}</span>

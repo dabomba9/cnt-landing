@@ -3,6 +3,7 @@ import {
   PLATFORM_ID, SimpleChanges,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FocusTrapDirective } from '@cnt-workspace/ui';
 
 /**
  * Self-contained photo lightbox overlay. Owns all internal UI state
@@ -12,7 +13,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'cnt-listing-photo-lightbox',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FocusTrapDirective],
   templateUrl: './listing-photo-lightbox.component.html',
 })
 export class ListingPhotoLightboxComponent implements OnChanges {

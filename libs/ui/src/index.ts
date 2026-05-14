@@ -7,6 +7,7 @@ export * from './lib/review-card/review-card.component';
 export * from './lib/accordion-card/accordion-card.component';
 export * from './lib/directives/cinematic-roll.directive';
 export * from './lib/directives/magnetic-btn.directive';
+export * from './lib/directives/focus-trap.directive';
 export * from './lib/home-locations/home-locations.component';
 export * from './lib/map-config';
 export * from './lib/bottom-nav/bottom-nav.component';
