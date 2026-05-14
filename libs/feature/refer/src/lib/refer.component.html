@@ -23,11 +23,11 @@
           <div class="lg:col-span-3">
             <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Your referral code</div>
             <div class="flex items-center gap-3 mb-5">
-              <div class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight select-all">
+              <div class="flex-1 px-4 py-3 rounded-xl bg-cream/60 border border-dark-text/15 font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight select-all">
                 {{ referralCode || '—' }}
               </div>
               <button type="button" (click)="copyCode()" [disabled]="!referralCode"
-                class="inline-flex items-center gap-1.5 px-4 py-3 rounded-md bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
+                class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
                 <span class="material-symbols-outlined text-base">content_copy</span>
                 Copy
               </button>
@@ -35,11 +35,11 @@
 
             <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Share link</div>
             <div class="flex items-center gap-3">
-              <div class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 font-body text-dark-text text-xs md:text-sm truncate select-all">
+              <div class="flex-1 px-4 py-3 rounded-xl bg-cream/60 border border-dark-text/15 font-body text-dark-text text-xs md:text-sm truncate select-all">
                 {{ shareUrl }}
               </div>
               <button type="button" (click)="copyLink()" [disabled]="!referralCode"
-                class="inline-flex items-center gap-1.5 px-4 py-3 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
+                class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 transition-opacity">
                 <span class="material-symbols-outlined text-base">link</span>
                 Copy
               </button>
@@ -48,15 +48,15 @@
 
           <!-- Stat block -->
           <div class="lg:col-span-2 grid grid-cols-2 gap-3">
-            <div class="rounded-md bg-jungle-green/5 border border-jungle-green/15 p-4 text-center">
+            <div class="rounded-xl bg-jungle-green/5 border border-jungle-green/15 p-4 text-center">
               <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green mb-1">Friends joined</div>
               <div class="font-headline font-bold text-jungle-green text-3xl leading-none">{{ signedUpCount }}</div>
             </div>
-            <div class="rounded-md bg-trinidad/5 border border-trinidad/15 p-4 text-center">
+            <div class="rounded-xl bg-trinidad/5 border border-trinidad/15 p-4 text-center">
               <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad mb-1">Credit earned</div>
               <div class="font-headline font-bold text-trinidad text-3xl leading-none">${{ potentialCredit }}</div>
             </div>
-            <div class="col-span-2 rounded-md bg-gold/15 border border-gold/40 p-3 text-center" style="color: #b3760e;">
+            <div class="col-span-2 rounded-xl bg-gold/15 border border-gold/40 p-3 text-center" style="color: #b3760e;">
               <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">{{ pendingCount }} pending invites</div>
             </div>
           </div>
@@ -99,9 +99,9 @@
           <p class="text-sm text-muted-text font-body mb-4">We'll send a personal invite with your code.</p>
           <form (ngSubmit)="sendInvite()" class="flex flex-col sm:flex-row gap-2">
             <input type="email" name="inviteEmail" [(ngModel)]="inviteEmail" placeholder="friend@email.com"
-              class="flex-1 px-4 py-3 rounded-md bg-cream/60 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all" />
+              class="flex-1 px-4 py-2.5 rounded-xl bg-cream/60 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all" />
             <button type="submit"
-              class="inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
+              class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)]">
               Send invite
               <span class="material-symbols-outlined text-base">arrow_forward</span>
             </button>
@@ -114,7 +114,10 @@
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">{{ referrals.length }}</span>
           </div>
           @if (referrals.length === 0) {
-            <p class="text-sm text-muted-text font-body">No invites yet — share your link to get started.</p>
+            <div class="rounded-xl bg-cream/40 border border-dark-text/8 px-4 py-6 text-center">
+              <span class="material-symbols-outlined text-2xl text-muted-text" aria-hidden="true">group_add</span>
+              <p class="text-sm text-muted-text font-body mt-1.5">No invites yet — share your link to get started.</p>
+            </div>
           } @else {
             <ul class="divide-y divide-dark-text/8">
               @for (r of referrals; track r.email) {

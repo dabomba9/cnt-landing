@@ -15,6 +15,7 @@ import {
 } from '@cnt-workspace/data-access';
 import { listingsInState, SLUG_TO_NAME } from '@cnt-workspace/data-access';
 import { STATE_CONTENT, IStateContent } from './state-content.data';
+import { ExploreMapComponent } from './explore-map.component';
 
 interface ICategoryPill {
   id: Category;
@@ -31,6 +32,7 @@ interface ICategoryPill {
     NavbarComponent,
     FooterComponent,
     ListingCardComponent,
+    ExploreMapComponent,
   ],
   templateUrl: './explore-state.component.html',
 })

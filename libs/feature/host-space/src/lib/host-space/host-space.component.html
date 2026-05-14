@@ -466,7 +466,8 @@
         <div class="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-500"></div>
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl">
+          <a routerLink="/search" [queryParams]="{ view: 'map' }" aria-label="Explore stays on the map"
+            class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl no-underline">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
               <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
                 Explore Map <span class="material-symbols-outlined text-[20px]">map</span>
@@ -478,7 +479,7 @@
                 Explore Map <span class="material-symbols-outlined text-[20px]">map</span>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>

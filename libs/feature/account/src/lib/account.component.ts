@@ -39,6 +39,8 @@ export class AccountComponent implements OnInit, OnDestroy {
   user: IPublicUser | null = null;
   active: Section = 'personal';
   readonly navItems = NAV_ITEMS;
+  /** Captured from `?returnTo=...` — passed down so a section can redirect after completion (e.g., rig). */
+  returnTo: string | null = null;
   private subs: Subscription[] = [];
 
   constructor(
@@ -61,6 +63,15 @@ export class AccountComponent implements OnInit, OnDestroy {
         if (f && NAV_ITEMS.some(n => n.id === f)) this.active = f as Section;
       }),
     );
+    this.returnTo = this.route.snapshot.queryParamMap.get('returnTo');
+  }
+
+  /** Section emits when its work is complete and we should bounce back to wherever the user came from. */
+  onSectionDone(): void {
+    if (!this.returnTo) return;
+    const target = this.returnTo;
+    this.returnTo = null;
+    this.router.navigateByUrl(target);
   }
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }

@@ -39,7 +39,7 @@
             @case ('identity')      { <cnt-account-identity></cnt-account-identity> }
             @case ('payments')      { <cnt-account-payments></cnt-account-payments> }
             @case ('notifications') { <cnt-account-notifications></cnt-account-notifications> }
-            @case ('rig')           { <cnt-account-my-rig></cnt-account-my-rig> }
+            @case ('rig')           { <cnt-account-my-rig [redirectAfterSave]="returnTo" (done)="onSectionDone()"></cnt-account-my-rig> }
           }
         </section>
 

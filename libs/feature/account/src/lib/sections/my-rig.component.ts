@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
@@ -14,6 +14,13 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService, 
         <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight mb-1">My RV</h2>
         <p class="text-xs text-muted-text font-body">Hosts use this to confirm fit. <span class="text-trinidad font-bold">RV type, dimensions, and license plate are required to book any stay.</span></p>
       </div>
+
+      @if (redirectAfterSave) {
+        <div class="rounded-xl bg-jungle-green/5 border border-jungle-green/30 p-3 flex items-start gap-2 text-sm font-body text-dark-text">
+          <span class="material-symbols-outlined text-base shrink-0 mt-0.5 text-jungle-green">info</span>
+          <span class="flex-1">Finish your rig profile to continue your booking. We'll take you back as soon as you save.</span>
+        </div>
+      }
 
       @if (!isComplete && hasAny) {
         <div class="rounded-xl bg-trinidad/5 border border-trinidad/30 p-3 flex items-start gap-2 text-sm font-body text-dark-text">
@@ -119,6 +126,11 @@ import { IMyRv, readMyRv, writeMyRv, emptyMyRv, RV_TYPES, RvType, ToastService, 
   `,
 })
 export class MyRigSectionComponent implements OnInit {
+  /** If set, the parent will redirect here once the rig is complete and saved. */
+  @Input() redirectAfterSave: string | null = null;
+  /** Fires when a save completes with a fully complete rig — parent can use this to bounce back. */
+  @Output() done = new EventEmitter<void>();
+
   rv: IMyRv = emptyMyRv();
   readonly rvTypes = RV_TYPES;
   readonly dimensions: { key: 'length' | 'height' | 'width'; label: string }[] = [
@@ -158,7 +170,9 @@ export class MyRigSectionComponent implements OnInit {
   save(): void {
     writeMyRv(this.platformId, { ...this.rv, type: this.rv.type as RvType | null });
     if (this.isComplete) {
-      this.toasts.success('Rig details saved — ready to book.');
+      const headedBack = !!this.redirectAfterSave;
+      this.toasts.success(headedBack ? 'Rig saved — taking you back to your booking.' : 'Rig details saved — ready to book.');
+      if (headedBack) this.done.emit();
     } else {
       this.toasts.info(`Saved. Add ${this.missingLabel} to book a stay.`);
     }

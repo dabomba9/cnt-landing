@@ -319,7 +319,8 @@
       <!-- Center Interactive Explore Button -->
       <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
         
-        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl">
+        <a routerLink="/search" [queryParams]="{ view: 'map' }" aria-label="Explore stays on the map"
+          class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl no-underline">
           <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
             <!-- Invisible structure pusher to perfectly fit dynamic text sizes over absolute bounds -->
             <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
@@ -333,7 +334,7 @@
               Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
             </div>
           </div>
-        </div>
+        </a>
 
       </div>
     </div>
