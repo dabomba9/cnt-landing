@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IListing, IReview, getListingDetail } from '@cnt-workspace/data-access';
+import { IPrivateListing, IReview, getListingDetail } from '@cnt-workspace/data-access';
 import { ReviewCardComponent } from '@cnt-workspace/ui';
 
 interface IRecentReview {
@@ -46,11 +46,11 @@ interface IRecentReview {
   `,
 })
 export class ReviewsSnapshotComponent {
-  @Input() set listings(value: IListing[]) {
+  @Input() set listings(value: IPrivateListing[]) {
     this._listings = value || [];
     this.compute();
   }
-  private _listings: IListing[] = [];
+  private _listings: IPrivateListing[] = [];
 
   recent: IRecentReview[] = [];
   averageRating = '—';

@@ -2,13 +2,42 @@ import { isPlatformBrowser } from '@angular/common';
 
 export const FAV_STORAGE_KEY = 'cnt-favorites';
 
+/**
+ * Favorites can reference three kinds of entities now:
+ * - 'listing'      — private host stays (numeric id)
+ * - 'boondocking'  — public-land stays (numeric id)
+ * - 'poi'          — utility POIs (string id, e.g. 'dump-001')
+ *
+ * Stored as `{ kind, id, savedAt }[]`. We migrate both legacy shapes:
+ * - `number[]`                            → `{ kind: 'listing', id, savedAt: now }`
+ * - `{ id: number, savedAt: string }[]`   → `{ kind: 'listing', id, savedAt }`
+ *
+ * Callers can subsequently reclassify a 'listing' entry to 'boondocking' if they look
+ * up the id and find it in the boondocking array — that's done at the call site so this
+ * util stays decoupled from the listing data.
+ */
+
+export type FavoriteKind = 'listing' | 'boondocking' | 'poi';
+
 export interface IFavorite {
-  id: number;
-  /** ISO timestamp the listing was favorited. Backfilled for legacy entries. */
+  kind: FavoriteKind;
+  /** number for stays + boondocking, string for POIs. */
+  id: number | string;
+  /** ISO timestamp the entry was favorited. Backfilled for legacy entries. */
   savedAt: string;
 }
 
-/** Reads favorites in newest-first order. Migrates the legacy `number[]` shape on first read. */
+export interface IFavoriteKey {
+  kind: FavoriteKind;
+  id: number | string;
+}
+
+/** Canonical Set key — "listing:81" / "poi:dump-001". */
+export function favoriteKey(kind: FavoriteKind, id: number | string): string {
+  return `${kind}:${id}`;
+}
+
+/** Reads favorites in newest-first order. Migrates legacy shapes on first read. */
 export function readFavorites(platformId: object): IFavorite[] {
   if (!isPlatformBrowser(platformId)) return [];
   let raw: string | null = null;
@@ -23,11 +52,22 @@ export function readFavorites(platformId: object): IFavorite[] {
   let didMigrate = false;
   for (const entry of parsed) {
     if (typeof entry === 'number') {
-      out.push({ id: entry, savedAt: now });
+      out.push({ kind: 'listing', id: entry, savedAt: now });
       didMigrate = true;
-    } else if (entry && typeof entry === 'object' && typeof (entry as IFavorite).id === 'number') {
-      const f = entry as IFavorite;
-      out.push({ id: f.id, savedAt: typeof f.savedAt === 'string' ? f.savedAt : now });
+    } else if (entry && typeof entry === 'object') {
+      const obj = entry as Record<string, unknown>;
+      const id = obj['id'];
+      const savedAt = typeof obj['savedAt'] === 'string' ? obj['savedAt'] : now;
+      const rawKind = obj['kind'];
+      const kind: FavoriteKind | null =
+        rawKind === 'listing' || rawKind === 'boondocking' || rawKind === 'poi' ? rawKind : null;
+      if (kind && (typeof id === 'number' || typeof id === 'string')) {
+        out.push({ kind, id, savedAt });
+      } else if (typeof id === 'number') {
+        // Pre-kind shape — default to 'listing'.
+        out.push({ kind: 'listing', id, savedAt });
+        didMigrate = true;
+      }
     }
   }
   if (didMigrate) {
@@ -36,26 +76,41 @@ export function readFavorites(platformId: object): IFavorite[] {
   return out.sort((a, b) => b.savedAt.localeCompare(a.savedAt));
 }
 
+/** Set of canonical keys ("listing:81" / "poi:dump-001") for `has(...)` checks. */
+export function readFavoriteKeys(platformId: object): Set<string> {
+  return new Set(readFavorites(platformId).map(f => favoriteKey(f.kind, f.id)));
+}
+
+/**
+ * BACK-COMPAT: numeric-id Set of stays (skips POIs). Existing /search, listing-card,
+ * and listing-details code paths still expect this shape — they don't render POI hearts.
+ */
 export function readFavoriteIds(platformId: object): Set<number> {
-  return new Set(readFavorites(platformId).map(f => f.id));
+  const out = new Set<number>();
+  for (const f of readFavorites(platformId)) {
+    if (typeof f.id === 'number') out.add(f.id);
+  }
+  return out;
 }
 
-export function isFavorite(platformId: object, id: number): boolean {
-  return readFavoriteIds(platformId).has(id);
+export function isFavorite(platformId: object, key: IFavoriteKey): boolean {
+  return readFavoriteKeys(platformId).has(favoriteKey(key.kind, key.id));
 }
 
-/** Add a listing to favorites (dedupe, push newest-first). Returns the updated list. */
-export function addFavorite(platformId: object, id: number): IFavorite[] {
+/** Add a favorite (dedupe by kind+id, push newest-first). Returns the updated list. */
+export function addFavorite(platformId: object, key: IFavoriteKey): IFavorite[] {
   if (!isPlatformBrowser(platformId)) return [];
-  const current = readFavorites(platformId).filter(f => f.id !== id);
-  current.unshift({ id, savedAt: new Date().toISOString() });
+  const k = favoriteKey(key.kind, key.id);
+  const current = readFavorites(platformId).filter(f => favoriteKey(f.kind, f.id) !== k);
+  current.unshift({ kind: key.kind, id: key.id, savedAt: new Date().toISOString() });
   writeFavorites(platformId, current);
   return current;
 }
 
-export function removeFavorite(platformId: object, id: number): IFavorite[] {
+export function removeFavorite(platformId: object, key: IFavoriteKey): IFavorite[] {
   if (!isPlatformBrowser(platformId)) return [];
-  const next = readFavorites(platformId).filter(f => f.id !== id);
+  const k = favoriteKey(key.kind, key.id);
+  const next = readFavorites(platformId).filter(f => favoriteKey(f.kind, f.id) !== k);
   writeFavorites(platformId, next);
   return next;
 }

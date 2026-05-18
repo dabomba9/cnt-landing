@@ -371,8 +371,24 @@
             <span class="material-symbols-outlined text-3xl text-trinidad">cancel</span>
           </div>
           <h2 id="cancel-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Cancel this booking?</h2>
+          <!-- Refund clarity: tells the user whether they're still inside the 72-hr free window
+               so they're not surprised by a partial refund. -->
+          <div class="mb-4 p-3 rounded-lg flex items-start gap-3"
+            [ngClass]="pastFreeCancelWindow ? 'bg-gold/15 border border-gold/40' : 'bg-jungle-green/10 border border-jungle-green/30'">
+            <span class="material-symbols-outlined text-base mt-0.5"
+              [style.color]="pastFreeCancelWindow ? '#8a5a00' : '#1f4933'"
+              style="font-variation-settings: 'FILL' 1;">{{ pastFreeCancelWindow ? 'warning' : 'check_circle' }}</span>
+            <div class="flex-1 text-xs font-body leading-relaxed"
+              [style.color]="pastFreeCancelWindow ? '#8a5a00' : '#1f4933'">
+              @if (pastFreeCancelWindow) {
+                <strong>Check-in is within 72 hours.</strong> A full refund may not apply — see the host's cancellation policy below.
+              } @else {
+                <strong>{{ freeCancelDeadlineLabel }}.</strong> Cancel now for a full refund.
+              }
+            </div>
+          </div>
           <p class="text-sm text-muted-text font-body leading-relaxed mb-5">
-            Cancelling now keeps you within the free-cancellation window. A refund (if applicable) will appear within 5 business days. The host will be notified.
+            Refunds (when applicable) appear within 5 business days. The host will be notified.
           </p>
           <label class="flex flex-col gap-2 mb-6">
             <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Reason <span class="text-muted-text/70 normal-case font-normal">(optional, shared with host)</span></span>

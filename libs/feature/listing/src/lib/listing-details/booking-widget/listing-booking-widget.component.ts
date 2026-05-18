@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
-  IListing, IListingDetail, CancellationTier,
+  IPrivateListing, IListingDetail, CancellationTier,
 } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
@@ -24,7 +24,7 @@ import { BookingStateService } from '../booking-state.service';
   templateUrl: './listing-booking-widget.component.html',
 })
 export class ListingBookingWidgetComponent {
-  @Input({ required: true }) listing!: IListing;
+  @Input({ required: true }) listing!: IPrivateListing;
   @Input({ required: true }) detail!: IListingDetail;
   @Input({ required: true }) cancellationMeta!: Record<CancellationTier, { label: string; summary: string; color: string }>;
   @Input() myRv: IMyRv = emptyMyRv();

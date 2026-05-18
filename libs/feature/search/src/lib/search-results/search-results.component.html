@@ -28,6 +28,24 @@
       <!-- Filter Pills + Sort -->
       <div class="flex flex-wrap gap-2 items-center">
 
+        <!-- Kind chip toggle: All / Private / Boondocking -->
+        <div class="inline-flex items-center bg-white border border-dark-text/15 rounded-full p-0.5 shadow-sm" role="tablist" aria-label="Stay kind">
+          <button type="button" role="tab" [attr.aria-selected]="kindFilter === 'all'"
+            (click)="setKindFilter('all')"
+            class="px-3 py-1.5 rounded-full text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors"
+            [ngClass]="kindFilter === 'all' ? 'bg-dark-text text-white' : 'text-dark-text hover:bg-cream/80'">All stays</button>
+          <button type="button" role="tab" [attr.aria-selected]="kindFilter === 'private'"
+            (click)="setKindFilter('private')"
+            class="px-3 py-1.5 rounded-full text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors inline-flex items-center gap-1"
+            [ngClass]="kindFilter === 'private' ? 'bg-trinidad text-white' : 'text-dark-text hover:bg-cream/80'">
+            <span class="material-symbols-outlined text-[14px]">home_work</span>Private</button>
+          <button type="button" role="tab" [attr.aria-selected]="kindFilter === 'boondocking'"
+            (click)="setKindFilter('boondocking')"
+            class="px-3 py-1.5 rounded-full text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors inline-flex items-center gap-1"
+            [ngClass]="kindFilter === 'boondocking' ? 'bg-jungle-green text-white' : 'text-dark-text hover:bg-cream/80'">
+            <span class="material-symbols-outlined text-[14px]">landscape</span>Boondocking</button>
+        </div>
+
         <!-- Sort pill + panel -->
         <div class="relative">
           <button type="button"
@@ -421,13 +439,96 @@
           [hoveredId]="hoveredId"
           [popupId]="selectedId"
           [favoriteIds]="favorites"
+          [poiFavoriteKeys]="poiFavoriteKeys"
           [viewMode]="viewMode"
+          [pois]="visiblePois"
           (markerHover)="onCardHover($event)"
           (markerClick)="onMarkerClick($event)"
           (popupClosed)="onPopupClosed()"
           (favoriteToggle)="onMapFavoriteToggle($event)"
           (viewModeChange)="setViewMode($event)"
-          (boundsChange)="onMapBoundsChange($event)"></cnt-search-map>
+          (boundsChange)="onMapBoundsChange($event)"
+          (poiClick)="onPoiClick($event)"
+          (poiFavoriteToggle)="onPoiPopupFavoriteToggle($event)"></cnt-search-map>
+
+        <!-- Layers button + panel -->
+        <div class="absolute top-4 right-4 z-[400]">
+          <button type="button" (click)="togglePoiLayersPanel()"
+            [attr.aria-expanded]="poiLayersOpen"
+            class="h-11 pl-3 pr-4 rounded-full bg-white shadow-lg ring-1 ring-black/5 inline-flex items-center gap-2 hover:shadow-xl transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2">
+            <span class="material-symbols-outlined text-[20px] text-dark-text">layers</span>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-dark-text">Map layers</span>
+            @if (visiblePoiKinds.size > 0) {
+              <span class="min-w-[18px] h-[18px] px-1 rounded-full bg-trinidad text-white text-[10px] font-button font-bold inline-flex items-center justify-center">{{ visiblePoiKinds.size }}</span>
+            }
+          </button>
+          @if (poiLayersOpen) {
+            <div cntFocusTrap (escape)="closePoiLayersPanel()"
+              class="absolute top-12 right-0 w-64 bg-white rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16)] ring-1 ring-black/5 p-4"
+              role="dialog" aria-label="Map layers">
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Show on map</div>
+                <button type="button" (click)="closePoiLayersPanel()" aria-label="Close"
+                  class="w-7 h-7 rounded-full inline-flex items-center justify-center hover:bg-cream/60">
+                  <span class="material-symbols-outlined text-[16px] text-muted-text">close</span>
+                </button>
+              </div>
+              <div class="space-y-1.5">
+                @for (k of poiKindsAll; track k) {
+                  <button type="button" (click)="togglePoiKind(k)"
+                    [attr.aria-pressed]="visiblePoiKinds.has(k)"
+                    class="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-cream/60 transition-colors text-left">
+                    <span class="w-6 h-6 rounded-full inline-flex items-center justify-center shrink-0"
+                      [style.background]="POI_KIND_META[k].color + (visiblePoiKinds.has(k) ? '' : '22')"
+                      [style.color]="visiblePoiKinds.has(k) ? '#fff' : POI_KIND_META[k].color">
+                      <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">{{ POI_KIND_META[k].icon }}</span>
+                    </span>
+                    <span class="flex-1 text-sm font-body text-dark-text">{{ POI_KIND_META[k].label }}</span>
+                    <span class="text-[0.65rem] font-button text-muted-text">{{ poiCountByKind(k) }}</span>
+                    <span class="material-symbols-outlined text-[18px]"
+                      [class.text-trinidad]="visiblePoiKinds.has(k)"
+                      [class.text-dark-text]="!visiblePoiKinds.has(k)"
+                      [class.opacity-30]="!visiblePoiKinds.has(k)">{{ visiblePoiKinds.has(k) ? 'check_box' : 'check_box_outline_blank' }}</span>
+                  </button>
+                }
+              </div>
+              <div class="mt-3 pt-3 border-t border-dark-text/10 flex gap-2">
+                <button type="button" (click)="showAllPoiKinds()"
+                  class="flex-1 px-3 py-1.5 rounded-full bg-cream border border-dark-text/10 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:bg-dark-text/5">Show all</button>
+                <button type="button" (click)="hideAllPoiKinds()"
+                  class="flex-1 px-3 py-1.5 rounded-full bg-cream border border-dark-text/10 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:bg-dark-text/5">Hide all</button>
+              </div>
+              <!-- Cost filter — hides Pilot/Loves paid dump stations + paid propane. -->
+              <button type="button" (click)="togglePoiCostFreeOnly()"
+                [attr.aria-pressed]="poiCostFreeOnly"
+                class="mt-2 w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-cream/60 transition-colors text-left">
+                <span class="material-symbols-outlined text-[18px]"
+                  [class.text-jungle-green]="poiCostFreeOnly"
+                  [class.text-dark-text]="!poiCostFreeOnly"
+                  [class.opacity-30]="!poiCostFreeOnly">{{ poiCostFreeOnly ? 'check_box' : 'check_box_outline_blank' }}</span>
+                <span class="flex-1 text-sm font-body text-dark-text">Free only</span>
+                <span class="material-symbols-outlined text-[14px] text-jungle-green" style="font-variation-settings: 'FILL' 1;">savings</span>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Map legend — decodes the POI pin colors at a glance -->
+        @if (visiblePoiKinds.size > 0) {
+          <div class="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg ring-1 ring-black/5 px-3 py-2 max-w-[14rem]"
+            aria-label="Map legend">
+            <div class="flex flex-wrap gap-x-3 gap-y-1.5">
+              @for (k of poiKindsAll; track k) {
+                @if (visiblePoiKinds.has(k)) {
+                  <div class="inline-flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full shrink-0" [style.background]="POI_KIND_META[k].color"></span>
+                    <span class="text-[0.65rem] font-body text-dark-text">{{ POI_KIND_META[k].label }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
       </div>
     </aside>
 
@@ -439,6 +540,13 @@
     </button>
   </div>
   </div>
+
+  <!-- Public POI modal -->
+  <cnt-poi-modal
+    [poi]="activePoi"
+    [isFavorite]="isPoiFavorite(activePoi)"
+    (favoriteToggle)="onPoiFavoriteToggle($event)"
+    (close)="closePoiModal()"></cnt-poi-modal>
 </main>
 
 <!-- All filters sheet (Airbnb-style) -->

@@ -5,12 +5,12 @@ import { Subscription, combineLatest } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
-  IListing, getMyListings, getHostBookings, HostListingMetaService,
+  IPrivateListing, getMyListings, getHostBookings, HostListingMetaService,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
 interface IRowModel {
-  listing: IListing;
+  listing: IPrivateListing;
   paused: boolean;
   archived: boolean;
   upcomingCount: number;

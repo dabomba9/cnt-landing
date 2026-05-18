@@ -12,7 +12,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
-import { MOCK_LISTINGS, IListing, getListingDetail, IListingDetail, IAddOn } from '@cnt-workspace/data-access';
+import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
 import { IBookingAddOn } from '@cnt-workspace/models';
@@ -27,7 +27,7 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-review.component.scss'],
 })
 export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit {
-  listing: IListing | null = null;
+  listing: IPrivateListing | null = null;
   detail: IListingDetail | null = null;
   user: IPublicUser | null = null;
   myRv: IMyRv | null = null;
@@ -108,7 +108,14 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     const q = this.route.snapshot.queryParamMap;
     const listingId = parseInt(q.get('listingId') || '', 10);
     this.listing = MOCK_LISTINGS.find(l => l.id === listingId) || null;
-    if (this.listing) this.detail = getListingDetail(this.listing);
+    // Boondocking ids (81-100) live in MOCK_BOONDOCKING and aren't reservable. Any unknown id
+    // hits the same path — kick the user back to /search rather than render an empty form.
+    if (!this.listing) {
+      this.toasts.info('That listing is not bookable here.');
+      this.router.navigate(['/search']);
+      return;
+    }
+    this.detail = getListingDetail(this.listing);
 
     const start = q.get('start');
     const end = q.get('end');
@@ -380,6 +387,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   /** ============ Confirm ============ */
   onConfirm(event: Event): void {
     event.preventDefault();
+    // Re-entry guard — Angular CD disables the button after the next tick, but a fast
+    // double-click can fire before that, and screen readers / a11y tools can auto-fire.
+    if (this.submitting) return;
+    this.submitting = true;
     this.error = null;
     this.validateEmail();
     this.validatePhone();
@@ -387,26 +398,65 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     this.myRv = readMyRv(this.platformId);
     if (!this.hasValidState || !this.listing || !this.detail || !this.user) {
       this.error = 'Missing booking details. Start over from the listing.';
+      this.submitting = false;
       return;
     }
     if (!this.acceptedTerms) {
       this.error = 'Please accept the booking terms to continue.';
+      this.submitting = false;
       return;
     }
     if (this.fieldErrors.email || !this.contactEmail) {
       this.error = 'A valid contact email is required.';
+      this.submitting = false;
       return;
     }
     if (!this.isMyRvComplete) {
       this.error = `Add your ${this.rigMissingLabel} before booking.`;
+      this.submitting = false;
+      return;
+    }
+    // Photo gate — request-to-book listings require rig + plate photos. The booking widget
+    // gates this on the listing page, but a deep-link can land directly here, so re-check.
+    if (!this.listing.instantBook && !hasMyRvPhotos(this.myRv)) {
+      this.error = 'Add your rig and license-plate photos in your profile before completing this booking.';
+      this.submitting = false;
+      return;
+    }
+    // Date availability — listing-side (unavailable dates) and user-side (self double-book).
+    const range = { start: this.startDate!.toISOString(), end: this.endDate!.toISOString() };
+    if (!this.isDateRangeAvailable(this.detail, this.startDate!, this.endDate!)) {
+      this.error = 'Those dates are not available. Please pick a different range.';
+      this.submitting = false;
+      return;
+    }
+    if (this.booking.hasUserDateConflict(this.user.email, this.listing.id, range)) {
+      this.error = 'You already have a booking at this listing during those dates.';
+      this.submitting = false;
       return;
     }
     // Gate first booking on identity verification.
     if (!this.user.verified) {
       this.idVerifyOpen = true;
+      this.submitting = false; // re-enables the button while the modal is up
       return;
     }
     this.finalizeBooking();
+  }
+
+  /** Check every day in [start, end) against the listing's unavailable-date set. */
+  private isDateRangeAvailable(detail: IListingDetail, start: Date, end: Date): boolean {
+    const unavailable = new Set(detail.unavailableDates);
+    const day = new Date(start);
+    day.setHours(0, 0, 0, 0);
+    const endDay = new Date(end);
+    endDay.setHours(0, 0, 0, 0);
+    while (day < endDay) {
+      const iso = day.toISOString().slice(0, 10);
+      if (unavailable.has(iso)) return false;
+      day.setDate(day.getDate() + 1);
+    }
+    return true;
   }
 
   onVerified(): void {

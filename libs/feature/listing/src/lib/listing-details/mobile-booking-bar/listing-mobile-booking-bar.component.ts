@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IListing } from '@cnt-workspace/data-access';
+import { IPrivateListing } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
 /**
@@ -16,7 +16,7 @@ import { BookingStateService } from '../booking-state.service';
   templateUrl: './listing-mobile-booking-bar.component.html',
 })
 export class ListingMobileBookingBarComponent {
-  @Input({ required: true }) listing!: IListing;
+  @Input({ required: true }) listing!: IPrivateListing;
   @Output() reserveClick = new EventEmitter<void>();
 
   constructor(public booking: BookingStateService) {}

@@ -12,6 +12,9 @@ import {
   IListingDetail, getListingDetail, CANCELLATION_TIER_META,
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
+  AGENCY_META,
+  MOCK_POIS, POI_KIND_META, IPoi, PoiKind,
+  IPrivateListing, findListing, MOCK_BOONDOCKING,
 } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -53,6 +56,60 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   LEVELING_META = LEVELING_META;
   SEWER_META = SEWER_META;
   CLEARANCE_META = CLEARANCE_META;
+  AGENCY_META = AGENCY_META;
+  POI_KIND_META = POI_KIND_META;
+  readonly poiKindsForNearest: PoiKind[] = ['dumpstation', 'propane', 'potable_water', 'rest_area'];
+
+  /** True for public-land boondocking listings: replaces booking flow with "Get Directions" + visit info. */
+  get isBoondocking(): boolean { return this.listing?.kind === 'boondocking'; }
+  /** The listing narrowed to private — null on boondocking pages. Used inside @if blocks
+   * to let the template access `.price` / `.rating` / `.reviewCount` / `.instantBook`
+   * without the union's narrowing complaint. */
+  get privateListing(): IPrivateListing | null {
+    return this.listing && this.listing.kind !== 'boondocking' ? this.listing : null;
+  }
+
+  /**
+   * Nearest POI of each utility kind. Shown for every stay — but most critical on
+   * boondocking pages, where RVers have no hookups and need to know the closest dump
+   * station / propane / water before heading out.
+   * Uses squared-euclidean for ranking (cheap, same order as great-circle) and
+   * a single haversine call for the displayed mile value.
+   */
+  get nearestUtilities(): { kind: PoiKind; poi: IPoi; miles: number }[] {
+    if (!this.listing) return [];
+    const out: { kind: PoiKind; poi: IPoi; miles: number }[] = [];
+    for (const kind of this.poiKindsForNearest) {
+      let best: IPoi | null = null;
+      let bestSq = Infinity;
+      for (const p of MOCK_POIS) {
+        if (p.kind !== kind) continue;
+        const dLat = p.lat - this.listing.lat;
+        const dLng = p.lng - this.listing.lng;
+        const sq = dLat * dLat + dLng * dLng;
+        if (sq < bestSq) { bestSq = sq; best = p; }
+      }
+      if (best) out.push({ kind, poi: best, miles: this.distanceMiles(this.listing, best) });
+    }
+    return out;
+  }
+
+  /** Haversine miles between two lat/lng points — rounded to one decimal for display. */
+  private distanceMiles(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+    const R = 3958.7613; // Earth radius in miles
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLng = toRad(b.lng - a.lng);
+    const lat1 = toRad(a.lat);
+    const lat2 = toRad(b.lat);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+    return Math.round(2 * R * Math.asin(Math.sqrt(h)) * 10) / 10;
+  }
+  /** Google Maps deep link for the active listing (used by boondocking Get Directions CTAs). */
+  get directionsHref(): string {
+    if (!this.listing) return '#';
+    return `https://www.google.com/maps/dir/?api=1&destination=${this.listing.lat},${this.listing.lng}`;
+  }
 
   // Favorite state (mirrors /search behavior)
   favorited = false;
@@ -83,6 +140,12 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     { id: 'reviews',   label: 'Reviews' },
     { id: 'location',  label: 'Location' },
   ];
+  /** Section anchors shown in the in-page nav. Boondocking pages hide Add-ons and Reviews
+   * since those sections aren't rendered on public-land listings. */
+  get visibleSectionAnchors() {
+    if (!this.isBoondocking) return this.sectionAnchors;
+    return this.sectionAnchors.filter(a => a.id !== 'add-ons' && a.id !== 'reviews');
+  }
   activeAnchor = 'photos';
   private sectionObserver?: IntersectionObserver;
 
@@ -132,15 +195,18 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
   private bookingChangedSub?: { unsubscribe: () => void };
 
-  /** Up to 3 listings in the same category as the current one, excluding self. */
+  /** Up to 3 listings of the same kind + category as the current one, excluding self. */
   get similarListings(): IListing[] {
-    return MOCK_LISTINGS
+    const pool: IListing[] = this.isBoondocking ? MOCK_BOONDOCKING : MOCK_LISTINGS;
+    return pool
       .filter(l => l.category === this.listing.category && l.id !== this.listing.id)
       .slice(0, 3);
   }
 
-  /** Up to 3 other listings hosted by the same host (matched by name), excluding self. */
+  /** Up to 3 other listings hosted by the same host (matched by name), excluding self.
+   * Boondocking has no host, so this returns empty on those pages. */
   get hostListings(): IListing[] {
+    if (this.isBoondocking) return [];
     const hostName = this.detail.host.name;
     return MOCK_LISTINGS
       .filter(l => l.id !== this.listing.id && getListingDetail(l).host.name === hostName)
@@ -242,8 +308,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     // Hydrate from ?id, fall back to first listing if missing/invalid
     this.route.queryParams.subscribe(params => {
       const id = parseInt(params['id'], 10);
-      const found = MOCK_LISTINGS.find(l => l.id === id);
-      const newListing = found || MOCK_LISTINGS[0];
+      const found = findListing(id);
+      const newListing: IListing = found || MOCK_LISTINGS[0];
 
       // Always refresh myRv on route change — the user may have just saved
       // their rig on /account#rig and been bounced back here. We want the
@@ -255,7 +321,11 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       if (newListing.id !== this.currentListingId) {
         this.listing = newListing;
         this.detail = getListingDetail(this.listing);
-        this.booking.setListing(this.listing, this.detail);
+        // Booking state only applies to private listings — boondocking pages don't render
+        // the widget/mobile-bar, so we skip wiring it for them.
+        if (this.listing.kind !== 'boondocking') {
+          this.booking.setListing(this.listing, this.detail);
+        }
         this.currentListingId = newListing.id;
         pushRecentlyViewed(this.platformId, newListing.id);
 
@@ -305,6 +375,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   private buildListingJsonLd(heroImage: string): object {
     const photos = this.detail.photos.map(p => this.seo.absUrl(p));
+    const isBoondock = this.listing.kind === 'boondocking';
     return {
       '@context': 'https://schema.org',
       '@type': 'Campground',
@@ -322,14 +393,17 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         latitude: this.listing.lat,
         longitude: this.listing.lng,
       },
-      priceRange: `$${this.listing.price}`,
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: this.listing.rating.toFixed(2),
-        reviewCount: this.listing.reviewCount,
-        bestRating: '5',
-        worstRating: '1',
-      },
+      // Boondocking has no price, no curated rating — omit schema fields rather than emit zeros.
+      ...(isBoondock ? {} : {
+        priceRange: `$${(this.listing as IPrivateListing).price}`,
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: (this.listing as IPrivateListing).rating.toFixed(2),
+          reviewCount: (this.listing as IPrivateListing).reviewCount,
+          bestRating: '5',
+          worstRating: '1',
+        },
+      }),
       review: this.detail.reviews.slice(0, 4).map(r => ({
         '@type': 'Review',
         author: { '@type': 'Person', name: r.authorName },
@@ -398,11 +472,14 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   toggleListingFavorite(id: number, event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
+    // Determine kind: same listing → use its kind; otherwise look up in ALL_LISTINGS.
+    const target = id === this.listing?.id ? this.listing : findListing(id);
+    const kind = target?.kind === 'boondocking' ? 'boondocking' : 'listing';
     if (this.favoriteSet.has(id)) {
-      removeFavorite(this.platformId, id);
+      removeFavorite(this.platformId, { kind, id });
       this.favoriteSet.delete(id);
     } else {
-      addFavorite(this.platformId, id);
+      addFavorite(this.platformId, { kind, id });
       this.favoriteSet.add(id);
     }
     this.favoriteSet = new Set(this.favoriteSet);
@@ -427,6 +504,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   rvPhotosOpen = false;
 
   requestBooking(): void {
+    // Wired from the booking widget which only renders on private listings — guard for narrowing.
+    if (this.listing.kind === 'boondocking') return;
     if (!this.booking.canBook) return;
     // Re-read myRv from storage at click time so the gate sees the latest
     // profile even if the user mutated it in another tab / via /account.

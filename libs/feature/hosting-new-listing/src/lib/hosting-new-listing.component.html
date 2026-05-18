@@ -1,0 +1,114 @@
+<cnt-navbar></cnt-navbar>
+
+<main class="pt-24 md:pt-28 min-h-screen bg-cream">
+
+  <!-- Sticky progress header — phase chips + step progress bar -->
+  <div class="sticky top-20 md:top-24 z-30 bg-cream/95 backdrop-blur-sm border-b border-dark-text/10">
+    <div class="max-w-[64rem] mx-auto px-4 md:px-8 py-3 md:py-4">
+
+      <!-- Phase nav -->
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <div class="flex items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
+          @for (label of PHASE_LABELS; track $index) {
+            <button type="button" (click)="jumpToPhaseHub($index + 1)"
+              [ngClass]="phase === $index + 1
+                ? 'bg-trinidad text-white'
+                : (phase > $index + 1 ? 'bg-jungle-green text-white' : 'bg-white text-muted-text border border-dark-text/15')"
+              class="shrink-0 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+              <span class="hidden md:inline">{{ $index + 1 }}.</span> {{ label }}
+              @if (phase > $index + 1) {
+                <span class="material-symbols-outlined text-[12px] ml-1" style="font-variation-settings: 'FILL' 1;">check</span>
+              }
+            </button>
+          }
+        </div>
+
+        <button type="button" (click)="saveAndExit()"
+          class="shrink-0 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:text-trinidad transition-colors">
+          Save & exit
+        </button>
+      </div>
+
+      <!-- Step progress bar -->
+      <div class="flex items-center gap-3">
+        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">
+          {{ step < 0 ? 'Overview' : 'Step ' + (step + 1) + ' of ' + stepsTotal }}
+        </span>
+        <div class="flex-1 h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
+          <div class="h-full bg-trinidad rounded-full transition-all duration-300"
+            [style.width.%]="phaseProgressPct"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step body -->
+  <section class="px-4 md:px-8 py-8 md:py-12">
+    <div class="max-w-[64rem] mx-auto">
+
+      <!-- Step body: hub landing, then one component per (phase, step) tuple. -->
+      @if (step < 0) {
+        <cnt-phase-hub
+          [phase]="phase"
+          [phaseLabel]="PHASE_LABELS[phase - 1]"
+          [steps]="stepsForPhase"
+          [draft]="draft"
+          (start)="startPhase(phase)"
+          (back)="prev()"></cnt-phase-hub>
+      } @else if (phase === 1 && step === 0) {
+        <cnt-phase1-descriptors [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-descriptors>
+      } @else if (phase === 1 && step === 1) {
+        <cnt-phase1-address [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-address>
+      } @else if (phase === 1 && step === 2) {
+        <cnt-phase1-basics [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-basics>
+      } @else if (phase === 1 && step === 3) {
+        <cnt-phase1-amenities [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-amenities>
+      } @else if (phase === 1 && step === 4) {
+        <cnt-phase1-vehicles [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-vehicles>
+      } @else if (phase === 2 && step === 0) {
+        <cnt-phase2-photos [draft]="draft" (patch)="onPatch($event)"></cnt-phase2-photos>
+      } @else if (phase === 2 && step === 1) {
+        <cnt-phase2-name-description [draft]="draft" (patch)="onPatch($event)"></cnt-phase2-name-description>
+      } @else if (phase === 2 && step === 2) {
+        <cnt-phase2-conditions [draft]="draft" (patch)="onPatch($event)"></cnt-phase2-conditions>
+      } @else if (phase === 2 && step === 3) {
+        <cnt-phase2-profile-photo [draft]="draft" (patch)="onPatch($event)"></cnt-phase2-profile-photo>
+      } @else if (phase === 3 && step === 0) {
+        <cnt-phase3-bookings [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-bookings>
+      } @else if (phase === 3 && step === 1) {
+        <cnt-phase3-rules [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-rules>
+      } @else if (phase === 3 && step === 2) {
+        <cnt-phase3-pricing [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-pricing>
+      } @else if (phase === 3 && step === 3) {
+        <cnt-phase3-review [draft]="draft"></cnt-phase3-review>
+      }
+
+      <!-- Step nav: Previous + Next, plus a Discard option on the phase hub -->
+      <div class="mt-10 flex items-center justify-between gap-3 flex-wrap">
+        <button type="button" (click)="prev()"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          Previous
+        </button>
+
+        @if (step >= 0 && !(phase === 3 && step === 3)) {
+          <button type="button" (click)="next()"
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_8px_20px_rgba(227,83,13,0.25)] transition-opacity">
+            Next
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        }
+      </div>
+
+      <!-- Discard link -->
+      <div class="mt-12 text-center">
+        <button type="button" (click)="discard()"
+          class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
+          Discard draft
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<curbnturf-footer></curbnturf-footer>

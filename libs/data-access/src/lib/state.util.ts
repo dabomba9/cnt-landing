@@ -1,4 +1,4 @@
-import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { IListing, IPrivateListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 
 /** Two-letter US state abbreviation → URL slug. */
 export const ABBREV_TO_SLUG: Record<string, string> = {
@@ -114,7 +114,7 @@ export function listingStateSlug(listing: IListing): string | null {
   return m ? (ABBREV_TO_SLUG[m[1]] ?? null) : null;
 }
 
-/** All MOCK_LISTINGS that resolve to the given state slug. */
-export function listingsInState(slug: string): IListing[] {
+/** All MOCK_LISTINGS (private only) that resolve to the given state slug. */
+export function listingsInState(slug: string): IPrivateListing[] {
   return MOCK_LISTINGS.filter((l) => listingStateSlug(l) === slug);
 }

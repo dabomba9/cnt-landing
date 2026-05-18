@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
+import { SeoService, HostListingDraftService } from '@cnt-workspace/data-access';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
@@ -52,8 +52,16 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private seo: SeoService,
     private sanitizer: DomSanitizer,
+    private drafts: HostListingDraftService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  /** True when the visitor has an in-progress wizard draft they can resume. */
+  get hasDraft(): boolean { return !!this.drafts.current; }
+  /** Title of the in-progress draft if any, for the resume banner. */
+  get draftTitle(): string {
+    return this.drafts.current?.title || 'your unfinished listing';
+  }
 
   openVideo(): void {
     this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeEmbedBase);

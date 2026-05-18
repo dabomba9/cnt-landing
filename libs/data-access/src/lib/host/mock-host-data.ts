@@ -1,10 +1,51 @@
-import { IListing, MOCK_LISTINGS } from '../listings/mock-listings.data';
+import { IListing, IPrivateListing, MOCK_LISTINGS } from '../listings/mock-listings.data';
 import { IBooking } from '@cnt-workspace/models';
 
-/** Listings the current user "hosts" — picks the first 3 listings from the
- *  mock pool. Stable per-user (deterministic by ID) for demo consistency. */
-export function getMyListings(_userEmail: string): IListing[] {
-  return MOCK_LISTINGS.slice(0, 3);
+const OWNED_LISTINGS_KEY = 'cnt-owned-listings';
+
+/** Per-user map of listing IDs the user has published via the host wizard. */
+type OwnedMap = Record<string, number[]>;
+
+function readOwnedMap(): OwnedMap {
+  if (typeof localStorage === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(OWNED_LISTINGS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed as OwnedMap : {};
+  } catch { return {}; }
+}
+
+function writeOwnedMap(map: OwnedMap): void {
+  if (typeof localStorage === 'undefined') return;
+  try { localStorage.setItem(OWNED_LISTINGS_KEY, JSON.stringify(map)); } catch { /* quota */ }
+}
+
+/**
+ * Mark a listing as owned by a host. Called by the publish flow in
+ * HostListingDraftService so the new listing shows up on /hosting/listings.
+ */
+export function addOwnedListing(userEmail: string, listingId: number): void {
+  if (!userEmail) return;
+  const map = readOwnedMap();
+  const existing = map[userEmail] ?? [];
+  if (existing.includes(listingId)) return;
+  map[userEmail] = [...existing, listingId];
+  writeOwnedMap(map);
+}
+
+/**
+ * Listings the current user hosts. Returns user-published listings (recorded
+ * at publish time) plus the seeded first-3 fallback for demo continuity when
+ * the user hasn't published anything yet.
+ */
+export function getMyListings(userEmail: string): IPrivateListing[] {
+  const owned = new Set(readOwnedMap()[userEmail] ?? []);
+  const fromOwned = MOCK_LISTINGS.filter(l => owned.has(l.id));
+  // No published listings yet → fall back to the seeded demo trio so the host
+  // dashboard isn't an empty state for first-time visitors.
+  if (fromOwned.length === 0) return MOCK_LISTINGS.slice(0, 3);
+  return fromOwned;
 }
 
 /** Real bookings (from BookingService) whose listing belongs to the host. */
@@ -26,10 +67,12 @@ export interface IHostStats {
 
 /** Derive host KPIs from real bookings + listings. No formula filler. */
 export function getHostStats(listings: IListing[], hostBookings: IBooking[]): IHostStats {
-  const totalReviews = listings.reduce((s, l) => s + l.reviewCount, 0);
-  const averageRating = listings.length === 0
+  // Hosts only own private listings — narrow to skip any boondocking accidentally passed in.
+  const privates = listings.filter((l): l is IPrivateListing => l.kind !== 'boondocking');
+  const totalReviews = privates.reduce((s, l) => s + l.reviewCount, 0);
+  const averageRating = privates.length === 0
     ? 0
-    : +(listings.reduce((s, l) => s + l.rating, 0) / listings.length).toFixed(2);
+    : +(privates.reduce((s, l) => s + l.rating, 0) / privates.length).toFixed(2);
 
   if (listings.length === 0) {
     return { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating, totalReviews };

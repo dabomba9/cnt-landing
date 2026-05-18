@@ -17,7 +17,13 @@ export class ListingCardComponent {
   @Output() favoriteToggle = new EventEmitter<MouseEvent>();
 
   get hoverTotal(): number | null {
+    if (this.listing.kind === 'boondocking') return null;
     return this.nights > 0 ? this.listing.price * this.nights : null;
+  }
+
+  /** Numeric price for the template — narrowed so the union doesn't trip up Angular. */
+  get listingPrice(): number {
+    return this.listing.kind === 'boondocking' ? 0 : this.listing.price;
   }
 
   currentImageIndex = 0;
@@ -47,7 +53,7 @@ export class ListingCardComponent {
     if (BEST_VALUE_IDS.has(this.listing.id)) {
       return { label: 'Best Value', icon: 'verified', bg: 'bg-gold', fg: 'text-dark-text' };
     }
-    if (this.listing.rating >= 4.8) {
+    if (this.listing.kind !== 'boondocking' && this.listing.rating >= 4.8) {
       return { label: 'Guest Favorite', icon: 'workspace_premium', bg: 'bg-dark-text', fg: 'text-gold' };
     }
     return null;

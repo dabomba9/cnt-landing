@@ -41,12 +41,20 @@
       <span class="material-symbols-outlined text-white text-[20px]">{{ CATEGORY_META[listing.category].icon }}</span>
     </div>
 
-    <!-- instant book chip -->
-    @if (listing.instantBook) {
+    <!-- instant book chip (private listings only) -->
+    @if (listing.kind !== 'boondocking' && listing.instantBook) {
       <div class="absolute top-3 left-16 z-20 inline-flex items-center gap-1 px-2.5 py-1 bg-trinidad text-white rounded-full shadow-md"
         title="Instant Book — confirms automatically when dates are available">
         <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
         <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold">Instant Book</span>
+      </div>
+    }
+    <!-- boondocking agency chip -->
+    @if (listing.kind === 'boondocking') {
+      <div class="absolute top-3 left-16 z-20 inline-flex items-center gap-1 px-2.5 py-1 bg-jungle-green text-white rounded-full shadow-md"
+        title="Boondocking — managed by a public agency, first-come-first-served">
+        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">landscape</span>
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold">{{ listing.agency || 'Boondocking' }}</span>
       </div>
     }
 
@@ -77,14 +85,16 @@
     <div class="absolute bottom-3 right-3 z-10 flex flex-col items-end gap-1.5">
       @if (hoverTotal !== null) {
         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-dark-text/95 backdrop-blur-sm text-white text-[0.65rem] font-body font-bold rounded-lg px-3 py-1.5 shadow-md whitespace-nowrap">
-          ${{ listing.price }} × {{ nights }} {{ nights === 1 ? 'night' : 'nights' }} =
+          ${{ listingPrice }} × {{ nights }} {{ nights === 1 ? 'night' : 'nights' }} =
           <span class="text-gold">${{ hoverTotal }}</span>
         </div>
       }
-      <div class="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
-        <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
-        <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
-      </div>
+      @if (listing.kind !== 'boondocking') {
+        <div class="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
+          <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
+          <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
+        </div>
+      }
     </div>
   </div>
 
@@ -93,12 +103,14 @@
       <h3 class="font-headline font-bold text-dark-text text-lg leading-tight line-clamp-2 min-h-[3rem]">{{ listing.title }}</h3>
       <div class="flex items-center gap-2 mt-1">
         <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ listing.location }}</span>
-        <span class="text-muted-text text-xs">•</span>
-        <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
-          <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-          {{ listing.rating }}
-          <span class="text-muted-text font-normal">({{ listing.reviewCount }})</span>
-        </span>
+        @if (listing.kind !== 'boondocking') {
+          <span class="text-muted-text text-xs">•</span>
+          <span class="flex items-center gap-1 text-xs text-dark-text font-bold">
+            <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+            {{ listing.rating }}
+            <span class="text-muted-text font-normal">({{ listing.reviewCount }})</span>
+          </span>
+        }
       </div>
     </div>
 

@@ -404,6 +404,22 @@ export class TripsComponent implements OnInit, OnDestroy {
     return new Date(b.dates.start).getTime() > Date.now();
   }
 
+  /** Hours from now until check-in for the active cancel target. */
+  get cancelTargetHoursToCheckIn(): number {
+    if (!this.cancelTarget) return 0;
+    return Math.floor((new Date(this.cancelTarget.dates.start).getTime() - Date.now()) / 3_600_000);
+  }
+  get cancelTargetPastFreeWindow(): boolean {
+    return this.cancelTargetHoursToCheckIn < 72;
+  }
+  get cancelTargetDeadlineLabel(): string {
+    const h = this.cancelTargetHoursToCheckIn - 72;
+    if (h <= 0) return 'Free-cancellation window has passed';
+    if (h < 24) return `Free cancellation for ${h} more ${h === 1 ? 'hour' : 'hours'}`;
+    const d = Math.floor(h / 24);
+    return `Free cancellation for ${d} more ${d === 1 ? 'day' : 'days'}`;
+  }
+
   openCancel(b: IBooking, event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
@@ -504,18 +520,19 @@ export class TripsComponent implements OnInit, OnDestroy {
       // upgrade a too-short review can still flip this on later.
       if (qualifiesByText) this.bookingSvc.markReviewed(target.id);
 
-      // Choose the right toast for the moment.
+      // Choose the right toast for the moment. The submit gate (canSubmitReview) prevents
+      // sub-threshold first-reviews when credit is available, so we never need the
+      // "Add a few words" message here — the modal blocks that case in-place.
       let toastMsg = 'Review updated.';
       if (!wasAlreadyReviewed) {
         const updated = this.bookingSvc.getById(target.id);
         const earnedCredit = qualifiesByText && updated ? this.bookingSvc.qualifiesForCredit(updated) : false;
         if (qualifiesByText && earnedCredit) {
           toastMsg = `Review saved · earned $${(target.nights || 0) * REVIEW_CREDIT_PER_NIGHT} in credit.`;
-        } else if (qualifiesByText && !earnedCredit) {
-          // Per-listing cap kicked in (repeat stay).
-          toastMsg = 'Review saved — thanks for sharing.';
         } else {
-          toastMsg = `Review saved. Add a few words to earn $${(target.nights || 0) * REVIEW_CREDIT_PER_NIGHT}.`;
+          // Either qualifies-but-already-earned-on-listing, OR the user knowingly chose to
+          // skip credit (boondocking, no-credit-available scenarios).
+          toastMsg = 'Review saved — thanks for sharing.';
         }
       }
 
@@ -526,6 +543,37 @@ export class TripsComponent implements OnInit, OnDestroy {
   }
 
   readonly creditPerNight = REVIEW_CREDIT_PER_NIGHT;
+
+  /**
+   * True when the active review target is at a listing where the user has already earned
+   * credit on a prior stay. Surfaces an inline notice in the modal so users understand
+   * why this review won't add to their balance (first-stay-per-listing rule).
+   */
+  /**
+   * Submit gate: when credit is on the table for this booking but the text is too short,
+   * block the submit so the warning lands inside the modal instead of as a toast after close.
+   * Returns true when the user can save. Edits or already-earned-on-listing always allowed.
+   */
+  get canSubmitReview(): boolean {
+    if (!this.reviewTarget) return false;
+    if (this.reviewTarget.reviewedAt) return true;        // editing an existing review
+    if (this.creditAlreadyEarnedForTarget) return true;   // credit not available — text length unconstrained
+    return this.reviewText.trim().length >= MIN_REVIEW_CHARS_FOR_CREDIT;
+  }
+
+  get creditAlreadyEarnedForTarget(): boolean {
+    if (!this.reviewTarget) return false;
+    // Already-reviewed THIS booking — no warning needed; they may be editing their own review.
+    if (this.reviewTarget.reviewedAt) return false;
+    const user = this.auth.currentUser;
+    if (!user) return false;
+    // Any other booking at this listing, same user, already reviewed?
+    return this.bookingSvc.list(user.email).some(b =>
+      b.id !== this.reviewTarget!.id
+      && b.listingId === this.reviewTarget!.listingId
+      && !!b.reviewedAt,
+    );
+  }
   readonly minReviewChars = MIN_REVIEW_CHARS_FOR_CREDIT;
 
   /** Earn label for a past-trip card when the user has already reviewed it. */

@@ -129,6 +129,45 @@
         }
       }
 
+      <!-- Saved utilities (POIs) — separate section since they're not stays. -->
+      @if (savedPois.length > 0) {
+        <div class="mt-12 pt-8 border-t border-dark-text/10">
+          <div class="flex items-baseline justify-between mb-4 gap-3 flex-wrap">
+            <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl">Saved utilities</h2>
+            <span class="text-xs font-body text-muted-text">{{ savedPois.length }} {{ savedPois.length === 1 ? 'spot' : 'spots' }}</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (entry of savedPois; track entry.poi.id) {
+              <div class="bg-white rounded-2xl border border-dark-text/10 p-4 flex items-start gap-3">
+                <span class="w-10 h-10 rounded-full shrink-0 inline-flex items-center justify-center"
+                  [style.background]="POI_KIND_META[entry.poi.kind].color + '22'"
+                  [style.color]="POI_KIND_META[entry.poi.kind].color">
+                  <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">{{ POI_KIND_META[entry.poi.kind].icon }}</span>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold"
+                    [style.color]="POI_KIND_META[entry.poi.kind].color">{{ POI_KIND_META[entry.poi.kind].label }}</div>
+                  <div class="font-body text-sm text-dark-text font-bold truncate">{{ entry.poi.name }}</div>
+                  <div class="font-body text-xs text-muted-text truncate">{{ entry.poi.address }}</div>
+                  <div class="mt-2 flex items-center gap-2">
+                    <a [href]="directionsHrefFor(entry.poi)" target="_blank" rel="noopener"
+                      class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-trinidad text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold no-underline">
+                      <span class="material-symbols-outlined text-[12px]">directions</span>
+                      Directions
+                    </a>
+                    <button type="button" (click)="removePoiFavorite(entry.poi.id, $event)"
+                      aria-label="Remove from favorites"
+                      class="w-7 h-7 rounded-full inline-flex items-center justify-center hover:bg-cream/60">
+                      <span class="material-symbols-outlined text-[16px] text-trinidad" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
     </div>
   </section>
 </main>

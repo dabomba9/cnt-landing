@@ -39,17 +39,30 @@
           </div>
         </div>
 
+        <!-- Resume banner — visible when an in-progress draft exists in localStorage. -->
+        @if (hasDraft) {
+          <a routerLink="/hosting/new"
+            class="inline-flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm border border-[#F1B434]/40 hover:bg-white/15 transition-colors no-underline">
+            <span class="material-symbols-outlined text-[#F1B434]" style="font-variation-settings: 'FILL' 1;">drafts</span>
+            <div class="flex-1 min-w-0 text-left">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-[#F1B434]">Continue where you left off</div>
+              <div class="text-sm font-body font-bold text-white truncate">{{ draftTitle }}</div>
+            </div>
+            <span class="material-symbols-outlined text-white">arrow_forward</span>
+          </a>
+        }
+
         <!-- CTAs -->
         <div class="host-hero-actions flex flex-col sm:flex-row gap-4">
 
-          <!-- Button 1: Start Your Listing -->
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+          <!-- Button 1: Start Your Listing — routes into the host onboarding wizard. -->
+          <a routerLink="/hosting/new" class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block no-underline">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
               <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
               <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
               <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             </div>
-          </div>
+          </a>
 
           <!-- Button 2: How it works (ghost + icon) -->
           <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block" (click)="openVideo()">
@@ -202,13 +215,13 @@
 
       <!-- Steps CTA -->
       <div class="text-center mt-16">
-        <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+        <a routerLink="/hosting/new" class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block no-underline">
           <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
             <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             <div class="btn-3d-front bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
           </div>
-        </div>
+        </a>
       </div>
 
     </div>
@@ -681,13 +694,13 @@
             <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
             Free to list. No subscription fees.
           </p>
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+          <a routerLink="/hosting/new" class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block no-underline">
             <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
               <div class="invisible px-12 py-5 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
               <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
               <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Start Your Listing</div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>

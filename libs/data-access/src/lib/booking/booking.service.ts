@@ -36,7 +36,14 @@ export class BookingService {
   ) {
     const initial = this.read();
     this._bookings$.next(initial);
-    this.replayPendingDecisions(initial);
+    this.recheckPending();
+    // Recheck whenever the tab regains visibility — background-tab throttling can prevent
+    // the setTimeout from firing on schedule, leaving pending bookings stuck.
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') this.recheckPending();
+      });
+    }
   }
 
   /** All bookings for one user, newest first. */
@@ -48,6 +55,31 @@ export class BookingService {
 
   getById(id: string): IBooking | null {
     return this.read().find(b => b.id === id) ?? null;
+  }
+
+  /**
+   * True if any *active* (not cancelled/declined) booking the user already has at this listing
+   * overlaps the given date range. Used by the review page to block double-booking.
+   *
+   * NOTE: per-user only. Cross-user conflicts (two RVers booking the same listing for overlapping
+   * dates) need backend coordination — see plan risks.
+   */
+  hasUserDateConflict(
+    userEmail: string,
+    listingId: number,
+    range: { start: string; end: string },
+  ): boolean {
+    const startMs = Date.parse(range.start);
+    const endMs = Date.parse(range.end);
+    if (Number.isNaN(startMs) || Number.isNaN(endMs)) return false;
+    return this.list(userEmail).some(b => {
+      if (b.status === 'cancelled' || b.status === 'declined') return false;
+      if (b.listingId !== listingId) return false;
+      const bStart = Date.parse(b.dates.start);
+      const bEnd = Date.parse(b.dates.end);
+      // Two ranges overlap when A.start < B.end && B.start < A.end.
+      return startMs < bEnd && bStart < endMs;
+    });
   }
 
   createBooking(input: Omit<IBooking, 'id' | 'createdAt'>): IBooking {
@@ -249,11 +281,28 @@ export class BookingService {
 
   // ---- Host-decision state machine (mock) ------------------------------
 
-  private replayPendingDecisions(bookings: IBooking[]): void {
+  /**
+   * Sweep all pending bookings:
+   *   - decisionAt in the past → apply the decision immediately (fires the toast app-wide).
+   *   - decisionAt in the future → ensure a timer is armed.
+   * Safe to call repeatedly; idempotent. Called from constructor and from any page that
+   * subscribes to visibility/focus events (the confirm page primarily — but a stuck
+   * pending caught here will also surface on /dashboard or /trips).
+   */
+  recheckPending(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    for (const b of bookings) {
+    const now = Date.now();
+    for (const b of this.read()) {
       if (b.status !== 'pending' || !b.decisionAt) continue;
-      this.scheduleDecision(b.id);
+      const due = new Date(b.decisionAt).getTime();
+      if (due <= now) {
+        // setTimeout in a background tab can throttle past the schedule. If the user comes
+        // back and the deadline has passed, resolve immediately so they don't see stale UI.
+        this.clearTimer(b.id);
+        this.applyDecision(b.id);
+      } else {
+        this.scheduleDecision(b.id);
+      }
     }
   }
 

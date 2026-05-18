@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent, ListingCardComponent } from '@cnt-workspace/ui';
 import {
-  IListing, MOCK_LISTINGS, SeoService, ToastService,
+  IListing, ALL_LISTINGS, SeoService, ToastService,
   Category, CATEGORY_META,
   readFavorites, removeFavorite, clearFavorites, writeFavorites, IFavorite,
   readRecentlyViewed,
+  MOCK_POIS, POI_KIND_META, IPoi,
 } from '@cnt-workspace/data-access';
 
 type WishlistSort = 'newest' | 'oldest' | 'price-asc' | 'price-desc' | 'rating-desc';
@@ -62,7 +63,10 @@ export class WishlistsComponent implements OnInit {
 
   private hydrate(): void {
     this.favorites = readFavorites(this.platformId);
-    this.favoriteIds = new Set(this.favorites.map(f => f.id));
+    // Only numeric ids (stays + boondocking) — POIs use string ids and don't appear in the listing card grid.
+    this.favoriteIds = new Set(
+      this.favorites.filter(f => typeof f.id === 'number').map(f => f.id as number),
+    );
   }
 
   private hydrateView(): void {
@@ -86,31 +90,63 @@ export class WishlistsComponent implements OnInit {
     } catch { /* quota */ }
   }
 
-  /** All saved listings (no filters) — drives the count, the breakdown, and the deep-link. */
+  /** All saved listings (no filters) — drives the count, the breakdown, and the deep-link.
+   * Spans both private listings and boondocking so saved entries of either kind appear. */
   get listings(): IListing[] {
-    const byId = new Map(MOCK_LISTINGS.map(l => [l.id, l]));
-    return this.favorites
-      .map(f => byId.get(f.id))
-      .filter((l): l is IListing => !!l);
+    const byId = new Map<number, IListing>(ALL_LISTINGS.map(l => [l.id, l]));
+    const out: IListing[] = [];
+    for (const f of this.favorites) {
+      if (typeof f.id !== 'number') continue; // POIs aren't IListings — handled in their own section.
+      const l = byId.get(f.id);
+      if (l) out.push(l);
+    }
+    return out;
   }
 
-  /** Listings after category filter + sort. */
+  /** Saved POIs (utilities) — separate section since they're not IListings. */
+  get savedPois(): { poi: IPoi; savedAt: string }[] {
+    const byId = new Map(MOCK_POIS.map(p => [p.id, p]));
+    const out: { poi: IPoi; savedAt: string }[] = [];
+    for (const f of this.favorites) {
+      if (f.kind !== 'poi' || typeof f.id !== 'string') continue;
+      const p = byId.get(f.id);
+      if (p) out.push({ poi: p, savedAt: f.savedAt });
+    }
+    return out;
+  }
+
+  POI_KIND_META = POI_KIND_META;
+
+  removePoiFavorite(poiId: string, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    removeFavorite(this.platformId, { kind: 'poi', id: poiId });
+    this.hydrate();
+  }
+
+  directionsHrefFor(poi: IPoi): string {
+    return `https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`;
+  }
+
+  /** Listings after category filter + sort.
+   * Price + rating sorts treat boondocking as 0 (it has no curated price/rating). */
   get filteredListings(): IListing[] {
     let out = this.listings;
     if (this.selectedCategories.size > 0) {
       out = out.filter(l => this.selectedCategories.has(l.category));
     }
-    // savedAt lookup for the two date sorts
+    const priceOf = (l: IListing) => l.kind === 'boondocking' ? 0 : l.price;
+    const ratingOf = (l: IListing) => l.kind === 'boondocking' ? 0 : l.rating;
     const savedAtById = new Map(this.favorites.map(f => [f.id, f.savedAt]));
     switch (this.sort) {
       case 'oldest':
         return [...out].sort((a, b) => (savedAtById.get(a.id) || '').localeCompare(savedAtById.get(b.id) || ''));
       case 'price-asc':
-        return [...out].sort((a, b) => a.price - b.price);
+        return [...out].sort((a, b) => priceOf(a) - priceOf(b));
       case 'price-desc':
-        return [...out].sort((a, b) => b.price - a.price);
+        return [...out].sort((a, b) => priceOf(b) - priceOf(a));
       case 'rating-desc':
-        return [...out].sort((a, b) => b.rating - a.rating);
+        return [...out].sort((a, b) => ratingOf(b) - ratingOf(a));
       case 'newest':
       default:
         return [...out].sort((a, b) => (savedAtById.get(b.id) || '').localeCompare(savedAtById.get(a.id) || ''));
@@ -162,7 +198,10 @@ export class WishlistsComponent implements OnInit {
 
   onFavoriteToggle(id: number, event: MouseEvent): void {
     event.stopPropagation();
-    removeFavorite(this.platformId, id);
+    // Look up the listing in the merged pool to know its kind.
+    const fav = this.favorites.find(f => f.id === id);
+    const kind = fav?.kind || 'listing';
+    removeFavorite(this.platformId, { kind, id });
     this.hydrate();
   }
 

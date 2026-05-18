@@ -81,32 +81,76 @@ export const RV_TYPES: { id: RvType; label: string; image: string }[] = [
   { id: 'popup',           label: 'Popup Camper',    image: 'assets/images/Popup_CNT.svg' },
 ];
 
-export interface IListing {
+/** Listing kind — drives the entire booking/discovery treatment downstream. */
+export type ListingKind = 'private' | 'boondocking';
+
+/** Managing agency for boondocking sites. */
+export type ListingAgency = 'BLM' | 'USFS' | 'NPS' | 'State Park' | 'Army Corps' | 'County' | 'Other';
+
+/** Shared base for every map-pinnable stay, regardless of kind. */
+export interface IListingBase {
   id: number;
   title: string;
   location: string;
   lat: number;
   lng: number;
-  price: number;
-  rating: number;
-  reviewCount: number;
   category: Category;
   amenities: Amenity[];
   image: string;
+}
+
+/**
+ * Private host stay — has a price, rating, reviews, and a Reserve/Instant Book path.
+ * `kind` is optional so historical entries without it still narrow to this branch.
+ */
+export interface IPrivateListing extends IListingBase {
+  kind?: 'private';
+  price: number;
+  rating: number;
+  reviewCount: number;
   /** Instant Book — booking confirms automatically when dates are available. */
   instantBook: boolean;
 }
 
+/**
+ * Boondocking public-land entry — no price, no rating, no reservation flow.
+ * Lives in `MOCK_BOONDOCKING` (see `./mock-boondocking.data.ts`).
+ */
+export interface IBoondockingListing extends IListingBase {
+  kind: 'boondocking';
+  agency: ListingAgency;
+}
+
+export type IListing = IPrivateListing | IBoondockingListing;
+
+export const AGENCY_META: Record<ListingAgency, { label: string; icon: string }> = {
+  'BLM':         { label: 'Bureau of Land Management', icon: 'landscape' },
+  'USFS':        { label: 'U.S. Forest Service',       icon: 'park' },
+  'NPS':         { label: 'National Park Service',     icon: 'forest' },
+  'State Park':  { label: 'State Park',                icon: 'park' },
+  'Army Corps':  { label: 'Army Corps of Engineers',   icon: 'shield' },
+  'County':      { label: 'County Park',               icon: 'apartment' },
+  'Other':       { label: 'Public land',               icon: 'public' },
+};
+
 const IMG = {
-  vineyard:   'assets/images/host_vineyard.webp',
-  farm:       'assets/images/host_farm.webp',
-  brewery:    'assets/images/host_brewery.webp',
-  attraction: 'assets/images/host_museum.webp',
-  offgrid:    'assets/images/host_opportunity.webp',
-  alpaca:     'assets/images/host_alpaca.webp',
-  dairy:      'assets/images/host_dairy.webp',
-  hops:       'assets/images/host_hops.webp',
-  village:    'assets/images/host_village.webp',
+  vineyard:    'assets/images/host_vineyard.webp',
+  farm:        'assets/images/host_farm.webp',
+  brewery:     'assets/images/host_brewery.webp',
+  attraction:  'assets/images/host_museum.webp',
+  offgrid:     'assets/images/host_opportunity.webp',
+  alpaca:      'assets/images/host_alpaca.webp',
+  dairy:       'assets/images/host_dairy.webp',
+  hops:        'assets/images/host_hops.webp',
+  village:     'assets/images/host_village.webp',
+  boondocking: 'assets/images/host_opportunity.webp',
+};
+
+/** Amenity bundles for boondocking — typically no hookups, just terrain + permit info. */
+const A_BOON = {
+  blm:   ['back-in','pets','campfires','tents-allowed','vehicles-allowed'] as Amenity[],
+  usfs:  ['back-in','pets','campfires','tents-allowed','potable-water','toilet'] as Amenity[],
+  nps:   ['back-in','pets','tents-allowed','toilet'] as Amenity[],
 };
 
 const A = {
@@ -117,7 +161,7 @@ const A = {
   offgrid:  ['back-in','campfires','cell-coverage','pets','tents-allowed'] as Amenity[],
 };
 
-const RAW_LISTINGS: Omit<IListing, 'reviewCount' | 'instantBook'>[] = [
+const RAW_LISTINGS: Omit<IPrivateListing, 'reviewCount' | 'instantBook'>[] = [
   // California — wine country & coast
   { id:1,  title:'Heritage Oak Vineyard',     location:'St. Helena, CA',     lat:38.5052, lng:-122.4724, price:125, rating:4.9, category:'vineyard',   amenities:[...A.vineyard,'hot-tub'],         image:IMG.vineyard },
   { id:2,  title:'Whispering Pines Winery',   location:'Healdsburg, CA',     lat:38.6102, lng:-122.8694, price:95,  rating:4.7, category:'vineyard',   amenities:A.vineyard,                        image:IMG.vineyard },
@@ -227,11 +271,12 @@ const RAW_LISTINGS: Omit<IListing, 'reviewCount' | 'instantBook'>[] = [
   { id:78, title:'Nebraska Sandhills Ranch',  location:'Valentine, NE',      lat:42.8730, lng:-100.5510, price:45,  rating:4.3, category:'farm',       amenities:A.farm,                            image:IMG.farm },
   { id:79, title:'Kansas Flint Hills',        location:'Cottonwood Falls, KS',lat:38.3719,lng:-96.5439,  price:40,  rating:4.4, category:'farm',       amenities:A.farm,                            image:IMG.farm },
   { id:80, title:'Ozark Cabin Hollow',        location:'Eureka Springs, AR', lat:36.4015, lng:-93.7377,  price:65,  rating:4.6, category:'offgrid',    amenities:A.offgrid,                         image:IMG.alpaca },
+
 ];
 
 // Deterministic review count + instant-book flag derived from id so mock data is stable across reloads.
 // id=1 (Heritage Oak) is force-true; about 60% of others are instant-bookable.
-export const MOCK_LISTINGS: IListing[] = RAW_LISTINGS.map(l => ({
+export const MOCK_LISTINGS: IPrivateListing[] = RAW_LISTINGS.map(l => ({
   ...l,
   reviewCount: ((l.id * 17 + 23) % 380) + 12,
   instantBook: l.id === 1 ? true : ((l.id * 11 + 7) % 10) < 6,
@@ -241,6 +286,16 @@ export const PRICE_RANGE = {
   min: Math.min(...MOCK_LISTINGS.map(l => l.price)),
   max: Math.max(...MOCK_LISTINGS.map(l => l.price)),
 };
+
+import { MOCK_BOONDOCKING } from './mock-boondocking.data';
+
+/** Unified view across private stays + boondocking — used by /search and /wishlists. */
+export const ALL_LISTINGS: IListing[] = [...MOCK_LISTINGS, ...MOCK_BOONDOCKING];
+
+/** Look up a listing of either kind by numeric id. */
+export function findListing(id: number): IListing | undefined {
+  return ALL_LISTINGS.find(l => l.id === id);
+}
 
 /**
  * Listings flagged as "New" — small deterministic subset (~15%).
@@ -768,6 +823,11 @@ function generateUnavailableDates(id: number): string[] {
 }
 
 function generateSubScores(listing: IListing): ISubScores {
+  // Boondocking sites have no curated rating — return all-zero sub-scores so any
+  // template that does render them (none should, post-narrowing) sees blank state.
+  if (listing.kind === 'boondocking') {
+    return { cleanliness: 0, communication: 0, hookups: 0, location: 0, value: 0 };
+  }
   // Sub-scores cluster around the listing's overall rating, with small deterministic deltas.
   const base = listing.rating;
   const jitter = (seed: number) => (((listing.id * seed) % 7) - 3) * 0.04;
@@ -802,6 +862,7 @@ function generateNearby(listing: IListing): INearbyPoi[] {
 }
 
 function generateTrustBadges(listing: IListing): TrustBadge[] {
+  if (listing.kind === 'boondocking') return [];
   const badges: TrustBadge[] = ['verified-host', 'id-checked', 'land-insured'];
   if (listing.rating >= 4.85 && listing.reviewCount >= 80) badges.push('superhost');
   return badges;

@@ -11,7 +11,7 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService, ReviewService, IUserReview, REVIEW_CREDIT_PER_NIGHT, ICreditEntry } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { IMyRv, readMyRv, readRecentlyViewed } from '@cnt-workspace/data-access';
-import { IListing, MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { IListing, MOCK_LISTINGS, ALL_LISTINGS, findListing } from '@cnt-workspace/data-access';
 import { DashboardGreetingComponent } from './widgets/greeting/greeting.component';
 import { StatTileComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import { UpcomingTripCardComponent } from './widgets/upcoming-trip/upcoming-trip.component';
@@ -98,7 +98,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private readSavedListings(): IListing[] {
     const favorites = readFavorites(this.platformId);
     const orderById = new Map(favorites.map((f, i) => [f.id, i]));
-    return MOCK_LISTINGS
+    // Span both private listings and boondocking — favorites can now reference either.
+    return ALL_LISTINGS
       .filter(l => orderById.has(l.id))
       .sort((a, b) => (orderById.get(a.id) ?? 0) - (orderById.get(b.id) ?? 0));
   }
@@ -111,6 +112,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .filter(b => new Date(b.dates.start).getTime() > now)
       .sort((a, b) => new Date(a.dates.start).getTime() - new Date(b.dates.start).getTime());
     return upcoming[0] || null;
+  }
+
+  /** Booking currently in-progress (check-in passed, check-out not yet reached, confirmed/approved). */
+  get inProgressTrip(): IBooking | null {
+    const now = Date.now();
+    return this.bookings.find(b =>
+      (b.status === 'confirmed' || b.status === 'approved')
+      && new Date(b.dates.start).getTime() <= now
+      && new Date(b.dates.end).getTime() > now,
+    ) || null;
+  }
+
+  /** Google Maps deep link for the active in-progress trip. */
+  get inProgressDirectionsHref(): string {
+    const t = this.inProgressTrip;
+    if (!t || t.lat == null || t.lng == null) return '#';
+    return `https://www.google.com/maps/dir/?api=1&destination=${t.lat},${t.lng}`;
   }
 
   /** Verified flag from current user. */
@@ -141,7 +159,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const b of this.bookings) seen.add(b.listingId);
     return readRecentlyViewed(this.platformId)
       .filter(id => !seen.has(id))
-      .map(id => MOCK_LISTINGS.find(l => l.id === id))
+      .map(id => findListing(id))
       .filter((l): l is IListing => !!l)
       .slice(0, 4);
   }

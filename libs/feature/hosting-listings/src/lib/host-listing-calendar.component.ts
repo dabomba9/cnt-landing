@@ -7,7 +7,7 @@ import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
   HostAvailabilityService, IHostAvailability,
-  IListing, MOCK_LISTINGS, getMyListings,
+  IPrivateListing, MOCK_LISTINGS, getMyListings,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -31,7 +31,7 @@ interface IDayCell {
   templateUrl: './host-listing-calendar.component.html',
 })
 export class HostListingCalendarComponent implements OnInit, OnDestroy {
-  listing: IListing | null = null;
+  listing: IPrivateListing | null = null;
   ownsListing = true;
   availability: IHostAvailability = { blocked: [], prices: {} };
   bookings: IBooking[] = [];

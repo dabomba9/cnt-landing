@@ -108,6 +108,10 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
       const ms = new Date(this.booking.decisionAt).getTime() - Date.now();
       if (ms <= 0) {
         this.decisionCountdownLabel = 'Any moment now…';
+        // Foreground-tab safety net: if the deadline has passed but the timer hasn't fired
+        // (background-tab throttling or any other delay), nudge the service to apply now.
+        // recheckPending() is idempotent and a no-op once the decision has resolved.
+        this.bookingSvc.recheckPending();
         return;
       }
       const total = Math.ceil(ms / 1000);
@@ -231,6 +235,24 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
   openCancelModal(): void {
     this.cancelOpen = true;
     this.cancelReason = '';
+  }
+
+  /** Hours from now until check-in. Negative when check-in has passed. */
+  get hoursUntilCheckIn(): number {
+    if (!this.booking) return 0;
+    return Math.floor((new Date(this.booking.dates.start).getTime() - Date.now()) / 3_600_000);
+  }
+  /** True when we're outside the 72-hour free-cancel window (i.e., refund may not be full). */
+  get pastFreeCancelWindow(): boolean {
+    return this.hoursUntilCheckIn < 72;
+  }
+  /** Human-readable countdown to the free-cancel cutoff. */
+  get freeCancelDeadlineLabel(): string {
+    const h = this.hoursUntilCheckIn - 72;
+    if (h <= 0) return 'Free-cancellation window has passed';
+    if (h < 24) return `Free cancellation for ${h} more ${h === 1 ? 'hour' : 'hours'}`;
+    const d = Math.floor(h / 24);
+    return `Free cancellation for ${d} more ${d === 1 ? 'day' : 'days'}`;
   }
   closeCancelModal(): void {
     if (this.cancelling) return;

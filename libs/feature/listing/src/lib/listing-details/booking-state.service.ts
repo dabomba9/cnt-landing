@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
-import { IAddOn, CancellationTier, IListing, IListingDetail } from '@cnt-workspace/data-access';
+import { IAddOn, CancellationTier, IPrivateListing, IListingDetail } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 
 /**
@@ -39,7 +39,7 @@ export class BookingStateService {
   readonly changed = new EventEmitter<void>();
 
   /** Bind per-listing data. Resets transient errors but preserves user-entered booking state. */
-  setListing(listing: IListing, detail: IListingDetail): void {
+  setListing(listing: IPrivateListing, detail: IListingDetail): void {
     this.unavailableSet = new Set(detail.unavailableDates);
     this.maxGuests = detail.maxGuests;
     this.addOns = detail.addOns;

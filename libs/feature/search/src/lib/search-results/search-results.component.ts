@@ -12,11 +12,13 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  MOCK_LISTINGS, IListing, Category, CATEGORY_META,
+  IListing, ALL_LISTINGS, Category, CATEGORY_META,
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
+  ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
 import { readMyRv, writeMyRv } from '@cnt-workspace/data-access';
-import { readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
+import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
+import { PoiModalComponent } from './poi-modal.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
@@ -50,7 +52,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent, FocusTrapDirective],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })
@@ -59,13 +61,134 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   private scrollTriggers: ScrollTrigger[] = [];
 
   // Listings
-  listings = MOCK_LISTINGS;
+  listings: IListing[] = ALL_LISTINGS;
   hoveredId: number | null = null;
   selectedId: number | null = null;
   /** Map viewport bounds; when set, listings are filtered to those within view. */
   mapBounds: { north: number; south: number; east: number; west: number } | null = null;
   favorites = new Set<number>();
   CATEGORY_META = CATEGORY_META;
+
+  /** Primary kind chip — drives the result list (POIs ignore this filter). */
+  kindFilter: 'all' | ListingKind = 'all';
+
+  /** POI layers — set of kinds currently visible on the map. Persisted to localStorage. */
+  visiblePoiKinds = new Set<PoiKind>();
+  poiLayersOpen = false;
+  /** "Free only" cost filter inside the Layers panel — also persisted. */
+  poiCostFreeOnly = false;
+  /** Modal state for the public POI dialog. */
+  activePoi: IPoi | null = null;
+  POI_KIND_META = POI_KIND_META;
+  readonly poiKindsAll: PoiKind[] = ['dumpstation', 'rest_area', 'propane', 'potable_water'];
+
+  /** Cost predicate shared by `visiblePois` and the per-kind count badge. */
+  private passesPoiCost(p: IPoi): boolean {
+    if (!this.poiCostFreeOnly) return true;
+    return p.cost === 'free' || p.cost === 'free-with-fuel';
+  }
+
+  get visiblePois(): IPoi[] {
+    if (this.visiblePoiKinds.size === 0) return [];
+    const byKind = MOCK_POIS.filter(p => this.visiblePoiKinds.has(p.kind) && this.passesPoiCost(p));
+    return this.mapBounds ? poisInBounds(byKind, this.mapBounds) : byKind;
+  }
+
+  poiCountByKind(kind: PoiKind): number {
+    return MOCK_POIS.filter(p => p.kind === kind && this.passesPoiCost(p)).length;
+  }
+
+  togglePoiKind(kind: PoiKind): void {
+    if (this.visiblePoiKinds.has(kind)) this.visiblePoiKinds.delete(kind);
+    else this.visiblePoiKinds.add(kind);
+    this.visiblePoiKinds = new Set(this.visiblePoiKinds);
+    this.persistPoiLayers();
+  }
+  showAllPoiKinds(): void {
+    this.visiblePoiKinds = new Set(this.poiKindsAll);
+    this.persistPoiLayers();
+  }
+  hideAllPoiKinds(): void {
+    this.visiblePoiKinds = new Set();
+    this.persistPoiLayers();
+  }
+  togglePoiLayersPanel(): void { this.poiLayersOpen = !this.poiLayersOpen; }
+  closePoiLayersPanel(): void { this.poiLayersOpen = false; }
+
+  onPoiClick(poi: IPoi): void { this.activePoi = poi; }
+  closePoiModal(): void { this.activePoi = null; }
+
+  /** Canonical "poi:<id>" keys used by the heart UI on POI popups + modal. */
+  poiFavoriteKeys = new Set<string>();
+  isPoiFavorite(poi: IPoi | null): boolean {
+    return !!poi && this.poiFavoriteKeys.has(favoriteKey('poi', poi.id));
+  }
+  onPoiFavoriteToggle(poi: IPoi): void {
+    const key = favoriteKey('poi', poi.id);
+    if (this.poiFavoriteKeys.has(key)) {
+      removeFavorite(this.platformId, { kind: 'poi', id: poi.id });
+      this.poiFavoriteKeys.delete(key);
+    } else {
+      addFavorite(this.platformId, { kind: 'poi', id: poi.id });
+      this.poiFavoriteKeys.add(key);
+    }
+    this.poiFavoriteKeys = new Set(this.poiFavoriteKeys);
+  }
+
+  /** Heart click inside a POI popup card on the map. The popup updates itself optimistically
+   * (event delegation in search-map already toggled the visual); we just persist the state
+   * to localStorage and sync our key set without rerunning renderPois (which would close
+   * the popup the user is interacting with). */
+  onPoiPopupFavoriteToggle(payload: { poi: IPoi; next: boolean }): void {
+    const key = favoriteKey('poi', payload.poi.id);
+    if (payload.next) {
+      addFavorite(this.platformId, { kind: 'poi', id: payload.poi.id });
+      this.poiFavoriteKeys.add(key);
+    } else {
+      removeFavorite(this.platformId, { kind: 'poi', id: payload.poi.id });
+      this.poiFavoriteKeys.delete(key);
+    }
+    this.poiFavoriteKeys = new Set(this.poiFavoriteKeys);
+  }
+
+  private readonly POI_LAYERS_KEY = 'cnt-poi-layers';
+  private readonly POI_COST_KEY = 'cnt-poi-cost-free';
+
+  togglePoiCostFreeOnly(): void {
+    this.poiCostFreeOnly = !this.poiCostFreeOnly;
+    if (typeof localStorage !== 'undefined') {
+      try { localStorage.setItem(this.POI_COST_KEY, this.poiCostFreeOnly ? '1' : '0'); } catch { /* quota */ }
+    }
+  }
+  private hydratePoiCostFilter(): void {
+    if (typeof localStorage === 'undefined') return;
+    this.poiCostFreeOnly = localStorage.getItem(this.POI_COST_KEY) === '1';
+  }
+
+  private persistPoiLayers(): void {
+    if (typeof localStorage === 'undefined') return;
+    try { localStorage.setItem(this.POI_LAYERS_KEY, JSON.stringify([...this.visiblePoiKinds])); } catch { /* quota */ }
+  }
+  private hydratePoiLayers(): void {
+    if (typeof localStorage === 'undefined') {
+      // SSR: default all-on so the rendered map matches first-visit behavior.
+      this.visiblePoiKinds = new Set(this.poiKindsAll);
+      return;
+    }
+    try {
+      const raw = localStorage.getItem(this.POI_LAYERS_KEY);
+      if (raw === null) {
+        // First-visit default: show all four POI kinds so users actually discover them.
+        // Once they touch any toggle, persistPoiLayers writes and this branch stops firing.
+        this.visiblePoiKinds = new Set(this.poiKindsAll);
+        return;
+      }
+      const arr = JSON.parse(raw) as PoiKind[];
+      if (Array.isArray(arr)) this.visiblePoiKinds = new Set(arr.filter(k => this.poiKindsAll.includes(k)));
+    } catch { /* ignore */ }
+  }
+
+  setKindFilter(kind: 'all' | ListingKind): void { this.kindFilter = kind; }
 
   // Filter constants exposed to template
   AMENITY_GROUP = AMENITY_GROUP;
@@ -148,6 +271,22 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
     this.favorites = readFavoriteIds(this.platformId);
+    // POI favorites use string ids — track separately via canonical keys.
+    this.poiFavoriteKeys = new Set(
+      [...readFavoriteKeys(this.platformId)].filter(k => k.startsWith('poi:')),
+    );
+    this.hydratePoiLayers();
+    this.hydratePoiCostFilter();
+    // `?pois=propane,dumpstation` overrides the persisted layer prefs in-memory only
+    // (no write to localStorage), so deep-links from listing detail open the map with the
+    // right utility kinds visible without trampling the user's saved preference.
+    const poisParam = this.route.snapshot.queryParamMap.get('pois');
+    if (poisParam) {
+      const requested = poisParam.split(',')
+        .map(s => s.trim())
+        .filter((k): k is PoiKind => this.poiKindsAll.includes(k as PoiKind));
+      if (requested.length > 0) this.visiblePoiKinds = new Set(requested);
+    }
     if (isPlatformBrowser(this.platformId)) {
       // Restore last view-mode + mobile-map preference so the layout persists across visits.
       const vm = localStorage.getItem(this.VIEW_MODE_KEY);
@@ -186,11 +325,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private setFavorite(id: number, next: boolean): void {
+    // Look up the listing to know whether to save as 'listing' or 'boondocking' kind.
+    const listing = this.listings.find(l => l.id === id);
+    const kind = listing?.kind === 'boondocking' ? 'boondocking' : 'listing';
     if (next) {
-      addFavorite(this.platformId, id);
+      addFavorite(this.platformId, { kind, id });
       this.favorites.add(id);
     } else {
-      removeFavorite(this.platformId, id);
+      removeFavorite(this.platformId, { kind, id });
       this.favorites.delete(id);
     }
     // Make the Set reference change so child components re-evaluate when needed.
@@ -223,9 +365,18 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return 2 + ((l.id * 5) % 5);
   }
 
-  /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.). */
+  /** True if listing passes all non-viewport filters (price, amenities, dates, RV, etc.).
+   * Price / instant-book / etc. only apply to private listings; boondocking is unreservable
+   * so those filters skip it (caller still respects kindFilter). */
   private passesNonViewportFilters(l: IListing): boolean {
     if (this.pinnedIds && !this.pinnedIds.has(l.id)) return false;
+    const lk: ListingKind = l.kind || 'private';
+    if (this.kindFilter !== 'all' && lk !== this.kindFilter) return false;
+    if (l.kind === 'boondocking') {
+      // Skip private-only filters (price, instant book, dates, guests, RV-fit) for boondocking.
+      // It's not reservable, so those filters can't meaningfully apply.
+      return true;
+    }
     if (this.filters.instantBookOnly && !l.instantBook) return false;
     if (this.filters.guests > 0 && this.listingMaxGuests(l) < this.filters.guests) return false;
     if (l.price < this.filters.minPrice || l.price > this.filters.maxPrice) return false;
@@ -263,25 +414,55 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private applySort(items: IListing[]): IListing[] {
     const list = [...items];
-    switch (this.sortBy) {
-      case 'instant-book':  list.sort((a, b) => Number(b.instantBook) - Number(a.instantBook)); break;
-      case 'top-rated':     list.sort((a, b) => b.rating - a.rating); break;
-      case 'most-reviewed': list.sort((a, b) => b.reviewCount - a.reviewCount); break;
-      case 'price-asc':     list.sort((a, b) => a.price - b.price); break;
-      case 'price-desc':    list.sort((a, b) => b.price - a.price); break;
-      case 'nearest':       if (this.userLocation) list.sort((a, b) => this.distance(a) - this.distance(b)); break;
-      case 'recommended':
-      default:              break;
+    // Boondocking has price: 0 and arbitrary community ratings — these comparators
+    // would bunch all boondocking at the top of price-asc, top-rated, etc. when the
+    // user is browsing all stays. Push boondocking to the end of the list for any
+    // booking-flow sort, unless they specifically filtered to boondocking.
+    const segregate = this.kindFilter !== 'boondocking'
+      && (this.sortBy === 'price-asc' || this.sortBy === 'price-desc'
+          || this.sortBy === 'top-rated' || this.sortBy === 'most-reviewed'
+          || this.sortBy === 'instant-book');
+    const isBoon = (l: IListing) => l.kind === 'boondocking';
+    const ordered = segregate
+      ? [...list.filter(l => !isBoon(l)), ...list.filter(isBoon)]
+      : list;
+    // Apply the comparator within whichever partitioning we ended up with.
+    // For private-only sort criteria, treat boondocking values as 0 (boondocking is segregated
+    // to the end anyway when these sorts are active).
+    const priceOf = (l: IListing) => l.kind === 'boondocking' ? 0 : l.price;
+    const ratingOf = (l: IListing) => l.kind === 'boondocking' ? 0 : l.rating;
+    const reviewCountOf = (l: IListing) => l.kind === 'boondocking' ? 0 : l.reviewCount;
+    const instantBookOf = (l: IListing) => l.kind === 'boondocking' ? false : l.instantBook;
+    const sortIn = (arr: IListing[]) => {
+      switch (this.sortBy) {
+        case 'instant-book':  arr.sort((a, b) => Number(instantBookOf(b)) - Number(instantBookOf(a))); break;
+        case 'top-rated':     arr.sort((a, b) => ratingOf(b) - ratingOf(a)); break;
+        case 'most-reviewed': arr.sort((a, b) => reviewCountOf(b) - reviewCountOf(a)); break;
+        case 'price-asc':     arr.sort((a, b) => priceOf(a) - priceOf(b)); break;
+        case 'price-desc':    arr.sort((a, b) => priceOf(b) - priceOf(a)); break;
+        case 'nearest':       if (this.userLocation) arr.sort((a, b) => this.distance(a) - this.distance(b)); break;
+        case 'recommended':
+        default:              break;
+      }
+    };
+    if (segregate) {
+      const privates = ordered.filter(l => !isBoon(l));
+      const boons = ordered.filter(isBoon);
+      sortIn(privates);
+      sortIn(boons);
+      ordered.splice(0, ordered.length, ...privates, ...boons);
+    } else {
+      sortIn(ordered);
     }
     // Hoist the selected listing (from a marker click) to the top so it's the first card.
     if (this.selectedId != null) {
-      const idx = list.findIndex(l => l.id === this.selectedId);
+      const idx = ordered.findIndex(l => l.id === this.selectedId);
       if (idx > 0) {
-        const [picked] = list.splice(idx, 1);
-        list.unshift(picked);
+        const [picked] = ordered.splice(idx, 1);
+        ordered.unshift(picked);
       }
     }
-    return list;
+    return ordered;
   }
 
   private distance(l: IListing): number {
@@ -499,8 +680,21 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   get resultCountLabel(): string {
-    const n = this.filteredListings.length;
-    return `${n} stay${n !== 1 ? 's' : ''} found`;
+    const list = this.filteredListings;
+    const total = list.length;
+    // Surface the boondocking subcount when both kinds are visible — otherwise the
+    // headline conflates private bookable stays with public-land sites.
+    if (this.kindFilter === 'all') {
+      const boon = list.reduce((n, l) => n + (l.kind === 'boondocking' ? 1 : 0), 0);
+      const priv = total - boon;
+      if (boon > 0 && priv > 0) {
+        return `${priv} stay${priv !== 1 ? 's' : ''} · ${boon} boondocking`;
+      }
+    }
+    if (this.kindFilter === 'boondocking') {
+      return `${total} boondocking site${total !== 1 ? 's' : ''}`;
+    }
+    return `${total} stay${total !== 1 ? 's' : ''} found`;
   }
 
   get headerTitle(): string {

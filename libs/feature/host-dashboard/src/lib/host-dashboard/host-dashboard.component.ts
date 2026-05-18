@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import {
-  SeoService, AuthService, IPublicUser, ToastService, BookingService, IListing,
+  SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
@@ -30,7 +30,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
 })
 export class HostDashboardComponent implements OnInit, OnDestroy {
   user: IPublicUser | null = null;
-  listings: IListing[] = [];
+  listings: IPrivateListing[] = [];
   stats: IHostStats = { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
   /** Real bookings against this host's listings. */
   hostBookings: IBooking[] = [];

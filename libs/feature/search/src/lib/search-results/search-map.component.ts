@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { IListing, CATEGORY_META } from '@cnt-workspace/data-access';
+import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META } from '@cnt-workspace/data-access';
 import {
   TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
 } from '@cnt-workspace/ui';
@@ -97,18 +97,29 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() hoveredId: number | null = null;
   @Input() popupId: number | null = null;
   @Input() favoriteIds: Set<number> = new Set<number>();
+  /** Canonical "poi:<id>" keys of favorited POIs — drives the heart fill in popup cards. */
+  @Input() poiFavoriteKeys: Set<string> = new Set<string>();
   @Input() viewMode: 'split' | 'map-only' = 'split';
+  /** Visible POIs as an overlay layer (not clustered). */
+  @Input() pois: IPoi[] = [];
   @Output() markerHover = new EventEmitter<number | null>();
   @Output() markerClick = new EventEmitter<number>();
   @Output() popupClosed = new EventEmitter<void>();
   @Output() favoriteToggle = new EventEmitter<{ id: number; next: boolean }>();
   @Output() viewModeChange = new EventEmitter<'split' | 'map-only'>();
+  /** Fires when a POI pin is clicked. Parent opens the modal. */
+  @Output() poiClick = new EventEmitter<IPoi>();
+  /** Heart click inside a POI popup card. Parent persists to localStorage. */
+  @Output() poiFavoriteToggle = new EventEmitter<{ poi: IPoi; next: boolean }>();
   /** Fires whenever the map's visible bounds change (pan / zoom / initial fit). */
   @Output() boundsChange = new EventEmitter<{ north: number; south: number; east: number; west: number }>();
 
   private map: L.Map | null = null;
   private cluster: any = null;
   private markers = new Map<number, L.Marker>();
+  /** Separate cluster instance for POIs so utility pins don't mix with stay pins in the same bubbles. */
+  private poiCluster: any = null;
+  private poiMarkers = new Map<string, L.Marker>();
   private destroyed = false;
   private geoErrorTimer: ReturnType<typeof setTimeout> | null = null;
   geoError = '';
@@ -161,19 +172,50 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     this.map.addLayer(this.cluster);
     this.renderMarkers();
+    this.renderPois();
 
     // Emit bounds whenever the map idles after pan/zoom (debounced by Leaflet's moveend).
     this.map.on('moveend', () => this.emitBounds());
     // Notify parent when the user dismisses a popup so it can clear selectedId.
     this.map.on('popupclose', () => this.popupClosed.emit());
 
-    // Event delegation for the heart button inside popups (popup HTML lives in the map container).
+    // Event delegation for popup-internal buttons (heart on listings + "View details" on POI popups).
     this.map.getContainer().addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
+
+      // POI "View details" → close popup, open modal.
+      const poiBtn = target.closest?.('.popup-poi-details') as HTMLButtonElement | null;
+      if (poiBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const poiId = poiBtn.getAttribute('data-poi-id');
+        const poi = poiId ? this.pois.find(p => p.id === poiId) : null;
+        if (poi) {
+          this.map?.closePopup();
+          this.poiClick.emit(poi);
+        }
+        return;
+      }
+
       const btn = target.closest?.('.popup-favorite') as HTMLButtonElement | null;
       if (!btn) return;
       e.preventDefault();
       e.stopPropagation();
+
+      // POI favorite — string id, distinct emitter so the parent persists with the right kind.
+      const poiFavAttr = btn.getAttribute('data-poi-fav-id');
+      if (poiFavAttr) {
+        const poi = this.pois.find(p => p.id === poiFavAttr);
+        if (!poi) return;
+        const wasFav = btn.classList.contains('is-fav');
+        const next = !wasFav;
+        btn.classList.toggle('is-fav', next);
+        btn.setAttribute('aria-pressed', next ? 'true' : 'false');
+        btn.setAttribute('aria-label', next ? 'Remove from favorites' : 'Save to favorites');
+        this.poiFavoriteToggle.emit({ poi, next });
+        return;
+      }
+
       const idAttr = btn.getAttribute('data-fav-id');
       const id = idAttr ? parseInt(idAttr, 10) : NaN;
       if (!Number.isFinite(id)) return;
@@ -191,6 +233,7 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private lastIdSignature = '';
+  private lastPoiSignature = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['listings'] && this.cluster) {
@@ -219,6 +262,162 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       }, 60);
       setTimeout(() => this.map?.invalidateSize(), 320);
     }
+    if (changes['pois'] && this.map) {
+      // Signature guard mirrors the listing-cluster guard (line ~200): the parent
+      // computes `pois` via a getter that returns a fresh array each CD cycle, so
+      // without this, every cycle would wipe the POI layer and close any open popup
+      // the user just clicked open.
+      const sig = this.pois.map(p => p.id).join(',');
+      if (sig !== this.lastPoiSignature) {
+        this.lastPoiSignature = sig;
+        this.renderPois();
+      }
+    }
+  }
+
+  /** Build / refresh the POI cluster layer. Re-runs when the `pois` input *signature* changes. */
+  private renderPois(): void {
+    if (!this.map) return;
+    if (!this.poiCluster) {
+      // Cluster bubbles for utility POIs — separate from the stay cluster so we don't mix
+      // listings + dump stations in the same bubble. iconCreateFunction colors the bubble
+      // by the dominant child kind so it reads against the existing legend.
+      this.poiCluster = (L as any).markerClusterGroup({
+        showCoverageOnHover: false,
+        maxClusterRadius: 48,
+        spiderfyOnMaxZoom: true,
+        iconCreateFunction: (cluster: any) => {
+          const children = cluster.getAllChildMarkers();
+          const counts: Record<string, number> = {};
+          for (const child of children) {
+            const k = (child as any)._cntPoiKind as PoiKind | undefined;
+            if (!k) continue;
+            counts[k] = (counts[k] || 0) + 1;
+          }
+          let dominant: PoiKind = 'dumpstation';
+          let max = -1;
+          for (const k of Object.keys(counts) as PoiKind[]) {
+            if (counts[k] > max) { max = counts[k]; dominant = k; }
+          }
+          const color = POI_KIND_META[dominant].color;
+          return L.divIcon({
+            html: `<div class="cnt-poi-cluster" style="--poi:${color}">${cluster.getChildCount()}</div>`,
+            className: 'cnt-poi-cluster-wrap',
+            iconSize: [36, 36],
+          });
+        },
+      });
+      this.map.addLayer(this.poiCluster);
+    } else {
+      this.poiCluster.clearLayers();
+    }
+    this.poiMarkers.clear();
+    for (const p of this.pois) {
+      const meta = POI_KIND_META[p.kind];
+      const html = `
+        <div style="position: relative; width: 28px; height: 28px;
+                    border-radius: 50%; background: ${meta.color};
+                    border: 2px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+                    display: flex; align-items: center; justify-content: center;
+                    color: #fff;">
+          <span style="font-family: 'Material Symbols Outlined'; font-size: 16px; font-variation-settings: 'FILL' 1;">${meta.icon}</span>
+        </div>`;
+      const icon = L.divIcon({ html, className: 'cnt-poi-pin', iconSize: [28, 28], iconAnchor: [14, 14] });
+      const marker = L.marker([p.lat, p.lng], { icon, title: `${meta.label}: ${p.name}` });
+      // Tag the marker with its kind so the cluster icon callback can color by dominant kind.
+      (marker as any)._cntPoiKind = p.kind;
+      marker.bindPopup(this.buildPoiPopupHtml(p), {
+        closeButton: false,
+        maxWidth: 260,
+        minWidth: 240,
+        className: 'cnt-listing-popup cnt-poi-popup',
+        offset: [0, -6],
+        autoPanPadding: [40, 40],
+        keepInView: true,
+      });
+      this.poiCluster.addLayer(marker);
+      this.poiMarkers.set(p.id, marker);
+    }
+  }
+
+  /** Compact POI popup card. The "View details" CTA opens the full modal via event delegation. */
+  private buildPoiPopupHtml(poi: IPoi): string {
+    const meta = POI_KIND_META[poi.kind];
+    const name = this.escapeHtml(poi.name);
+    const address = this.escapeHtml(poi.address);
+    const label = this.escapeHtml(meta.label);
+    const costLabel = poi.priceNote
+      ? this.escapeHtml(poi.priceNote)
+      : poi.cost === 'free' ? 'Free'
+      : poi.cost === 'paid' ? 'Paid'
+      : poi.cost === 'free-with-fuel' ? 'Free with fill-up'
+      : 'Cost unknown';
+    const costColor = poi.cost === 'free' || poi.cost === 'free-with-fuel' ? '#295d42' : '#b3760e';
+    // Photo: per-entry photos[] first, then per-kind fallback, then glyph placeholder.
+    const photoSrc = poi.photos.length > 0
+      ? poi.photos[0]
+      : POI_KIND_PHOTO[poi.kind];
+    const photoBlock = photoSrc
+      ? `<img src="${this.escapeHtml(photoSrc)}" alt="${name}" loading="lazy">`
+      : `<div class="popup-poi-glyph" style="background:${meta.color}14;color:${meta.color}">
+           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">${meta.icon}</span>
+         </div>`;
+    const isFav = this.poiFavoriteKeys.has(`poi:${poi.id}`);
+    // "Last verified" decay chip — surfaces stale community data (90+ days).
+    const staleChip = this.isStale(poi.lastVerified)
+      ? `<span class="popup-stale" title="Community data may be out of date">
+           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">schedule</span>
+           ${this.verifiedAgoLabel(poi.lastVerified)}
+         </span>`
+      : '';
+    return `
+      <div class="cnt-listing-popup-card cnt-poi-popup-card" data-poi-id="${this.escapeHtml(poi.id)}">
+        <div class="popup-photo-link popup-poi-photo">
+          ${photoBlock}
+          <span class="popup-instant" style="background:${meta.color}">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">${meta.icon}</span>
+            ${label}
+          </span>
+        </div>
+        <button type="button" class="popup-favorite${isFav ? ' is-fav' : ''}" data-poi-fav-id="${this.escapeHtml(poi.id)}"
+          aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
+          aria-pressed="${isFav ? 'true' : 'false'}">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div class="popup-body">
+          <h3 class="popup-title">${name}</h3>
+          <div class="popup-meta-row">
+            <span class="popup-location">${address}</span>
+          </div>
+          ${staleChip}
+          <div class="popup-price-row">
+            <span class="popup-price" style="color:${costColor};font-size:14px">${this.escapeHtml(costLabel)}</span>
+            <button type="button" class="popup-cta popup-poi-details" data-poi-id="${this.escapeHtml(poi.id)}" aria-label="View ${name} details">
+              View details
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /** True when a POI's `lastVerified` is more than 90 days old. */
+  private isStale(lastVerified: string): boolean {
+    const t = Date.parse(lastVerified);
+    if (Number.isNaN(t)) return false;
+    return (Date.now() - t) > 90 * 86_400_000;
+  }
+
+  /** "4 mo ago" / "Last verified 5 mo ago" — concise stale label. */
+  private verifiedAgoLabel(lastVerified: string): string {
+    const t = Date.parse(lastVerified);
+    if (Number.isNaN(t)) return 'verified date unknown';
+    const days = Math.floor((Date.now() - t) / 86_400_000);
+    if (days < 60) return `Verified ${days} days ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `Verified ${months} mo ago`;
+    const years = Math.floor(months / 12);
+    return `Verified ${years} yr+ ago`;
   }
 
   private handlePopupChange(): void {
@@ -249,9 +448,23 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     const location = this.escapeHtml(listing.location);
     const cat = CATEGORY_META[listing.category];
     const catLabel = this.escapeHtml(cat.label);
-    const instantChip = listing.instantBook
-      ? `<span class="popup-instant"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>Instant Book</span>`
-      : '';
+    const chip = listing.kind === 'boondocking'
+      ? `<span class="popup-instant" style="background:#295d42"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">landscape</span>${this.escapeHtml(listing.agency || 'Boondocking')}</span>`
+      : (listing.instantBook
+        ? `<span class="popup-instant"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>Instant Book</span>`
+        : '');
+    const priceBlock = listing.kind === 'boondocking'
+      ? `<span class="popup-per" style="color:#295d42">Public land</span>`
+      : `<span class="popup-price">$${listing.price}</span><span class="popup-per">/ night</span>`;
+    const ratingBlock = listing.kind === 'boondocking'
+      ? `<span class="popup-location">${location}</span>`
+      : `<span class="popup-rating">
+           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+           <span>${listing.rating.toFixed(1)}</span>
+           <span class="popup-reviews">(${listing.reviewCount})</span>
+         </span>
+         <span class="popup-dot" aria-hidden="true">·</span>
+         <span class="popup-location">${location}</span>`;
     const isFav = this.favoriteIds.has(listing.id);
     return `
       <div class="cnt-listing-popup-card">
@@ -261,7 +474,7 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
           <span class="popup-cat-pennant" style="--cat:${cat.color}" title="${catLabel}">
             <span class="material-symbols-outlined">${cat.icon}</span>
           </span>
-          ${instantChip}
+          ${chip}
         </a>
         <button type="button" class="popup-favorite${isFav ? ' is-fav' : ''}" data-fav-id="${listing.id}"
           aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
@@ -270,19 +483,12 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
         </button>
         <div class="popup-body">
           <div class="popup-meta-row">
-            <span class="popup-rating">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-              <span>${listing.rating.toFixed(1)}</span>
-              <span class="popup-reviews">(${listing.reviewCount})</span>
-            </span>
-            <span class="popup-dot" aria-hidden="true">·</span>
-            <span class="popup-location">${location}</span>
+            ${ratingBlock}
           </div>
           <h3 class="popup-title">${title}</h3>
           <div class="popup-price-row">
             <div>
-              <span class="popup-price">$${listing.price}</span>
-              <span class="popup-per">/ night</span>
+              ${priceBlock}
             </div>
             <a href="/listing?id=${listing.id}" class="popup-cta" aria-label="View ${title} details">
               View details
@@ -315,13 +521,26 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.markers.clear();
 
     for (const listing of this.listings) {
-      const color = CATEGORY_META[listing.category].color;
-      const icon = L.divIcon({
-        html: `<div class="cnt-price-marker" data-id="${listing.id}" style="--cat:${color}">$${listing.price}</div>`,
-        className: 'cnt-price-marker-wrap',
-        iconSize: [60, 30],
-        iconAnchor: [30, 30],
-      });
+      let icon: L.DivIcon;
+      if (listing.kind === 'boondocking') {
+        icon = L.divIcon({
+          html: `<div class="cnt-boondocking-marker" data-id="${listing.id}">
+                   <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">landscape</span>
+                   <span>${this.agencyCode(listing.agency)}</span>
+                 </div>`,
+          className: 'cnt-price-marker-wrap',
+          iconSize: [76, 30],
+          iconAnchor: [38, 30],
+        });
+      } else {
+        const color = CATEGORY_META[listing.category].color;
+        icon = L.divIcon({
+          html: `<div class="cnt-price-marker" data-id="${listing.id}" style="--cat:${color}">$${listing.price}</div>`,
+          className: 'cnt-price-marker-wrap',
+          iconSize: [60, 30],
+          iconAnchor: [30, 30],
+        });
+      }
 
       const marker = L.marker([listing.lat, listing.lng], { icon });
       marker.bindPopup(this.buildPopupHtml(listing), {
@@ -346,8 +565,20 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     for (const [id, marker] of this.markers) {
       const el: HTMLElement | null = (marker as any).getElement?.();
       if (!el) continue;
-      const inner = el.querySelector('.cnt-price-marker') as HTMLElement | null;
+      const inner = el.querySelector('.cnt-price-marker, .cnt-boondocking-marker') as HTMLElement | null;
       if (inner) inner.classList.toggle('is-hovered', id === this.hoveredId);
+    }
+  }
+
+  /** Short, map-legible code for a boondocking agency — fits inside the pin. */
+  private agencyCode(agency: IBoondockingListing['agency'] | undefined): string {
+    switch (agency) {
+      case 'State Park': return 'STATE';
+      case 'Army Corps': return 'COE';
+      case 'County':     return 'CTY';
+      case 'Other':      return 'PUB';
+      case undefined:    return 'BOON';
+      default:           return agency; // BLM / USFS / NPS
     }
   }
 

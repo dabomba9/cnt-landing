@@ -11,7 +11,7 @@ import { readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/dat
 import {
   Category,
   CATEGORY_META,
-  IListing,
+  IPrivateListing,
 } from '@cnt-workspace/data-access';
 import { listingsInState, SLUG_TO_NAME } from '@cnt-workspace/data-access';
 import { STATE_CONTENT, IStateContent } from './state-content.data';
@@ -41,8 +41,8 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
   private routeSub?: Subscription;
 
   state: IStateContent | null = null;
-  allInState: IListing[] = [];
-  filteredListings: IListing[] = [];
+  allInState: IPrivateListing[] = [];
+  filteredListings: IPrivateListing[] = [];
   selectedCategory: Category | null = null;
   categoryPills: ICategoryPill[] = [];
 
@@ -140,11 +140,12 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
   }
 
   toggleFavorite(id: number, _event: MouseEvent): void {
+    // Explore page only shows private listings — always toggle as 'listing' kind.
     if (this.favoriteSet.has(id)) {
-      removeFavorite(this.platformId, id);
+      removeFavorite(this.platformId, { kind: 'listing', id });
       this.favoriteSet.delete(id);
     } else {
-      addFavorite(this.platformId, id);
+      addFavorite(this.platformId, { kind: 'listing', id });
       this.favoriteSet.add(id);
     }
     this.favoriteSet = new Set(this.favoriteSet);

@@ -11,16 +11,23 @@
             {{ listing.title }}
           </h1>
           <div class="flex items-center gap-2 mt-1.5 text-sm font-body text-muted-text flex-wrap">
-            <span class="inline-flex items-center gap-1 text-dark-text font-bold">
-              <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-              {{ listing.rating }}
-            </span>
-            <span class="text-dark-text/30">·</span>
-            <a (click)="scrollToAnchor('reviews')" class="underline underline-offset-2 hover:text-trinidad cursor-pointer">{{ listing.reviewCount }} reviews</a>
-            <span class="text-dark-text/30">·</span>
+            @if (listing.kind !== 'boondocking') {
+              <span class="inline-flex items-center gap-1 text-dark-text font-bold">
+                <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+                {{ listing.rating }}
+              </span>
+              <span class="text-dark-text/30">·</span>
+              <a (click)="scrollToAnchor('reviews')" class="underline underline-offset-2 hover:text-trinidad cursor-pointer">{{ listing.reviewCount }} reviews</a>
+              <span class="text-dark-text/30">·</span>
+            }
             <span>{{ listing.location }}</span>
-            <span class="text-dark-text/30">·</span>
-            <span class="text-dark-text font-bold"><span class="text-trinidad">${{ listing.price }}</span> / night</span>
+            @if (listing.kind !== 'boondocking') {
+              <span class="text-dark-text/30">·</span>
+              <span class="text-dark-text font-bold"><span class="text-trinidad">${{ listing.price }}</span> / night</span>
+            } @else if (listing.agency) {
+              <span class="text-dark-text/30">·</span>
+              <span class="text-jungle-green font-bold">{{ AGENCY_META[listing.agency].label }}</span>
+            }
           </div>
         </div>
         <div class="flex gap-2 shrink-0 flex-wrap">
@@ -94,7 +101,7 @@
           <div class="sticky top-[80px] z-30 -mx-2 px-2 bg-cream/95 backdrop-blur-sm transition-transform duration-300"
             [ngClass]="navHidden ? '-translate-y-[150%]' : ''">
             <nav class="flex gap-2 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden border-y border-dark-text/8" style="scrollbar-width: none;" aria-label="Sections">
-              @for (item of sectionAnchors; track item.id) {
+              @for (item of visibleSectionAnchors; track item.id) {
                 <button type="button" (click)="scrollToAnchor(item.id)"
                   class="shrink-0 px-4 py-2 rounded-full text-xs font-button uppercase tracking-[0.12em] font-bold transition-colors"
                   [ngClass]="activeAnchor === item.id ? 'bg-trinidad text-white' : 'bg-white text-dark-text border border-dark-text/15 hover:border-trinidad'">
@@ -120,8 +127,8 @@
             </div>
           </div>
 
-          <!-- Guest favorite badge (only show for highly-rated listings) -->
-          @if (listing.rating >= 4.8) {
+          <!-- Guest favorite badge (only show for highly-rated private listings) -->
+          @if (listing.kind !== 'boondocking' && listing.rating >= 4.8) {
             <div class="bg-white rounded-2xl border border-dark-text/8 px-6 py-5 flex items-center justify-between gap-6">
               <div class="flex items-center gap-4">
                 <span class="material-symbols-outlined text-3xl text-trinidad" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
@@ -152,26 +159,46 @@
             </div>
           }
 
-          <!-- Host info row (compact) -->
-          <div class="flex items-center gap-4 py-4 border-b border-dark-text/10">
-            <div class="relative shrink-0 w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
-              <img [src]="detail.host.avatar" [alt]="detail.host.name" class="w-full h-full object-cover">
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-headline font-bold text-dark-text text-base">Hosted by {{ detail.host.name }}</span>
-                @if (detail.trustBadges.includes('verified-host')) {
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.12em] font-bold">
-                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                    Verified
-                  </span>
-                }
+          <!-- Host info row (compact) — private stays only -->
+          @if (listing.kind !== 'boondocking') {
+            <div class="flex items-center gap-4 py-4 border-b border-dark-text/10">
+              <div class="relative shrink-0 w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
+                <img [src]="detail.host.avatar" [alt]="detail.host.name" class="w-full h-full object-cover">
               </div>
-              <div class="text-sm text-muted-text font-body">{{ hostingYears }} {{ hostingYears === 1 ? 'year' : 'years' }} hosting · Replies within {{ detail.host.responseHours }}h</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-headline font-bold text-dark-text text-base">Hosted by {{ detail.host.name }}</span>
+                  @if (detail.trustBadges.includes('verified-host')) {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.12em] font-bold">
+                      <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                      Verified
+                    </span>
+                  }
+                </div>
+                <div class="text-sm text-muted-text font-body">{{ hostingYears }} {{ hostingYears === 1 ? 'year' : 'years' }} hosting · Replies within {{ detail.host.responseHours }}h</div>
+              </div>
             </div>
-          </div>
+          } @else if (listing.agency) {
+            <!-- Agency row for boondocking listings -->
+            <div class="flex items-center gap-4 py-4 border-b border-dark-text/10">
+              <div class="relative shrink-0 w-12 h-12 rounded-full overflow-hidden bg-jungle-green/10 ring-2 ring-white shadow-sm inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-jungle-green text-2xl" style="font-variation-settings: 'FILL' 1;">{{ AGENCY_META[listing.agency].icon }}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-headline font-bold text-dark-text text-base">Managed by {{ AGENCY_META[listing.agency].label }}</span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.6rem] font-button uppercase tracking-[0.12em] font-bold">
+                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">landscape</span>
+                    Public land
+                  </span>
+                </div>
+                <div class="text-sm text-muted-text font-body">Public land · Check agency for rules and permits</div>
+              </div>
+            </div>
+          }
 
           <!-- Trust badges row -->
+          @if (listing.kind !== 'boondocking') {
           <div class="flex flex-wrap gap-2">
             @if (listing.instantBook) {
               <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-trinidad rounded-full"
@@ -193,6 +220,7 @@
               </div>
             }
           </div>
+          }
 
           <!-- About this stay (bare prose, no card) -->
           <div>
@@ -316,7 +344,7 @@
           </div>
 
           <!-- Add-ons & extras — marketing surface; toggles share state with checkout -->
-          @if (detail.addOns.length > 0) {
+          @if (detail.addOns.length > 0 && !isBoondocking) {
             <div id="add-ons" class="bg-white rounded-2xl p-8 border border-dark-text/8 scroll-mt-32">
               <div class="flex items-end justify-between mb-6 gap-4 flex-wrap">
                 <div>
@@ -361,6 +389,7 @@
           }
 
           <!-- Meet your host (full bio + contact, expanded) -->
+          @if (listing.kind !== 'boondocking') {
           <div class="border-t border-b border-dark-text/10 py-10">
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Meet your host</span>
             <p class="text-muted-text text-base font-body leading-relaxed">{{ detail.host.bio }}</p>
@@ -370,6 +399,7 @@
               Contact {{ detail.host.name }}
             </a>
           </div>
+          }
 
           <!-- Things to know — single card grouping rules + cancellation -->
           <div class="bg-white rounded-2xl border border-dark-text/8 p-8">
@@ -388,6 +418,7 @@
                 </ul>
               </cnt-accordion-card>
 
+              @if (listing.kind !== 'boondocking') {
               <cnt-accordion-card title="Cancellation policy" [open]="cancellationOpen" (toggled)="toggleCancellation()">
                 <div class="inline-flex items-center gap-2 mb-3">
                   <span class="material-symbols-outlined text-base shrink-0" [style.color]="CANCELLATION_TIER_META[detail.cancellationTier].color" aria-hidden="true">policy</span>
@@ -401,10 +432,13 @@
                   <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                 </a>
               </cnt-accordion-card>
+              }
             </div>
           </div>
 
-          <!-- Reviews -->
+          <!-- Reviews — private stays only. Boondocking ratings/reviews aren't curated
+               by CurbNTurf, so we don't surface them. -->
+          @if (listing.kind !== 'boondocking') {
           <div id="reviews" class="scroll-mt-32">
             <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-2 block">Reviews</span>
             <div class="flex items-baseline gap-3 mb-6">
@@ -471,12 +505,19 @@
               </div>
             }
           </div>
+          }
 
           <!-- Static map placeholder — bare section with grid-tinted background -->
           <div id="location" class="scroll-mt-32">
-            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Where you'll be</span>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">{{ isBoondocking ? 'Where it is' : "Where you'll be" }}</span>
             <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-[2rem] mb-2">{{ listing.location }}</h2>
-            <p class="text-muted-text text-sm font-body mb-6">Exact address shared after your booking is confirmed.</p>
+            <p class="text-muted-text text-sm font-body mb-6">
+              @if (isBoondocking) {
+                Approximate coordinates — use Get directions for turn-by-turn navigation.
+              } @else {
+                Exact address shared after your booking is confirmed.
+              }
+            </p>
 
             <div class="rounded-2xl overflow-hidden border border-dark-text/10 listing-mini-map-wrap">
               <cnt-mini-map [lat]="listing.lat" [lng]="listing.lng" [label]="listing.location"></cnt-mini-map>
@@ -485,6 +526,33 @@
             <!-- What's nearby -->
             <div class="mt-6 bg-white rounded-2xl border border-dark-text/8 p-6">
               <h3 class="font-headline font-bold text-dark-text text-xl md:text-2xl mb-4">What's nearby</h3>
+
+              <!-- Auto-computed nearest RV utilities (dump / propane / water / rest area). -->
+              @if (nearestUtilities.length > 0) {
+                <div class="mb-5 pb-5 border-b border-dark-text/10">
+                  <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-3">Nearby utilities</div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                    @for (u of nearestUtilities; track u.kind) {
+                      <a [routerLink]="['/search']" [queryParams]="{ pois: u.kind, view: 'map' }"
+                        class="group flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-cream/60 transition-colors no-underline">
+                        <span class="w-7 h-7 rounded-full inline-flex items-center justify-center shrink-0"
+                          [style.background]="POI_KIND_META[u.kind].color + '22'"
+                          [style.color]="POI_KIND_META[u.kind].color">
+                          <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">{{ POI_KIND_META[u.kind].icon }}</span>
+                        </span>
+                        <div class="flex-1 min-w-0">
+                          <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold"
+                            [style.color]="POI_KIND_META[u.kind].color">{{ POI_KIND_META[u.kind].label }}</div>
+                          <div class="font-body text-sm text-dark-text truncate">{{ u.poi.name }}</div>
+                        </div>
+                        <span class="font-body text-xs text-muted-text shrink-0">{{ u.miles }} mi</span>
+                        <span class="material-symbols-outlined text-base text-muted-text opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                 @for (poi of detail.nearby; track poi.name) {
                   <div class="flex items-center gap-3">
@@ -505,13 +573,63 @@
         <aside class="md:col-span-4 listing-sidebar">
           <div class="md:sticky md:top-32 space-y-3">
 
-            <cnt-listing-booking-widget
-              [listing]="listing"
-              [detail]="detail"
-              [myRv]="myRv"
-              [cancellationMeta]="CANCELLATION_TIER_META"
-              (myRvChange)="onMyRvChange($event)"
-              (reserveClick)="requestBooking()"></cnt-listing-booking-widget>
+            @if (listing.kind !== 'boondocking') {
+              <cnt-listing-booking-widget
+                [listing]="listing"
+                [detail]="detail"
+                [myRv]="myRv"
+                [cancellationMeta]="CANCELLATION_TIER_META"
+                (myRvChange)="onMyRvChange($event)"
+                (reserveClick)="requestBooking()"></cnt-listing-booking-widget>
+            } @else {
+              <!-- Boondocking Visit info — replaces the booking widget. No reserve flow on public land. -->
+              <div class="bg-white rounded-2xl border border-dark-text/10 p-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined text-jungle-green text-2xl" style="font-variation-settings: 'FILL' 1;">landscape</span>
+                  <span class="font-headline font-bold text-dark-text text-xl">Public land</span>
+                </div>
+                <div class="text-xs font-body text-muted-text mb-5">Not reservable through CurbNTurf — check agency for rules, permits, and current conditions.</div>
+
+                <a [href]="directionsHref" target="_blank" rel="noopener"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_8px_20px_rgba(227,83,13,0.25)] no-underline">
+                  <span class="material-symbols-outlined text-base">directions</span>
+                  Get directions
+                </a>
+                <button type="button" (click)="toggleFavorite($event)"
+                  [attr.aria-pressed]="favorited"
+                  class="mt-2 w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-dark-text/15 text-xs uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:border-trinidad hover:text-trinidad transition-colors">
+                  <span class="material-symbols-outlined text-base"
+                    [class.text-trinidad]="favorited"
+                    [style.font-variation-settings]="favorited ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">favorite</span>
+                  {{ favorited ? 'Saved' : 'Save to wishlist' }}
+                </button>
+
+                <div class="mt-6 pt-5 border-t border-dark-text/10 space-y-3">
+                  <div class="flex items-start gap-3 text-sm font-body text-dark-text">
+                    <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5">straighten</span>
+                    <span><span class="font-bold">Max rig</span> · {{ detail.siteSpecs.maxRigLength }} ft</span>
+                  </div>
+                  @if (listing.agency) {
+                    <div class="flex items-start gap-3 text-sm font-body text-dark-text">
+                      <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5">{{ AGENCY_META[listing.agency].icon }}</span>
+                      <span><span class="font-bold">Agency</span> · {{ AGENCY_META[listing.agency].label }}</span>
+                    </div>
+                  }
+                  <div class="flex items-start gap-3 text-sm font-body text-dark-text">
+                    <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5">water_drop</span>
+                    <span><span class="font-bold">Water</span> · {{ detail.siteSpecs.waterAvailable ? 'Available on-site' : 'Bring your own' }}</span>
+                  </div>
+                  <div class="flex items-start gap-3 text-sm font-body text-dark-text">
+                    <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5">plumbing</span>
+                    <span><span class="font-bold">Sewer</span> · {{ SEWER_META[detail.siteSpecs.sewerType].label }} · pack out what you pack in</span>
+                  </div>
+                </div>
+
+                <div class="mt-5 pt-5 border-t border-dark-text/10 text-[0.7rem] font-body text-muted-text leading-relaxed">
+                  Public land — verify current conditions, fire restrictions, and stay limits with the managing agency before you go.
+                </div>
+              </div>
+            }
 
           </div>
         </aside>
@@ -572,9 +690,23 @@
 </main>
 
 <!-- Mobile bottom booking bar -->
-<cnt-listing-mobile-booking-bar
-  [listing]="listing"
-  (reserveClick)="onMobileReserveClick()"></cnt-listing-mobile-booking-bar>
+@if (listing.kind !== 'boondocking') {
+  <cnt-listing-mobile-booking-bar
+    [listing]="listing"
+    (reserveClick)="onMobileReserveClick()"></cnt-listing-mobile-booking-bar>
+} @else {
+  <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-dark-text/10 px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+    <div class="flex-1 min-w-0">
+      <div class="font-headline font-bold text-dark-text text-base leading-tight">Public land</div>
+      <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Not reservable</div>
+    </div>
+    <a [href]="directionsHref" target="_blank" rel="noopener"
+      class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold no-underline">
+      <span class="material-symbols-outlined text-base">directions</span>
+      Directions
+    </a>
+  </div>
+}
 
 <cnt-rv-photos-modal
   [open]="rvPhotosOpen"
