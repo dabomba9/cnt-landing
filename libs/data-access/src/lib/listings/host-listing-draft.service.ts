@@ -15,6 +15,10 @@ import { AuthService } from '../auth/auth.service';
 
 const DRAFT_STORAGE_KEY = 'cnt-listing-draft';
 
+import { IPublishedSnapshot, readAllPublishedSnapshots, readPublishedSnapshot as readSnapshot, writePublishedSnapshot } from './published-snapshot.util';
+// Re-export so existing consumers of '@cnt-workspace/data-access' keep working.
+export { IPublishedSnapshot, readPublishedSnapshot } from './published-snapshot.util';
+
 /**
  * Persists the in-progress listing for the host onboarding wizard at `/hosting/new`
  * and, on publish, mints a real `IPrivateListing` and pushes it into the mock
@@ -28,16 +32,137 @@ export class HostListingDraftService {
   private readonly _draft$ = new BehaviorSubject<IDraftListing | null>(null);
   readonly draft$: Observable<IDraftListing | null> = this._draft$.asObservable();
 
+  /** Non-null while the wizard is editing an already-published listing. */
+  private _editingListingId: number | null = null;
+  /** Stash of the user's in-progress new-listing draft while in edit mode. */
+  private _savedNewListingDraft: IDraftListing | null = null;
+
+  get editingListingId(): number | null { return this._editingListingId; }
+  get isEditing(): boolean { return this._editingListingId !== null; }
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
   ) {
     this._draft$.next(this.read());
+    this.hydratePublishedListings();
+  }
+
+  /**
+   * Rebuild user-published listings from `cnt-published-snapshots` so they
+   * survive a hard refresh. `MOCK_LISTINGS` is module-scoped and resets on
+   * reload — without this, `/search` and `findListing(id)` would lose
+   * everything the host published in a previous session.
+   */
+  private hydratePublishedListings(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const snapshots = readAllPublishedSnapshots();
+    for (const [idStr, snap] of Object.entries(snapshots)) {
+      const id = Number(idStr);
+      if (!Number.isFinite(id)) continue;
+      if (ALL_LISTINGS.some(l => l.id === id)) continue;
+      const listing = this.draftToListing(snap.draft, id);
+      MOCK_LISTINGS.push(listing);
+      ALL_LISTINGS.push(listing);
+      if (snap.hostEmail) addOwnedListing(snap.hostEmail, id);
+    }
   }
 
   /** Current draft snapshot (synchronous). */
   get current(): IDraftListing | null {
     return this._draft$.value;
+  }
+
+  /**
+   * Per-step completion for the active draft. Drives the resume-card progress UI
+   * shown on /hosting and /hosting/listings. Mirrors the phase-hub logic in the
+   * wizard. Returns null when no draft exists.
+   *
+   * The "review" step is intentionally counted as the last actionable step but
+   * is considered complete only when the publish gate would pass.
+   */
+  get completion(): {
+    stepsDone: number;
+    stepsTotal: number;
+    pct: number;
+    phasesDone: [boolean, boolean, boolean];
+  } | null {
+    const d = this._draft$.value;
+    if (!d) return null;
+    const [phase1, phase2, phase3] = this.stepValidities(d);
+    const allSteps = [...phase1, ...phase2, ...phase3];
+    const stepsDone = allSteps.filter(Boolean).length;
+    const stepsTotal = allSteps.length;
+    return {
+      stepsDone,
+      stepsTotal,
+      pct: Math.round((stepsDone / stepsTotal) * 100),
+      phasesDone: [
+        phase1.every(Boolean),
+        phase2.every(Boolean),
+        phase3.every(Boolean),
+      ],
+    };
+  }
+
+  /**
+   * True when the active draft satisfies the requirements of the given (phase, step)
+   * tuple. Drives the wizard's Next-button gate so users can't advance past a step
+   * that hasn't met its minimum.
+   */
+  isStepValid(phase: 1 | 2 | 3, step: number): boolean {
+    const d = this._draft$.value;
+    if (!d) return false;
+    const [p1, p2, p3] = this.stepValidities(d);
+    const phaseSteps = phase === 1 ? p1 : phase === 2 ? p2 : p3;
+    return phaseSteps[step] ?? false;
+  }
+
+  /** Human-readable hint shown when a step's Next is disabled. */
+  stepValidationHint(phase: 1 | 2 | 3, step: number): string {
+    const hints: Record<string, string> = {
+      '1-0': 'Pick at least one descriptor to continue.',
+      '1-1': 'Add city, state, and pin a location to continue.',
+      '1-2': 'Set the max guest count to continue.',
+      '1-3': 'Pick at least one amenity to continue.',
+      '1-4': 'Pick at least one vehicle type to continue.',
+      '2-0': 'Upload at least 3 photos to continue.',
+      '2-1': 'Title needs 8+ chars and description needs 150+.',
+      '2-2': 'Pick visibility, noise, and road conditions to continue.',
+      '2-3': '',
+      '3-0': 'Set check-in / check-out times and min nights.',
+      '3-1': 'Save your house rules to continue.',
+      '3-2': 'Set a nightly price and cancellation policy.',
+      '3-3': 'A few required fields are still missing.',
+    };
+    return hints[`${phase}-${step}`] ?? '';
+  }
+
+  /**
+   * Per-phase step-validity arrays. Single source of truth so `completion`,
+   * `isStepValid`, and `missingRequiredFields` all stay in sync.
+   */
+  private stepValidities(d: IDraftListing): [boolean[], boolean[], boolean[]] {
+    const phase1 = [
+      !!d.descriptors?.length,
+      !!d.address?.city && !!d.address?.state && typeof d.lat === 'number',
+      typeof d.guestCapacity === 'number' && d.guestCapacity > 0,
+      !!d.amenities?.length,
+      !!d.vehicleTypes?.length,
+    ];
+    const phase2 = [
+      (d.photos?.length ?? 0) >= 3,
+      !!d.title && d.title.length >= 8 && !!d.description && d.description.length >= 150,
+      !!d.visibility?.length && !!d.noiseLevel && !!d.roadConditions?.length,
+      true, // profile photo is optional — counts as done
+    ];
+    const phase3 = [
+      !!d.checkInTime && !!d.checkOutTime && typeof d.minNights === 'number',
+      !!d.rules,
+      typeof d.nightlyPrice === 'number' && d.nightlyPrice > 0 && !!d.cancellationTier,
+      this.missingRequiredFields(d).length === 0,
+    ];
+    return [phase1, phase2, phase3];
   }
 
   /**
@@ -57,9 +182,69 @@ export class HostListingDraftService {
           currentStep: 0,
           ...patch,
         };
-    this.write(next);
+    if (this._editingListingId !== null) {
+      this.persistEdit(this._editingListingId, next);
+    } else {
+      this.write(next);
+    }
     this._draft$.next(next);
     return next;
+  }
+
+  /**
+   * Begin editing an already-published listing. The wizard reads from this
+   * draft and `saveDraft` writes back to the listing's snapshot in place
+   * instead of the new-listing slot. Returns null when no snapshot exists.
+   */
+  loadForEdit(listingId: number): IDraftListing | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+    const snap = readSnapshot(listingId);
+    if (!snap) return null;
+    // Stash whatever draft was in flight so we can restore on exit.
+    this._savedNewListingDraft = this._draft$.value;
+    this._editingListingId = listingId;
+    this._draft$.next(snap.draft);
+    return snap.draft;
+  }
+
+  /**
+   * Leave edit mode and restore the prior new-listing draft (if any). Called
+   * when the wizard component unloads.
+   */
+  exitEdit(): void {
+    if (this._editingListingId === null) return;
+    this._editingListingId = null;
+    this._draft$.next(this._savedNewListingDraft);
+    this._savedNewListingDraft = null;
+  }
+
+  /**
+   * Final "Save changes" step in edit mode — re-runs persistence against the
+   * current draft and returns the refreshed listing. No-op when not editing.
+   */
+  saveEdit(): IPrivateListing | null {
+    if (this._editingListingId === null) return null;
+    const draft = this._draft$.value;
+    if (!draft) return null;
+    return this.persistEdit(this._editingListingId, draft);
+  }
+
+  /**
+   * Write the snapshot for an edited listing and replace the existing entry
+   * in MOCK_LISTINGS / ALL_LISTINGS so `/search` and the detail page reflect
+   * the new state on the next read.
+   */
+  private persistEdit(listingId: number, draft: IDraftListing): IPrivateListing {
+    const snap = readSnapshot(listingId);
+    if (snap) {
+      writePublishedSnapshot(listingId, { ...snap, draft });
+    }
+    const updated = this.draftToListing(draft, listingId);
+    const idx = MOCK_LISTINGS.findIndex(l => l.id === listingId);
+    if (idx >= 0) MOCK_LISTINGS[idx] = updated;
+    const idxAll = ALL_LISTINGS.findIndex(l => l.id === listingId);
+    if (idxAll >= 0) ALL_LISTINGS[idxAll] = updated;
+    return updated;
   }
 
   /** Wipe any in-progress draft. */
@@ -90,8 +275,18 @@ export class HostListingDraftService {
     MOCK_LISTINGS.push(listing);
     ALL_LISTINGS.push(listing);
     // Record ownership so /hosting/listings surfaces this listing for the host.
-    const userEmail = this.auth.currentUser?.email;
-    if (userEmail) addOwnedListing(userEmail, listing.id);
+    const user = this.auth.currentUser;
+    if (user?.email) addOwnedListing(user.email, listing.id);
+    // Persist a snapshot so /listing?id=N renders the host's real data
+    // (photos, host name, rules) instead of the mock generators.
+    this.savePublishedSnapshot(listing.id, {
+      draft,
+      hostName: this.hostNameFromUser(user),
+      hostInitials: this.hostInitialsFromUser(user),
+      hostAvatar: user?.photoUrl || 'assets/images/host_opportunity.webp',
+      hostJoinedYear: new Date().getFullYear(),
+      hostEmail: user?.email ?? '',
+    });
     const next: IDraftListing = {
       ...draft,
       publishedAt: new Date().toISOString(),
@@ -154,8 +349,8 @@ export class HostListingDraftService {
    * first descriptor where possible (with a generic 'offgrid' fallback). Auto-
    * assigns id = max existing id + 1.
    */
-  private draftToListing(draft: IDraftListing): IPrivateListing {
-    const id = Math.max(0, ...MOCK_LISTINGS.map(l => l.id), ...ALL_LISTINGS.map(l => l.id)) + 1;
+  private draftToListing(draft: IDraftListing, forcedId?: number): IPrivateListing {
+    const id = forcedId ?? Math.max(0, ...MOCK_LISTINGS.map(l => l.id), ...ALL_LISTINGS.map(l => l.id)) + 1;
     const category = this.inferCategory(draft);
     const location = draft.address
       ? `${draft.address.city}, ${draft.address.state}`
@@ -190,5 +385,25 @@ export class HostListingDraftService {
       case 'suburban':               return 'attraction';
       default:                       return 'offgrid';
     }
+  }
+
+  /** "Dustin R." from the current user, or "New host" if unauthenticated. */
+  private hostNameFromUser(user: { firstName?: string; lastName?: string } | null | undefined): string {
+    const first = user?.firstName?.trim() ?? '';
+    const last = user?.lastName?.trim() ?? '';
+    if (!first && !last) return 'New host';
+    if (!last) return first;
+    return `${first} ${last.charAt(0).toUpperCase()}.`;
+  }
+  /** "DR" from "Dustin Reed". */
+  private hostInitialsFromUser(user: { firstName?: string; lastName?: string } | null | undefined): string {
+    const f = (user?.firstName?.trim() ?? '').charAt(0).toUpperCase();
+    const l = (user?.lastName?.trim() ?? '').charAt(0).toUpperCase();
+    return `${f}${l}` || 'NH';
+  }
+
+  /** Write the per-listing snapshot so /listing?id=N can hydrate the host's real data. */
+  private savePublishedSnapshot(listingId: number, snapshot: IPublishedSnapshot): void {
+    writePublishedSnapshot(listingId, snapshot);
   }
 }

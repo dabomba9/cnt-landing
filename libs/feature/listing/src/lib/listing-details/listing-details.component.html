@@ -177,6 +177,13 @@
                 </div>
                 <div class="text-sm text-muted-text font-body">{{ hostingYears }} {{ hostingYears === 1 ? 'year' : 'years' }} hosting · Replies within {{ detail.host.responseHours }}h</div>
               </div>
+              @if (isOwner) {
+                <a [routerLink]="['/hosting/listings', listing.id, 'edit']"
+                  class="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-trinidad text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad hover:text-white transition-colors">
+                  <span class="material-symbols-outlined text-base">edit</span>
+                  Edit listing
+                </a>
+              }
             </div>
           } @else if (listing.agency) {
             <!-- Agency row for boondocking listings -->
@@ -373,7 +380,7 @@
                     <div class="flex items-center justify-between mt-auto pt-2">
                       <div class="font-body text-sm">
                         <span class="text-dark-text font-bold">${{ a.price }}</span>
-                        <span class="text-muted-text"> / {{ a.unit === 'per stay' ? 'stay' : a.unit === 'per night' ? 'night' : 'person' }}</span>
+                        <span class="text-muted-text"> / {{ a.unit === 'per stay' ? 'stay' : a.unit === 'per night' ? 'night' : a.unit === 'per person' ? 'person' : 'unit' }}</span>
                       </div>
                       <button type="button" (click)="booking.toggleAddOn(a.id)"
                         class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-button uppercase tracking-[0.12em] font-bold transition-colors"

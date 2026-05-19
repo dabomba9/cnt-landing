@@ -11,3 +11,4 @@ export * from './lib/directives/focus-trap.directive';
 export * from './lib/home-locations/home-locations.component';
 export * from './lib/map-config';
 export * from './lib/bottom-nav/bottom-nav.component';
+export * from './lib/resume-draft-card/resume-draft-card.component';

@@ -1,3 +1,6 @@
+import { readPublishedSnapshot, IPublishedSnapshot } from './published-snapshot.util';
+import type { IDraftListing, IHouseRules } from './draft-listing.types';
+
 export type Category = 'vineyard' | 'farm' | 'brewery' | 'attraction' | 'offgrid';
 
 export const CATEGORY_META: Record<Category, { label: string; color: string; icon: string }> = {
@@ -426,7 +429,9 @@ export interface IAddOn {
   description: string;
   icon: string;             // material symbols name
   price: number;
-  unit: 'per stay' | 'per night' | 'per person';
+  unit: 'per stay' | 'per night' | 'per person' | 'per unit';
+  /** Optional square thumbnail data URL — host-uploaded; ~400px max. */
+  photo?: string;
 }
 
 export interface ISiteSpecs {
@@ -727,6 +732,13 @@ We're available all weekend and during business hours weekdays; outside that, yo
 export function getListingDetail(listing: IListing): IListingDetail {
   if (listing.id === 1) return HERITAGE_OAK_DETAIL;
 
+  // User-published listings get their detail rebuilt from the publish-time snapshot
+  // so we render the host's actual photos, name, rules, etc. — not the mock pools.
+  if (listing.kind !== 'boondocking') {
+    const snap = readPublishedSnapshot(listing.id);
+    if (snap) return buildUserPublishedDetail(listing, snap);
+  }
+
   const hostBase = HOST_POOL[listing.id % HOST_POOL.length];
   const photoStart = listing.id % PHOTO_POOL.length;
   const photos = [
@@ -866,4 +878,75 @@ function generateTrustBadges(listing: IListing): TrustBadge[] {
   const badges: TrustBadge[] = ['verified-host', 'id-checked', 'land-insured'];
   if (listing.rating >= 4.85 && listing.reviewCount >= 80) badges.push('superhost');
   return badges;
+}
+
+// ─────────────────────── User-published listing detail builders ───────────────────────
+
+/**
+ * Build an `IListingDetail` for a user-published listing from its saved snapshot.
+ * Reflects only what the host actually entered — no mock host, no stock photos,
+ * no fabricated add-ons / reviews / trust badges.
+ */
+function buildUserPublishedDetail(listing: IListing, snap: IPublishedSnapshot): IListingDetail {
+  const d = snap.draft;
+  return {
+    description: d.description || `${listing.title} — hosted on CurbNTurf.`,
+    host: {
+      name: snap.hostName,
+      initials: snap.hostInitials,
+      avatar: snap.hostAvatar,
+      joinedYear: snap.hostJoinedYear,
+      bio: '',
+      responseHours: 24,
+    },
+    photos: (d.photos && d.photos.length > 0) ? d.photos : [listing.image],
+    houseRules: houseRulesFromDraft(d.rules, d.customRules ?? ''),
+    cancellationTier: d.cancellationTier ?? 'moderate',
+    maxGuests: d.guestCapacity ?? 2,
+    maxStayNights: d.maxNights ?? 14,
+    subScores: { cleanliness: 0, communication: 0, hookups: 0, location: 0, value: 0 },
+    reviews: [],
+    nearby: generateNearby(listing), // location-based, fine to auto-compute
+    trustBadges: [],                  // new host — no badges yet
+    unavailableDates: [],
+    siteSpecs: siteSpecsFromDraft(d),
+    addOns: d.addOns ?? [],           // editable via /hosting/listings/:id/edit
+    faqs: [],                         // wizard doesn't collect FAQs (yet)
+  };
+}
+
+/** Convert the wizard's IHouseRules booleans + custom textarea into the string[] the detail uses. */
+function houseRulesFromDraft(rules: IHouseRules | undefined, customRules: string): string[] {
+  const out: string[] = [];
+  if (rules?.noSmoking)   out.push('No smoking on the property');
+  if (rules?.noParties)   out.push('No parties or events');
+  if (rules?.quietHours)  out.push('Quiet hours 10 PM – 7 AM');
+  if (rules?.noFireworks) out.push('No fireworks on the premises');
+  if (rules?.noFirearms)  out.push('No firearms on the premises');
+  for (const line of (customRules || '').split('\n').map(l => l.trim()).filter(Boolean)) {
+    out.push(line);
+  }
+  return out;
+}
+
+/** Derive an ISiteSpecs from the wizard's max-rig + amenities. */
+function siteSpecsFromDraft(d: IDraftListing): ISiteSpecs {
+  const amenities = d.amenities ?? [];
+  const hasElectricity = amenities.includes('electricity');
+  const hasWater = amenities.includes('potable-water');
+  const hasSewage = amenities.includes('sewage');
+  const hasDump = amenities.includes('dump-station');
+  const maxRigLength = d.maxRig?.length && d.maxRig.length > 0 ? d.maxRig.length : 35;
+  const sewerType: SewerType = hasSewage ? 'full-hookup' : hasDump ? 'dump-station' : 'none';
+  return {
+    padType: 'gravel',                          // sensible default; future: ask in wizard
+    padLength: maxRigLength,
+    maxRigLength,
+    leveling: 'mostly-level',
+    hookupAmps: hasElectricity ? 30 : null,
+    waterAvailable: hasWater,
+    sewerType,
+    bigRigFriendly: maxRigLength >= 38,
+    slideoutClearance: 'moderate',
+  };
 }

@@ -10,8 +10,10 @@ export type BookingStatus =
 export interface IBookingAddOn {
   id: string;
   label: string;
-  unit: 'per stay' | 'per night' | 'per person';
+  unit: 'per stay' | 'per night' | 'per person' | 'per unit';
   unitPrice: number;
+  /** Quantity for `per unit` add-ons; 1 for all others. */
+  quantity: number;
   /** Total billed for this line (unitPrice × multiplier at booking time). */
   amount: number;
 }

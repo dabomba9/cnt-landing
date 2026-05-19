@@ -25,22 +25,22 @@ import { IDraftListing, ToastService } from '@cnt-workspace/data-access';
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <label class="flex flex-col gap-1.5 sm:col-span-2">
           <span class="text-xs font-button uppercase tracking-[0.1em] font-bold text-muted-text">Street address</span>
-          <input type="text" [(ngModel)]="street" name="street" (blur)="emit()"
+          <input type="text" [(ngModel)]="street" name="street" (input)="emit()"
             class="bg-white border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
         </label>
         <label class="flex flex-col gap-1.5">
           <span class="text-xs font-button uppercase tracking-[0.1em] font-bold text-muted-text">City</span>
-          <input type="text" [(ngModel)]="city" name="city" (blur)="emit()"
+          <input type="text" [(ngModel)]="city" name="city" (input)="emit()"
             class="bg-white border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
         </label>
         <label class="flex flex-col gap-1.5">
           <span class="text-xs font-button uppercase tracking-[0.1em] font-bold text-muted-text">State</span>
-          <input type="text" [(ngModel)]="state" name="state" maxlength="2" (blur)="emit()"
+          <input type="text" [(ngModel)]="state" name="state" maxlength="2" (input)="emit()"
             class="bg-white border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text uppercase focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
         </label>
         <label class="flex flex-col gap-1.5 sm:col-span-2">
           <span class="text-xs font-button uppercase tracking-[0.1em] font-bold text-muted-text">ZIP code</span>
-          <input type="text" [(ngModel)]="zip" name="zip" (blur)="emit()"
+          <input type="text" [(ngModel)]="zip" name="zip" (input)="emit()"
             class="bg-white border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
         </label>
       </div>
@@ -61,12 +61,12 @@ import { IDraftListing, ToastService } from '@cnt-workspace/data-access';
         <div class="grid grid-cols-2 gap-3">
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Latitude</span>
-            <input type="number" step="0.000001" [(ngModel)]="lat" name="lat" (blur)="emit()"
+            <input type="number" step="0.000001" [(ngModel)]="lat" name="lat" (input)="emit()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
           </label>
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Longitude</span>
-            <input type="number" step="0.000001" [(ngModel)]="lng" name="lng" (blur)="emit()"
+            <input type="number" step="0.000001" [(ngModel)]="lng" name="lng" (input)="emit()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
           </label>
         </div>

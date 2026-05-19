@@ -29,6 +29,8 @@ export class BookingStateService {
   selectedDateRange: DateRange<Date> | null = null;
   guestCount = 1;
   selectedAddOns = new Set<string>();
+  /** Quantity per add-on id. Only meaningful for `per unit` add-ons; others ignore this. */
+  addOnQuantities = new Map<string, number>();
   showCalendar = false;
   showAddOns = false;
   dateRangeError = '';
@@ -73,21 +75,35 @@ export class BookingStateService {
     if (this.guestCount !== desiredGuests) this.guestCount = desiredGuests;
 
     const addonsStr = params['addons'] || '';
-    const desiredAddons = new Set(addonsStr ? addonsStr.split(',').filter(Boolean) : []);
+    const tokens = addonsStr ? addonsStr.split(',').filter(Boolean) : [];
+    const desiredAddons = new Set<string>();
+    const desiredQty = new Map<string, number>();
+    for (const tok of tokens) {
+      const [id, qtyStr] = tok.split(':');
+      if (!id) continue;
+      desiredAddons.add(id);
+      const qty = parseInt(qtyStr, 10);
+      if (Number.isFinite(qty) && qty > 0) desiredQty.set(id, qty);
+    }
     if (!this.sameStringSet(this.selectedAddOns, desiredAddons)) {
       this.selectedAddOns = desiredAddons;
     }
+    this.addOnQuantities = desiredQty;
   }
 
   /** Returns the URL-shape of current state. Caller pushes via Router. */
   serializeToParams(): { start: string | null; end: string | null; guests: number | null; addons: string | null } {
     const start = this.selectedDateRange?.start;
     const end = this.selectedDateRange?.end;
+    const addons = [...this.selectedAddOns].map(id => {
+      const q = this.addOnQuantities.get(id);
+      return q && q > 1 ? `${id}:${q}` : id;
+    });
     return {
       start:  start ? this.toIso(start) : null,
       end:    end   ? this.toIso(end)   : null,
       guests: this.guestCount > 1 ? this.guestCount : null,
-      addons: this.selectedAddOns.size > 0 ? [...this.selectedAddOns].join(',') : null,
+      addons: addons.length > 0 ? addons.join(',') : null,
     };
   }
 
@@ -129,8 +145,29 @@ export class BookingStateService {
   }
 
   toggleAddOn(id: string): void {
-    if (this.selectedAddOns.has(id)) this.selectedAddOns.delete(id);
-    else this.selectedAddOns.add(id);
+    if (this.selectedAddOns.has(id)) {
+      this.selectedAddOns.delete(id);
+      this.addOnQuantities.delete(id);
+    } else {
+      this.selectedAddOns.add(id);
+      const a = this.addOns.find(x => x.id === id);
+      if (a?.unit === 'per unit') this.addOnQuantities.set(id, 1);
+    }
+    this.changed.emit();
+  }
+
+  /** Quantity for an add-on; 1 by default. Only `per unit` rows expose the stepper. */
+  addOnQty(id: string): number {
+    return this.addOnQuantities.get(id) ?? 1;
+  }
+
+  /** Step the quantity for a `per unit` add-on. Clamps at 1 minimum, 99 max. */
+  adjustAddOnQty(id: string, delta: number): void {
+    if (!this.selectedAddOns.has(id)) return;
+    const a = this.addOns.find(x => x.id === id);
+    if (a?.unit !== 'per unit') return;
+    const next = Math.max(1, Math.min(99, this.addOnQty(id) + delta));
+    this.addOnQuantities.set(id, next);
     this.changed.emit();
   }
 
@@ -157,6 +194,7 @@ export class BookingStateService {
       if (!this.selectedAddOns.has(a.id)) continue;
       if (a.unit === 'per night')        sum += a.price * (this.nights || 1);
       else if (a.unit === 'per person')  sum += a.price * this.guestCount;
+      else if (a.unit === 'per unit')    sum += a.price * this.addOnQty(a.id);
       else                               sum += a.price;
     }
     return sum;
@@ -211,6 +249,7 @@ export class BookingStateService {
     if (!a) return 0;
     if (a.unit === 'per night')       return a.price * (this.nights || 1);
     if (a.unit === 'per person')      return a.price * this.guestCount;
+    if (a.unit === 'per unit')        return a.price * this.addOnQty(id);
     return a.price;
   }
 

@@ -19,7 +19,7 @@ import {
 import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService, ReviewService, IUserReview } from '@cnt-workspace/data-access';
+import { AuthService, ReviewService, IUserReview, isOwnedByUser } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -282,6 +282,12 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   /** Years the host has been listed (current year minus joinedYear). */
   get hostingYears(): number {
     return Math.max(1, new Date().getFullYear() - this.detail.host.joinedYear);
+  }
+
+  /** True when the current user published this listing — surfaces the Edit CTA. */
+  get isOwner(): boolean {
+    const email = this.auth.currentUser?.email;
+    return !!email && isOwnedByUser(email, this.listing.id);
   }
 
   /** User reviews for this listing — keeps live via reviews$ subscription. */

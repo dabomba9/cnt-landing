@@ -23,10 +23,22 @@
           }
         </div>
 
-        <button type="button" (click)="saveAndExit()"
-          class="shrink-0 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:text-trinidad transition-colors">
-          Save & exit
-        </button>
+        <div class="shrink-0 flex items-center gap-3">
+          @if (draft && lastSavedLabel) {
+            <span class="inline-flex items-center gap-1 text-[0.6rem] font-body text-muted-text"
+              [class.text-jungle-green]="justSaved"
+              [class.font-bold]="justSaved">
+              <span class="material-symbols-outlined text-[14px]"
+                [class.text-jungle-green]="justSaved"
+                style="font-variation-settings: 'FILL' 1;">{{ justSaved ? 'cloud_done' : 'cloud' }}</span>
+              <span class="hidden sm:inline">{{ justSaved ? 'Saved' : lastSavedLabel }}</span>
+            </span>
+          }
+          <button type="button" (click)="saveAndExit()"
+            class="px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:text-trinidad transition-colors">
+            {{ editing ? 'Done' : 'Save & exit' }}
+          </button>
+        </div>
       </div>
 
       <!-- Step progress bar -->
@@ -79,8 +91,25 @@
         <cnt-phase3-rules [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-rules>
       } @else if (phase === 3 && step === 2) {
         <cnt-phase3-pricing [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-pricing>
-      } @else if (phase === 3 && step === 3) {
-        <cnt-phase3-review [draft]="draft"></cnt-phase3-review>
+      } @else if (isAddonsStep) {
+        <cnt-phase3-addons [draft]="draft" (patch)="onPatch($event)"></cnt-phase3-addons>
+      } @else if (isReviewStep) {
+        @if (editing) {
+          <div>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">Save your changes</h2>
+            <p class="text-sm font-body text-muted-text mb-8">All edits are saved automatically. Hit "Save changes" to return to your listing.</p>
+            <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+              <button type="button" (click)="saveChanges()"
+                [disabled]="!currentStepValid"
+                class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_12px_28px_rgba(227,83,13,0.3)] transition-opacity">
+                <span class="material-symbols-outlined text-base">check_circle</span>
+                Save changes
+              </button>
+            </div>
+          </div>
+        } @else {
+          <cnt-phase3-review [draft]="draft"></cnt-phase3-review>
+        }
       }
 
       <!-- Step nav: Previous + Next, plus a Discard option on the phase hub -->
@@ -91,24 +120,60 @@
           Previous
         </button>
 
-        @if (step >= 0 && !(phase === 3 && step === 3)) {
-          <button type="button" (click)="next()"
-            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_8px_20px_rgba(227,83,13,0.25)] transition-opacity">
-            Next
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-          </button>
+        @if (step >= 0 && !isReviewStep) {
+          <div class="flex items-center gap-3 flex-wrap justify-end">
+            @if (!currentStepValid && currentStepHint) {
+              <span class="text-[0.65rem] font-body text-trinidad max-w-[18rem] text-right">{{ currentStepHint }}</span>
+            }
+            <button type="button" (click)="next()" [disabled]="!currentStepValid"
+              [title]="currentStepHint"
+              class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(227,83,13,0.25)] transition-opacity">
+              Next
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          </div>
         }
       </div>
 
-      <!-- Discard link -->
-      <div class="mt-12 text-center">
-        <button type="button" (click)="discard()"
-          class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
-          Discard draft
-        </button>
-      </div>
+      <!-- Discard / cancel link (hidden in edit mode — edits autosave) -->
+      @if (!editing) {
+        <div class="mt-12 text-center">
+          <button type="button" (click)="openDiscardModal()"
+            class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">
+            Discard draft
+          </button>
+        </div>
+      }
     </div>
   </section>
+
+  <!-- Discard confirmation modal — replaces native confirm() for a styled, focus-trapped experience. -->
+  @if (discardModalOpen) {
+    <div class="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="discard-title">
+      <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="closeDiscardModal()"></div>
+      <div cntFocusTrap (escape)="closeDiscardModal()"
+        class="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-[0_24px_48px_rgba(0,0,0,0.2)] max-w-md w-full p-6 md:p-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-trinidad/10 mb-4">
+          <span class="material-symbols-outlined text-3xl text-trinidad">delete</span>
+        </div>
+        <h2 id="discard-title" class="font-headline font-bold text-dark-text text-2xl tracking-tight mb-2">Discard your draft?</h2>
+        <p class="text-sm font-body text-muted-text leading-relaxed mb-6">
+          This will permanently delete everything you've filled in so far. You can always start a new listing later.
+        </p>
+        <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+          <button type="button" (click)="closeDiscardModal()"
+            class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+            Keep working
+          </button>
+          <button type="button" (click)="confirmDiscard()"
+            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity">
+            <span class="material-symbols-outlined text-base">delete</span>
+            Discard draft
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </main>
 
 <curbnturf-footer></curbnturf-footer>

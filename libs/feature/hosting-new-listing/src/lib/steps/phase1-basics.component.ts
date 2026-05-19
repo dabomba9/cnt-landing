@@ -45,17 +45,17 @@ import { IDraftListing } from '@cnt-workspace/data-access';
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Length (ft)</span>
-            <input type="number" min="0" [(ngModel)]="rigLength" name="length" (blur)="emit()"
+            <input type="number" min="0" [(ngModel)]="rigLength" name="length" (input)="emit()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
           </label>
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Width (ft)</span>
-            <input type="number" min="0" [(ngModel)]="rigWidth" name="width" (blur)="emit()"
+            <input type="number" min="0" [(ngModel)]="rigWidth" name="width" (input)="emit()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
           </label>
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Height (ft)</span>
-            <input type="number" min="0" [(ngModel)]="rigHeight" name="height" (blur)="emit()"
+            <input type="number" min="0" [(ngModel)]="rigHeight" name="height" (input)="emit()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
           </label>
         </div>
@@ -65,7 +65,7 @@ import { IDraftListing } from '@cnt-workspace/data-access';
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 flex flex-col sm:flex-row sm:items-end gap-5">
         <label class="flex flex-col gap-1.5 flex-1">
           <span class="text-xs font-button uppercase tracking-[0.1em] font-bold text-muted-text">Max guests</span>
-          <input type="number" min="1" max="20" [(ngModel)]="capacity" name="capacity" (blur)="emit()"
+          <input type="number" min="1" max="20" [(ngModel)]="capacity" name="capacity" (input)="emit()"
             class="w-32 bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
         </label>
         <label class="inline-flex items-center gap-2 cursor-pointer">

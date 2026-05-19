@@ -1,4 +1,4 @@
-import type { Amenity, RvType, CancellationTier } from './mock-listings.data';
+import type { Amenity, RvType, CancellationTier, IAddOn } from './mock-listings.data';
 
 /**
  * Property descriptors — multi-select on the first wizard step. Mirrors the 22 tile
@@ -88,6 +88,10 @@ export interface IDraftListing {
   customRules?: string;
   cancellationTier?: CancellationTier;
   nightlyPrice?: number;
+
+  // ─────────────── Edit-only (post-publish) ───────────────
+  /** Add-ons offered to guests. Editable only via /hosting/listings/:id/edit. */
+  addOns?: IAddOn[];
 
   // ─────────────── Status ───────────────
   publishedAt?: string;

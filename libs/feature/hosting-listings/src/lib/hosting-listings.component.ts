@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
-import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, ResumeDraftCardComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
   IPrivateListing, getMyListings, getHostBookings, HostListingMetaService,
@@ -20,7 +20,7 @@ interface IRowModel {
 @Component({
   selector: 'cnt-hosting-listings',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ResumeDraftCardComponent],
   templateUrl: './hosting-listings.component.html',
 })
 export class HostingListingsComponent implements OnInit, OnDestroy {
@@ -106,7 +106,6 @@ export class HostingListingsComponent implements OnInit, OnDestroy {
     return { label: 'Live', tone: 'live' };
   }
 
-  /** Stub destination for the wizard — page doesn't exist yet, but the link is wired. */
-  editPath(listingId: number): string[] { return ['/hosting/new']; }
-  editQuery(listingId: number) { return { edit: listingId }; }
+  editPath(listingId: number): unknown[] { return ['/hosting/listings', listingId, 'edit']; }
+  editQuery(_listingId: number) { return {}; }
 }

@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 
 import { ToastHostComponent, BottomNavComponent } from '@cnt-workspace/ui';
+import { HostListingDraftService } from '@cnt-workspace/data-access';
 
 @Component({
   standalone: true,
@@ -22,7 +23,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
-    private router: Router
+    private router: Router,
+    // Injected solely to force construction at app bootstrap. Its constructor
+    // hydrates user-published listings from `cnt-published-snapshots` into
+    // MOCK_LISTINGS — without this, landing directly on /search or /listing
+    // skips hydration because those routes don't inject the service.
+    _drafts: HostListingDraftService,
   ) {}
 
   ngAfterViewInit(): void {

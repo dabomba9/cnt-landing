@@ -365,8 +365,17 @@
                   @if (selectedAddOns.length > 0) {
                     @for (a of selectedAddOns; track a.id) {
                       <div class="flex justify-between text-muted-text">
-                        <span class="truncate pr-2">+ {{ a.label }}</span>
-                        <span>${{ a.unit === 'per night' ? (a.price * nights) : a.unit === 'per person' ? (a.price * guests) : a.price }}</span>
+                        <span class="truncate pr-2">
+                          + {{ a.label }}
+                          @if (a.unit === 'per night' && nights > 1) {
+                            <span class="text-[0.7rem] opacity-80"> · ${{ a.price }} × {{ nights }} nights</span>
+                          } @else if (a.unit === 'per person' && guests > 1) {
+                            <span class="text-[0.7rem] opacity-80"> · ${{ a.price }} × {{ guests }} guests</span>
+                          } @else if (a.unit === 'per unit' && addOnQty(a.id) > 1) {
+                            <span class="text-[0.7rem] opacity-80"> · ${{ a.price }} × {{ addOnQty(a.id) }}</span>
+                          }
+                        </span>
+                        <span>${{ addOnLineTotal(a) }}</span>
                       </div>
                     }
                   }

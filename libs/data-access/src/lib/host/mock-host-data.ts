@@ -35,6 +35,16 @@ export function addOwnedListing(userEmail: string, listingId: number): void {
 }
 
 /**
+ * Returns true when the listing was published by the given user (recorded
+ * via `addOwnedListing` at publish time). Drives owner-only UI like the
+ * "Edit listing" CTA on /listing?id=N.
+ */
+export function isOwnedByUser(userEmail: string, listingId: number): boolean {
+  if (!userEmail) return false;
+  return (readOwnedMap()[userEmail] ?? []).includes(listingId);
+}
+
+/**
  * Listings the current user hosts. Returns user-published listings (recorded
  * at publish time) plus the seeded first-3 fallback for demo continuity when
  * the user hasn't published anything yet.

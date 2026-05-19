@@ -372,7 +372,8 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
 
   isEditingAddOnSelected(id: string): boolean { return this.editingAddOnIds.has(id); }
 
-  /** Compute the billed amount for an add-on against the *modified* nights/guests. */
+  /** Compute the billed amount for an add-on against the *modified* nights/guests.
+   * `per unit` add-ons are quantity-locked to 1 in the modify flow (no stepper here). */
   private addOnAmount(a: IAddOn, nights: number, guests: number): number {
     if (a.unit === 'per night') return a.price * Math.max(1, nights);
     if (a.unit === 'per person') return a.price * guests;
@@ -388,6 +389,7 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
         label: a.label,
         unit: a.unit,
         unitPrice: a.price,
+        quantity: 1,
         amount: this.addOnAmount(a, nights, guests),
       }));
   }

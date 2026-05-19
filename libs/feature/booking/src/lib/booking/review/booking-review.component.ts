@@ -39,6 +39,8 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   /** Selected add-on IDs, hydrated from `?addOns=...` query param. */
   selectedAddOnIds = new Set<string>();
+  /** Quantity per add-on id; only `per unit` rows use values > 1. */
+  addOnQuantities = new Map<string, number>();
 
   /** Reward credit available to spend on this booking. */
   availableCredit = 0;
@@ -130,7 +132,17 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
     const addOnsParam = q.get('addOns');
     if (addOnsParam) {
-      this.selectedAddOnIds = new Set(addOnsParam.split(',').filter(Boolean));
+      const ids = new Set<string>();
+      const qty = new Map<string, number>();
+      for (const tok of addOnsParam.split(',').filter(Boolean)) {
+        const [id, qStr] = tok.split(':');
+        if (!id) continue;
+        ids.add(id);
+        const q = parseInt(qStr, 10);
+        if (Number.isFinite(q) && q > 0) qty.set(id, q);
+      }
+      this.selectedAddOnIds = ids;
+      this.addOnQuantities = qty;
     }
 
 
@@ -195,20 +207,32 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return this.detail.addOns.filter(a => this.selectedAddOnIds.has(a.id));
   }
 
-  /** Per-line snapshot ({ ...AddOn, amount }) using the current nights/guests multipliers. */
+  /** Per-line snapshot ({ ...AddOn, quantity, amount }) using the current multipliers. */
   get addOnSnapshots(): IBookingAddOn[] {
     return this.selectedAddOns.map(a => ({
       id: a.id,
       label: a.label,
       unit: a.unit,
       unitPrice: a.price,
+      quantity: a.unit === 'per unit' ? this.addOnQty(a.id) : 1,
       amount: this.addOnAmount(a),
     }));
+  }
+
+  /** Quantity for an add-on; 1 by default. Only `per unit` rows can exceed 1. */
+  addOnQty(id: string): number {
+    return this.addOnQuantities.get(id) ?? 1;
+  }
+
+  /** Per-line total used by both totals and inline display. */
+  addOnLineTotal(a: IAddOn): number {
+    return this.addOnAmount(a);
   }
 
   private addOnAmount(a: IAddOn): number {
     if (a.unit === 'per night') return a.price * Math.max(1, this.nights);
     if (a.unit === 'per person') return a.price * this.guests;
+    if (a.unit === 'per unit') return a.price * this.addOnQty(a.id);
     return a.price;
   }
 
@@ -218,8 +242,12 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
 
   toggleAddOn(id: string): void {
     const next = new Set(this.selectedAddOnIds);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
+    if (next.has(id)) {
+      next.delete(id);
+      this.addOnQuantities.delete(id);
+    } else {
+      next.add(id);
+    }
     this.selectedAddOnIds = next;
   }
 
