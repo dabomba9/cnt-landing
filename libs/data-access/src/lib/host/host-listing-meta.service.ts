@@ -32,6 +32,14 @@ export class HostListingMetaService {
     this.patch(listingId, { archived });
   }
 
+  /** Drop the meta entry for a listing. Called by the delete-listing flow. */
+  clear(listingId: number): void {
+    const next = { ...this._meta$.value };
+    if (!(listingId in next)) return;
+    delete next[listingId];
+    this.write(next);
+  }
+
   private patch(listingId: number, patch: Partial<IHostListingMeta>): void {
     const next = { ...this._meta$.value };
     next[listingId] = { ...(next[listingId] || EMPTY_META), ...patch };

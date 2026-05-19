@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data-access';
 
 /**
@@ -10,7 +11,7 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
 @Component({
   selector: 'cnt-phase2-photos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DragDropModule],
   template: `
     <div>
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">
@@ -23,16 +24,23 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
         <li>Hour after sunrise / before sunset = magic light.</li>
       </ul>
 
-      <!-- Photo grid -->
+      <!-- Photo grid — drag any tile to reorder. The leftmost (index 0) is the Cover. -->
       @if (photos.length > 0) {
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-2"
+          cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
           @for (src of photos; track src; let i = $index) {
-            <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-dark-text/10 bg-cream/40">
-              <img [src]="src" [alt]="'Photo ' + (i + 1)" class="w-full h-full object-cover">
+            <div cdkDrag class="relative aspect-[4/3] rounded-xl overflow-hidden border border-dark-text/10 bg-cream/40 cursor-grab active:cursor-grabbing">
+              <img [src]="src" [alt]="'Photo ' + (i + 1)" class="w-full h-full object-cover pointer-events-none">
               @if (i === 0) {
                 <span class="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold">
                   <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
                   Cover
+                </span>
+              }
+              @if (photos.length > 1) {
+                <span class="absolute bottom-2 left-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/95 backdrop-blur-sm text-dark-text text-[0.55rem] font-button font-bold shadow-sm">
+                  <span class="material-symbols-outlined text-[12px]">drag_indicator</span>
+                  Drag
                 </span>
               }
               <button type="button" (click)="remove(i)" aria-label="Remove photo"
@@ -42,6 +50,11 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
             </div>
           }
         </div>
+        @if (photos.length > 1) {
+          <p class="text-[0.65rem] font-body text-muted-text mb-6">Drag photos to reorder. The first one is your cover.</p>
+        } @else {
+          <div class="mb-6"></div>
+        }
       }
 
       <!-- Upload button -->
@@ -117,6 +130,14 @@ export class Phase2PhotosComponent {
 
   remove(index: number): void {
     this.photos = this.photos.filter((_, i) => i !== index);
+    this.persist();
+  }
+
+  onDrop(ev: CdkDragDrop<string[]>): void {
+    if (ev.previousIndex === ev.currentIndex) return;
+    const next = [...this.photos];
+    moveItemInArray(next, ev.previousIndex, ev.currentIndex);
+    this.photos = next;
     this.persist();
   }
 

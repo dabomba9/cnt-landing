@@ -34,6 +34,19 @@ export function addOwnedListing(userEmail: string, listingId: number): void {
   writeOwnedMap(map);
 }
 
+/** Inverse of addOwnedListing — used by the delete-listing flow. */
+export function removeOwnedListing(userEmail: string, listingId: number): void {
+  if (!userEmail) return;
+  const map = readOwnedMap();
+  const existing = map[userEmail];
+  if (!existing) return;
+  const next = existing.filter(id => id !== listingId);
+  if (next.length === existing.length) return;
+  if (next.length === 0) delete map[userEmail];
+  else map[userEmail] = next;
+  writeOwnedMap(map);
+}
+
 /**
  * Returns true when the listing was published by the given user (recorded
  * via `addOwnedListing` at publish time). Drives owner-only UI like the

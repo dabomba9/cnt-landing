@@ -150,3 +150,17 @@ export async function writePublishedSnapshot(listingId: number, snapshot: IPubli
   tx.objectStore(STORE).put(snapshot, String(listingId));
   await txDone(tx);
 }
+
+/**
+ * Permanently remove a listing's snapshot. Drops the in-memory cache entry
+ * immediately and queues the IDB delete. Used by the host-side delete-listing
+ * flow alongside removing from MOCK_LISTINGS / ALL_LISTINGS / ownership.
+ */
+export async function deletePublishedSnapshot(listingId: number): Promise<void> {
+  cache.delete(listingId);
+  if (!isBrowser()) return;
+  const db = await openDb();
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).delete(String(listingId));
+  await txDone(tx);
+}

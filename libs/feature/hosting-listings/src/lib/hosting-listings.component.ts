@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
-import { NavbarComponent, FooterComponent, ResumeDraftCardComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
   IPrivateListing, getMyListings, getHostBookings, HostListingMetaService,
+  HostListingDraftService,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -20,7 +21,7 @@ interface IRowModel {
 @Component({
   selector: 'cnt-hosting-listings',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ResumeDraftCardComponent],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective],
   templateUrl: './hosting-listings.component.html',
 })
 export class HostingListingsComponent implements OnInit, OnDestroy {
@@ -35,7 +36,30 @@ export class HostingListingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private seo: SeoService,
     private toasts: ToastService,
+    private drafts: HostListingDraftService,
   ) {}
+
+  /** Delete confirmation modal state. */
+  deleteTarget: IRowModel | null = null;
+  deleting = false;
+  openDelete(row: IRowModel): void { this.deleteTarget = row; }
+  closeDelete(): void { if (!this.deleting) this.deleteTarget = null; }
+  async confirmDelete(): Promise<void> {
+    if (!this.deleteTarget || this.deleting) return;
+    const target = this.deleteTarget;
+    this.deleting = true;
+    try {
+      await this.drafts.deletePublishedListing(target.listing.id);
+      // Optimistic local prune so the row disappears before next bookings$ tick.
+      this.rows = this.rows.filter(r => r.listing.id !== target.listing.id);
+      this.toasts.success(`${target.listing.title} removed.`);
+    } catch {
+      this.toasts.error('Could not remove listing.');
+    } finally {
+      this.deleting = false;
+      this.deleteTarget = null;
+    }
+  }
 
   ngOnInit(): void {
     this.seo.update({

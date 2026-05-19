@@ -10,13 +10,14 @@ import {
   ALL_LISTINGS,
   type Category,
 } from './mock-listings.data';
-import { addOwnedListing } from '../host/mock-host-data';
+import { addOwnedListing, removeOwnedListing } from '../host/mock-host-data';
 import { AuthService } from '../auth/auth.service';
 import { ToastService } from '../toast/toast.service';
+import { HostListingMetaService } from '../host/host-listing-meta.service';
 
 const DRAFT_STORAGE_KEY = 'cnt-listing-draft';
 
-import { IPublishedSnapshot, readAllPublishedSnapshots, readPublishedSnapshot as readSnapshot, writePublishedSnapshot } from './published-snapshot.util';
+import { IPublishedSnapshot, readAllPublishedSnapshots, readPublishedSnapshot as readSnapshot, writePublishedSnapshot, deletePublishedSnapshot } from './published-snapshot.util';
 // Re-export so existing consumers of '@cnt-workspace/data-access' keep working.
 export { IPublishedSnapshot, readPublishedSnapshot } from './published-snapshot.util';
 
@@ -45,6 +46,7 @@ export class HostListingDraftService {
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
     private toasts: ToastService,
+    private meta: HostListingMetaService,
   ) {
     this._draft$.next(this.read());
     this.hydratePublishedListings();
@@ -300,6 +302,39 @@ export class HostListingDraftService {
     this.discardDraft();
     this._draft$.next(next); // emit the final state once so callers can read publishedListingId
     return listing;
+  }
+
+  /**
+   * Permanently remove a user-published listing. Coordinates four stores so
+   * the listing disappears everywhere consistently:
+   *   - MOCK_LISTINGS / ALL_LISTINGS (in-memory; affects /search + lookup)
+   *   - cnt-published-snapshots in IDB (affects /listing?id=N detail hydration)
+   *   - cnt-owned-listings (affects /hosting/listings membership)
+   *   - cnt-host-listing-meta (paused/archived flags)
+   *
+   * Caller is responsible for confirming with the host first — this is
+   * irreversible. Boondocking ids and seeded mock ids (1–80) are no-ops since
+   * they aren't user-published.
+   */
+  async deletePublishedListing(listingId: number): Promise<void> {
+    // Remove in-memory entries.
+    const mockIdx = MOCK_LISTINGS.findIndex(l => l.id === listingId);
+    if (mockIdx >= 0) MOCK_LISTINGS.splice(mockIdx, 1);
+    const allIdx = ALL_LISTINGS.findIndex(l => l.id === listingId);
+    if (allIdx >= 0) ALL_LISTINGS.splice(allIdx, 1);
+    // Drop ownership for the current user (other emails likely never had it).
+    const user = this.auth.currentUser;
+    if (user?.email) removeOwnedListing(user.email, listingId);
+    // Drop meta flags.
+    this.meta.clear(listingId);
+    // Async: drop snapshot from IDB. Don't block the caller, but surface a
+    // toast if it fails so the host knows something's off.
+    try {
+      await deletePublishedSnapshot(listingId);
+    } catch (err) {
+      console.error('[draft] snapshot delete failed', err);
+      this.toasts.error('Listing removed locally, but storage cleanup failed.');
+    }
   }
 
   /** Required-field check used by the publish gate. */
