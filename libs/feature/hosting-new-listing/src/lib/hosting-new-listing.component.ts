@@ -165,6 +165,11 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     return 'Saved earlier';
   }
 
+  /** Thin proxy so the chip strip can ask completion-state per step. */
+  stepValid(phase: 1 | 2 | 3, step: number): boolean {
+    return this.drafts.isStepValid(phase, step);
+  }
+
   /** True when the current step's requirements are satisfied. Disables Next when false. */
   get currentStepValid(): boolean {
     if (this.step < 0) return true; // phase hub — no constraints

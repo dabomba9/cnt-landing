@@ -41,15 +41,33 @@
         </div>
       </div>
 
-      <!-- Step progress bar -->
-      <div class="flex items-center gap-3">
-        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">
-          {{ step < 0 ? 'Overview' : 'Step ' + (step + 1) + ' of ' + stepsTotal }}
-        </span>
-        <div class="flex-1 h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
-          <div class="h-full bg-trinidad rounded-full transition-all duration-300"
-            [style.width.%]="phaseProgressPct"></div>
-        </div>
+      <!-- Step chip strip — click any chip to jump to that step. -->
+      <div class="flex items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
+        <button type="button" (click)="jumpToPhaseHub(phase)"
+          [ngClass]="step === -1
+            ? 'border-trinidad text-trinidad bg-white'
+            : 'border-dark-text/15 text-muted-text bg-white hover:border-dark-text/30'"
+          class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+          <span class="material-symbols-outlined text-[14px]">grid_view</span>
+          Overview
+        </button>
+        @for (label of stepsForPhase; track label; let i = $index) {
+          <button type="button" (click)="jumpToStep(phase, i)"
+            [ngClass]="i === step
+              ? 'border-trinidad text-trinidad bg-trinidad/5'
+              : (stepValid(phase, i)
+                  ? 'border-jungle-green/30 text-jungle-green bg-white hover:border-jungle-green'
+                  : 'border-dark-text/15 text-muted-text bg-white hover:border-dark-text/30')"
+            class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+            @if (stepValid(phase, i) && i !== step) {
+              <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            } @else {
+              <span class="w-1.5 h-1.5 rounded-full"
+                [ngClass]="i === step ? 'bg-trinidad' : 'bg-dark-text/25'"></span>
+            }
+            {{ label }}
+          </button>
+        }
       </div>
     </div>
   </div>
@@ -66,7 +84,8 @@
           [steps]="stepsForPhase"
           [draft]="draft"
           (start)="startPhase(phase)"
-          (back)="prev()"></cnt-phase-hub>
+          (back)="prev()"
+          (jump)="jumpToStep(phase, $event)"></cnt-phase-hub>
       } @else if (phase === 1 && step === 0) {
         <cnt-phase1-descriptors [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-descriptors>
       } @else if (phase === 1 && step === 1) {

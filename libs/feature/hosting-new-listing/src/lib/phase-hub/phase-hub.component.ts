@@ -23,19 +23,23 @@ import type { IDraftListing } from '@cnt-workspace/data-access';
         {{ description }}
       </p>
 
-      <!-- Step list -->
+      <!-- Step list — each row is a button that jumps to that step. -->
       <ol class="text-left max-w-md mx-auto mb-10 space-y-3">
         @for (step of steps; track step; let i = $index) {
-          <li class="flex items-center gap-3 p-3 rounded-lg bg-white border border-dark-text/8">
-            <span class="w-7 h-7 rounded-full inline-flex items-center justify-center shrink-0 text-[0.7rem] font-button font-bold"
-              [ngClass]="completed[i] ? 'bg-jungle-green text-white' : 'bg-dark-text/8 text-muted-text'">
-              @if (completed[i]) {
-                <span class="material-symbols-outlined text-[14px]">check</span>
-              } @else {
-                {{ i + 1 }}
-              }
-            </span>
-            <span class="font-body text-sm text-dark-text">{{ step }}</span>
+          <li>
+            <button type="button" (click)="jump.emit(i)"
+              class="w-full flex items-center gap-3 p-3 rounded-lg bg-white border border-dark-text/8 hover:border-trinidad hover:bg-trinidad/5 transition-colors text-left">
+              <span class="w-7 h-7 rounded-full inline-flex items-center justify-center shrink-0 text-[0.7rem] font-button font-bold"
+                [ngClass]="completed[i] ? 'bg-jungle-green text-white' : 'bg-dark-text/8 text-muted-text'">
+                @if (completed[i]) {
+                  <span class="material-symbols-outlined text-[14px]">check</span>
+                } @else {
+                  {{ i + 1 }}
+                }
+              </span>
+              <span class="font-body text-sm text-dark-text flex-1">{{ step }}</span>
+              <span class="material-symbols-outlined text-base text-muted-text shrink-0">arrow_forward</span>
+            </button>
           </li>
         }
       </ol>
@@ -55,6 +59,8 @@ export class PhaseHubComponent {
   @Input() draft: IDraftListing | null = null;
   @Output() start = new EventEmitter<void>();
   @Output() back = new EventEmitter<void>();
+  /** Emitted with the step index when the host clicks a specific step row. */
+  @Output() jump = new EventEmitter<number>();
 
   /** Completion bitmap for each step in the current phase. Logic per phase below. */
   get completed(): boolean[] {
