@@ -12,6 +12,7 @@ import {
 } from './mock-listings.data';
 import { addOwnedListing } from '../host/mock-host-data';
 import { AuthService } from '../auth/auth.service';
+import { ToastService } from '../toast/toast.service';
 
 const DRAFT_STORAGE_KEY = 'cnt-listing-draft';
 
@@ -43,6 +44,7 @@ export class HostListingDraftService {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
+    private toasts: ToastService,
   ) {
     this._draft$.next(this.read());
     this.hydratePublishedListings();
@@ -237,7 +239,7 @@ export class HostListingDraftService {
   private persistEdit(listingId: number, draft: IDraftListing): IPrivateListing {
     const snap = readSnapshot(listingId);
     if (snap) {
-      writePublishedSnapshot(listingId, { ...snap, draft });
+      this.savePublishedSnapshot(listingId, { ...snap, draft });
     }
     const updated = this.draftToListing(draft, listingId);
     const idx = MOCK_LISTINGS.findIndex(l => l.id === listingId);
@@ -402,8 +404,13 @@ export class HostListingDraftService {
     return `${f}${l}` || 'NH';
   }
 
-  /** Write the per-listing snapshot so /listing?id=N can hydrate the host's real data. */
+  /** Write the per-listing snapshot so /listing?id=N can hydrate the host's real data.
+   * Fires a toast on storage failure (quota / IDB unavailable) instead of silently
+   * dropping the write — the cache update has already happened in memory. */
   private savePublishedSnapshot(listingId: number, snapshot: IPublishedSnapshot): void {
-    writePublishedSnapshot(listingId, snapshot);
+    writePublishedSnapshot(listingId, snapshot).catch(err => {
+      console.error('[draft] snapshot write failed', err);
+      this.toasts.error('Could not save listing changes — storage may be full.');
+    });
   }
 }

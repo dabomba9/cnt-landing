@@ -10,6 +10,7 @@ export * from './lib/listings/mock-boondocking.data';
 export * from './lib/listings/draft-listing.types';
 export * from './lib/listings/host-listing-draft.service';
 export * from './lib/listings/published-snapshot.util';
+export * from './lib/listings/edit-owner.guard';
 export * from './lib/photos/downscale.util';
 export * from './lib/host/mock-host-data';
 export * from './lib/host/host-listing-meta.service';

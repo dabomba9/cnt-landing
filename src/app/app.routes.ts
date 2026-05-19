@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { HomeComponent } from '@cnt-workspace/home';
-import { authGuard } from '@cnt-workspace/data-access';
+import { authGuard, editOwnerGuard } from '@cnt-workspace/data-access';
 
 export const appRoutes: Route[] = [
   { path: '', component: HomeComponent },
@@ -84,7 +84,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'hosting/listings/:id/edit',
-    canActivate: [authGuard],
+    canActivate: [authGuard, editOwnerGuard],
     loadComponent: () => import('@cnt-workspace/hosting-new-listing').then(m => m.HostingNewListingComponent),
   },
   {
