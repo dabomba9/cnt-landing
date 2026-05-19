@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
-  IPrivateListing, IListingDetail, CancellationTier,
+  IPrivateListing, IListingDetail, CancellationTier, IAddOn,
 } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
+import { AddonLightboxComponent } from '../addon-lightbox/addon-lightbox.component';
 
 /**
  * Sidebar booking widget. Renders the "Prices include all fees" callout and
@@ -20,7 +21,7 @@ import { BookingStateService } from '../booking-state.service';
 @Component({
   selector: 'cnt-listing-booking-widget',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatDatepickerModule, MatNativeDateModule],
+  imports: [CommonModule, RouterLink, MatDatepickerModule, MatNativeDateModule, AddonLightboxComponent],
   templateUrl: './listing-booking-widget.component.html',
 })
 export class ListingBookingWidgetComponent {
@@ -36,6 +37,14 @@ export class ListingBookingWidgetComponent {
   constructor(public booking: BookingStateService) {}
 
   onReserve(): void { this.reserveClick.emit(); }
+
+  /** Add-on photo lightbox state. */
+  lightboxAddon: IAddOn | null = null;
+  openLightbox(a: IAddOn, ev: MouseEvent): void {
+    ev.stopPropagation();
+    this.lightboxAddon = a;
+  }
+  closeLightbox(): void { this.lightboxAddon = null; }
 
   get isMyRvSet(): boolean { return isMyRvSet(this.myRv); }
   get hasMyRvPhotos(): boolean { return hasMyRvPhotos(this.myRv); }

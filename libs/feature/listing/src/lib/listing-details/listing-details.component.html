@@ -370,8 +370,16 @@
                   <article class="flex flex-col gap-3 p-5 rounded-2xl border bg-white transition-colors"
                     [ngClass]="booking.selectedAddOns.has(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10'">
                     <div class="flex items-start gap-3">
-                      <span class="material-symbols-outlined text-2xl shrink-0"
-                        [ngClass]="booking.selectedAddOns.has(a.id) ? 'text-trinidad' : 'text-jungle-green'">{{ a.icon }}</span>
+                      @if (a.photo) {
+                        <button type="button" (click)="openAddonLightbox(a, $event)"
+                          class="shrink-0 w-14 h-14 rounded-xl overflow-hidden hover:ring-2 hover:ring-trinidad/40 transition-shadow"
+                          aria-label="View photo">
+                          <img [src]="a.photo" alt="" class="w-full h-full object-cover">
+                        </button>
+                      } @else {
+                        <span class="material-symbols-outlined text-2xl shrink-0"
+                          [ngClass]="booking.selectedAddOns.has(a.id) ? 'text-trinidad' : 'text-jungle-green'">{{ a.icon }}</span>
+                      }
                       <div class="flex-1 min-w-0">
                         <div class="font-headline font-bold text-dark-text text-base leading-tight">{{ a.label }}</div>
                         <p class="text-sm font-body text-muted-text mt-1 leading-relaxed">{{ a.description }}</p>
@@ -720,5 +728,7 @@
   [myRv]="myRv"
   (closed)="rvPhotosOpen = false"
   (saved)="onRvPhotosSaved($event)"></cnt-rv-photos-modal>
+
+<cnt-addon-lightbox [open]="!!lightboxAddon" [addon]="lightboxAddon" (close)="closeAddonLightbox()"></cnt-addon-lightbox>
 
 <curbnturf-footer></curbnturf-footer>

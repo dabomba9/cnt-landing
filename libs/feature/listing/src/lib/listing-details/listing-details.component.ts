@@ -14,7 +14,7 @@ import {
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
   AGENCY_META,
   MOCK_POIS, POI_KIND_META, IPoi, PoiKind,
-  IPrivateListing, findListing, MOCK_BOONDOCKING,
+  IPrivateListing, findListing, MOCK_BOONDOCKING, IAddOn,
 } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -24,6 +24,7 @@ import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-li
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
 import { RvPhotosModalComponent } from './rv-photos-modal/rv-photos-modal.component';
+import { AddonLightboxComponent } from './addon-lightbox/addon-lightbox.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { ReviewCardComponent } from '@cnt-workspace/ui';
 import { AccordionCardComponent } from '@cnt-workspace/ui';
@@ -37,7 +38,7 @@ import { MiniMapComponent } from '@cnt-workspace/booking';
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
     ListingCardComponent, ReviewCardComponent, AccordionCardComponent, RvPhotosModalComponent,
-    MiniMapComponent,
+    MiniMapComponent, AddonLightboxComponent,
   ],
   providers: [BookingStateService],
   templateUrl: './listing-details.component.html',
@@ -508,6 +509,14 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   /** Modal flag for the RV photos collection step (non-Instant-Book listings only). */
   rvPhotosOpen = false;
+
+  /** Add-on photo lightbox (null = closed). */
+  lightboxAddon: IAddOn | null = null;
+  openAddonLightbox(a: IAddOn, ev: MouseEvent): void {
+    ev.stopPropagation();
+    this.lightboxAddon = a;
+  }
+  closeAddonLightbox(): void { this.lightboxAddon = null; }
 
   requestBooking(): void {
     // Wired from the booking widget which only renders on private listings — guard for narrowing.

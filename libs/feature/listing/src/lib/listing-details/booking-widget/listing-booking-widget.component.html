@@ -138,7 +138,11 @@
                 class="w-full flex items-start gap-3 px-3 py-3 rounded-2xl border text-left transition-colors"
                 [ngClass]="booking.selectedAddOns.has(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-dark-text/30 bg-white'">
                 @if (a.photo) {
-                  <img [src]="a.photo" alt="" class="shrink-0 w-12 h-12 rounded-lg object-cover">
+                  <button type="button" (click)="openLightbox(a, $event)"
+                    class="shrink-0 w-12 h-12 rounded-lg overflow-hidden hover:ring-2 hover:ring-trinidad/40 transition-shadow"
+                    aria-label="View photo">
+                    <img [src]="a.photo" alt="" class="w-full h-full object-cover">
+                  </button>
                 } @else {
                   <span class="material-symbols-outlined text-xl shrink-0 mt-0.5"
                     [ngClass]="booking.selectedAddOns.has(a.id) ? 'text-trinidad' : 'text-jungle-green'">{{ a.icon }}</span>
@@ -308,3 +312,5 @@
     </div>
   </div>
 </div>
+
+<cnt-addon-lightbox [open]="!!lightboxAddon" [addon]="lightboxAddon" (close)="closeLightbox()"></cnt-addon-lightbox>

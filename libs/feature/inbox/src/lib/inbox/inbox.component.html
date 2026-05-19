@@ -153,6 +153,24 @@
                       </span>
                     </div>
                     <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-0.5">{{ activeBooking.nights }} {{ activeBooking.nights === 1 ? 'night' : 'nights' }} · ${{ activeBooking.total }}</div>
+                    @if (activeBooking.addOns?.length) {
+                      <div class="mt-1.5 flex items-center gap-1.5 flex-wrap text-xs font-body text-muted-text">
+                        @for (a of (activeBooking.addOns ?? []).slice(0, 3); track a.id) {
+                          <span class="inline-flex items-center gap-1">
+                            @if (a.icon) {
+                              <span class="material-symbols-outlined text-[14px] text-jungle-green">{{ a.icon }}</span>
+                            }
+                            <span>{{ a.label }}@if (a.quantity > 1) { <span class="opacity-70">×{{ a.quantity }}</span> }</span>
+                          </span>
+                          @if (!$last && $index < 2 && (activeBooking.addOns ?? []).length > $index + 1) {
+                            <span class="opacity-50">·</span>
+                          }
+                        }
+                        @if ((activeBooking.addOns ?? []).length > 3) {
+                          <span class="opacity-70">+{{ (activeBooking.addOns ?? []).length - 3 }} more</span>
+                        }
+                      </div>
+                    }
                   </div>
                   <span class="material-symbols-outlined text-lg text-muted-text shrink-0">chevron_right</span>
                 </a>

@@ -166,6 +166,27 @@
                     </button>
                   </div>
                 </div>
+                @if (b.addOns?.length) {
+                  <div class="mt-4 pt-4 border-t border-dark-text/8">
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Add-ons selected</div>
+                    <div class="flex flex-wrap gap-2">
+                      @for (a of b.addOns; track a.id) {
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cream/60 border border-dark-text/10 text-xs font-body text-dark-text">
+                          @if (a.photo) {
+                            <img [src]="a.photo" alt="" class="w-5 h-5 rounded object-cover">
+                          } @else if (a.icon) {
+                            <span class="material-symbols-outlined text-[14px] text-jungle-green">{{ a.icon }}</span>
+                          }
+                          <span class="font-bold">{{ a.label }}</span>
+                          @if (a.quantity > 1) {
+                            <span class="text-[0.65rem] text-muted-text">× {{ a.quantity }}</span>
+                          }
+                          <span class="text-muted-text">· \${{ a.amount }}</span>
+                        </span>
+                      }
+                    </div>
+                  </div>
+                }
                 @if (b.requestMessage) {
                   <div class="mt-4 pt-4 border-t border-dark-text/8 text-sm font-body text-muted-text italic">"{{ b.requestMessage }}"</div>
                 }
