@@ -7,6 +7,7 @@ import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileCompone
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
+  getAddOnPerformance, IAddOnPerformance,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.component';
@@ -34,6 +35,8 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   stats: IHostStats = { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
   /** Real bookings against this host's listings. */
   hostBookings: IBooking[] = [];
+  /** Aggregated attach-rate / revenue per add-on the host offers. */
+  addOnPerformance: IAddOnPerformance[] = [];
   private subs: Subscription[] = [];
 
   /** Action modal state — used for both decline (pending) and cancel (approved/confirmed). */
@@ -72,6 +75,7 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
         this.bookings.bookings$.subscribe(all => {
           this.hostBookings = this.user ? getHostBookings(this.user.email, all) : [];
           this.stats = getHostStats(this.listings, this.hostBookings);
+          this.addOnPerformance = getAddOnPerformance(this.listings, this.hostBookings);
         }),
       );
     }

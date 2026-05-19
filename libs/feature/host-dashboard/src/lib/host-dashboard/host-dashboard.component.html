@@ -36,6 +36,79 @@
         <cnt-stat-tile label="Avg rating"   tone="gold"     [value]="stats.averageRating || 'Not yet rated'" icon="star" [trend]="stats.totalReviews + ' reviews'"></cnt-stat-tile>
       </div>
 
+      <!-- Add-ons performance -->
+      <section>
+        <div class="mb-4 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Extras</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Add-ons performance</h2>
+          </div>
+          @if (addOnPerformance.length > 0) {
+            <span class="text-xs font-body text-muted-text">Across {{ addOnPerformance[0].totalEligible }} {{ addOnPerformance[0].totalEligible === 1 ? 'booking' : 'bookings' }}</span>
+          }
+        </div>
+
+        @if (addOnPerformance.length === 0) {
+          <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-8 text-center">
+            <span class="w-12 h-12 mx-auto rounded-full bg-trinidad/10 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl text-trinidad">add_shopping_cart</span>
+            </span>
+            <h3 class="font-headline font-bold text-base mt-3 mb-1 text-dark-text">No add-ons yet</h3>
+            <p class="text-sm font-body text-muted-text mb-4 max-w-md mx-auto">
+              Sell firewood, late check-out, or anything else guests might want. Add them to a listing in under a minute.
+            </p>
+            <a [routerLink]="['/hosting/listings']" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+              <span class="material-symbols-outlined text-base">edit</span>
+              Add extras
+            </a>
+          </div>
+        } @else {
+          <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] divide-y divide-dark-text/8">
+            @for (a of addOnPerformance; track a.id) {
+              <div class="flex items-center gap-4 p-4 md:p-5">
+                <!-- Art -->
+                <div class="shrink-0 w-12 h-12 rounded-xl overflow-hidden inline-flex items-center justify-center"
+                  [ngClass]="a.photo ? '' : 'bg-cream'">
+                  @if (a.photo) {
+                    <img [src]="a.photo" alt="" class="w-full h-full object-cover">
+                  } @else if (a.icon) {
+                    <span class="material-symbols-outlined text-2xl text-trinidad">{{ a.icon }}</span>
+                  }
+                </div>
+                <!-- Label + last booked -->
+                <div class="flex-1 min-w-0">
+                  <div class="font-headline font-bold text-dark-text text-base leading-tight truncate">{{ a.label }}</div>
+                  <div class="text-xs font-body text-muted-text mt-0.5">
+                    @if (a.lastBookedAt) {
+                      Last booked {{ formatRelative(a.lastBookedAt) }}
+                    } @else {
+                      Not booked yet
+                    }
+                    @if (a.totalUnits > a.bookingsCount) {
+                      · {{ a.totalUnits }} units sold
+                    }
+                  </div>
+                </div>
+                <!-- Attach rate bar -->
+                <div class="hidden sm:block w-40 shrink-0">
+                  <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mb-1.5 text-right">{{ a.attachRate }}% attach</div>
+                  <div class="h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-500"
+                      [ngClass]="a.attachRate >= 30 ? 'bg-jungle-green' : a.attachRate >= 10 ? 'bg-gold' : 'bg-dark-text/30'"
+                      [style.width.%]="a.attachRate"></div>
+                  </div>
+                </div>
+                <!-- Revenue -->
+                <div class="text-right w-24 shrink-0">
+                  <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(a.totalRevenue) }}</div>
+                  <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-1">Revenue</div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
       <!-- Earnings + Calendar -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         <section class="lg:col-span-2">

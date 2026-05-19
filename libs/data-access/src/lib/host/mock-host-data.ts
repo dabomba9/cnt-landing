@@ -1,4 +1,4 @@
-import { IListing, IPrivateListing, MOCK_LISTINGS } from '../listings/mock-listings.data';
+import { IListing, IPrivateListing, MOCK_LISTINGS, getListingDetail } from '../listings/mock-listings.data';
 import { IBooking } from '@cnt-workspace/models';
 
 const OWNED_LISTINGS_KEY = 'cnt-owned-listings';
@@ -150,4 +150,100 @@ export interface IHostRequest {
 /** Reserved — seeded demo requests removed in favor of real pending bookings. */
 export function getPendingRequests(_listings: IListing[]): IHostRequest[] {
   return [];
+}
+
+// ─────────────────────── Per-add-on analytics ───────────────────────
+
+/**
+ * Per-add-on performance summary surfaced on the host dashboard. One row per
+ * add-on the host currently offers across their listings (so unbooked rows
+ * still appear with 0 metrics — hosts can spot the under-performers).
+ */
+export interface IAddOnPerformance {
+  id: string;
+  label: string;
+  icon?: string;
+  photo?: string;
+  /** Number of confirmed/approved bookings that included this add-on. */
+  bookingsCount: number;
+  /** Total confirmed/approved bookings for the host — denominator for attachRate. */
+  totalEligible: number;
+  /** 0–100 (rounded). */
+  attachRate: number;
+  /** Sum of IBookingAddOn.amount across qualifying bookings. */
+  totalRevenue: number;
+  /** Sum of IBookingAddOn.quantity (useful for per-unit products). */
+  totalUnits: number;
+  /** ISO timestamp of the most recent qualifying booking; null when never booked. */
+  lastBookedAt: string | null;
+}
+
+/**
+ * Aggregate add-on performance across the host's listings + bookings.
+ * Returns one entry per add-on the host *currently offers* (so the host can
+ * see "Pet fee: 0%" and decide to drop or reprice). Sorted by revenue desc
+ * with unbooked rows at the bottom.
+ */
+export function getAddOnPerformance(
+  listings: IListing[],
+  hostBookings: IBooking[],
+): IAddOnPerformance[] {
+  // Build the catalog: every add-on the host currently offers, keyed by id.
+  // Boondocking listings can't carry user add-ons; narrow to private and read
+  // from the snapshot-aware getListingDetail so we see what guests would see.
+  const catalog = new Map<string, IAddOnPerformance>();
+  for (const l of listings) {
+    if (l.kind === 'boondocking') continue;
+    let addOns;
+    try { addOns = getListingDetail(l).addOns; } catch { continue; }
+    for (const a of addOns) {
+      if (catalog.has(a.id)) continue; // first listing wins; ids are unique within a draft
+      catalog.set(a.id, {
+        id: a.id,
+        label: a.label,
+        icon: a.icon,
+        photo: a.photo,
+        bookingsCount: 0,
+        totalEligible: 0,
+        attachRate: 0,
+        totalRevenue: 0,
+        totalUnits: 0,
+        lastBookedAt: null,
+      });
+    }
+  }
+
+  // Eligible bookings are the host's confirmed/approved set.
+  const eligible = hostBookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+  const totalEligible = eligible.length;
+
+  for (const b of eligible) {
+    if (!b.addOns?.length) continue;
+    for (const a of b.addOns) {
+      const row = catalog.get(a.id);
+      // If a host removed an add-on after it was booked, we drop it from
+      // the dashboard — the editor catalog wins. Matches "what's currently
+      // offered" framing on the dashboard.
+      if (!row) continue;
+      row.bookingsCount += 1;
+      row.totalRevenue += a.amount || 0;
+      row.totalUnits += a.quantity || 1;
+      if (!row.lastBookedAt || b.createdAt > row.lastBookedAt) {
+        row.lastBookedAt = b.createdAt;
+      }
+    }
+  }
+
+  // Finalize attach rates and sort.
+  const rows = [...catalog.values()];
+  for (const r of rows) {
+    r.totalEligible = totalEligible;
+    r.attachRate = totalEligible === 0 ? 0 : Math.round((100 * r.bookingsCount) / totalEligible);
+  }
+  rows.sort((a, b) => {
+    // Booked rows above unbooked; within each group sort by revenue desc.
+    if ((a.bookingsCount > 0) !== (b.bookingsCount > 0)) return a.bookingsCount > 0 ? -1 : 1;
+    return b.totalRevenue - a.totalRevenue;
+  });
+  return rows;
 }
