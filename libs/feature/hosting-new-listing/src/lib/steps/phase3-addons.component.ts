@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IDraftListing, IAddOn, downscalePhoto } from '@cnt-workspace/data-access';
 
 const DEFAULT_UNIT: IAddOn['unit'] = 'per stay';
@@ -38,7 +39,7 @@ function makeId(): string {
 @Component({
   selector: 'cnt-phase3-addons',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   template: `
     <div>
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">
@@ -71,9 +72,27 @@ function makeId(): string {
               </button>
             </div>
           } @else {
-            <div class="space-y-3 mb-4">
+            <div class="space-y-3 mb-4" cdkDropList (cdkDropListDropped)="onDrop($event)">
               @for (row of rows; track row.id; let i = $index) {
-                <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6">
+                <div cdkDrag [cdkDragData]="row"
+                  class="rounded-2xl border bg-white p-5 md:p-6"
+                  [ngClass]="!isRowValid(row) && rowAttempted(row) ? 'border-trinidad' : 'border-dark-text/10'">
+                  <!-- Drag handle + incomplete badge -->
+                  <div class="flex items-center justify-between mb-3">
+                    <span cdkDragHandle
+                      class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text cursor-grab active:cursor-grabbing select-none"
+                      title="Drag to reorder">
+                      <span class="material-symbols-outlined text-base">drag_indicator</span>
+                      Reorder
+                    </span>
+                    @if (!isRowValid(row) && rowAttempted(row)) {
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-trinidad/10 text-trinidad text-[0.6rem] font-button uppercase tracking-[0.1em] font-bold">
+                        <span class="material-symbols-outlined text-[12px]">warning</span>
+                        {{ rowValidationHint(row) }}
+                      </span>
+                    }
+                  </div>
+
                   <div class="flex items-start gap-4 mb-4">
 
                     <!-- Art tile: photo if uploaded, otherwise the chosen icon. -->
@@ -235,9 +254,34 @@ export class Phase3AddonsComponent {
   readonly starterTemplates = STARTER_TEMPLATES;
   readonly defaultIcon = DEFAULT_ICON;
 
-  /** Rows complete enough to show in the guest preview (need at least a name). */
+  /** Rows complete enough to show in the guest preview / persist to guests. */
   get previewRows(): IAddOn[] {
-    return this.rows.filter(r => r.label.trim().length > 0);
+    return this.rows.filter(r => this.isRowValid(r));
+  }
+
+  /** A row counts as valid when it has a label and a non-negative price. */
+  isRowValid(row: IAddOn): boolean {
+    return row.label.trim().length >= 2 && (row.price ?? 0) >= 0;
+  }
+
+  /** True when the host has clearly started editing the row — used to delay
+   * showing the "incomplete" warning until they've done *something*. */
+  rowAttempted(row: IAddOn): boolean {
+    return !!row.description?.trim() || !!row.photo || row.icon !== 'add_shopping_cart' || (row.price ?? 0) > 0;
+  }
+
+  rowValidationHint(row: IAddOn): string {
+    if (row.label.trim().length < 2) return 'Name required';
+    if ((row.price ?? 0) < 0) return 'Price cannot be negative';
+    return '';
+  }
+
+  onDrop(ev: CdkDragDrop<IAddOn[]>): void {
+    if (ev.previousIndex === ev.currentIndex) return;
+    const next = [...this.rows];
+    moveItemInArray(next, ev.previousIndex, ev.currentIndex);
+    this.rows = next;
+    this.emit();
   }
 
   /** Map a unit to the short suffix the booking widget shows. */

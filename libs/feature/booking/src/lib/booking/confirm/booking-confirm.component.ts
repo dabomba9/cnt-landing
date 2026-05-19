@@ -391,6 +391,8 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
         unitPrice: a.price,
         quantity: 1,
         amount: this.addOnAmount(a, nights, guests),
+        icon: a.icon,
+        photo: a.photo,
       }));
   }
 

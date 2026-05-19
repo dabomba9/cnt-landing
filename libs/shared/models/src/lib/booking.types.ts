@@ -16,6 +16,11 @@ export interface IBookingAddOn {
   quantity: number;
   /** Total billed for this line (unitPrice × multiplier at booking time). */
   amount: number;
+  /** Material Symbols name captured at booking time; receipts render this even
+   * if the host later changes the source add-on's icon. */
+  icon?: string;
+  /** Optional photo data URL captured at booking time; same rationale as icon. */
+  photo?: string;
 }
 
 export interface IBooking {

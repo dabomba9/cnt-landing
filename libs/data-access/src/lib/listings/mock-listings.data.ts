@@ -910,7 +910,9 @@ function buildUserPublishedDetail(listing: IListing, snap: IPublishedSnapshot): 
     trustBadges: [],                  // new host — no badges yet
     unavailableDates: [],
     siteSpecs: siteSpecsFromDraft(d),
-    addOns: d.addOns ?? [],           // editable via /hosting/listings/:id/edit
+    // Filter incomplete rows (no name / negative price) so half-edited add-ons
+    // never reach guests. Host's working copy is preserved in the draft.
+    addOns: (d.addOns ?? []).filter(a => a.label?.trim().length >= 2 && (a.price ?? 0) >= 0),
     faqs: [],                         // wizard doesn't collect FAQs (yet)
   };
 }

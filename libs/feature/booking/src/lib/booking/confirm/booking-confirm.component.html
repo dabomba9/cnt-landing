@@ -259,7 +259,19 @@
                   @if (booking.addOns?.length) {
                     @for (a of booking.addOns; track a.id) {
                       <div class="flex justify-between text-muted-text">
-                        <span class="truncate pr-2">+ {{ a.label }}</span>
+                        <span class="inline-flex items-center gap-1.5 truncate pr-2">
+                          @if (a.photo) {
+                            <img [src]="a.photo" alt="" class="shrink-0 w-5 h-5 rounded object-cover">
+                          } @else if (a.icon) {
+                            <span class="material-symbols-outlined text-[16px] shrink-0 text-jungle-green">{{ a.icon }}</span>
+                          } @else {
+                            <span class="shrink-0">+</span>
+                          }
+                          <span class="truncate">{{ a.label }}</span>
+                          @if (a.quantity > 1) {
+                            <span class="text-[0.65rem]">× {{ a.quantity }}</span>
+                          }
+                        </span>
                         <span>${{ a.amount }}</span>
                       </div>
                     }

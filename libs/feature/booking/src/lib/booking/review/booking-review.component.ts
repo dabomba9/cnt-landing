@@ -216,6 +216,8 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
       unitPrice: a.price,
       quantity: a.unit === 'per unit' ? this.addOnQty(a.id) : 1,
       amount: this.addOnAmount(a),
+      icon: a.icon,
+      photo: a.photo,
     }));
   }
 
