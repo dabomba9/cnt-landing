@@ -175,7 +175,7 @@ import {
                     </div>
                   </label>
                 </div>
-                <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30 mt-3">
+                <div class="rounded-md border border-dark-text/8 p-4 bg-cream/30 mt-3">
                   <div class="text-xs font-body font-bold text-dark-text mb-2">Tow vehicle photo</div>
                   @if (tow.photo) {
                     <img [src]="tow.photo" alt="Tow vehicle" class="w-full h-32 object-cover rounded-md mb-2">
@@ -211,7 +211,7 @@ import {
           <div>
             <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Photos</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30">
+              <div class="rounded-md border border-dark-text/8 p-4 bg-cream/30">
                 <div class="text-xs font-body font-bold text-dark-text mb-2">RV photo</div>
                 @if (rv.rvPhoto) {
                   <img [src]="rv.rvPhoto" alt="RV photo" class="w-full h-32 object-cover rounded-md mb-2">
@@ -225,7 +225,7 @@ import {
                   <button type="button" (click)="rv.rvPhoto = null" class="ml-2 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad">Remove</button>
                 }
               </div>
-              <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30">
+              <div class="rounded-md border border-dark-text/8 p-4 bg-cream/30">
                 <div class="text-xs font-body font-bold text-dark-text mb-2">License plate</div>
                 @if (rv.licensePhoto) {
                   <img [src]="rv.licensePhoto" alt="License plate" class="w-full h-32 object-cover rounded-md mb-2">
