@@ -5,7 +5,7 @@ import {
   IDraftListing, HostListingDraftService, ToastService,
   CANCELLATION_TIER_META, PROPERTY_DESCRIPTOR_META, PRIMARY_PROPERTY_TYPE_META,
   primaryDescriptorPhrase,
-  AMENITY_LABELS, RV_TYPES,
+  AMENITY_LABELS, AMENITY_ICONS, RV_TYPES,
 } from '@cnt-workspace/data-access';
 
 /**
@@ -41,13 +41,13 @@ import {
             }
           </div>
           <div class="p-5 md:p-6">
-            <h3 class="font-headline font-bold text-dark-text text-2xl mb-1">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block mb-1">
+              {{ descriptorLine }}
+            </span>
+            <h3 class="font-headline font-bold text-dark-text text-2xl mb-3">
               {{ draft.title || 'Untitled listing' }}
             </h3>
-            <p class="text-sm font-body text-muted-text mb-3">
-              {{ draft.address?.city }}@if (draft.address?.state) {, {{ draft.address?.state }}}
-            </p>
-            <p class="text-sm font-body text-dark-text leading-relaxed line-clamp-3">
+            <p class="text-sm font-body text-dark-text leading-relaxed whitespace-pre-line">
               {{ draft.description }}
             </p>
             <div class="mt-4 flex items-baseline justify-between">
@@ -60,6 +60,54 @@ import {
               </span>
             </div>
           </div>
+        </div>
+
+        <!-- Photo strip -->
+        @if (extraPhotos.length > 0) {
+          <div class="mb-6">
+            <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-2">
+              {{ (draft.photos?.length ?? 0) }} photos
+            </div>
+            <div class="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
+              @for (src of extraPhotos; track src) {
+                <img [src]="src" alt="" class="shrink-0 w-28 h-20 rounded-lg object-cover border border-dark-text/10">
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Amenities -->
+        <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-6">
+          <h3 class="font-headline font-bold text-dark-text text-base mb-3">Amenities</h3>
+          @if (amenityChips.length > 0) {
+            <div class="flex flex-wrap gap-2">
+              @for (a of amenityChips; track a.label) {
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream/60 border border-dark-text/10 text-xs font-body text-dark-text">
+                  <span class="material-symbols-outlined text-base text-jungle-green">{{ a.icon }}</span>
+                  {{ a.label }}
+                </span>
+              }
+            </div>
+          } @else {
+            <p class="text-xs font-body text-muted-text">No amenities selected.</p>
+          }
+        </div>
+
+        <!-- House rules -->
+        <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-6">
+          <h3 class="font-headline font-bold text-dark-text text-base mb-3">House rules</h3>
+          @if (houseRulesList.length > 0) {
+            <ul class="space-y-1.5">
+              @for (rule of houseRulesList; track rule) {
+                <li class="flex items-start gap-2 text-sm font-body text-dark-text">
+                  <span class="material-symbols-outlined text-base text-jungle-green shrink-0" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                  {{ rule }}
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="text-xs font-body text-muted-text">No house rules set.</p>
+          }
         </div>
 
         <!-- Fact strip -->
@@ -151,6 +199,46 @@ export class Phase3ReviewComponent {
 
   get missing(): string[] {
     return this.draft ? this.drafts.missingRequiredFields(this.draft) : [];
+  }
+
+  /** Guest-facing descriptor line: "Brewery stay in Fajardo, PR". */
+  get descriptorLine(): string {
+    const phrase = primaryDescriptorPhrase(this.draft);
+    const city = this.draft?.address?.city?.trim();
+    const state = this.draft?.address?.state?.trim();
+    const loc = [city, state].filter(Boolean).join(', ');
+    return loc ? `${phrase} in ${loc}` : phrase;
+  }
+
+  /** Photos beyond the hero — drives the thumbnail strip. */
+  get extraPhotos(): string[] {
+    return this.draft?.photos?.slice(1) ?? [];
+  }
+
+  /** Amenity chips — standard amenities (icon + label) then custom ones. */
+  get amenityChips(): { icon: string; label: string }[] {
+    const std = (this.draft?.amenities ?? []).map(a => ({
+      icon: AMENITY_ICONS[a], label: this.amenityLabels[a],
+    }));
+    const custom = (this.draft?.customAmenities ?? []).map(label => ({
+      icon: 'add_circle', label,
+    }));
+    return [...std, ...custom];
+  }
+
+  /** Active house rules — standard toggles that are on, plus custom lines. */
+  get houseRulesList(): string[] {
+    const r = this.draft?.rules;
+    const out: string[] = [];
+    if (r?.noSmoking)   out.push('No smoking on the property');
+    if (r?.noParties)   out.push('No parties or events');
+    if (r?.quietHours)  out.push('Quiet hours 10 PM – 7 AM');
+    if (r?.noFireworks) out.push('No fireworks on the premises');
+    if (r?.noFirearms)  out.push('No firearms on the premises');
+    for (const line of (this.draft?.customRules ?? '').split('\n').map(l => l.trim()).filter(Boolean)) {
+      out.push(line);
+    }
+    return out;
   }
 
   publish(): void {

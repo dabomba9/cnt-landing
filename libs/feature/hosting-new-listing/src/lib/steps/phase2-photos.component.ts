@@ -29,7 +29,7 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-2"
           cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
           @for (src of photos; track src; let i = $index) {
-            <div cdkDrag class="relative aspect-[4/3] rounded-xl overflow-hidden border border-dark-text/10 bg-cream/40 cursor-grab active:cursor-grabbing">
+            <div cdkDrag class="relative aspect-[4/3] rounded-md overflow-hidden border border-dark-text/10 bg-cream/40 cursor-grab active:cursor-grabbing">
               <img [src]="src" [alt]="'Photo ' + (i + 1)" class="w-full h-full object-cover pointer-events-none">
               @if (i === 0) {
                 <span class="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold">
