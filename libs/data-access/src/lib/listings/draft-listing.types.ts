@@ -254,6 +254,8 @@ export interface IDraftListing {
   // ─────────────── Phase 2 — Make it stand out ───────────────
   /** Downscaled JPEG data URLs (~1200px max dimension, ~85% quality). */
   photos?: string[];
+  /** Optional per-photo captions, index-aligned with `photos`. */
+  photoCaptions?: string[];
   title?: string;
   description?: string;
   visibility?: VisibilityKind[];

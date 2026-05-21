@@ -82,6 +82,7 @@
       <!-- ================= Lightbox overlay ================= -->
       <cnt-listing-photo-lightbox
         [photos]="detail.photos"
+        [captions]="detail.photoCaptions ?? []"
         [title]="listing.title"
         [open]="lightboxOpen"
         [startIndex]="lightboxStartIndex"

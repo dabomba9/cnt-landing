@@ -469,6 +469,8 @@ export interface IListingDetail {
   description: string;
   host: IHost;
   photos: string[];
+  /** Optional per-photo captions, index-aligned with `photos`. Empty/undefined for seeded listings. */
+  photoCaptions?: string[];
   houseRules: string[];
   cancellationTier: CancellationTier;
   maxGuests: number;        // e.g. 4 — total guests the site can accommodate
@@ -919,6 +921,7 @@ function buildUserPublishedDetail(listing: IListing, snap: IPublishedSnapshot): 
       responseHours: 24,
     },
     photos: (d.photos && d.photos.length > 0) ? d.photos : [listing.image],
+    photoCaptions: d.photoCaptions ?? [],
     houseRules: houseRulesFromDraft(d.rules, d.customRules ?? ''),
     cancellationTier: d.cancellationTier ?? 'moderate',
     maxGuests: d.guestCapacity ?? 2,

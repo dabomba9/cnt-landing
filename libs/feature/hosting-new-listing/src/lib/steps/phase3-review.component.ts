@@ -69,8 +69,13 @@ import {
               {{ (draft.photos?.length ?? 0) }} photos
             </div>
             <div class="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
-              @for (src of extraPhotos; track src) {
-                <img [src]="src" alt="" class="shrink-0 w-28 h-20 rounded-lg object-cover border border-dark-text/10">
+              @for (p of extraPhotos; track p.src) {
+                <div class="shrink-0 w-28">
+                  <img [src]="p.src" alt="" class="w-28 h-20 rounded-md object-cover border border-dark-text/10">
+                  @if (p.caption) {
+                    <p class="text-[0.6rem] font-body text-muted-text mt-1 leading-snug line-clamp-2">{{ p.caption }}</p>
+                  }
+                </div>
               }
             </div>
           </div>
@@ -210,9 +215,11 @@ export class Phase3ReviewComponent {
     return loc ? `${phrase} in ${loc}` : phrase;
   }
 
-  /** Photos beyond the hero — drives the thumbnail strip. */
-  get extraPhotos(): string[] {
-    return this.draft?.photos?.slice(1) ?? [];
+  /** Photos beyond the hero — drives the thumbnail strip, with captions. */
+  get extraPhotos(): { src: string; caption: string }[] {
+    const photos = this.draft?.photos ?? [];
+    const captions = this.draft?.photoCaptions ?? [];
+    return photos.slice(1).map((src, i) => ({ src, caption: captions[i + 1] ?? '' }));
   }
 
   /** Amenity chips — standard amenities (icon + label) then custom ones. */

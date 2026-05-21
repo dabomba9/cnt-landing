@@ -18,10 +18,17 @@ import { FocusTrapDirective } from '@cnt-workspace/ui';
 })
 export class ListingPhotoLightboxComponent implements OnChanges {
   @Input() photos: string[] = [];
+  /** Optional per-photo captions, index-aligned with `photos`. */
+  @Input() captions: string[] = [];
   @Input() title = '';
   @Input() open = false;
   @Input() startIndex = 0;
   @Output() closed = new EventEmitter<void>();
+
+  /** Caption for the photo currently shown, or '' when none. */
+  get currentCaption(): string {
+    return this.captions[this.index] ?? '';
+  }
 
   index = 0;
   fading = false;

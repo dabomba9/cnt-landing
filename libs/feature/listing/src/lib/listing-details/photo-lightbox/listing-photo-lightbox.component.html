@@ -31,6 +31,12 @@
       <button type="button" (click)="$event.stopPropagation(); next()" class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/95 hover:bg-white text-dark-text flex items-center justify-center shadow-lg z-10" aria-label="Next photo">
         <span class="material-symbols-outlined">chevron_right</span>
       </button>
+      @if (currentCaption) {
+        <div class="absolute left-0 right-0 bottom-0 px-6 py-4 bg-gradient-to-t from-black/70 to-transparent pointer-events-none"
+          [class.opacity-0]="fading">
+          <p class="text-sm md:text-base font-body text-white text-center max-w-2xl mx-auto">{{ currentCaption }}</p>
+        </div>
+      }
     </div>
     <!-- Thumbnail strip -->
     <div class="flex gap-2 px-6 pb-6 overflow-x-auto" (click)="$event.stopPropagation()">
