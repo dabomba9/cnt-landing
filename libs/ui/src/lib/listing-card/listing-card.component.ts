@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { IListing, getListingDetail, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
+import { IListing, getListingDetail, addOnCountForListing, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-listing-card',
@@ -57,6 +57,18 @@ export class ListingCardComponent {
       return { label: 'Guest Favorite', icon: 'workspace_premium', bg: 'bg-dark-text', fg: 'text-gold' };
     }
     return null;
+  }
+
+  /** Add-on count for the "+N add-ons" badge. Memoized per listing id so the
+   * template getter doesn't recompute every change-detection cycle. */
+  private _addOnCount = 0;
+  private _addOnCountForId: number | null = null;
+  get addOnCount(): number {
+    if (this._addOnCountForId !== this.listing.id) {
+      this._addOnCount = addOnCountForListing(this.listing);
+      this._addOnCountForId = this.listing.id;
+    }
+    return this._addOnCount;
   }
 
   onFavoriteClick(event: MouseEvent): void {

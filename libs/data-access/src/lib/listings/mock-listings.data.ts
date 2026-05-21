@@ -798,6 +798,24 @@ export function getListingDetail(listing: IListing): IListingDetail {
   };
 }
 
+/**
+ * Add-on count for a listing — drives the search-card "+N add-ons" badge.
+ * Cheap by design: seeded listings are category arithmetic, user-published
+ * listings read their publish-time snapshot. Mirrors the branching in
+ * `getListingDetail()` so the count matches the detail page exactly.
+ * Boondocking listings never have add-ons.
+ */
+export function addOnCountForListing(listing: IListing): number {
+  if (listing.kind === 'boondocking') return 0;
+  if (listing.id === 1) return HERITAGE_OAK_DETAIL.addOns.length;
+  const snap = readPublishedSnapshot(listing.id);
+  if (snap) {
+    return (snap.draft.addOns ?? [])
+      .filter(a => a.label?.trim().length >= 2 && (a.price ?? 0) >= 0).length;
+  }
+  return (ADDONS_BY_CATEGORY[listing.category]?.length ?? 0) + COMMON_ADDONS.length;
+}
+
 function generateSiteSpecs(listing: IListing): ISiteSpecs {
   const padTypes: PadType[]   = ['gravel', 'grass', 'concrete', 'dirt'];
   const leveling: Leveling[]  = ['level', 'mostly-level', 'needs-blocks'];

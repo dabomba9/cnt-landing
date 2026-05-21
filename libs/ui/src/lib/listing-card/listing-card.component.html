@@ -124,6 +124,13 @@
       @if (listing.amenities.length > 3) {
         <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md">+{{ listing.amenities.length - 3 }}</span>
       }
+      @if (addOnCount > 0) {
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-trinidad/10 text-trinidad text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md"
+          [title]="addOnCount + ' optional add-on' + (addOnCount === 1 ? '' : 's') + ' available'">
+          <span class="material-symbols-outlined text-[12px]">add_circle</span>
+          {{ addOnCount }} add-on{{ addOnCount === 1 ? '' : 's' }}
+        </span>
+      }
     </div>
   </div>
 </a>
