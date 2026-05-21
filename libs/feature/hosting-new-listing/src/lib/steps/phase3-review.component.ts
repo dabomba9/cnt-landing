@@ -3,7 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import {
   IDraftListing, HostListingDraftService, ToastService,
-  CANCELLATION_TIER_META, PROPERTY_DESCRIPTOR_META, AMENITY_LABELS, RV_TYPES,
+  CANCELLATION_TIER_META, PROPERTY_DESCRIPTOR_META, PRIMARY_PROPERTY_TYPE_META,
+  primaryDescriptorPhrase,
+  AMENITY_LABELS, RV_TYPES,
 } from '@cnt-workspace/data-access';
 
 /**
@@ -133,7 +135,16 @@ export class Phase3ReviewComponent {
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
+  /** Title used in the review fact-strip "Type" cell — prefers the primary type
+   * (new model). Honors custom labels when primaryType === 'custom'. Falls back
+   * to the first secondary descriptor for legacy drafts. */
   get firstDescriptorLabel(): string {
+    if (this.draft?.primaryType === 'custom') {
+      return (this.draft.customPrimaryLabel || '').trim() || 'Custom';
+    }
+    if (this.draft?.primaryType) {
+      return PRIMARY_PROPERTY_TYPE_META[this.draft.primaryType].label;
+    }
     const first = this.draft?.descriptors?.[0];
     return first ? this.descriptorMeta[first].label : '';
   }

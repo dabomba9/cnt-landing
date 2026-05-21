@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -51,7 +51,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private bookingSvc: BookingService,
     private reviewSvc: ReviewService,
     private seo: SeoService,
+    private router: Router,
   ) {}
+
+  /** Flip to host view and head to the host dashboard — mirrors the host
+   * dashboard's "Switch to traveling" control. */
+  switchToHosting(): void {
+    this.auth.setView('host');
+    this.router.navigate(['/hosting']);
+  }
 
   ngOnInit(): void {
     this.seo.update({

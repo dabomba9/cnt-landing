@@ -15,6 +15,7 @@ import { IBooking, IBookingAddOn, STATUS_META } from '@cnt-workspace/models';
 import { AuthService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, getListingDetail, IAddOn } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
+import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 @Component({
@@ -330,10 +331,9 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.booking) return 0;
     const nights = this.modifyNights;
     if (nights === 0) return this.booking.total;
-    return (this.booking.pricePerNight * nights)
-      + this.modifyAddOnsTotal
-      + this.booking.cleaningFee
-      + this.booking.serviceFee;
+    const subtotal = this.booking.pricePerNight * nights;
+    // All-in pricing: subtotal already includes fee + incentive.
+    return subtotal + this.modifyAddOnsTotal + this.booking.cleaningFee;
   }
 
   get modifyHasChanges(): boolean {

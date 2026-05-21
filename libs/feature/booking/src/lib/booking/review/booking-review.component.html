@@ -379,10 +379,17 @@
                       </div>
                     }
                   }
+                  <!-- "Included" lines — service fee + feedback incentive are baked into the nightly rate (all-in pricing). -->
+                  <div class="text-[0.7rem] text-muted-text -mt-1 pl-4">
+                    Includes ~${{ serviceFee }} service fee
+                    <span class="material-symbols-outlined text-[12px] align-middle ml-0.5" title="15% of your nightly rate (minimum $5/night) — supports 24/7 trip support and platform safety">info</span>
+                  </div>
+                  @if (feedbackIncentive > 0) {
+                    <div class="text-[0.7rem] text-muted-text -mt-2 pl-4">
+                      Includes ${{ feedbackIncentive }} feedback incentive · refunds as CurbNTurf Cash after your review
+                    </div>
+                  }
                   <div class="flex justify-between"><span>Cleaning fee</span><span>${{ CLEANING_FEE }}</span></div>
-                  <div class="flex justify-between"><span class="inline-flex items-center gap-1">Service fee
-                    <span class="material-symbols-outlined text-[14px] text-muted-text" title="15% — supports 24/7 trip support and platform safety">info</span>
-                  </span><span>${{ serviceFee }}</span></div>
                   <div class="flex justify-between"><span>Taxes (estimated)</span><span>${{ taxes }}</span></div>
                   @if (promoApplied) {
                     <div class="flex justify-between text-jungle-green">

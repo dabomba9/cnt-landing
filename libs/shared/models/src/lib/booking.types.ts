@@ -42,6 +42,9 @@ export interface IBooking {
   subtotal: number;
   cleaningFee: number;
   serviceFee: number;
+  /** Optional $5/night charge that refunds as CurbNTurf Cash after a qualifying
+   * review. Undefined on bookings made before the feedback-incentive model. */
+  feedbackIncentive?: number;
   total: number;
   instantBook: boolean;
   status: BookingStatus;

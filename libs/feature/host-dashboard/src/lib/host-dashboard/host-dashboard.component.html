@@ -5,8 +5,10 @@
     <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-12 md:space-y-16">
 
       <!-- Greeting -->
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-        <div>
+      <div class="relative rounded-3xl border border-dark-text/8 px-6 md:px-10 py-8 md:py-10 overflow-hidden"
+        style="background: radial-gradient(ellipse at 95% 0%, rgba(251, 215, 132, 0.35) 0%, transparent 55%), radial-gradient(ellipse at 5% 100%, rgba(41, 93, 66, 0.18) 0%, transparent 50%), linear-gradient(135deg, #ffffff 0%, #f7f5ec 100%);">
+      <div class="relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div class="min-w-0">
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">{{ timeGreeting }}, host</span>
           <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[1.05] text-4xl md:text-5xl">{{ user?.firstName || 'Host' }}, here's your stand</h1>
           <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 text-xs text-muted-text font-body">
@@ -23,6 +25,7 @@
             Add a listing
           </a>
         </div>
+      </div>
       </div>
 
       <!-- Resume-draft card — only renders when an in-progress wizard draft exists. -->

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -84,12 +84,35 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     return Math.round(((this.step + 1) / this.stepsTotal) * 100);
   }
 
+  /** Step labels per phase — drives the edit-mode TOC sidebar. */
+  stepsByPhase(phase: number): string[] {
+    switch (phase) {
+      case 1: return PHASE1_STEPS;
+      case 2: return PHASE2_STEPS;
+      case 3: return this.editing ? PHASE3_STEPS_EDIT : PHASE3_STEPS;
+      default: return [];
+    }
+  }
+
+  /** Partial-progress badge for a top-level phase chip. `phase` is 1/2/3 at runtime. */
+  phaseProgress(phase: number): { done: number; total: number; complete: boolean } {
+    const total = this.stepsByPhase(phase).length;
+    let done = 0;
+    for (let i = 0; i < total; i++) {
+      if (this.drafts.isStepValid(phase as 1 | 2 | 3, i)) done++;
+    }
+    return { done, total, complete: total > 0 && done === total };
+  }
+
   /** Phase labels for the top-of-page phase nav. */
   readonly PHASE_LABELS = [
     'Tell us about your place',
     'Make it stand out',
     'Finish up & publish',
   ];
+
+  /** Short labels for the breadcrumb (the long PHASE_LABELS read awkwardly there). */
+  readonly PHASE_SHORT_LABELS = ['Basics', 'Showcase', 'Finish up'];
 
   private subs: Subscription[] = [];
 
@@ -165,8 +188,10 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     return 'Saved earlier';
   }
 
-  /** Thin proxy so the chip strip can ask completion-state per step. */
-  stepValid(phase: 1 | 2 | 3, step: number): boolean {
+  /** Thin proxy so the chip strip + TOC sidebar can ask completion-state per step.
+   * Accepts a plain number so template `p + 1` arithmetic works without casts. */
+  stepValid(phase: number, step: number): boolean {
+    if (phase !== 1 && phase !== 2 && phase !== 3) return false;
     return this.drafts.isStepValid(phase, step);
   }
 
@@ -227,8 +252,11 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
   /** Phase hub "Start" / "Continue" → first incomplete step (here just step 0). */
   startPhase(phase: 1 | 2 | 3): void { this.go(phase, 0); }
 
-  /** Jump to any step the user has reached. The progress chips wire to this. */
-  jumpToStep(phase: 1 | 2 | 3, step: number): void { this.go(phase, step); }
+  /** Jump to any step the user has reached. The progress chips + TOC sidebar wire to this. */
+  jumpToStep(phase: number, step: number): void {
+    if (phase !== 1 && phase !== 2 && phase !== 3) return;
+    this.go(phase, step);
+  }
   /** Phase-chip click in the top nav — sends the user to that phase's hub. */
   jumpToPhaseHub(phase: number): void {
     if (phase === 1 || phase === 2 || phase === 3) this.go(phase, -1);
@@ -277,5 +305,36 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
     if (this.editing) this.drafts.exitEdit();
+  }
+
+  /**
+   * Keyboard shortcuts:
+   *  - 1 / 2 / 3 → jump to phase hub
+   *  - ArrowLeft  → prev step (same as the Previous button)
+   *  - ArrowRight → next step (only when current step is valid)
+   *
+   * Skips when focus is on an input, textarea, select, or contenteditable —
+   * otherwise a host typing "2" in the price field would teleport away mid-edit.
+   */
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(ev: KeyboardEvent): void {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    const target = ev.target as HTMLElement | null;
+    if (target) {
+      const tag = target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (target.isContentEditable) return;
+    }
+    if (this.discardModalOpen) return;
+    if (ev.key === '1' || ev.key === '2' || ev.key === '3') {
+      this.jumpToPhaseHub(Number(ev.key));
+      ev.preventDefault();
+    } else if (ev.key === 'ArrowLeft') {
+      this.prev();
+      ev.preventDefault();
+    } else if (ev.key === 'ArrowRight') {
+      if (this.currentStepValid) this.next();
+      ev.preventDefault();
+    }
   }
 }

@@ -15,7 +15,10 @@ export type Amenity =
   | 'back-in' | 'pull-through' | 'electricity' | 'potable-water' | 'dump-station' | 'sewage'
   | 'cell-coverage' | 'wifi' | 'campfires' | 'pets' | 'trash' | 'recycle' | 'picnic-table'
   | 'toilet' | 'shower' | 'laundry' | 'tents-allowed' | 'vehicles-allowed' | 'hot-tub'
-  | 'wheelchair';
+  | 'wheelchair'
+  // Added in the amenities expansion:
+  | 'ev-charging' | 'fire-ring' | 'outdoor-grill' | 'generator-ok'
+  | 'outdoor-lighting' | 'sunshade' | 'water-fill' | 'lockable-storage';
 
 export const AMENITY_LABELS: Record<Amenity, string> = {
   'back-in':         'Back In',
@@ -38,6 +41,14 @@ export const AMENITY_LABELS: Record<Amenity, string> = {
   'vehicles-allowed':'Vehicles Allowed',
   'hot-tub':         'Hot Tub/Pool',
   'wheelchair':      'Wheelchair Accessible',
+  'ev-charging':       'EV Charging',
+  'fire-ring':         'Fire Ring',
+  'outdoor-grill':     'Outdoor Grill',
+  'generator-ok':      'Generator-Friendly',
+  'outdoor-lighting':  'Outdoor Lighting',
+  'sunshade':          'Sunshade',
+  'water-fill':        'Drinking-Water Fill',
+  'lockable-storage':  'Lockable Storage',
 };
 
 export const AMENITY_GROUP: Amenity[] = [
@@ -65,10 +76,18 @@ export const AMENITY_ICONS: Record<Amenity, string> = {
   'toilet':            'wc',
   'shower':            'shower',
   'laundry':           'local_laundry_service',
-  'tents-allowed':     'cabin',
+  'tents-allowed':     'camping',
   'vehicles-allowed':  'commute',
   'hot-tub':           'hot_tub',
   'wheelchair':        'accessible',
+  'ev-charging':       'ev_station',
+  'fire-ring':         'local_fire_department',
+  'outdoor-grill':     'outdoor_grill',
+  'generator-ok':      'power',
+  'outdoor-lighting':  'wb_incandescent',
+  'sunshade':          'umbrella',
+  'water-fill':        'local_drink',
+  'lockable-storage':  'lock',
 };
 
 export type RvType = 'class-a' | 'class-b' | 'class-c' | 'fifth-wheel' | 'travel-trailer' | 'truck-camper' | 'teardrop' | 'popup';

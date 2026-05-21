@@ -43,7 +43,9 @@ const ROAD_OPTIONS: { key: RoadCondition; label: string }[] = [
       <!-- Visibility -->
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-5">
         <h3 class="font-headline font-bold text-dark-text text-base mb-1">What can guests see from the site?</h3>
-        <p class="text-xs font-body text-muted-text mb-4">Multi-select.</p>
+        <p class="text-xs font-body mb-4" [ngClass]="visibility.size > 0 ? 'text-muted-text' : 'text-trinidad font-bold'">
+          {{ visibility.size > 0 ? 'Multi-select.' : 'Pick at least one.' }}
+        </p>
         <div class="grid grid-cols-2 gap-2">
           @for (opt of visibilityOpts; track opt.key) {
             <button type="button" (click)="toggleVisibility(opt.key)"
@@ -58,7 +60,9 @@ const ROAD_OPTIONS: { key: RoadCondition; label: string }[] = [
       <!-- Noise -->
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-5">
         <h3 class="font-headline font-bold text-dark-text text-base mb-1">What's the noise level?</h3>
-        <p class="text-xs font-body text-muted-text mb-4">Pick the closest match.</p>
+        <p class="text-xs font-body mb-4" [ngClass]="noise ? 'text-muted-text' : 'text-trinidad font-bold'">
+          {{ noise ? 'Pick the closest match.' : 'Choose one.' }}
+        </p>
         <div class="grid grid-cols-2 gap-2">
           @for (opt of noiseOpts; track opt.key) {
             <button type="button" (click)="setNoise(opt.key)"
@@ -73,7 +77,9 @@ const ROAD_OPTIONS: { key: RoadCondition; label: string }[] = [
       <!-- Road -->
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-5">
         <h3 class="font-headline font-bold text-dark-text text-base mb-1">Road conditions to the site</h3>
-        <p class="text-xs font-body text-muted-text mb-4">Multi-select.</p>
+        <p class="text-xs font-body mb-4" [ngClass]="roads.size > 0 ? 'text-muted-text' : 'text-trinidad font-bold'">
+          {{ roads.size > 0 ? 'Multi-select.' : 'Pick at least one.' }}
+        </p>
         <div class="flex flex-wrap gap-2">
           @for (opt of roadOpts; track opt.key) {
             <button type="button" (click)="toggleRoad(opt.key)"

@@ -11,6 +11,33 @@ const NIGHT_OPTIONS = [1, 2, 3, 5, 7, 14, 21, 30];
 const NOTICE_OPTIONS_HOURS = [0, 6, 12, 24, 48, 72];
 const NOTICE_OPTIONS_WEEKS = [1, 2, 4, 8, 12, 26, 52];
 
+/** One-tap presets that fill every booking field at once. */
+interface IBookingPreset {
+  key: string;
+  label: string;
+  icon: string;
+  checkInTime: string;
+  checkOutTime: string;
+  minNights: number;
+  maxNights: number;
+  minNoticeHours: number;
+  maxNoticeWeeks: number;
+  checkInProcess: CheckInProcess;
+  bookability: Bookability;
+}
+
+const BOOKING_PRESETS: IBookingPreset[] = [
+  { key: 'standard', label: 'Standard', icon: 'tune',
+    checkInTime: '3 PM', checkOutTime: '11 AM', minNights: 1, maxNights: 14,
+    minNoticeHours: 24, maxNoticeWeeks: 12, checkInProcess: 'self-checkin', bookability: 'instant' },
+  { key: 'flexible', label: 'Flexible', icon: 'sentiment_satisfied',
+    checkInTime: 'Anytime', checkOutTime: 'Anytime', minNights: 1, maxNights: 30,
+    minNoticeHours: 0, maxNoticeWeeks: 26, checkInProcess: 'self-checkin', bookability: 'instant' },
+  { key: 'strict', label: 'Strict', icon: 'shield',
+    checkInTime: '2 PM', checkOutTime: '11 AM', minNights: 2, maxNights: 14,
+    minNoticeHours: 48, maxNoticeWeeks: 12, checkInProcess: 'meet-greet', bookability: 'request' },
+];
+
 /**
  * Step 3.1 — booking-flow settings. Check-in/out windows, min/max nights,
  * request notice, check-in process, and instant-book vs request-to-book.
@@ -24,7 +51,21 @@ const NOTICE_OPTIONS_WEEKS = [1, 2, 4, 8, 12, 26, 52];
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">
         Bookings & check-ins
       </h2>
-      <p class="text-sm font-body text-muted-text mb-8">Tune how guests book and arrive.</p>
+      <p class="text-sm font-body text-muted-text mb-5">Tune how guests book and arrive.</p>
+
+      <!-- Quick presets -->
+      <div class="mb-6">
+        <div class="flex flex-wrap gap-2">
+          @for (p of presets; track p.key) {
+            <button type="button" (click)="applyPreset(p)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-dark-text/15 bg-cream/50 text-xs font-body font-bold text-dark-text hover:border-trinidad hover:text-trinidad transition-colors">
+              <span class="material-symbols-outlined text-sm">{{ p.icon }}</span>
+              {{ p.label }}
+            </button>
+          }
+        </div>
+        <p class="text-[0.65rem] font-body text-muted-text mt-2">Tap a preset, then fine-tune below.</p>
+      </div>
 
       <!-- Times -->
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-5">
@@ -57,7 +98,7 @@ const NOTICE_OPTIONS_WEEKS = [1, 2, 4, 8, 12, 26, 52];
         <div class="grid grid-cols-2 gap-4">
           <label class="flex flex-col gap-1.5">
             <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Min nights</span>
-            <select [(ngModel)]="minNights" name="minNights" (change)="emit()"
+            <select [(ngModel)]="minNights" name="minNights" (change)="onMinNightsChange()"
               class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text">
               @for (n of nights; track n) {
                 <option [ngValue]="n">{{ n }} {{ n === 1 ? 'night' : 'nights' }}</option>
@@ -181,8 +222,29 @@ export class Phase3BookingsComponent {
     { key: 'lockbox',      label: 'Lockbox',       desc: 'Code on a lockbox at the site entry.', icon: 'lock' },
   ];
 
+  readonly presets = BOOKING_PRESETS;
+
   setProcess(p: CheckInProcess): void { this.checkInProcess = p; this.emit(); }
   setBookability(b: Bookability): void { this.bookability = b; this.emit(); }
+
+  /** Apply a preset to every field at once. */
+  applyPreset(p: IBookingPreset): void {
+    this.checkInTime = p.checkInTime;
+    this.checkOutTime = p.checkOutTime;
+    this.minNights = p.minNights;
+    this.maxNights = p.maxNights;
+    this.minNoticeHours = p.minNoticeHours;
+    this.maxNoticeWeeks = p.maxNoticeWeeks;
+    this.checkInProcess = p.checkInProcess;
+    this.bookability = p.bookability;
+    this.emit();
+  }
+
+  /** Keep max ≥ min — bump max up when the host raises min past it. */
+  onMinNightsChange(): void {
+    if (this.maxNights < this.minNights) this.maxNights = this.minNights;
+    this.emit();
+  }
 
   emit(): void {
     this.patch.emit({

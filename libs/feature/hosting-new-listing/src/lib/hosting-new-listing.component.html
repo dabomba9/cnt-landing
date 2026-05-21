@@ -2,7 +2,7 @@
 
 <main class="pt-24 md:pt-28 min-h-screen bg-cream">
 
-  <!-- Sticky progress header — phase chips + step progress bar -->
+  <!-- Sticky progress header — breadcrumb + phase chips + step chip strip -->
   <div class="sticky top-20 md:top-24 z-30 bg-cream/95 backdrop-blur-sm border-b border-dark-text/10">
     <div class="max-w-[64rem] mx-auto px-4 md:px-8 py-3 md:py-4">
 
@@ -13,11 +13,13 @@
             <button type="button" (click)="jumpToPhaseHub($index + 1)"
               [ngClass]="phase === $index + 1
                 ? 'bg-trinidad text-white'
-                : (phase > $index + 1 ? 'bg-jungle-green text-white' : 'bg-white text-muted-text border border-dark-text/15')"
-              class="shrink-0 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                : (phaseProgress($index + 1).complete ? 'bg-jungle-green text-white' : 'bg-white text-muted-text border border-dark-text/15')"
+              class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
               <span class="hidden md:inline">{{ $index + 1 }}.</span> {{ label }}
-              @if (phase > $index + 1) {
-                <span class="material-symbols-outlined text-[12px] ml-1" style="font-variation-settings: 'FILL' 1;">check</span>
+              @if (phaseProgress($index + 1).complete && phase !== $index + 1) {
+                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check</span>
+              } @else if (phase !== $index + 1 && phaseProgress($index + 1).done > 0) {
+                <span class="text-[0.55rem] opacity-80">{{ phaseProgress($index + 1).done }}/{{ phaseProgress($index + 1).total }}</span>
               }
             </button>
           }
@@ -74,7 +76,55 @@
 
   <!-- Step body -->
   <section class="px-4 md:px-8 py-8 md:py-12">
-    <div class="max-w-[64rem] mx-auto">
+    <div [ngClass]="editing ? 'max-w-[72rem]' : 'max-w-[64rem]'" class="mx-auto">
+
+      <div [ngClass]="editing ? 'lg:grid lg:grid-cols-[14rem_1fr] lg:gap-8' : ''">
+
+        @if (editing) {
+          <!-- Edit-mode TOC sidebar: every step across all phases, one click away. -->
+          <aside class="hidden lg:block">
+            <div class="sticky top-44 space-y-5">
+              @for (pl of PHASE_LABELS; track pl; let p = $index) {
+                <div>
+                  <div class="text-[0.55rem] uppercase tracking-[0.14em] font-button font-bold text-muted-text mb-2 px-2">
+                    {{ p + 1 }}. {{ PHASE_SHORT_LABELS[p] }}
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <button type="button" (click)="jumpToPhaseHub(p + 1)"
+                      [ngClass]="phase === p + 1 && step === -1
+                        ? 'bg-trinidad/8 text-trinidad font-bold'
+                        : 'text-muted-text hover:bg-cream/60 hover:text-dark-text'"
+                      class="flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-body text-left transition-colors">
+                      <span class="material-symbols-outlined text-[16px]">grid_view</span>
+                      Overview
+                    </button>
+                    @for (sl of stepsByPhase(p + 1); track sl; let i = $index) {
+                      <button type="button" (click)="jumpToStep(p + 1, i)"
+                        [ngClass]="phase === p + 1 && step === i
+                          ? 'bg-trinidad/8 text-trinidad font-bold'
+                          : (stepValid(p + 1, i)
+                              ? 'text-jungle-green hover:bg-cream/60'
+                              : 'text-muted-text hover:bg-cream/60 hover:text-dark-text')"
+                        class="flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-body text-left transition-colors">
+                        @if (stepValid(p + 1, i)) {
+                          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        } @else {
+                          <span class="w-1.5 h-1.5 rounded-full bg-current opacity-30"></span>
+                        }
+                        <span class="truncate">{{ sl }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+              <div class="px-2 pt-2 text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text/70">
+                Tip: press 1/2/3 to jump phases · ← → to step
+              </div>
+            </div>
+          </aside>
+        }
+
+        <div class="min-w-0">
 
       <!-- Step body: hub landing, then one component per (phase, step) tuple. -->
       @if (step < 0) {
@@ -87,7 +137,7 @@
           (back)="prev()"
           (jump)="jumpToStep(phase, $event)"></cnt-phase-hub>
       } @else if (phase === 1 && step === 0) {
-        <cnt-phase1-descriptors [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-descriptors>
+        <cnt-phase1-descriptors [draft]="draft" [editing]="editing" (patch)="onPatch($event)"></cnt-phase1-descriptors>
       } @else if (phase === 1 && step === 1) {
         <cnt-phase1-address [draft]="draft" (patch)="onPatch($event)"></cnt-phase1-address>
       } @else if (phase === 1 && step === 2) {
@@ -163,6 +213,8 @@
           </button>
         </div>
       }
+        </div><!-- /min-w-0 right column -->
+      </div><!-- /optional lg:grid wrapper -->
     </div>
   </section>
 

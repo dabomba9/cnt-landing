@@ -2,6 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
 import { IAddOn, CancellationTier, IPrivateListing, IListingDetail } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
+import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 
 /**
  * Per-listing booking state shared between the sidebar widget and the mobile bar.
@@ -35,7 +36,8 @@ export class BookingStateService {
   showAddOns = false;
   dateRangeError = '';
 
-  readonly SERVICE_FEE_RATE = 0.15;
+  /** Per-night feedback incentive — exposed so templates can show "$5/night refunds as CurbNTurf Cash". */
+  readonly feedbackIncentivePerNight = FEEDBACK_INCENTIVE_PER_NIGHT;
 
   /** Fired after every mutating method so the parent can sync URL params. */
   readonly changed = new EventEmitter<void>();
@@ -201,11 +203,19 @@ export class BookingStateService {
   }
 
   get serviceFee(): number {
-    return Math.round((this.subtotal + this.addOnsTotal) * this.SERVICE_FEE_RATE);
+    // Fee basis is the host's nightly subtotal only — add-ons pass through fee-free.
+    return computeServiceFee(this.subtotal, this.nights);
+  }
+
+  /** Charged at booking; refunded as CurbNTurf Cash when guest leaves a qualifying review. */
+  get feedbackIncentive(): number {
+    return computeFeedbackIncentive(this.nights);
   }
 
   get total(): number {
-    return this.subtotal + this.addOnsTotal + this.serviceFee;
+    // All-in pricing: subtotal already contains the host's service fee +
+    // feedback incentive baked in. Don't double-count them here.
+    return this.subtotal + this.addOnsTotal;
   }
 
   /** True when the user has both required photos on their My RV profile. */

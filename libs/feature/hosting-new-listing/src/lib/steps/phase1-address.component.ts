@@ -1,13 +1,17 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IDraftListing, ToastService } from '@cnt-workspace/data-access';
+import { IDraftListing, ILandownerContact, LandType, ToastService } from '@cnt-workspace/data-access';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 
 // Center of US — sensible default when neither the host nor geolocation has placed a pin yet.
 const DEFAULT_CENTER: [number, number] = [39.8283, -98.5795];
 const DEFAULT_ZOOM = 4;
 const PINNED_ZOOM = 15;
+
+const EMPTY_LANDOWNER: ILandownerContact = {
+  firstName: '', lastName: '', phone: '', address: '', city: '', state: '', zip: '',
+};
 
 /**
  * Step 1.2 — address text + GPS pin (lat/lng) + landowner toggle.
@@ -97,6 +101,91 @@ const PINNED_ZOOM = 15;
             No
           </button>
         </div>
+
+        <!-- Non-landowner sub-flow -->
+        @if (isLandowner === false) {
+          <div class="mt-6 pt-6 border-t border-dark-text/10 space-y-6">
+
+            <!-- Land type -->
+            <div>
+              <h4 class="font-headline font-bold text-dark-text text-sm mb-3">What type of land is it?</h4>
+              <div class="flex gap-2">
+                <button type="button" (click)="setLandType('private')"
+                  [ngClass]="landType === 'private' ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
+                  class="px-5 py-2 rounded-full border text-xs uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  Private
+                </button>
+                <button type="button" (click)="setLandType('public')"
+                  [ngClass]="landType === 'public' ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
+                  class="px-5 py-2 rounded-full border text-xs uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  Public
+                </button>
+              </div>
+            </div>
+
+            <!-- Landowner contact -->
+            <div>
+              <h4 class="font-headline font-bold text-dark-text text-sm mb-1">Who is the landowner?</h4>
+              <p class="text-xs font-body text-muted-text mb-3">For verification only — never shown to guests.</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex flex-col gap-1.5">
+                  <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">First name</span>
+                  <input type="text" [(ngModel)]="landowner.firstName" name="loFirstName" (input)="emit()"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Last name</span>
+                  <input type="text" [(ngModel)]="landowner.lastName" name="loLastName" (input)="emit()"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                </label>
+                <label class="flex flex-col gap-1.5 sm:col-span-2">
+                  <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Phone</span>
+                  <input type="tel" [(ngModel)]="landowner.phone" name="loPhone" (input)="emit()"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                </label>
+                <label class="flex flex-col gap-1.5 sm:col-span-2">
+                  <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Address <span class="normal-case font-body font-normal opacity-70">(optional)</span></span>
+                  <input type="text" [(ngModel)]="landowner.address" name="loAddress" (input)="emit()"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">City <span class="normal-case font-body font-normal opacity-70">(optional)</span></span>
+                  <input type="text" [(ngModel)]="landowner.city" name="loCity" (input)="emit()"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="flex flex-col gap-1.5">
+                    <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">State</span>
+                    <input type="text" [(ngModel)]="landowner.state" name="loState" maxlength="2" (input)="emit()"
+                      class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text uppercase focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                  </label>
+                  <label class="flex flex-col gap-1.5">
+                    <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">ZIP</span>
+                    <input type="text" [(ngModel)]="landowner.zip" name="loZip" (input)="emit()"
+                      class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all">
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Represents landowner -->
+            <div>
+              <h4 class="font-headline font-bold text-dark-text text-sm mb-3">Do you represent the landowner?</h4>
+              <div class="flex gap-2">
+                <button type="button" (click)="setRepresents(true)"
+                  [ngClass]="representsLandowner === true ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
+                  class="px-5 py-2 rounded-full border text-xs uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  Yes
+                </button>
+                <button type="button" (click)="setRepresents(false)"
+                  [ngClass]="representsLandowner === false ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
+                  class="px-5 py-2 rounded-full border text-xs uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        }
       </div>
     </div>
   `,
@@ -112,6 +201,9 @@ export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
     this.lat = value?.lat;
     this.lng = value?.lng;
     this.isLandowner = value?.isLandowner;
+    this.landType = value?.landType;
+    this.landowner = { ...EMPTY_LANDOWNER, ...(value?.landowner ?? {}) };
+    this.representsLandowner = value?.representsLandowner;
     // If the map is already up (e.g. edit-mode draft loaded), sync the pin.
     this.syncMapToCoords();
   }
@@ -124,6 +216,9 @@ export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
   lat?: number;
   lng?: number;
   isLandowner?: boolean;
+  landType?: LandType;
+  landowner: ILandownerContact = { ...EMPTY_LANDOWNER };
+  representsLandowner?: boolean;
   locating = false;
 
   // Loaded lazily so SSR + non-browser environments don't choke on Leaflet imports.
@@ -221,6 +316,16 @@ export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
     this.emit();
   }
 
+  setLandType(value: LandType): void {
+    this.landType = value;
+    this.emit();
+  }
+
+  setRepresents(value: boolean): void {
+    this.representsLandowner = value;
+    this.emit();
+  }
+
   useMyLocation(): void {
     if (!isPlatformBrowser(this.platformId) || !navigator.geolocation) {
       this.toasts.error('Geolocation not available in this browser.');
@@ -252,6 +357,9 @@ export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
       lat: typeof this.lat === 'number' ? this.lat : undefined,
       lng: typeof this.lng === 'number' ? this.lng : undefined,
       isLandowner: this.isLandowner,
+      landType: this.landType,
+      landowner: { ...this.landowner },
+      representsLandowner: this.representsLandowner,
     });
   }
 }

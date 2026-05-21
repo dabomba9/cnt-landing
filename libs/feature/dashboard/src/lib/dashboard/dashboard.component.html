@@ -7,7 +7,8 @@
       <!-- Hero block: greeting + quick actions read as one unit -->
       <div class="space-y-5">
         <div class="dashboard-anim">
-          <cnt-dashboard-greeting [user]="user" [verified]="verified" [memberSince]="memberSince" [upcomingTrip]="upcomingTrip"></cnt-dashboard-greeting>
+          <cnt-dashboard-greeting [user]="user" [verified]="verified" [memberSince]="memberSince" [upcomingTrip]="upcomingTrip"
+            (switchToHosting)="switchToHosting()"></cnt-dashboard-greeting>
         </div>
         <div class="dashboard-anim">
           <cnt-quick-actions [rvSet]="rvSet" [verified]="verified"></cnt-quick-actions>

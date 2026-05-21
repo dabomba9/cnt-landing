@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { IDraftListing } from '@cnt-workspace/data-access';
+import { type IDraftListing, isAddressStepValid } from '@cnt-workspace/data-access';
 
 /**
  * Phase landing screen — shown before the user starts a phase, and as a
@@ -68,11 +68,11 @@ export class PhaseHubComponent {
     if (!d) return this.steps.map(() => false);
     switch (this.phase) {
       case 1: return [
-        !!d.descriptors?.length,
-        !!d.address?.city && !!d.address?.state && typeof d.lat === 'number',
+        !!d.primaryType,
+        isAddressStepValid(d),
         typeof d.guestCapacity === 'number' && d.guestCapacity > 0,
-        !!d.amenities?.length,
-        !!d.vehicleTypes?.length,
+        (d.amenities?.length ?? 0) + (d.customAmenities?.length ?? 0) > 0,
+        d.tentMode === 'tents-only' || (d.vehicleTypes?.length ?? 0) > 0,
       ];
       case 2: return [
         (d.photos?.length ?? 0) >= 3,

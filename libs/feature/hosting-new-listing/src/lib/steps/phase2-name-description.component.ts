@@ -48,11 +48,15 @@ import { IDraftListing } from '@cnt-workspace/data-access';
             (input)="emit()"
             placeholder="Tell guests what makes your land special…"
             class="w-full bg-white border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-y"></textarea>
-          <div class="flex justify-between mt-1.5 text-[0.65rem] font-body">
-            <span [class.text-trinidad]="description.length < 150" [class.text-muted-text]="description.length >= 150">
-              {{ description.length < 150 ? (150 - description.length) + ' more characters to reach 150 min.' : '✓ Meets 150 character minimum.' }}
-            </span>
-            <span class="text-muted-text">{{ description.length }}/2000</span>
+          <!-- Quality meter -->
+          <div class="mt-2">
+            <div class="h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-300" [ngClass]="descTierBar" [style.width.%]="descTierPct"></div>
+            </div>
+            <div class="flex justify-between mt-1.5 text-[0.65rem] font-body">
+              <span [ngClass]="descTierText">{{ descTierLabel }}</span>
+              <span class="text-muted-text">{{ description.length }}/2000</span>
+            </div>
           </div>
         </label>
       </div>
@@ -79,6 +83,32 @@ export class Phase2NameDescriptionComponent {
 
   title = '';
   description = '';
+
+  /** 0 = weak (<150), 1 = good (150–299), 2 = great (300+). */
+  private get descTier(): 0 | 1 | 2 {
+    const n = this.description.length;
+    if (n < 150) return 0;
+    if (n < 300) return 1;
+    return 2;
+  }
+
+  get descTierPct(): number {
+    return [Math.max(8, Math.round((this.description.length / 150) * 25)), 65, 100][this.descTier];
+  }
+
+  get descTierBar(): string {
+    return ['bg-trinidad', 'bg-gold', 'bg-jungle-green'][this.descTier];
+  }
+
+  get descTierText(): string {
+    return ['text-trinidad', 'text-dark-text', 'text-jungle-green'][this.descTier];
+  }
+
+  get descTierLabel(): string {
+    if (this.descTier === 0) return `Keep going — ${150 - this.description.length} more to reach the 150 minimum.`;
+    if (this.descTier === 1) return 'Good — a bit more detail helps guests picture the stay.';
+    return 'Great — detailed listings book faster.';
+  }
 
   emit(): void {
     this.patch.emit({ title: this.title, description: this.description });

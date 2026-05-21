@@ -3,6 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   IDraftListing,
+  PRIMARY_PROPERTY_TYPE_META,
+  isAddressStepValid,
 } from './draft-listing.types';
 import {
   IPrivateListing,
@@ -18,6 +20,7 @@ import { HostListingMetaService } from '../host/host-listing-meta.service';
 const DRAFT_STORAGE_KEY = 'cnt-listing-draft';
 
 import { IPublishedSnapshot, readAllPublishedSnapshots, readPublishedSnapshot as readSnapshot, writePublishedSnapshot, deletePublishedSnapshot } from './published-snapshot.util';
+import { MIN_VIABLE_LISTING_PRICE } from '../pricing/pricing.util';
 // Re-export so existing consumers of '@cnt-workspace/data-access' keep working.
 export { IPublishedSnapshot, readPublishedSnapshot } from './published-snapshot.util';
 
@@ -125,18 +128,18 @@ export class HostListingDraftService {
   /** Human-readable hint shown when a step's Next is disabled. */
   stepValidationHint(phase: 1 | 2 | 3, step: number): string {
     const hints: Record<string, string> = {
-      '1-0': 'Pick at least one descriptor to continue.',
-      '1-1': 'Add city, state, and pin a location to continue.',
+      '1-0': 'Pick a primary property type to continue.',
+      '1-1': "Add city, state, pin the map — and if you're not the owner, the landowner's details.",
       '1-2': 'Set the max guest count to continue.',
-      '1-3': 'Pick at least one amenity to continue.',
-      '1-4': 'Pick at least one vehicle type to continue.',
+      '1-3': 'Pick at least one amenity (standard or custom) to continue.',
+      '1-4': 'Pick at least one rig type, or switch to tents-only.',
       '2-0': 'Upload at least 3 photos to continue.',
       '2-1': 'Title needs 8+ chars and description needs 150+.',
       '2-2': 'Pick visibility, noise, and road conditions to continue.',
       '2-3': '',
       '3-0': 'Set check-in / check-out times and min nights.',
       '3-1': 'Save your house rules to continue.',
-      '3-2': 'Set a nightly price and cancellation policy.',
+      '3-2': `Set a nightly price of at least $${MIN_VIABLE_LISTING_PRICE} and a cancellation policy to continue.`,
       '3-3': 'A few required fields are still missing.',
     };
     return hints[`${phase}-${step}`] ?? '';
@@ -148,11 +151,11 @@ export class HostListingDraftService {
    */
   private stepValidities(d: IDraftListing): [boolean[], boolean[], boolean[]] {
     const phase1 = [
-      !!d.descriptors?.length,
-      !!d.address?.city && !!d.address?.state && typeof d.lat === 'number',
+      !!d.primaryType && (d.primaryType !== 'custom' || (d.customPrimaryLabel?.trim().length ?? 0) >= 2),
+      isAddressStepValid(d),
       typeof d.guestCapacity === 'number' && d.guestCapacity > 0,
-      !!d.amenities?.length,
-      !!d.vehicleTypes?.length,
+      (d.amenities?.length ?? 0) + (d.customAmenities?.length ?? 0) > 0,
+      d.tentMode === 'tents-only' || (d.vehicleTypes?.length ?? 0) > 0,
     ];
     const phase2 = [
       (d.photos?.length ?? 0) >= 3,
@@ -163,7 +166,7 @@ export class HostListingDraftService {
     const phase3 = [
       !!d.checkInTime && !!d.checkOutTime && typeof d.minNights === 'number',
       !!d.rules,
-      typeof d.nightlyPrice === 'number' && d.nightlyPrice > 0 && !!d.cancellationTier,
+      typeof d.nightlyPrice === 'number' && d.nightlyPrice >= MIN_VIABLE_LISTING_PRICE && !!d.cancellationTier,
       this.missingRequiredFields(d).length === 0,
     ];
     return [phase1, phase2, phase3];
@@ -340,14 +343,24 @@ export class HostListingDraftService {
   /** Required-field check used by the publish gate. */
   missingRequiredFields(draft: IDraftListing): string[] {
     const missing: string[] = [];
-    if (!draft.descriptors || draft.descriptors.length === 0) missing.push('property type');
+    if (!draft.primaryType) missing.push('primary property type');
+    else if (draft.primaryType === 'custom' && (draft.customPrimaryLabel?.trim().length ?? 0) < 2) {
+      missing.push('custom property-type label');
+    }
     if (!draft.address?.city || !draft.address?.state) missing.push('address');
     if (typeof draft.lat !== 'number' || typeof draft.lng !== 'number') missing.push('location pin');
-    if (!draft.amenities || draft.amenities.length === 0) missing.push('amenities');
+    if (draft.isLandowner === false && !isAddressStepValid(draft)) {
+      missing.push('landowner details');
+    }
+    if ((draft.amenities?.length ?? 0) + (draft.customAmenities?.length ?? 0) === 0) {
+      missing.push('amenities');
+    }
     if (!draft.photos || draft.photos.length < 3) missing.push('at least 3 photos');
     if (!draft.title || draft.title.length < 8) missing.push('title');
     if (!draft.description || draft.description.length < 150) missing.push('description');
-    if (typeof draft.nightlyPrice !== 'number' || draft.nightlyPrice <= 0) missing.push('price');
+    if (typeof draft.nightlyPrice !== 'number' || draft.nightlyPrice < MIN_VIABLE_LISTING_PRICE) {
+      missing.push(`price (at least $${MIN_VIABLE_LISTING_PRICE}/night)`);
+    }
     if (!draft.cancellationTier) missing.push('cancellation policy');
     return missing;
   }
@@ -409,9 +422,18 @@ export class HostListingDraftService {
     };
   }
 
-  /** Map the first selected descriptor to one of the existing Category buckets. */
+  /**
+   * Map the host's selections to a platform Category bucket. Prefers the
+   * single-select primaryType (new model); falls back to first descriptor for
+   * legacy drafts that predate the primary/secondary split.
+   */
   private inferCategory(draft: IDraftListing): Category {
-    const first = draft.descriptors?.[0];
+    if (draft.primaryType) {
+      return PRIMARY_PROPERTY_TYPE_META[draft.primaryType].category;
+    }
+    // Legacy fallback: first descriptor (kept for drafts created before the
+    // primary/secondary split).
+    const first = draft.descriptors?.[0] as string | undefined;
     switch (first) {
       case 'winery':                 return 'vineyard';
       case 'brewery':                return 'brewery';

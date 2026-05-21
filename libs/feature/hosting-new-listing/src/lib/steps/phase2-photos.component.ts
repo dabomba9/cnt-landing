@@ -24,7 +24,7 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
         <li>Hour after sunrise / before sunset = magic light.</li>
       </ul>
 
-      <!-- Photo grid — drag any tile to reorder. The leftmost (index 0) is the Cover. -->
+      <!-- Photo grid — drag any tile to reorder. The leftmost (index 0) is the Cover photo. -->
       @if (photos.length > 0) {
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-2"
           cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
@@ -51,7 +51,7 @@ import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data
           }
         </div>
         @if (photos.length > 1) {
-          <p class="text-[0.65rem] font-body text-muted-text mb-6">Drag photos to reorder. The first one is your cover.</p>
+          <p class="text-[0.65rem] font-body text-muted-text mb-6">Drag photos to reorder. The first one is your <span class="font-bold text-trinidad">Cover</span> — it shows on search cards and as your listing's hero image.</p>
         } @else {
           <div class="mb-6"></div>
         }

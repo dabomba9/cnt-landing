@@ -15,6 +15,7 @@ import { ToastService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
+import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 import { IBookingAddOn } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
@@ -74,9 +75,9 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   promoCode = '';
   promoApplied: { code: string; amount: number } | null = null;
 
-  readonly SERVICE_FEE_RATE = 0.15;
   readonly CLEANING_FEE = 35;
   readonly TAX_RATE = 0.08;
+  readonly feedbackIncentivePerNight = FEEDBACK_INCENTIVE_PER_NIGHT;
 
   /** Field-level validation errors (live). */
   fieldErrors: { email?: string; phone?: string } = {};
@@ -256,20 +257,32 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   isAddOnSelected(id: string): boolean { return this.selectedAddOnIds.has(id); }
 
   get serviceFee(): number {
-    return Math.round((this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE) * this.SERVICE_FEE_RATE);
+    // Fee basis is the host's nightly subtotal only (after weekly discount).
+    // Add-ons, cleaning, and taxes are NOT in the basis — see pricing.util.ts.
+    return computeServiceFee(this.subtotal - this.weeklyDiscount, this.nights);
+  }
+
+  /** Charged at booking; refunded as CurbNTurf Cash when guest leaves a qualifying review. */
+  get feedbackIncentive(): number {
+    return computeFeedbackIncentive(this.nights);
   }
 
   get taxes(): number {
-    return Math.round((this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee) * this.TAX_RATE);
+    // All-in pricing: service fee + feedback incentive are already inside `subtotal`.
+    // Tax base = nightly portion (subtotal − weeklyDiscount − feedbackIncentive,
+    // since the refundable incentive shouldn't be taxed) + add-ons + cleaning.
+    const taxBase = this.subtotal - this.weeklyDiscount - this.feedbackIncentive + this.addOnsTotal + this.CLEANING_FEE;
+    return Math.round(taxBase * this.TAX_RATE);
   }
 
   get promoDiscount(): number {
     return this.promoApplied?.amount || 0;
   }
 
-  /** Pre-credit total used to cap the credit redemption. */
+  /** Pre-credit total used to cap the credit redemption. Service fee + feedback
+   * incentive are not added on top — they're already inside subtotal. */
   get totalBeforeCredit(): number {
-    return Math.max(0, this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.serviceFee + this.taxes - this.promoDiscount);
+    return Math.max(0, this.subtotal - this.weeklyDiscount + this.addOnsTotal + this.CLEANING_FEE + this.taxes - this.promoDiscount);
   }
 
   /** User toggle — save credit for later vs. apply it to this booking (defaults on). */
@@ -518,6 +531,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
         subtotal: this.subtotal,
         cleaningFee: this.CLEANING_FEE,
         serviceFee: this.serviceFee,
+        feedbackIncentive: this.feedbackIncentive,
         total: this.total,
         instantBook: this.listing!.instantBook,
         status: this.listing!.instantBook ? 'confirmed' : 'pending',
