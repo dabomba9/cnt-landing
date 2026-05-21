@@ -16,7 +16,7 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
-import { readMyRv, writeMyRv } from '@cnt-workspace/data-access';
+import { readMyRv } from '@cnt-workspace/data-access';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
@@ -525,16 +525,16 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     if (this.filters.rvType) {
       const rv = RV_TYPES.find(t => t.id === this.filters.rvType);
-      chips.push({ key: 'rvType', label: rv?.label || 'RV', clear: () => { this.filters.rvType = null; this.persistMyRv(); this.syncToUrl(); } });
+      chips.push({ key: 'rvType', label: rv?.label || 'RV', clear: () => { this.filters.rvType = null; this.syncToUrl(); } });
     }
     if (this.filters.rvLength) {
-      chips.push({ key: 'rvLength', label: `${this.filters.rvLength} ft long`, clear: () => { this.filters.rvLength = ''; this.persistMyRv(); this.syncToUrl(); } });
+      chips.push({ key: 'rvLength', label: `${this.filters.rvLength} ft long`, clear: () => { this.filters.rvLength = ''; this.syncToUrl(); } });
     }
     if (this.filters.rvHeight) {
-      chips.push({ key: 'rvHeight', label: `${this.filters.rvHeight} ft tall`, clear: () => { this.filters.rvHeight = ''; this.persistMyRv(); this.syncToUrl(); } });
+      chips.push({ key: 'rvHeight', label: `${this.filters.rvHeight} ft tall`, clear: () => { this.filters.rvHeight = ''; this.syncToUrl(); } });
     }
     if (this.filters.rvWidth) {
-      chips.push({ key: 'rvWidth', label: `${this.filters.rvWidth} ft wide`, clear: () => { this.filters.rvWidth = ''; this.persistMyRv(); this.syncToUrl(); } });
+      chips.push({ key: 'rvWidth', label: `${this.filters.rvWidth} ft wide`, clear: () => { this.filters.rvWidth = ''; this.syncToUrl(); } });
     }
     if (this.filters.rvVehicles > 0) {
       chips.push({ key: 'rvVehicles', label: `${this.filters.rvVehicles} vehicle${this.filters.rvVehicles === 1 ? '' : 's'}`, clear: () => { this.filters.rvVehicles = 0; this.syncToUrl(); } });
@@ -612,7 +612,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.amenities = new Set();
     this.selectedDateRange = null;
     this.sortBy = 'recommended';
-    this.persistMyRv();
     this.syncToUrl();
   }
 
@@ -782,7 +781,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   selectRvType(t: RvType): void {
     this.filters.rvType = this.filters.rvType === t ? null : t;
-    this.persistMyRv();
     this.syncToUrl();
   }
 
@@ -794,28 +792,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.rvVehicles = 0;
     this.filters.rvTents = 0;
     this.filters.guests = 0;
-    this.persistMyRv();
     this.syncToUrl();
   }
 
-  /** Called when length/height/width inputs change (template binding). */
-  onRvDimensionChange(): void { this.persistMyRv(); this.syncToUrl(); }
-
-  private persistMyRv(): void {
-    const num = (s: string): number | null => {
-      const n = parseInt(s, 10);
-      return Number.isFinite(n) && n > 0 ? n : null;
-    };
-    // Preserve any existing photos so editing rig specs doesn't drop them.
-    const existing = readMyRv(this.platformId);
-    writeMyRv(this.platformId, {
-      ...existing,
-      type: this.filters.rvType,
-      length: num(this.filters.rvLength),
-      height: num(this.filters.rvHeight),
-      width:  num(this.filters.rvWidth),
-    });
-  }
+  /** Called when length/height/width inputs change (template binding). The RV
+   * filter is read-only w.r.t. saved profiles — it pre-fills from the active
+   * profile but never writes back, so it can't corrupt a named rig's specs.
+   * Filter values still persist in the URL. */
+  onRvDimensionChange(): void { this.syncToUrl(); }
 
   /** Hydrate filters from URL on first load — refresh-safe shareable links. */
   private hydrateFiltersFromUrl(): void {

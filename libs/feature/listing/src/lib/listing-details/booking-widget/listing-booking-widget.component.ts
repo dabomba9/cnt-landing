@@ -6,7 +6,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {
   IPrivateListing, IListingDetail, CancellationTier, IAddOn,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
+import { IMyRv, IMyRvProfile, emptyMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 import { AddonLightboxComponent } from '../addon-lightbox/addon-lightbox.component';
 
@@ -29,10 +29,20 @@ export class ListingBookingWidgetComponent {
   @Input({ required: true }) detail!: IListingDetail;
   @Input({ required: true }) cancellationMeta!: Record<CancellationTier, { label: string; summary: string; color: string }>;
   @Input() myRv: IMyRv = emptyMyRv();
+  /** All saved RV profiles + the active one — drives the rig switcher. */
+  @Input() rvProfiles: IMyRvProfile[] = [];
+  @Input() activeRvId: string | null = null;
   /** Emits an updated MyRv when the user attaches/clears a required photo here.
       Parent persists via writeMyRv so the photos survive across listings. */
   @Output() myRvChange = new EventEmitter<IMyRv>();
+  /** Emits a profile id when the guest switches which rig the fit check uses. */
+  @Output() rvProfileSelect = new EventEmitter<string>();
   @Output() reserveClick = new EventEmitter<void>();
+
+  onRvSelect(event: Event): void {
+    const id = (event.target as HTMLSelectElement).value;
+    if (id) this.rvProfileSelect.emit(id);
+  }
 
   constructor(public booking: BookingStateService) {}
 

@@ -594,8 +594,11 @@
                 [listing]="listing"
                 [detail]="detail"
                 [myRv]="myRv"
+                [rvProfiles]="rvProfiles"
+                [activeRvId]="activeRvId"
                 [cancellationMeta]="CANCELLATION_TIER_META"
                 (myRvChange)="onMyRvChange($event)"
+                (rvProfileSelect)="onRvProfileSelect($event)"
                 (reserveClick)="requestBooking()"></cnt-listing-booking-widget>
             } @else {
               <!-- Boondocking Visit info — replaces the booking widget. No reserve flow on public land. -->

@@ -1,7 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
 import { RvType, RV_TYPES } from './listings/mock-listings.data';
 
+/** Legacy single-RV key — still read once for one-time migration. */
 export const MY_RV_KEY = 'cnt-my-rv';
+/** Current key — holds the full multi-profile state. */
+export const MY_RV_PROFILES_KEY = 'cnt-my-rv-profiles';
 
 export interface IMyRv {
   type: RvType | null;
@@ -18,47 +21,209 @@ export interface IMyRv {
   licensePhoto: string | null;
 }
 
+/** A named, saveable RV — a guest can keep several (a Class A, a teardrop, …). */
+export interface IMyRvProfile extends IMyRv {
+  id: string;
+  name: string;
+}
+
+export interface IMyRvProfilesState {
+  profiles: IMyRvProfile[];
+  activeId: string | null;
+}
+
 export function emptyMyRv(): IMyRv {
   return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null };
 }
 
-export function readMyRv(platformId: Object): IMyRv {
-  if (!isPlatformBrowser(platformId)) return emptyMyRv();
-  try {
-    const raw = localStorage.getItem(MY_RV_KEY);
-    if (!raw) return emptyMyRv();
-    const parsed = JSON.parse(raw) as Partial<IMyRv>;
-    return {
-      type: parsed.type ?? null,
-      length: typeof parsed.length === 'number' ? parsed.length : null,
-      height: typeof parsed.height === 'number' ? parsed.height : null,
-      width:  typeof parsed.width  === 'number' ? parsed.width  : null,
-      year:   typeof parsed.year   === 'number' ? parsed.year   : null,
-      make:   typeof parsed.make   === 'string' ? parsed.make   : null,
-      model:  typeof parsed.model  === 'string' ? parsed.model  : null,
-      licensePlate: typeof parsed.licensePlate === 'string' ? parsed.licensePlate : null,
-      rvPhoto: typeof parsed.rvPhoto === 'string' ? parsed.rvPhoto : null,
-      licensePhoto: typeof parsed.licensePhoto === 'string' ? parsed.licensePhoto : null,
-    };
-  } catch {
-    return emptyMyRv();
+function newRvId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
   }
+  return 'rv-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
 }
 
-export function writeMyRv(platformId: Object, rv: IMyRv): void {
+export function emptyMyRvProfile(name = 'My RV'): IMyRvProfile {
+  return { ...emptyMyRv(), id: newRvId(), name };
+}
+
+/** Per-field coercion for anything read out of localStorage. */
+function normalizeRv(parsed: Partial<IMyRv>): IMyRv {
+  return {
+    type: parsed.type ?? null,
+    length: typeof parsed.length === 'number' ? parsed.length : null,
+    height: typeof parsed.height === 'number' ? parsed.height : null,
+    width:  typeof parsed.width  === 'number' ? parsed.width  : null,
+    year:   typeof parsed.year   === 'number' ? parsed.year   : null,
+    make:   typeof parsed.make   === 'string' ? parsed.make   : null,
+    model:  typeof parsed.model  === 'string' ? parsed.model  : null,
+    licensePlate: typeof parsed.licensePlate === 'string' ? parsed.licensePlate : null,
+    rvPhoto: typeof parsed.rvPhoto === 'string' ? parsed.rvPhoto : null,
+    licensePhoto: typeof parsed.licensePhoto === 'string' ? parsed.licensePhoto : null,
+  };
+}
+
+function normalizeProfile(p: Partial<IMyRvProfile>): IMyRvProfile {
+  return {
+    ...normalizeRv(p),
+    id: typeof p.id === 'string' ? p.id : newRvId(),
+    name: typeof p.name === 'string' && p.name.trim() ? p.name : 'My RV',
+  };
+}
+
+/**
+ * The single source of truth for RV profiles. Reads the multi-profile key;
+ * if it's absent but the legacy single-RV key exists, migrates it once into a
+ * one-profile state (leaving the legacy key as a rollback safety net).
+ */
+export function readMyRvProfiles(platformId: Object): IMyRvProfilesState {
+  if (!isPlatformBrowser(platformId)) return { profiles: [], activeId: null };
+
+  try {
+    const raw = localStorage.getItem(MY_RV_PROFILES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { profiles?: unknown; activeId?: unknown };
+      const rawProfiles: unknown[] = Array.isArray(parsed.profiles) ? parsed.profiles : [];
+      const profiles = rawProfiles
+        .filter((p): p is Partial<IMyRvProfile> => !!p && typeof (p as { id?: unknown }).id === 'string')
+        .map(normalizeProfile);
+      let activeId = typeof parsed.activeId === 'string' ? parsed.activeId : null;
+      if (!profiles.some(p => p.id === activeId)) activeId = profiles[0]?.id ?? null;
+      return { profiles, activeId };
+    }
+  } catch {
+    // corrupt new-format data — fall through to migration / empty
+  }
+
+  // One-time migration from the legacy single-RV object.
+  try {
+    const legacyRaw = localStorage.getItem(MY_RV_KEY);
+    if (legacyRaw) {
+      const profile: IMyRvProfile = { ...normalizeRv(JSON.parse(legacyRaw) as Partial<IMyRv>), id: newRvId(), name: 'My RV' };
+      const state: IMyRvProfilesState = { profiles: [profile], activeId: profile.id };
+      writeMyRvProfiles(platformId, state);
+      return state;
+    }
+  } catch {
+    // corrupt legacy data — fall to empty
+  }
+
+  return { profiles: [], activeId: null };
+}
+
+export function writeMyRvProfiles(platformId: Object, state: IMyRvProfilesState): void {
   if (!isPlatformBrowser(platformId)) return;
-  const isEmpty = !rv.type && !rv.length && !rv.height && !rv.width && !rv.year && !rv.make && !rv.model && !rv.licensePlate && !rv.rvPhoto && !rv.licensePhoto;
-  if (isEmpty) {
-    localStorage.removeItem(MY_RV_KEY);
+  if (state.profiles.length === 0) {
+    localStorage.removeItem(MY_RV_PROFILES_KEY);
     return;
   }
   try {
-    localStorage.setItem(MY_RV_KEY, JSON.stringify(rv));
+    localStorage.setItem(MY_RV_PROFILES_KEY, JSON.stringify(state));
   } catch {
-    // Likely QuotaExceeded from a large photo data URL — fall back to specs only.
-    const specsOnly: IMyRv = { ...rv, rvPhoto: null, licensePhoto: null };
-    localStorage.setItem(MY_RV_KEY, JSON.stringify(specsOnly));
+    // QuotaExceeded — drop photos from inactive profiles first, keeping the
+    // active rig's photos (the one a booking is most likely to need).
+    const trimmed: IMyRvProfilesState = {
+      activeId: state.activeId,
+      profiles: state.profiles.map(p => p.id === state.activeId ? p : { ...p, rvPhoto: null, licensePhoto: null }),
+    };
+    try {
+      localStorage.setItem(MY_RV_PROFILES_KEY, JSON.stringify(trimmed));
+    } catch {
+      // Still too large — drop all photos, keep specs.
+      const specsOnly: IMyRvProfilesState = {
+        activeId: state.activeId,
+        profiles: state.profiles.map(p => ({ ...p, rvPhoto: null, licensePhoto: null })),
+      };
+      localStorage.setItem(MY_RV_PROFILES_KEY, JSON.stringify(specsOnly));
+    }
   }
+}
+
+export function listMyRvProfiles(platformId: Object): IMyRvProfile[] {
+  return readMyRvProfiles(platformId).profiles;
+}
+
+export function getActiveRvProfileId(platformId: Object): string | null {
+  return readMyRvProfiles(platformId).activeId;
+}
+
+export function getActiveRvProfile(platformId: Object): IMyRvProfile | null {
+  const state = readMyRvProfiles(platformId);
+  return state.profiles.find(p => p.id === state.activeId) ?? null;
+}
+
+/** Appends a fresh, blank profile. Becomes active if it's the first one. */
+export function addMyRvProfile(platformId: Object, name = 'My RV'): IMyRvProfile {
+  const state = readMyRvProfiles(platformId);
+  const profile = emptyMyRvProfile(name);
+  state.profiles.push(profile);
+  if (!state.activeId) state.activeId = profile.id;
+  writeMyRvProfiles(platformId, state);
+  return profile;
+}
+
+/** Merges field changes into one profile by id. Name falls back to 'My RV' when blank. */
+export function updateMyRvProfile(platformId: Object, id: string, patch: Partial<IMyRv> & { name?: string }): void {
+  const state = readMyRvProfiles(platformId);
+  const idx = state.profiles.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const merged: IMyRvProfile = { ...state.profiles[idx], ...patch };
+  if (!merged.name || !merged.name.trim()) merged.name = 'My RV';
+  state.profiles[idx] = merged;
+  writeMyRvProfiles(platformId, state);
+}
+
+/** Removes a profile; reassigns active to the first remaining one when needed. */
+export function deleteMyRvProfile(platformId: Object, id: string): void {
+  const state = readMyRvProfiles(platformId);
+  const profiles = state.profiles.filter(p => p.id !== id);
+  let activeId = state.activeId;
+  if (activeId === id || !profiles.some(p => p.id === activeId)) {
+    activeId = profiles[0]?.id ?? null;
+  }
+  writeMyRvProfiles(platformId, { profiles, activeId });
+}
+
+export function setActiveRvProfile(platformId: Object, id: string): void {
+  const state = readMyRvProfiles(platformId);
+  if (!state.profiles.some(p => p.id === id)) return;
+  writeMyRvProfiles(platformId, { ...state, activeId: id });
+}
+
+/**
+ * Reads the ACTIVE profile as a plain IMyRv. Back-compat shim: every existing
+ * consumer that called readMyRv() keeps working — it now sees the active rig.
+ */
+export function readMyRv(platformId: Object): IMyRv {
+  const active = getActiveRvProfile(platformId);
+  // normalizeRv copies only the 10 IMyRv fields — drops id/name cleanly.
+  return active ? normalizeRv(active) : emptyMyRv();
+}
+
+/**
+ * Writes IMyRv fields into the ACTIVE profile (back-compat shim). If there is
+ * no active profile yet and the data is non-empty, lazily materializes one so
+ * first-time callers (e.g. the booking widget photo-attach) still "just work".
+ * Clearing every field no longer deletes the profile — deletion is explicit.
+ */
+export function writeMyRv(platformId: Object, rv: IMyRv): void {
+  if (!isPlatformBrowser(platformId)) return;
+  const state = readMyRvProfiles(platformId);
+  const activeId = state.activeId;
+  const idx = activeId ? state.profiles.findIndex(p => p.id === activeId) : -1;
+
+  if (idx === -1) {
+    const isEmpty = !isMyRvSet(rv) && !rv.rvPhoto && !rv.licensePhoto;
+    if (isEmpty) { writeMyRvProfiles(platformId, state); return; }
+    const fresh: IMyRvProfile = { ...emptyMyRv(), ...rv, id: newRvId(), name: 'My RV' };
+    state.profiles.push(fresh);
+    state.activeId = fresh.id;
+    writeMyRvProfiles(platformId, state);
+    return;
+  }
+
+  state.profiles[idx] = { ...state.profiles[idx], ...rv };
+  writeMyRvProfiles(platformId, state);
 }
 
 /** Lightweight "anything filled" check — used for UI hints. */

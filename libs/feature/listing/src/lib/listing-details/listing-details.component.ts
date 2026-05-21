@@ -16,7 +16,7 @@ import {
   MOCK_POIS, POI_KIND_META, IPoi, PoiKind,
   IPrivateListing, findListing, MOCK_BOONDOCKING, IAddOn,
 } from '@cnt-workspace/data-access';
-import { IMyRv, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
+import { IMyRv, IMyRvProfile, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview, isOwnedByUser } from '@cnt-workspace/data-access';
@@ -124,8 +124,11 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   lightboxOpen = false;
   lightboxStartIndex = 0;
 
-  // My RV (from /search settings, persisted in localStorage)
+  // My RV — the active profile, persisted in localStorage. `rvProfiles` powers
+  // the widget switcher so the fit check can be evaluated per-rig.
   myRv: IMyRv = emptyMyRv();
+  rvProfiles: IMyRvProfile[] = [];
+  activeRvId: string | null = null;
 
   // Reviews UI state
   reviewsExpanded = false;
@@ -165,6 +168,14 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.myRv = next;
     writeMyRv(this.platformId, next);
     this.booking.setMyRv(next);
+  }
+
+  /** Widget RV switcher — change which saved rig the fit check evaluates. */
+  onRvProfileSelect(id: string): void {
+    setActiveRvProfile(this.platformId, id);
+    this.activeRvId = id;
+    this.myRv = readMyRv(this.platformId);
+    this.booking.setMyRv(this.myRv);
   }
 
   // Scroll-direction reveal/hide for the sticky section nav (Airbnb pattern)
@@ -322,6 +333,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       // their rig on /account#rig and been bounced back here. We want the
       // sidebar alert + Reserve gate to reflect the latest profile.
       this.myRv = readMyRv(this.platformId);
+      this.rvProfiles = listMyRvProfiles(this.platformId);
+      this.activeRvId = getActiveRvProfileId(this.platformId);
       this.booking.setMyRv(this.myRv);
 
       // Only reset listing-scoped state when the listing actually changes

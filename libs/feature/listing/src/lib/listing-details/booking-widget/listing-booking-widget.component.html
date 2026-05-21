@@ -76,6 +76,20 @@
     </div>
   }
 
+  <!-- RV switcher — only when the guest owns more than one rig. Lets the
+       fit check be evaluated against whichever rig they plan to bring. -->
+  @if (rvProfiles.length > 1) {
+    <div class="mt-5 pt-5 border-t border-dark-text/10">
+      <label for="rv-switcher" class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2">Which rig?</label>
+      <select id="rv-switcher" [value]="activeRvId" (change)="onRvSelect($event)"
+        class="w-full bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+        @for (p of rvProfiles; track p.id) {
+          <option [value]="p.id">{{ p.name }}</option>
+        }
+      </select>
+    </div>
+  }
+
   <!-- Your rig — only on request-to-book listings; Instant Book auto-confirms regardless. -->
   @if (!listing.instantBook) {
     <div class="mt-5 pt-5 border-t border-dark-text/10">

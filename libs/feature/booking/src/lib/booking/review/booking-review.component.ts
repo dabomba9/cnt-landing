@@ -13,7 +13,7 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
-import { readMyRv, IMyRv, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRv, IMyRvProfile, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
 import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 import { IBookingAddOn } from '@cnt-workspace/models';
@@ -32,6 +32,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   detail: IListingDetail | null = null;
   user: IPublicUser | null = null;
   myRv: IMyRv | null = null;
+
+  /** Saved RV profiles + the one this booking is for. */
+  rvProfiles: IMyRvProfile[] = [];
+  selectedRvId: string | null = null;
 
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -107,6 +111,8 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     this.contactEmail = this.user?.email || '';
     this.contactPhone = this.user?.phone || '';
     this.myRv = readMyRv(this.platformId);
+    this.rvProfiles = listMyRvProfiles(this.platformId);
+    this.selectedRvId = getActiveRvProfileId(this.platformId);
 
     const q = this.route.snapshot.queryParamMap;
     const listingId = parseInt(q.get('listingId') || '', 10);
@@ -311,10 +317,20 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
   }
 
+  /** Switch which saved RV this booking is for — sets it active so every
+   * RV-derived getter (completeness, photo gate, summary) recomputes. */
+  selectRv(id: string): void {
+    setActiveRvProfile(this.platformId, id);
+    this.selectedRvId = id;
+    this.myRv = readMyRv(this.platformId);
+  }
+
   get rvSummary(): string {
     if (!this.myRv || !isMyRvSet(this.myRv)) return 'Not set';
     const type = rvTypeLabel(this.myRv.type);
-    return this.myRv.length ? `${type} · ${this.myRv.length} ft` : type;
+    const spec = this.myRv.length ? `${type} · ${this.myRv.length} ft` : type;
+    const name = this.rvProfiles.find(p => p.id === this.selectedRvId)?.name?.trim();
+    return name ? `${name} — ${spec}` : spec;
   }
 
   get datesLabel(): string {

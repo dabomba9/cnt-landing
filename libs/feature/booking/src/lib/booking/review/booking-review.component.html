@@ -123,6 +123,26 @@
                   }
                 </div>
 
+                <!-- RV picker — which saved rig is this booking for? -->
+                @if (rvProfiles.length > 1) {
+                  <div>
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Booking with</div>
+                    <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Which RV are you bringing?">
+                      @for (p of rvProfiles; track p.id) {
+                        <button type="button" (click)="selectRv(p.id)" role="radio"
+                          [attr.aria-checked]="p.id === selectedRvId"
+                          [ngClass]="p.id === selectedRvId ? 'border-trinidad bg-trinidad/10 text-trinidad' : 'border-dark-text/15 bg-white text-dark-text hover:border-trinidad/40'"
+                          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 text-xs font-body font-bold transition-colors">
+                          @if (p.id === selectedRvId) {
+                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                          }
+                          {{ p.name }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
                 <!-- Rig (read-only — link back to /account#rig if user wants to edit) -->
                 <a routerLink="/account" fragment="rig"
                   class="flex items-center gap-3 p-3 rounded-xl border transition-colors no-underline"
