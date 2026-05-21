@@ -114,6 +114,16 @@
       </div>
     </div>
 
+    <!-- Per-rig fit pill — only when an RV profile is supplied. -->
+    @if (rvFit) {
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold w-fit"
+        [ngClass]="rvFit.passes ? 'bg-jungle-green/10 text-jungle-green' : 'bg-trinidad/10 text-trinidad'"
+        [title]="rvFit.label">
+        <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">{{ rvFit.passes ? 'check_circle' : 'cancel' }}</span>
+        {{ rvFit.label }}
+      </span>
+    }
+
     <!-- amenity chips (truncated to 3) -->
     <div class="flex flex-wrap gap-1.5 mt-auto min-h-[1.75rem]">
       @for (a of listing.amenities.slice(0, 3); track a) {

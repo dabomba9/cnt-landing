@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { IListing, getListingDetail, addOnCountForListing, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
+import { IListing, IListingDetail, IMyRvProfile, getListingDetail, addOnCountForListing, rvTypeLabel, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-listing-card',
@@ -14,6 +14,8 @@ export class ListingCardComponent {
   @Input() isFavorite = false;
   /** Optional. When > 0, the price chip reveals a "$price × N nights = $total" bubble on hover. */
   @Input() nights = 0;
+  /** Optional. When set, the card shows a "Fits / Too long for your <rig>" pill. */
+  @Input() rvProfile: IMyRvProfile | null = null;
   @Output() favoriteToggle = new EventEmitter<MouseEvent>();
 
   get hoverTotal(): number | null {
@@ -30,16 +32,35 @@ export class ListingCardComponent {
   CATEGORY_META = CATEGORY_META;
   AMENITY_LABELS = AMENITY_LABELS;
 
-  /** Resolved photo array (up to 5) for the carousel. Memoized per listing. */
-  private _photos: string[] | null = null;
-  private _photosForId: number | null = null;
-  get photos(): string[] {
-    if (this._photosForId !== this.listing.id) {
-      this._photos = getListingDetail(this.listing).photos.slice(0, 5);
-      this._photosForId = this.listing.id;
+  /** Full listing detail, memoized per listing — drives both the photo
+   * carousel and the per-rig fit pill from a single getListingDetail call. */
+  private _detail: IListingDetail | null = null;
+  private _detailForId: number | null = null;
+  private get detail(): IListingDetail {
+    if (this._detailForId !== this.listing.id) {
+      this._detail = getListingDetail(this.listing);
+      this._detailForId = this.listing.id;
       this.currentImageIndex = 0;
     }
-    return this._photos!;
+    return this._detail!;
+  }
+
+  /** Resolved photo array (up to 5) for the carousel. */
+  get photos(): string[] {
+    return this.detail.photos.slice(0, 5);
+  }
+
+  /** Fit verdict for the active RV profile against this listing's max rig
+   * length. Null when no profile is supplied or it has no length. Mirrors the
+   * listing-detail `myRvFit` getter. */
+  get rvFit(): { passes: boolean; label: string } | null {
+    const rv = this.rvProfile;
+    if (!rv || !rv.length) return null;
+    const max = this.detail.siteSpecs.maxRigLength;
+    const name = rv.name?.trim() || rvTypeLabel(rv.type);
+    return rv.length > max
+      ? { passes: false, label: `Too long for your ${name}` }
+      : { passes: true,  label: `Fits your ${name}` };
   }
 
   /**

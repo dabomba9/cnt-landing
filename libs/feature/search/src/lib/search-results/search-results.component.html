@@ -23,6 +23,18 @@
             <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.6rem] font-button font-bold">{{ activeFilterCount }}</span>
           </button>
         }
+        @if (rvProfiles.length > 1) {
+          <label class="inline-flex items-center gap-1.5 self-center text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold text-muted-text">
+            <span class="material-symbols-outlined text-sm text-jungle-green" aria-hidden="true">rv_hookup</span>
+            Fit for
+            <select [value]="activeRv?.id || ''" (change)="selectFitRv($event)" aria-label="Which RV to check fit for"
+              class="bg-white border border-dark-text/15 rounded-full px-2.5 py-1 text-[0.65rem] font-button font-bold text-dark-text focus:outline-none focus:border-jungle-green">
+              @for (p of rvProfiles; track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select>
+          </label>
+        }
       </div>
 
       <!-- Filter Pills + Sort -->
@@ -422,6 +434,7 @@
                 [listing]="l"
                 [isFavorite]="isFavorite(l.id)"
                 [nights]="searchNights"
+                [rvProfile]="activeRv"
                 (favoriteToggle)="toggleFavorite(l.id, $event)"></cnt-listing-card>
             </div>
           }

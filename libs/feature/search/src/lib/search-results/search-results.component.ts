@@ -16,7 +16,7 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
-import { readMyRv } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile } from '@cnt-workspace/data-access';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
@@ -243,6 +243,10 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private seo: SeoService
   ) {}
 
+  /** Saved RV profiles + the active one — drives the per-card fit pills. */
+  rvProfiles: IMyRvProfile[] = [];
+  activeRv: IMyRvProfile | null = null;
+
   ngOnInit(): void {
     this.seo.update({
       title: 'Search RV Spots & Campsites | CurbNTurf',
@@ -250,6 +254,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       url: '/search',
     });
     this.hydrateMyRv();
+    this.rvProfiles = listMyRvProfiles(this.platformId);
+    this.activeRv = getActiveRvProfile(this.platformId);
     this.hydrateFiltersFromUrl();
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
@@ -851,6 +857,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  /** Switch which saved rig the search-card fit pills evaluate against. */
+  selectFitRv(event: Event): void {
+    const id = (event.target as HTMLSelectElement).value;
+    if (!id) return;
+    setActiveRvProfile(this.platformId, id);
+    this.activeRv = getActiveRvProfile(this.platformId);
   }
 
   private hydrateMyRv(): void {
