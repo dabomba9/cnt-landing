@@ -32,6 +32,7 @@ import {
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <button type="button" (click)="toggleTentsAllowed()"
+              [attr.aria-pressed]="!!tentMode"
               [ngClass]="tentMode
                 ? 'border-trinidad bg-trinidad/10 text-trinidad'
                 : 'border-dark-text/15 bg-white text-dark-text hover:border-trinidad/40'"
@@ -43,6 +44,7 @@ import {
             </button>
             @if (tentMode) {
               <button type="button" (click)="toggleTentsOnly()"
+                [attr.aria-pressed]="tentMode === 'tents-only'"
                 [ngClass]="tentMode === 'tents-only'
                   ? 'border-trinidad bg-trinidad/10 text-trinidad'
                   : 'border-dark-text/15 bg-white text-dark-text hover:border-trinidad/40'"

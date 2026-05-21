@@ -99,6 +99,9 @@ function makeId(): string {
                     <div class="relative shrink-0">
                       <button type="button" (click)="toggleIconPicker(row.id)"
                         class="w-16 h-16 rounded-xl bg-cream/80 border-2 border-dark-text/15 inline-flex items-center justify-center overflow-hidden hover:border-trinidad transition-colors"
+                        aria-label="Change add-on icon"
+                        aria-haspopup="true"
+                        [attr.aria-expanded]="openPickerFor === row.id"
                         [title]="row.photo ? 'Click art to change icon' : 'Pick an icon'">
                         @if (row.photo) {
                           <img [src]="row.photo" alt="" class="w-full h-full object-cover">
@@ -114,6 +117,7 @@ function makeId(): string {
                       @if (row.photo) {
                         <button type="button" (click)="clearPhoto(i)"
                           class="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-white border border-dark-text/15 text-muted-text inline-flex items-center justify-center hover:text-trinidad hover:border-trinidad transition-colors"
+                          aria-label="Remove add-on photo"
                           title="Remove photo">
                           <span class="material-symbols-outlined text-[12px]">close</span>
                         </button>
@@ -129,6 +133,8 @@ function makeId(): string {
                                 [class.bg-trinidad]="row.icon === name"
                                 [class.text-white]="row.icon === name"
                                 [class.text-dark-text]="row.icon !== name"
+                                [attr.aria-label]="'Use the ' + name + ' icon'"
+                                [attr.aria-pressed]="row.icon === name"
                                 [title]="name">
                                 <span class="material-symbols-outlined text-lg">{{ name }}</span>
                               </button>

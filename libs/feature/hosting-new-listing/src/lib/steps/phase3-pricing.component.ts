@@ -45,9 +45,10 @@ interface ISample {
       <div class="rounded-2xl border border-dark-text/10 bg-white p-5 md:p-6 mb-6">
         <h3 class="font-headline font-bold text-dark-text text-base mb-1">Cancellation policy</h3>
         <p class="text-xs font-body text-muted-text mb-4">More flexible = more bookings, but more cancellations.</p>
-        <div class="space-y-2">
+        <div class="space-y-2" role="radiogroup" aria-label="Cancellation policy">
           @for (tier of tiers; track tier) {
-            <button type="button" (click)="setTier(tier)"
+            <button type="button" (click)="setTier(tier)" role="radio"
+              [attr.aria-checked]="cancellationTier === tier"
               [ngClass]="cancellationTier === tier ? 'border-trinidad bg-trinidad/8' : 'border-dark-text/15 bg-white'"
               class="w-full flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-colors">
               <span class="w-3 h-3 rounded-full mt-1.5 shrink-0"
