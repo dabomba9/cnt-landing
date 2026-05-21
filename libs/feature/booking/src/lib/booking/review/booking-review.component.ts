@@ -13,7 +13,7 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
-import { readMyRv, IMyRv, IMyRvProfile, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRv, IMyRvProfile, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, isTowableRv, towVehicleHasData } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
 import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 import { IBookingAddOn } from '@cnt-workspace/models';
@@ -328,7 +328,16 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   get rvSummary(): string {
     if (!this.myRv || !isMyRvSet(this.myRv)) return 'Not set';
     const type = rvTypeLabel(this.myRv.type);
-    const spec = this.myRv.length ? `${type} · ${this.myRv.length} ft` : type;
+    let spec = this.myRv.length ? `${type} · ${this.myRv.length} ft` : type;
+    // Towables: surface the tow vehicle (and combined length) for the host.
+    const tow = this.myRv.towVehicle;
+    if (isTowableRv(this.myRv.type) && towVehicleHasData(tow) && tow) {
+      const towName = [tow.year, tow.make, tow.model].filter(Boolean).join(' ') || 'tow vehicle';
+      spec += ` · towed by ${towName}`;
+      if (this.myRv.length && tow.length) {
+        spec += ` (~${this.myRv.length + tow.length} ft total)`;
+      }
+    }
     const name = this.rvProfiles.find(p => p.id === this.selectedRvId)?.name?.trim();
     return name ? `${name} — ${spec}` : spec;
   }

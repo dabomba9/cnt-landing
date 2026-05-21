@@ -6,6 +6,16 @@ export const MY_RV_KEY = 'cnt-my-rv';
 /** Current key — holds the full multi-profile state. */
 export const MY_RV_PROFILES_KEY = 'cnt-my-rv-profiles';
 
+/** The vehicle that tows a trailer-style rig (fifth-wheel, travel-trailer, …). */
+export interface ITowVehicle {
+  year: number | null;
+  make: string | null;
+  model: string | null;
+  licensePlate: string | null;
+  length: number | null;   // feet — optional; powers the combined-length note
+  photo: string | null;    // data URL — optional
+}
+
 export interface IMyRv {
   type: RvType | null;
   length: number | null;   // feet
@@ -19,6 +29,8 @@ export interface IMyRv {
   rvPhoto: string | null;
   /** Data URL of a license-plate photo. Required by hosts on non-instant-book reservations. */
   licensePhoto: string | null;
+  /** Tow vehicle — only meaningful for towable rig types (see TOWABLE_RV_TYPES). */
+  towVehicle: ITowVehicle | null;
 }
 
 /** A named, saveable RV — a guest can keep several (a Class A, a teardrop, …). */
@@ -33,7 +45,11 @@ export interface IMyRvProfilesState {
 }
 
 export function emptyMyRv(): IMyRv {
-  return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null };
+  return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null, towVehicle: null };
+}
+
+export function emptyTowVehicle(): ITowVehicle {
+  return { year: null, make: null, model: null, licensePlate: null, length: null, photo: null };
 }
 
 function newRvId(): string {
@@ -45,6 +61,19 @@ function newRvId(): string {
 
 export function emptyMyRvProfile(name = 'My RV'): IMyRvProfile {
   return { ...emptyMyRv(), id: newRvId(), name };
+}
+
+function normalizeTowVehicle(raw: unknown): ITowVehicle | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const t = raw as Partial<ITowVehicle>;
+  return {
+    year:   typeof t.year   === 'number' ? t.year   : null,
+    make:   typeof t.make   === 'string' ? t.make   : null,
+    model:  typeof t.model  === 'string' ? t.model  : null,
+    licensePlate: typeof t.licensePlate === 'string' ? t.licensePlate : null,
+    length: typeof t.length === 'number' ? t.length : null,
+    photo:  typeof t.photo  === 'string' ? t.photo  : null,
+  };
 }
 
 /** Per-field coercion for anything read out of localStorage. */
@@ -60,6 +89,7 @@ function normalizeRv(parsed: Partial<IMyRv>): IMyRv {
     licensePlate: typeof parsed.licensePlate === 'string' ? parsed.licensePlate : null,
     rvPhoto: typeof parsed.rvPhoto === 'string' ? parsed.rvPhoto : null,
     licensePhoto: typeof parsed.licensePhoto === 'string' ? parsed.licensePhoto : null,
+    towVehicle: normalizeTowVehicle(parsed.towVehicle),
   };
 }
 
@@ -261,4 +291,16 @@ export function hasMyRvPhotos(rv: IMyRv): boolean {
 export function rvTypeLabel(type: RvType | null): string {
   if (!type) return 'RV';
   return RV_TYPES.find(t => t.id === type)?.label ?? 'RV';
+}
+
+/** Rig types that are towed and so have a separate tow vehicle. */
+export const TOWABLE_RV_TYPES: RvType[] = ['fifth-wheel', 'travel-trailer', 'teardrop', 'popup'];
+
+export function isTowableRv(type: RvType | null): boolean {
+  return !!type && TOWABLE_RV_TYPES.includes(type);
+}
+
+/** True when a tow vehicle carries any entered detail. */
+export function towVehicleHasData(t: ITowVehicle | null | undefined): boolean {
+  return !!t && !!(t.year || t.make || t.model || t.licensePlate || t.length || t.photo);
 }

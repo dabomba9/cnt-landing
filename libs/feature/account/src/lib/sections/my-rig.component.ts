@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output, Inject, PLATFORM_ID } f
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IMyRv, IMyRvProfile, RV_TYPES, ToastService,
+  IMyRv, IMyRvProfile, ITowVehicle, RV_TYPES, ToastService,
   isMyRvComplete, myRvMissingFields, rvTypeLabel, emptyMyRvProfile,
+  isTowableRv, emptyTowVehicle, towVehicleHasData,
   listMyRvProfiles, getActiveRvProfileId, addMyRvProfile, updateMyRvProfile,
   deleteMyRvProfile, setActiveRvProfile,
 } from '@cnt-workspace/data-access';
@@ -49,6 +50,9 @@ import {
                     </span>
                   </div>
                   <div class="text-xs font-body text-muted-text mt-0.5">{{ rvTypeLabel(p.type) }} · {{ dimsLabel(p) }}</div>
+                  @if (isTowableRv(p.type) && towVehicleHasData(p.towVehicle)) {
+                    <div class="text-xs font-body text-muted-text mt-0.5">Towed by {{ towVehicleLabel(p.towVehicle) }}</div>
+                  }
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   @if (p.id !== activeId) {
@@ -137,6 +141,58 @@ import {
             </div>
           </div>
 
+          @if (isTowableRv(rv.type)) {
+            @if (rv.towVehicle; as tow) {
+              <div>
+                <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-1">Tow vehicle</div>
+                <p class="text-xs font-body text-muted-text mb-3">Your rig is towable — tell hosts what's pulling it so they can picture your full setup.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <label class="flex flex-col gap-2">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Year</span>
+                    <input type="number" [(ngModel)]="tow.year" name="towYear" placeholder="2020" min="1900" max="2100"
+                      class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+                  </label>
+                  <label class="flex flex-col gap-2">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Make</span>
+                    <input type="text" [(ngModel)]="tow.make" name="towMake" placeholder="Ford"
+                      class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+                  </label>
+                  <label class="flex flex-col gap-2">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Model</span>
+                    <input type="text" [(ngModel)]="tow.model" name="towModel" placeholder="F-250"
+                      class="bg-cream/60 border border-dark-text/15 rounded-xl px-3 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+                  </label>
+                  <label class="flex flex-col gap-2">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">License plate</span>
+                    <input type="text" [(ngModel)]="tow.licensePlate" name="towPlate" placeholder="ABC-1234" maxlength="10"
+                      class="bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2.5 text-sm font-body uppercase focus:outline-none focus:border-jungle-green">
+                  </label>
+                  <label class="flex flex-col gap-2">
+                    <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Length</span>
+                    <div class="flex items-center bg-cream/60 border border-dark-text/15 rounded-xl overflow-hidden">
+                      <input type="number" [(ngModel)]="tow.length" name="towLength" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none bg-transparent">
+                      <span class="px-3 py-2.5 text-[0.65rem] font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">ft</span>
+                    </div>
+                  </label>
+                </div>
+                <div class="rounded-xl border border-dark-text/8 p-4 bg-cream/30 mt-3">
+                  <div class="text-xs font-body font-bold text-dark-text mb-2">Tow vehicle photo</div>
+                  @if (tow.photo) {
+                    <img [src]="tow.photo" alt="Tow vehicle" class="w-full h-32 object-cover rounded-md mb-2">
+                  }
+                  <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-base">photo_camera</span>
+                    {{ tow.photo ? 'Change' : 'Upload' }}
+                    <input type="file" accept="image/*" (change)="onTowPhoto($event)" class="hidden">
+                  </label>
+                  @if (tow.photo) {
+                    <button type="button" (click)="tow.photo = null" class="ml-2 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad">Remove</button>
+                  }
+                </div>
+              </div>
+            }
+          }
+
           <div>
             <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Dimensions <span class="text-trinidad">*</span></div>
             <div class="grid grid-cols-3 gap-3">
@@ -212,6 +268,8 @@ export class MyRigSectionComponent implements OnInit {
 
   readonly rvTypes = RV_TYPES;
   readonly rvTypeLabel = rvTypeLabel;
+  readonly isTowableRv = isTowableRv;
+  readonly towVehicleHasData = towVehicleHasData;
   readonly dimensions: { key: 'length' | 'height' | 'width'; label: string }[] = [
     { key: 'length', label: 'Length' },
     { key: 'height', label: 'Height' },
@@ -246,8 +304,24 @@ export class MyRigSectionComponent implements OnInit {
     const p = this.profiles.find(x => x.id === id);
     if (!p) return;
     this.editingId = id;
-    this.rv = { ...p };
+    // Working copy always carries a non-null towVehicle so the form can bind.
+    this.rv = { ...p, towVehicle: p.towVehicle ? { ...p.towVehicle } : emptyTowVehicle() };
     this.confirmingDeleteId = null;
+  }
+
+  /** Year/make/model of a tow vehicle, for the profile-card "Towed by" line. */
+  towVehicleLabel(t: ITowVehicle | null): string {
+    if (!t) return '';
+    return [t.year, t.make, t.model].filter(Boolean).join(' ') || 'tow vehicle';
+  }
+
+  onTowPhoto(e: Event): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file || !this.rv.towVehicle) return;
+    const reader = new FileReader();
+    reader.onload = () => { if (this.rv.towVehicle) this.rv.towVehicle.photo = reader.result as string; };
+    reader.readAsDataURL(file);
   }
 
   addProfile(): void {
@@ -286,8 +360,8 @@ export class MyRigSectionComponent implements OnInit {
 
   clear(): void {
     if (!this.editingId) return;
-    this.rv = { ...emptyMyRvProfile(this.rv.name), id: this.rv.id };
-    updateMyRvProfile(this.platformId, this.editingId, this.rv);
+    this.rv = { ...emptyMyRvProfile(this.rv.name), id: this.rv.id, towVehicle: emptyTowVehicle() };
+    updateMyRvProfile(this.platformId, this.editingId, { ...this.rv, towVehicle: null });
     this.refresh();
     this.toasts.info('Rig details cleared.');
   }
@@ -303,7 +377,9 @@ export class MyRigSectionComponent implements OnInit {
 
   save(): void {
     if (!this.editingId) return;
-    updateMyRvProfile(this.platformId, this.editingId, this.rv);
+    // Keep the tow vehicle only when the rig is towable and something was entered.
+    const tow = isTowableRv(this.rv.type) && towVehicleHasData(this.rv.towVehicle) ? this.rv.towVehicle : null;
+    updateMyRvProfile(this.platformId, this.editingId, { ...this.rv, towVehicle: tow });
     const complete = this.isComplete;
     if (complete && this.redirectAfterSave) {
       // The listing we bounce back to evaluates the active rig — make it this one.
