@@ -7,7 +7,8 @@ import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileCompone
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
-  getAddOnPerformance, IAddOnPerformance,
+  getAddOnPerformance, IAddOnPerformance, hasOwnedListings,
+  HostListingDraftService,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.component';
@@ -51,6 +52,10 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   countdowns: Record<string, string> = {};
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
+  /** True until the host publishes their first listing — drives the
+   * getting-started panel in place of the empty KPI dashboard. */
+  isNewHost = false;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
@@ -59,7 +64,11 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     private seo: SeoService,
     private toasts: ToastService,
     private bookings: BookingService,
+    private drafts: HostListingDraftService,
   ) {}
+
+  /** Per-step completion of any in-progress wizard draft (null when none). */
+  get draftCompletion() { return this.drafts.completion; }
 
   ngOnInit(): void {
     this.seo.update({
@@ -70,6 +79,7 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     });
     this.user = this.auth.currentUser;
     if (this.user) {
+      this.isNewHost = !hasOwnedListings(this.user.email);
       this.listings = getMyListings(this.user.email);
       this.subs.push(
         this.bookings.bookings$.subscribe(all => {

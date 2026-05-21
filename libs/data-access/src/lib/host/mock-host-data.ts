@@ -34,6 +34,13 @@ export function addOwnedListing(userEmail: string, listingId: number): void {
   writeOwnedMap(map);
 }
 
+/** True when the user has published at least one listing of their own.
+ * Distinct from getMyListings(), which falls back to the seeded demo trio. */
+export function hasOwnedListings(userEmail: string): boolean {
+  if (!userEmail) return false;
+  return (readOwnedMap()[userEmail] ?? []).length > 0;
+}
+
 /** Inverse of addOwnedListing — used by the delete-listing flow. */
 export function removeOwnedListing(userEmail: string, listingId: number): void {
   if (!userEmail) return;
