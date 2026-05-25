@@ -25,9 +25,22 @@ export interface IUserReview {
 
 const REVIEWS_KEY = 'cnt-reviews';
 
-/** Average of the five review sub-scores. Drives the derived overall rating. */
-export function averageSubScores(s: IReviewSubScores): number {
+/** Average of the review sub-scores. Drives the derived overall rating.
+ * Off-grid stays (no hookups) skip the Hookups score so an N/A field can't
+ * drag the overall down. */
+export function averageSubScores(s: IReviewSubScores, excludeHookups = false): number {
+  if (excludeHookups) return (s.cleanliness + s.communication + s.location + s.value) / 4;
   return (s.cleanliness + s.communication + s.location + s.hookups + s.value) / 5;
+}
+
+/** Star-rendering state for position `pos` (1..5) against a fractional rating.
+ *   pos=5, rating=4.8 → 'half'   pos=4, rating=4.8 → 'full'
+ *   pos=5, rating=4.2 → 'empty' (rating below 4.5)
+ */
+export function starState(pos: number, rating: number): 'full' | 'half' | 'empty' {
+  if (rating >= pos) return 'full';
+  if (rating >= pos - 0.5) return 'half';
+  return 'empty';
 }
 
 function newId(): string {
@@ -58,6 +71,17 @@ export class ReviewService {
 
   forUser(email: string): IUserReview[] {
     return this._reviews$.value.filter(r => r.userEmail === email);
+  }
+
+  /** Combine the seeded listing rating with user-submitted reviews so the
+   * headline rating actually reflects what guests are saying. */
+  aggregateRating(seededRating: number, seededCount: number, listingId: number): { rating: number; count: number } {
+    const userReviews = this._reviews$.value.filter(r => r.listingId === listingId);
+    if (userReviews.length === 0) return { rating: seededRating, count: seededCount };
+    const userSum = userReviews.reduce((sum, r) => sum + r.rating, 0);
+    const totalCount = seededCount + userReviews.length;
+    const totalSum = seededRating * seededCount + userSum;
+    return { rating: +(totalSum / totalCount).toFixed(2), count: totalCount };
   }
 
   upsert(input: Omit<IUserReview, 'id' | 'createdAt'> & { id?: string }): IUserReview {

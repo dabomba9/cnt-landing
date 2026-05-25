@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IReview } from '@cnt-workspace/data-access';
+import { IReview, starState } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-review-card',
@@ -10,4 +10,6 @@ import { IReview } from '@cnt-workspace/data-access';
 })
 export class ReviewCardComponent {
   @Input({ required: true }) review!: IReview;
+  readonly stars = [1, 2, 3, 4, 5];
+  readonly starState = starState;
 }

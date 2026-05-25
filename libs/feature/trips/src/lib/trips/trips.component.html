@@ -443,23 +443,28 @@
           <span class="text-trinidad font-body">/ 5</span>
           <span class="text-[0.65rem] text-muted-text">averaged from your scores below</span>
         </div>
-        <div class="space-y-2">
+        <div class="space-y-3">
           @for (s of subScoreLabels; track s.key) {
-            <div class="flex items-center justify-between gap-3">
-              <span class="text-sm font-body text-dark-text flex-1">{{ s.label }}</span>
-              <div class="flex items-center gap-0.5">
-                @for (star of stars; track star) {
-                  <button type="button" (click)="setReviewSubScore(s.key, star)"
-                    class="w-7 h-7 inline-flex items-center justify-center hover:bg-cream/60 rounded-md transition-colors"
-                    [attr.aria-label]="s.label + ' ' + star + ' stars'">
-                    <span class="material-symbols-outlined text-base"
-                      [class.text-trinidad]="reviewSubScores[s.key] >= star"
-                      [class.text-muted-text]="reviewSubScores[s.key] < star"
-                      [style.font-variation-settings]="reviewSubScores[s.key] >= star ? '\'FILL\' 1' : null">star</span>
-                  </button>
-                }
+            @if (s.key !== 'hookups' || !reviewTargetIsOffgrid) {
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-body text-dark-text">{{ s.label }}</div>
+                  <div class="text-[0.65rem] text-muted-text font-body leading-snug">{{ s.hint }}</div>
+                </div>
+                <div class="flex items-center gap-0.5 shrink-0">
+                  @for (star of stars; track star) {
+                    <button type="button" (click)="setReviewSubScore(s.key, star)"
+                      class="w-7 h-7 inline-flex items-center justify-center hover:bg-cream/60 rounded-md transition-colors"
+                      [attr.aria-label]="s.label + ' ' + star + ' stars'">
+                      <span class="material-symbols-outlined text-base"
+                        [class.text-trinidad]="reviewSubScores[s.key] >= star"
+                        [class.text-muted-text]="reviewSubScores[s.key] < star"
+                        [style.font-variation-settings]="reviewSubScores[s.key] >= star ? '\'FILL\' 1' : null">star</span>
+                    </button>
+                  }
+                </div>
               </div>
-            </div>
+            }
           }
         </div>
       </div>

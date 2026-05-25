@@ -14,10 +14,10 @@
             @if (listing.kind !== 'boondocking') {
               <span class="inline-flex items-center gap-1 text-dark-text font-bold">
                 <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
-                {{ listing.rating }}
+                {{ aggregatedRating.rating }}
               </span>
               <span class="text-dark-text/30">·</span>
-              <a (click)="scrollToAnchor('reviews')" class="underline underline-offset-2 hover:text-trinidad cursor-pointer">{{ listing.reviewCount }} reviews</a>
+              <a (click)="scrollToAnchor('reviews')" class="underline underline-offset-2 hover:text-trinidad cursor-pointer">{{ aggregatedRating.count }} reviews</a>
               <span class="text-dark-text/30">·</span>
             }
             <span>{{ listing.location }}</span>
@@ -129,7 +129,7 @@
           </div>
 
           <!-- Guest favorite badge (only show for highly-rated private listings) -->
-          @if (listing.kind !== 'boondocking' && listing.rating >= 4.8) {
+          @if (listing.kind !== 'boondocking' && aggregatedRating.rating >= 4.8) {
             <div class="bg-white rounded-2xl border border-dark-text/8 px-6 py-5 flex items-center justify-between gap-6">
               <div class="flex items-center gap-4">
                 <span class="material-symbols-outlined text-3xl text-trinidad" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
@@ -140,7 +140,7 @@
               </div>
               <div class="flex items-center gap-6 shrink-0">
                 <div class="text-center">
-                  <div class="font-headline font-bold text-dark-text text-2xl">{{ listing.rating }}</div>
+                  <div class="font-headline font-bold text-dark-text text-2xl">{{ aggregatedRating.rating }}</div>
                   <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-trinidad mt-0.5">
                     <span class="inline-flex items-center gap-0.5">
                       <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
@@ -153,7 +153,7 @@
                 </div>
                 <div class="border-l border-dark-text/15 h-10"></div>
                 <div class="text-center">
-                  <div class="font-headline font-bold text-dark-text text-2xl">{{ listing.reviewCount }}</div>
+                  <div class="font-headline font-bold text-dark-text text-2xl">{{ aggregatedRating.count }}</div>
                   <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text mt-0.5">Reviews</div>
                 </div>
               </div>
@@ -460,7 +460,7 @@
             <div class="flex items-baseline gap-3 mb-6">
               <span class="material-symbols-outlined text-trinidad" style="font-variation-settings: 'FILL' 1; font-size: 22px;">star</span>
               <h2 class="font-headline font-bold text-dark-text !text-2xl md:!text-3xl">{{ overallScore }}</h2>
-              <span class="text-muted-text font-body">· {{ listing.reviewCount }} reviews</span>
+              <span class="text-muted-text font-body">· {{ aggregatedRating.count }} reviews</span>
             </div>
 
             <!-- Sub-score bars (5 categories, 2-col on desktop) -->

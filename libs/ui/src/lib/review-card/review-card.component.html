@@ -9,9 +9,20 @@
     </div>
   </div>
   <div class="flex items-center gap-1 mb-2">
-    @for (i of [1,2,3,4,5]; track i) {
-      <span class="material-symbols-outlined text-sm" [class.text-trinidad]="i <= review.rating" [class.text-dark-text]="i > review.rating" [class.opacity-20]="i > review.rating" style="font-variation-settings: 'FILL' 1;">star</span>
+    @for (i of stars; track i) {
+      @switch (starState(i, review.rating)) {
+        @case ('full') {
+          <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star</span>
+        }
+        @case ('half') {
+          <span class="material-symbols-outlined text-sm text-trinidad" style="font-variation-settings: 'FILL' 1;">star_half</span>
+        }
+        @default {
+          <span class="material-symbols-outlined text-sm text-dark-text opacity-20" style="font-variation-settings: 'FILL' 1;">star</span>
+        }
+      }
     }
+    <span class="ml-1 text-xs font-body font-bold text-dark-text">{{ review.rating.toFixed(1) }}</span>
   </div>
   <p class="text-base font-body text-dark-text leading-relaxed">{{ review.text }}</p>
 </article>

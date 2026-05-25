@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { IListing, IListingDetail, IMyRvProfile, getListingDetail, addOnCountForListing, rvTypeLabel, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
+import { IListing, IListingDetail, IMyRvProfile, getListingDetail, addOnCountForListing, rvTypeLabel, ReviewService, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-listing-card',
@@ -78,6 +78,16 @@ export class ListingCardComponent {
       return { label: 'Guest Favorite', icon: 'workspace_premium', bg: 'bg-dark-text', fg: 'text-gold' };
     }
     return null;
+  }
+
+  constructor(private reviews: ReviewService) {}
+
+  /** Aggregated rating + count combining the seeded baseline with any
+   * user-submitted reviews. Boondocking listings have no rating; callers
+   * should already guard on kind. */
+  get aggregatedRating(): { rating: number; count: number } {
+    if (this.listing.kind === 'boondocking') return { rating: 0, count: 0 };
+    return this.reviews.aggregateRating(this.listing.rating, this.listing.reviewCount, this.listing.id);
   }
 
   /** Add-on count for the "+N add-ons" badge. Memoized per listing id so the

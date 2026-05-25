@@ -225,6 +225,14 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       .slice(0, 3);
   }
 
+  /** Aggregated rating + count (seeded + user-submitted) for private listings.
+   * Drives the header tiles + review-section count so submitted reviews
+   * actually move the displayed headline number. */
+  get aggregatedRating(): { rating: number; count: number } {
+    if (this.listing.kind === 'boondocking') return { rating: 0, count: 0 };
+    return this.reviewSvc.aggregateRating(this.listing.rating, this.listing.reviewCount, this.listing.id);
+  }
+
   /** One-line fit summary derived from siteSpecs. */
   get fitSummary(): string {
     const s = this.detail.siteSpecs;

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
-import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, averageSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT } from '@cnt-workspace/data-access';
+import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, averageSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT, MOCK_LISTINGS } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
@@ -474,10 +474,22 @@ export class TripsComponent implements OnInit, OnDestroy {
     this.reviewTarget = null;
   }
 
-  /** Live overall rating, averaged from the sub-scores. Decimal for the
-   * modal preview; rounded to a 1–5 integer for the stored review. */
-  get overallRatingExact(): number { return averageSubScores(this.reviewSubScores); }
-  get overallRating(): number { return Math.round(this.overallRatingExact); }
+  /** True when the listing being reviewed has no hookups (off-grid). The
+   * Hookups sub-score is then hidden and dropped from the average. */
+  get reviewTargetIsOffgrid(): boolean {
+    if (!this.reviewTarget) return false;
+    return MOCK_LISTINGS.find(l => l.id === this.reviewTarget!.listingId)?.category === 'offgrid';
+  }
+
+  /** Live overall rating, averaged from the sub-scores. Stored at 2-decimal
+   * precision so renderers can show half-stars; preserves what off-grid
+   * stays say when Hookups is excluded. */
+  get overallRatingExact(): number {
+    return averageSubScores(this.reviewSubScores, this.reviewTargetIsOffgrid);
+  }
+  get overallRating(): number {
+    return +this.overallRatingExact.toFixed(2);
+  }
 
   setReviewSubScore(key: keyof IReviewSubScores, value: number): void {
     this.reviewSubScores = { ...this.reviewSubScores, [key]: Math.max(1, Math.min(5, value)) };
@@ -485,12 +497,12 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   /** Helper exposed to the template for rendering star rows (1..5). */
   readonly stars = [1, 2, 3, 4, 5];
-  readonly subScoreLabels: Array<{ key: keyof IReviewSubScores; label: string }> = [
-    { key: 'cleanliness',   label: 'Cleanliness' },
-    { key: 'communication', label: 'Communication' },
-    { key: 'location',      label: 'Location' },
-    { key: 'hookups',       label: 'Hookups' },
-    { key: 'value',         label: 'Value' },
+  readonly subScoreLabels: Array<{ key: keyof IReviewSubScores; label: string; hint: string }> = [
+    { key: 'cleanliness',   label: 'Cleanliness',   hint: 'Tidy, well-maintained site on arrival.' },
+    { key: 'communication', label: 'Communication', hint: 'Host was responsive and helpful.' },
+    { key: 'location',      label: 'Location',      hint: 'Setting matched the listing — quiet, views, access.' },
+    { key: 'hookups',       label: 'Hookups',       hint: 'Power, water, sewer — accurate and working.' },
+    { key: 'value',         label: 'Value',         hint: 'Fair price for what you got.' },
   ];
 
   confirmReview(): void {
