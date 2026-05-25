@@ -436,23 +436,13 @@
       }
 
       <div class="mb-5">
-        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-2">Overall rating</div>
-        <div class="flex items-center gap-1">
-          @for (s of stars; track s) {
-            <button type="button" (click)="setReviewRating(s)"
-              class="w-10 h-10 inline-flex items-center justify-center rounded-md hover:bg-cream/60 transition-colors"
-              [class.text-trinidad]="reviewRating >= s"
-              [class.text-muted-text]="reviewRating < s"
-              [attr.aria-label]="s + ' stars'">
-              <span class="material-symbols-outlined text-2xl" [style.font-variation-settings]="reviewRating >= s ? '\'FILL\' 1' : null">star</span>
-            </button>
-          }
-          <span class="ml-3 text-sm font-body text-dark-text font-bold">{{ reviewRating }}/5</span>
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-3">Your scores</div>
+        <div class="flex items-baseline gap-2 mb-4">
+          <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Overall</span>
+          <span class="font-headline font-bold text-dark-text text-2xl leading-none">{{ overallRatingExact.toFixed(1) }}</span>
+          <span class="text-trinidad font-body">/ 5</span>
+          <span class="text-[0.65rem] text-muted-text">averaged from your scores below</span>
         </div>
-      </div>
-
-      <div class="mb-5">
-        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-3">Sub-scores</div>
         <div class="space-y-2">
           @for (s of subScoreLabels; track s.key) {
             <div class="flex items-center justify-between gap-3">

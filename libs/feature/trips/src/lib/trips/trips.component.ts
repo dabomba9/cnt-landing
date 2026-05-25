@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
-import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT } from '@cnt-workspace/data-access';
+import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, averageSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
@@ -78,7 +78,6 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   /** Review modal state. */
   reviewTarget: IBooking | null = null;
-  reviewRating = 5;
   reviewText = '';
   reviewSubScores: IReviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
   reviewSaving = false;
@@ -462,11 +461,9 @@ export class TripsComponent implements OnInit, OnDestroy {
     this.reviewTarget = b;
     const existing = this.reviewByBookingId[b.id];
     if (existing) {
-      this.reviewRating = existing.rating;
       this.reviewText = existing.text;
       this.reviewSubScores = { ...existing.subScores };
     } else {
-      this.reviewRating = 5;
       this.reviewText = '';
       this.reviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
     }
@@ -477,7 +474,10 @@ export class TripsComponent implements OnInit, OnDestroy {
     this.reviewTarget = null;
   }
 
-  setReviewRating(value: number): void { this.reviewRating = Math.max(1, Math.min(5, value)); }
+  /** Live overall rating, averaged from the sub-scores. Decimal for the
+   * modal preview; rounded to a 1–5 integer for the stored review. */
+  get overallRatingExact(): number { return averageSubScores(this.reviewSubScores); }
+  get overallRating(): number { return Math.round(this.overallRatingExact); }
 
   setReviewSubScore(key: keyof IReviewSubScores, value: number): void {
     this.reviewSubScores = { ...this.reviewSubScores, [key]: Math.max(1, Math.min(5, value)) };
@@ -511,7 +511,7 @@ export class TripsComponent implements OnInit, OnDestroy {
         userEmail: user.email,
         authorName,
         authorInitials,
-        rating: this.reviewRating,
+        rating: this.overallRating,
         text: trimmedText,
         subScores: this.reviewSubScores,
       });

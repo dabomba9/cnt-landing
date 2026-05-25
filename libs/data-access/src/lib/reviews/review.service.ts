@@ -25,6 +25,11 @@ export interface IUserReview {
 
 const REVIEWS_KEY = 'cnt-reviews';
 
+/** Average of the five review sub-scores. Drives the derived overall rating. */
+export function averageSubScores(s: IReviewSubScores): number {
+  return (s.cleanliness + s.communication + s.location + s.hookups + s.value) / 5;
+}
+
 function newId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return `r-${crypto.randomUUID()}`;
   return `r-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
