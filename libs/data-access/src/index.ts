@@ -24,4 +24,5 @@ export * from './lib/pois/mock-pois.data';
 export * from './lib/state.util';
 export * from './lib/payments/payment-methods.service';
 export * from './lib/reviews/review.service';
+export * from './lib/reviews/host-review.service';
 export * from './lib/notifications/notification.service';

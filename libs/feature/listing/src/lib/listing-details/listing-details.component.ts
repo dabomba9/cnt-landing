@@ -19,7 +19,7 @@ import {
 import { IMyRv, IMyRvProfile, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService, ReviewService, IUserReview, isOwnedByUser } from '@cnt-workspace/data-access';
+import { AuthService, ReviewService, IUserReview, isOwnedByUser, HostReviewService, BookingService } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -322,6 +322,8 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     @Inject(BookingStateService) public booking: BookingStateService,
     private auth: AuthService,
     private reviewSvc: ReviewService,
+    private hostReviewSvc: HostReviewService,
+    private bookingSvc: BookingService,
     private toasts: ToastService,
   ) {}
 
@@ -359,7 +361,12 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.reviewsSub?.unsubscribe();
         this.reviewsSub = this.reviewSvc.reviews$.subscribe(all => {
-          this.userReviews = all.filter(r => r.listingId === this.currentListingId);
+          const forListing = all.filter(r => r.listingId === this.currentListingId);
+          // Two-sided reveal: hide a guest-side review until the host also
+          // submitted (or the 14-day window passed). Seeded reviews have no
+          // booking record → always revealed.
+          const map = new Map(this.bookingSvc.getAll().map(b => [b.id, b]));
+          this.userReviews = this.hostReviewSvc.filterRevealed(forListing, map);
         });
 
         const heroImage = this.seo.absUrl(this.detail.photos[0]);

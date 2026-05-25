@@ -47,6 +47,12 @@ export class BookingService {
   }
 
   /** All bookings for one user, newest first. */
+  /** Every booking the current device has — drives reveal-aware aggregations
+   * that need to look up bookings by id across users. */
+  getAll(): IBooking[] {
+    return this._bookings$.value;
+  }
+
   list(userEmail: string): IBooking[] {
     return this.read()
       .filter(b => b.userEmail === userEmail)
@@ -189,6 +195,17 @@ export class BookingService {
     const idx = all.findIndex(b => b.id === id);
     if (idx === -1) return null;
     all[idx] = { ...all[idx], reviewedAt: new Date().toISOString() };
+    this.write(all);
+    return all[idx];
+  }
+
+  /** Flag a completed booking as host-reviewed. Mirrors markReviewed for the
+   * host → guest direction; drives the two-sided reveal. */
+  markHostReviewed(id: string): IBooking | null {
+    const all = this.read();
+    const idx = all.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    all[idx] = { ...all[idx], hostReviewedAt: new Date().toISOString() };
     this.write(all);
     return all[idx];
   }

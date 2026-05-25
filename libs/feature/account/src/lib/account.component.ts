@@ -10,8 +10,9 @@ import { IdentitySectionComponent } from './sections/identity.component';
 import { PaymentsSectionComponent } from './sections/payments.component';
 import { NotificationsSectionComponent } from './sections/notifications.component';
 import { MyRigSectionComponent } from './sections/my-rig.component';
+import { ReputationSectionComponent } from './sections/reputation.component';
 
-type Section = 'personal' | 'identity' | 'security' | 'payments' | 'notifications' | 'rig';
+type Section = 'personal' | 'identity' | 'security' | 'payments' | 'notifications' | 'rig' | 'reputation';
 
 interface INavItem { id: Section; label: string; icon: string; description: string; }
 
@@ -22,6 +23,7 @@ const NAV_ITEMS: INavItem[] = [
   { id: 'payments',      label: 'Payments',          icon: 'credit_card',      description: 'Cards on file' },
   { id: 'notifications', label: 'Notifications',     icon: 'notifications',    description: 'What we send you' },
   { id: 'rig',           label: 'My Rig',            icon: 'rv_hookup',        description: 'RV type, dimensions, photos' },
+  { id: 'reputation',    label: 'Reputation',        icon: 'star_rate',        description: 'How hosts rate you' },
 ];
 
 @Component({
@@ -31,6 +33,7 @@ const NAV_ITEMS: INavItem[] = [
     CommonModule, NavbarComponent, FooterComponent,
     PersonalInfoSectionComponent, LoginSecuritySectionComponent, IdentitySectionComponent,
     PaymentsSectionComponent, NotificationsSectionComponent, MyRigSectionComponent,
+    ReputationSectionComponent,
   ],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],

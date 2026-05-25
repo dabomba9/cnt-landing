@@ -260,8 +260,18 @@
                   <div class="flex items-center gap-3 md:w-1/4 shrink-0">
                     <div class="w-12 h-12 rounded-full bg-trinidad text-white flex items-center justify-center font-headline font-bold text-sm shrink-0">{{ guestInitials(b) }}</div>
                     <div class="min-w-0">
-                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.userEmail }}</div>
-                      <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-trinidad inline-flex items-center gap-1.5">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.userEmail }}</div>
+                        @if (guestRatingFor(b.userEmail).count > 0) {
+                          <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-jungle-green/10 text-jungle-green text-[0.6rem] font-body font-bold">
+                            <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            {{ guestRatingFor(b.userEmail).rating.toFixed(1) }} ({{ guestRatingFor(b.userEmail).count }})
+                          </span>
+                        } @else {
+                          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-dark-text/8 text-muted-text text-[0.6rem] font-body font-bold">New guest</span>
+                        }
+                      </div>
+                      <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-trinidad inline-flex items-center gap-1.5 mt-0.5">
                         Real · {{ formatRelative(b.createdAt) }}
                         @if (countdowns[b.id]) {
                           <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-trinidad text-white text-[0.55rem] font-button font-bold leading-none normal-case tracking-normal">
@@ -337,6 +347,42 @@
           </div>
         }
       </section>
+
+      <!-- Pending guest reviews (host → guest, 14-day reveal window) -->
+      @if (pendingGuestReviews.length > 0) {
+        <section>
+          <div class="flex items-baseline justify-between gap-3 mb-4">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Two-sided reviews</span>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Review your guests</h2>
+              <p class="text-sm font-body text-muted-text mt-1">Reviews stay hidden until both sides submit — or {{ revealWindowDays }} days after checkout.</p>
+            </div>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">{{ pendingGuestReviews.length }} to review</span>
+          </div>
+          <div class="space-y-3">
+            @for (b of pendingGuestReviews; track b.id) {
+              <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.02)] p-4 md:p-5 flex flex-wrap items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-jungle-green/10 text-jungle-green flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-base">rate_review</span>
+                </div>
+                <div class="flex-1 min-w-[12rem]">
+                  <div class="text-sm font-body font-bold text-dark-text truncate">{{ b.userEmail }}</div>
+                  <div class="text-xs text-muted-text font-body">{{ b.listingTitle }} · {{ formatBookingDates(b) }}</div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Window</div>
+                  <div class="text-sm font-body font-bold text-dark-text">{{ daysLeftToReview(b) }}d left</div>
+                </div>
+                <button type="button" (click)="openHostReview(b, $event)"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 transition-opacity">
+                  Review guest
+                  <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </button>
+              </div>
+            }
+          </div>
+        </section>
+      }
 
       <!-- Recently cancelled (read-only) -->
       @if (cancelledHostBookings.length > 0) {
@@ -468,6 +514,87 @@
             Saving…
           } @else {
             {{ modalAction === 'decline' ? 'Decline request' : 'Cancel reservation' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Host → guest review modal -->
+@if (hostReviewTarget) {
+  <div cntFocusTrap (escape)="closeHostReview()" role="dialog" aria-modal="true" aria-labelledby="host-review-title"
+    class="fixed inset-0 z-[var(--z-modal)] bg-dark-text/60 backdrop-blur-sm flex items-end sm:items-center justify-center px-0 sm:px-4 pt-0 sm:pt-12 pb-0 sm:pb-12">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-lg w-full max-h-[calc(100vh-3rem)] overflow-y-auto p-6 md:p-8 shadow-[0_24px_64px_rgba(0,0,0,0.18)] border border-dark-text/8">
+      <div class="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Review your guest</span>
+          <h2 id="host-review-title" class="font-headline font-bold text-dark-text text-xl md:text-2xl leading-tight">{{ hostReviewTarget.userEmail }}</h2>
+          <p class="text-xs text-muted-text font-body mt-1">{{ hostReviewTarget.listingTitle }} · {{ formatBookingDates(hostReviewTarget) }}</p>
+        </div>
+        <button type="button" (click)="closeHostReview()" [disabled]="hostReviewSaving" aria-label="Close review modal"
+          class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="rounded-xl bg-jungle-green/5 border border-jungle-green/30 p-3 flex items-start gap-2 text-xs font-body text-dark-text mb-5">
+        <span class="material-symbols-outlined text-base shrink-0 mt-0.5 text-jungle-green">visibility_off</span>
+        <span class="flex-1">Two-sided reviews: nothing publishes until your guest also reviews you — or {{ revealWindowDays }} days after checkout.</span>
+      </div>
+
+      <div class="mb-5">
+        <div class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold mb-3">Your scores</div>
+        <div class="flex items-baseline gap-2 mb-4">
+          <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Overall</span>
+          <span class="font-headline font-bold text-dark-text text-2xl leading-none">{{ hostReviewOverallExact.toFixed(1) }}</span>
+          <span class="text-trinidad font-body">/ 5</span>
+          <span class="text-[0.65rem] text-muted-text">averaged from your scores below</span>
+        </div>
+        <div class="space-y-3">
+          @for (s of guestSubScoreLabels; track s.key) {
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-body text-dark-text">{{ s.label }}</div>
+                <div class="text-[0.65rem] text-muted-text font-body leading-snug">{{ s.hint }}</div>
+              </div>
+              <div class="flex items-center gap-0.5 shrink-0">
+                @for (star of stars; track star) {
+                  <button type="button" (click)="setHostReviewSubScore(s.key, star)"
+                    class="w-7 h-7 inline-flex items-center justify-center hover:bg-cream/60 rounded-md transition-colors"
+                    [attr.aria-label]="s.label + ' ' + star + ' stars'">
+                    <span class="material-symbols-outlined text-base"
+                      [class.text-trinidad]="hostReviewSubScores[s.key] >= star"
+                      [class.text-muted-text]="hostReviewSubScores[s.key] < star"
+                      [style.font-variation-settings]="hostReviewSubScores[s.key] >= star ? '\'FILL\' 1' : null">star</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <label class="flex flex-col gap-2 mb-5">
+        <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Your review</span>
+        <textarea [(ngModel)]="hostReviewText" name="hostReviewText" rows="4" maxlength="600"
+          placeholder="What stood out about hosting this guest? Anything other hosts should know?"
+          class="bg-cream/60 border border-dark-text/15 rounded-md px-4 py-3 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all resize-none"></textarea>
+        <div class="text-[0.6rem] font-body text-muted-text text-right">{{ hostReviewText.length }}/600</div>
+      </label>
+
+      <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
+        <button type="button" (click)="closeHostReview()" [disabled]="hostReviewSaving"
+          class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50 transition-colors">
+          Not yet
+        </button>
+        <button type="button" (click)="confirmHostReview()" [disabled]="hostReviewSaving"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+          @if (hostReviewSaving) {
+            <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+            Saving…
+          } @else {
+            Submit review
           }
         </button>
       </div>

@@ -9,6 +9,7 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { SeoService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
+import { HostReviewService } from '@cnt-workspace/data-access';
 import { IThread, MessageAuthor, IMessage, IBooking, STATUS_META, BookingStatus } from '@cnt-workspace/models';
 
 type ListFilter = 'all' | 'unread';
@@ -65,6 +66,7 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     private auth: AuthService,
     private msg: MessageService,
     private bookingSvc: BookingService,
+    private hostReviews: HostReviewService,
     private route: ActivatedRoute,
     private router: Router,
     private seo: SeoService,
@@ -171,6 +173,16 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (me === 'guest') return t.hostInitials;
     if (me === 'host') return t.guestInitials;
     return t.hostInitials;
+  }
+
+  /** When the current user is the host in this thread, the counterparty is
+   * the guest — aggregate host-review history for their reputation badge.
+   * Returns count = 0 when the counterparty is a host (no badge then). */
+  counterpartyGuestRating(t: IThread): { rating: number; count: number } {
+    if (this.authorForCurrentUser(t) !== 'host') return { rating: 0, count: 0 };
+    const bookings = this.bookingSvc.getAll();
+    const map = new Map(bookings.map(b => [b.id, b]));
+    return this.hostReviews.aggregateForGuest(t.guestEmail, map);
   }
 
   unreadCount(t: IThread): number {

@@ -64,6 +64,10 @@ export interface IBooking {
   addOnsTotal?: number;
   /** ISO when the guest left a review for this completed trip. */
   reviewedAt?: string;
+  /** ISO when the host left a review for this guest. Parallel to reviewedAt;
+   * drives the two-sided reveal — both timestamps (or the 14-day window) gate
+   * when either review becomes visible to the world. */
+  hostReviewedAt?: string;
   /** Reward credit dollars applied to this booking's total (subtracts from availableCredit). */
   creditApplied?: number;
 }
