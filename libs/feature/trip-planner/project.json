@@ -1,0 +1,13 @@
+{
+  "name": "trip-planner",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/feature/trip-planner/src",
+  "prefix": "cnt-workspace",
+  "tags": ["type:feature", "scope:trip-planner"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

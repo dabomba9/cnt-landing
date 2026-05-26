@@ -48,6 +48,16 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/trips').then(m => m.TripsComponent),
   },
   {
+    path: 'trip-planner',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/trip-planner').then(m => m.TripPlannerListComponent),
+  },
+  {
+    path: 'trip-planner/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/trip-planner').then(m => m.TripPlannerEditComponent),
+  },
+  {
     path: 'inbox',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/inbox').then(m => m.InboxComponent),
