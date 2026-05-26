@@ -167,7 +167,13 @@
               </div>
             </div>
           }
-          <cnt-upcoming-trip [booking]="upcomingTrip"></cnt-upcoming-trip>
+          <!-- Only render the upcoming-trip widget when there's a real next
+               booking to show, OR when nothing is in progress (so the widget's
+               own empty state stands in). Otherwise the empty state would
+               contradict the in-progress card right above it. -->
+          @if (upcomingTrip || !inProgressTrip) {
+            <cnt-upcoming-trip [booking]="upcomingTrip"></cnt-upcoming-trip>
+          }
           @if (showTripPrep) {
             <cnt-trip-prep [booking]="upcomingTrip" [user]="user" [myRv]="myRv"></cnt-trip-prep>
           }
