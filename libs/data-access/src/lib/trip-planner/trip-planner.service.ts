@@ -47,6 +47,12 @@ function newId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/** Default auto-name for a freshly created trip — date-based, e.g.
+ *  "Trip — May 26, 2026". Inline-renameable wherever the trip surfaces. */
+export function autoTripName(now: Date = new Date()): string {
+  return `Trip — ${now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+}
+
 /** Great-circle distance between two points in miles. */
 export function haversineMiles(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 3959;

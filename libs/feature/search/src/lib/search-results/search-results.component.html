@@ -702,12 +702,18 @@
 @if (plannerDrawerOpen) {
   <aside class="fixed top-20 md:top-24 right-0 bottom-20 md:bottom-4 w-[360px] max-w-[92vw] z-40 bg-white rounded-l-2xl border border-dark-text/10 shadow-[0_20px_48px_rgba(0,0,0,0.18)] flex flex-col">
     <div class="flex items-center justify-between gap-3 p-4 border-b border-dark-text/8">
-      <div>
+      <div class="flex-1 min-w-0">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block">Trip planner</span>
-        <h3 class="font-headline font-bold text-dark-text text-base leading-tight">{{ activePlan?.name || 'Pick or create a trip' }}</h3>
+        @if (activePlan) {
+          <input type="text" [(ngModel)]="activePlan.name" name="planNameDrawer" maxlength="60"
+            (blur)="commitPlanField('name', activePlan.name)" aria-label="Trip name"
+            class="font-headline font-bold text-dark-text text-base leading-tight bg-transparent focus:bg-cream/40 outline-none border-b border-transparent focus:border-jungle-green w-full px-1 -mx-1">
+        } @else {
+          <h3 class="font-headline font-bold text-dark-text text-base leading-tight">Pick or create a trip</h3>
+        }
       </div>
       <button type="button" (click)="closePlannerDrawer()" aria-label="Close planner"
-        class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
+        class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors shrink-0">
         <span class="material-symbols-outlined text-base">close</span>
       </button>
     </div>
@@ -757,6 +763,56 @@
         </div>
       }
 
+      <!-- Active trip controls — RV chip, dates row. Only when a plan is active. -->
+      @if (activePlan && !pendingStop) {
+        <div class="relative">
+          <div class="flex items-center gap-3 p-2 rounded-xl bg-cream/40">
+            <button type="button" (click)="drawerRvSwitcherOpen = !drawerRvSwitcherOpen" aria-label="Switch RV profile" class="relative shrink-0">
+              <span class="w-10 h-10 rounded-full bg-jungle-green text-white inline-flex items-center justify-center font-headline font-bold text-xs">{{ drawerActiveRvInitials }}</span>
+              <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-trinidad text-white inline-flex items-center justify-center border-2 border-white">
+                <span class="material-symbols-outlined text-[8px]">add</span>
+              </span>
+            </button>
+            <div class="flex-1 min-w-0">
+              <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">Bringing</div>
+              <div class="text-xs font-body font-bold text-dark-text truncate">{{ drawerActiveRv?.name || 'No RV set' }}</div>
+              @if (drawerActiveRv) {
+                <div class="text-[0.6rem] text-muted-text truncate">{{ rvTypeLabel(drawerActiveRv.type) }}</div>
+              }
+            </div>
+          </div>
+          @if (drawerRvSwitcherOpen) {
+            <div class="absolute left-0 right-0 top-full mt-1 z-20 rounded-xl border border-dark-text/10 bg-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] p-2 space-y-1">
+              @for (p of drawerRvProfiles; track p.id) {
+                <button type="button" (click)="selectDrawerRv(p.id)"
+                  [ngClass]="p.id === drawerActiveRv?.id ? 'bg-cream/60' : ''"
+                  class="w-full text-left p-2 rounded-md flex items-center gap-2 hover:bg-cream/60 transition-colors">
+                  <span class="w-6 h-6 rounded-full bg-jungle-green text-white inline-flex items-center justify-center text-[10px] font-headline font-bold">{{ rvInitials(p.name) }}</span>
+                  <span class="text-xs font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                </button>
+              }
+              @if (drawerRvProfiles.length === 0) {
+                <p class="text-xs text-muted-text text-center py-2">No RVs saved yet.</p>
+              }
+              <a routerLink="/account" fragment="rig" class="block w-full text-center text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-1 hover:underline">Manage RVs →</a>
+            </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <label class="block">
+            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">From</span>
+            <input type="date" [(ngModel)]="activePlan.startDate" name="planStart" (change)="commitPlanField('startDate', activePlan.startDate)"
+              class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+          </label>
+          <label class="block">
+            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">To</span>
+            <input type="date" [(ngModel)]="activePlan.endDate" name="planEnd" (change)="commitPlanField('endDate', activePlan.endDate)"
+              class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+          </label>
+        </div>
+      }
+
       @if (!activePlan) {
         <p class="text-xs text-muted-text text-center py-4">Pick a trip above or tap + to start a new one — then click any listing or POI on the map and "Add to trip".</p>
       } @else {
@@ -790,11 +846,21 @@
       }
     </div>
 
-    <div class="p-4 border-t border-dark-text/8 space-y-2">
+    <div class="p-4 border-t border-dark-text/8 space-y-2.5">
       @if (activePlan) {
+        <div>
+          <div class="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
+            <span class="text-muted-text">Corridor radius</span>
+            <span class="text-trinidad">{{ activePlan.corridorMiles || 0 }} mi</span>
+          </div>
+          <input type="range" min="0" max="60" step="5"
+            [ngModel]="activePlan.corridorMiles || 0"
+            (ngModelChange)="commitPlanField('corridorMiles', $event)" name="planCorridor"
+            class="w-full mt-1 accent-trinidad">
+        </div>
         <div class="text-xs font-body text-dark-text text-center">Trip Distance: <span class="font-bold">{{ activePlanDistance }} {{ activePlanDistance === 1 ? 'mile' : 'miles' }}</span></div>
-        <a [routerLink]="['/trip-planner', activePlan.id]" class="block w-full text-center px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 no-underline">
-          Open full editor →
+        <a [routerLink]="['/trip-planner', activePlan.id]" class="block w-full text-center text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-1.5 hover:underline">
+          Open focused view →
         </a>
       } @else {
         <a routerLink="/trip-planner" class="block w-full text-center text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-2 hover:underline">All trips →</a>

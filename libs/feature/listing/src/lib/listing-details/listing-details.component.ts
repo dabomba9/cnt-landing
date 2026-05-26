@@ -21,7 +21,7 @@ import { IMyRv, IMyRvProfile, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvC
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview, isOwnedByUser, HostReviewService, BookingService,
-  TripPlannerService, ITripPlan } from '@cnt-workspace/data-access';
+  TripPlannerService, ITripPlan, autoTripName } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -578,11 +578,11 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.toasts.success('Added to trip.');
   }
 
-  /** Create a fresh trip seeded with this listing. */
+  /** Create a fresh trip seeded with this listing. Auto-named by date so the
+   * user never has to stop and label anything mid-flow. */
   createTripWithListing(): void {
     if (!this.listing) return;
-    const name = `Trip with ${this.listing.title}`;
-    const plan = this.planner.create(name);
+    const plan = this.planner.create(autoTripName());
     this.addToTripPlan(plan.id);
   }
 

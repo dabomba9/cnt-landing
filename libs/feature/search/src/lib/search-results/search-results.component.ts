@@ -17,7 +17,7 @@ import {
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
-  TripPlannerService, ITripPlan, totalTripMiles, ToastService } from '@cnt-workspace/data-access';
+  TripPlannerService, ITripPlan, totalTripMiles, ToastService, autoTripName, rvTypeLabel } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
@@ -258,6 +258,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   /** Pending stop waiting on the user to pick (or create) a trip — set when a
    * map popup "Add to trip" was clicked but no active plan exists. */
   pendingStop: { kind: 'listing' | 'poi'; id: number | string; name: string } | null = null;
+  /** Saved RV profiles for the drawer's "bringing" chip + switcher. */
+  drawerRvProfiles: IMyRvProfile[] = [];
+  drawerActiveRv: IMyRvProfile | null = null;
+  drawerRvSwitcherOpen = false;
+  readonly rvTypeLabel = rvTypeLabel;
   private plansSub: Subscription | null = null;
 
   ngOnInit(): void {
@@ -269,15 +274,22 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.hydrateMyRv();
     this.rvProfiles = listMyRvProfiles(this.platformId);
     this.activeRv = getActiveRvProfile(this.platformId);
+    // ?plan=:id — pre-select this trip as active. Must happen before the
+    // plans$ subscription fires so the first emission picks it up.
+    const requestedPlanId = this.route.snapshot.queryParamMap.get('plan');
+    if (requestedPlanId) this.planner.setActiveId(requestedPlanId);
+
     this.plansSub = this.planner.plans$.subscribe(plans => {
       this.tripPlans = plans.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
       const activeId = this.planner.getActiveId();
       this.activePlan = (activeId && plans.find(p => p.id === activeId)) || null;
     });
-    // ?openPlanner=1 from the editor's "Plan on map" link auto-opens the drawer.
-    if (this.route.snapshot.queryParamMap.get('openPlanner') === '1') {
+    // ?openPlanner=1 (or ?plan=… alone) opens the drawer.
+    const qp = this.route.snapshot.queryParamMap;
+    if (qp.get('openPlanner') === '1' || qp.get('plan')) {
       this.plannerDrawerOpen = true;
     }
+    this.refreshDrawerRv();
     this.hydrateFiltersFromUrl();
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
@@ -977,8 +989,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   createPlanAndOpen(): void {
-    const name = 'Trip ' + (this.tripPlans.length + 1);
-    const plan = this.planner.create(name);
+    const plan = this.planner.create(autoTripName());
     this.activePlan = plan;
     this.plannerDrawerOpen = true;
   }
@@ -1033,8 +1044,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   /** From the drawer's "pending stop" picker — create a fresh trip on the fly. */
   createTripForPendingStop(): void {
     if (!this.pendingStop) return;
-    const name = `Trip with ${this.pendingStop.name}`;
-    const plan = this.planner.create(name);
+    const plan = this.planner.create(autoTripName());
     this.activePlan = plan;
     this.commitAddToTrip(plan, this.pendingStop);
     this.pendingStop = null;
@@ -1042,6 +1052,34 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   cancelPendingStop(): void {
     this.pendingStop = null;
+  }
+
+  /** Inline-edit handler for the active trip's name / dates / corridor. */
+  commitPlanField(key: 'name' | 'startDate' | 'endDate' | 'corridorMiles', value: string | number | undefined): void {
+    if (!this.activePlan) return;
+    this.planner.update(this.activePlan.id, { [key]: value });
+  }
+
+  /** Reload the drawer's RV-profile state — called on init and after a switch. */
+  private refreshDrawerRv(): void {
+    this.drawerRvProfiles = listMyRvProfiles(this.platformId);
+    this.drawerActiveRv = getActiveRvProfile(this.platformId);
+  }
+
+  selectDrawerRv(id: string): void {
+    setActiveRvProfile(this.platformId, id);
+    this.refreshDrawerRv();
+    this.drawerRvSwitcherOpen = false;
+  }
+
+  get drawerActiveRvInitials(): string {
+    const n = this.drawerActiveRv?.name;
+    if (!n) return '?';
+    return n.split(/\s+/).filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase() || '?';
+  }
+
+  rvInitials(name: string): string {
+    return name.split(/\s+/).filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase();
   }
 
   removeStopFromActive(stopId: string): void {
