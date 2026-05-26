@@ -16,7 +16,9 @@ import {
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
-import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile } from '@cnt-workspace/data-access';
+import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
+  TripPlannerService, ITripPlan, totalTripMiles, ToastService } from '@cnt-workspace/data-access';
+import { Subscription } from 'rxjs';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
@@ -240,12 +242,20 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private route: ActivatedRoute,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService
+    private seo: SeoService,
+    private planner: TripPlannerService,
+    private toasts: ToastService,
   ) {}
 
   /** Saved RV profiles + the active one — drives the per-card fit pills. */
   rvProfiles: IMyRvProfile[] = [];
   activeRv: IMyRvProfile | null = null;
+
+  /** Trip planner integration — drawer state + active plan for the map overlay. */
+  plannerDrawerOpen = false;
+  tripPlans: ITripPlan[] = [];
+  activePlan: ITripPlan | null = null;
+  private plansSub: Subscription | null = null;
 
   ngOnInit(): void {
     this.seo.update({
@@ -256,6 +266,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.hydrateMyRv();
     this.rvProfiles = listMyRvProfiles(this.platformId);
     this.activeRv = getActiveRvProfile(this.platformId);
+    this.plansSub = this.planner.plans$.subscribe(plans => {
+      this.tripPlans = plans.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      const activeId = this.planner.getActiveId();
+      this.activePlan = (activeId && plans.find(p => p.id === activeId)) || null;
+    });
+    // ?openPlanner=1 from the editor's "Plan on map" link auto-opens the drawer.
+    if (this.route.snapshot.queryParamMap.get('openPlanner') === '1') {
+      this.plannerDrawerOpen = true;
+    }
     this.hydrateFiltersFromUrl();
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
@@ -944,7 +963,59 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  // ============ Trip planner drawer integration ============
+
+  togglePlannerDrawer(): void { this.plannerDrawerOpen = !this.plannerDrawerOpen; }
+  closePlannerDrawer(): void { this.plannerDrawerOpen = false; }
+
+  selectPlan(id: string): void {
+    this.planner.setActiveId(id);
+    this.activePlan = this.planner.get(id);
+  }
+
+  createPlanAndOpen(): void {
+    const name = 'Trip ' + (this.tripPlans.length + 1);
+    const plan = this.planner.create(name);
+    this.activePlan = plan;
+    this.plannerDrawerOpen = true;
+  }
+
+  /** "Add to trip" pill clicked inside a search-map popup. Looks the source up
+   *  in ALL_LISTINGS / MOCK_POIS and appends it to the active plan. */
+  onMapAddToTrip(event: { kind: 'listing' | 'poi'; id: number | string }): void {
+    if (!this.activePlan) {
+      this.toasts.info('Pick or create a trip first.');
+      this.plannerDrawerOpen = true;
+      return;
+    }
+    if (event.kind === 'listing') {
+      const l = ALL_LISTINGS.find(x => x.id === event.id);
+      if (!l) return;
+      this.planner.addStop(this.activePlan.id, {
+        kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+        refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+      });
+    } else {
+      const p = MOCK_POIS.find(x => x.id === event.id);
+      if (!p) return;
+      this.planner.addStop(this.activePlan.id, {
+        kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+      });
+    }
+    this.toasts.success('Added to trip.');
+  }
+
+  removeStopFromActive(stopId: string): void {
+    if (!this.activePlan) return;
+    this.planner.removeStop(this.activePlan.id, stopId);
+  }
+
+  get activePlanDistance(): number {
+    return this.activePlan ? totalTripMiles(this.activePlan) : 0;
+  }
+
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
+    this.plansSub?.unsubscribe();
   }
 }

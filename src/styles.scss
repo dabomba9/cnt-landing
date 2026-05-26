@@ -557,6 +557,33 @@ a:focus {
 }
 .cnt-listing-popup-card .popup-cta:hover .material-symbols-outlined { transform: translateX(2px); }
 
+/* "Add to trip" pill — full-width below the price row when an active trip is loaded. */
+.cnt-listing-popup-card .popup-add-to-trip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(41, 93, 66, 0.08);
+  color: #295d42;
+  border: 1px solid rgba(41, 93, 66, 0.3);
+  border-radius: 999px;
+  font-family: 'Asap Condensed', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.cnt-listing-popup-card .popup-add-to-trip:hover {
+  background: rgba(41, 93, 66, 0.16);
+  border-color: rgba(41, 93, 66, 0.55);
+}
+.cnt-listing-popup-card .popup-add-to-trip .material-symbols-outlined { font-size: 14px; }
+
 /* Leaflet zoom buttons — Airbnb-style: separate circular white buttons stacked vertically. */
 .leaflet-control-zoom {
   border: 0 !important;

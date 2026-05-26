@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META } from '@cnt-workspace/data-access';
+import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META, ITripPlan } from '@cnt-workspace/data-access';
 import {
   TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
 } from '@cnt-workspace/ui';
@@ -102,6 +102,9 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() viewMode: 'split' | 'map-only' = 'split';
   /** Visible POIs as an overlay layer (not clustered). */
   @Input() pois: IPoi[] = [];
+  /** Active trip plan — when set, overlays the route polyline + start/finish
+   *  markers, and adds an "Add to trip" button to every popup. */
+  @Input() activePlan: ITripPlan | null = null;
   @Output() markerHover = new EventEmitter<number | null>();
   @Output() markerClick = new EventEmitter<number>();
   @Output() popupClosed = new EventEmitter<void>();
@@ -111,6 +114,8 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Output() poiClick = new EventEmitter<IPoi>();
   /** Heart click inside a POI popup card. Parent persists to localStorage. */
   @Output() poiFavoriteToggle = new EventEmitter<{ poi: IPoi; next: boolean }>();
+  /** "Add to trip" click inside a popup. Parent looks up the source + persists. */
+  @Output() addToTrip = new EventEmitter<{ kind: 'listing' | 'poi'; id: number | string }>();
   /** Fires whenever the map's visible bounds change (pan / zoom / initial fit). */
   @Output() boundsChange = new EventEmitter<{ north: number; south: number; east: number; west: number }>();
 
@@ -120,6 +125,8 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   /** Separate cluster instance for POIs so utility pins don't mix with stay pins in the same bubbles. */
   private poiCluster: any = null;
   private poiMarkers = new Map<string, L.Marker>();
+  /** Route overlay layer — polyline + start/finish/intermediate markers. */
+  private routeLayer: L.LayerGroup | null = null;
   private destroyed = false;
   private geoErrorTimer: ReturnType<typeof setTimeout> | null = null;
   geoError = '';
@@ -182,6 +189,20 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     // Event delegation for popup-internal buttons (heart on listings + "View details" on POI popups).
     this.map.getContainer().addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
+
+      // "Add to trip" pill — present in any popup when an active plan is set.
+      const tpBtn = target.closest?.('.popup-add-to-trip') as HTMLButtonElement | null;
+      if (tpBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const kind = tpBtn.getAttribute('data-tp-kind') as 'listing' | 'poi' | null;
+        const idAttr = tpBtn.getAttribute('data-tp-id');
+        if (!kind || !idAttr) return;
+        const id: number | string = kind === 'listing' ? parseInt(idAttr, 10) : idAttr;
+        this.map?.closePopup();
+        this.addToTrip.emit({ kind, id });
+        return;
+      }
 
       // POI "View details" → close popup, open modal.
       const poiBtn = target.closest?.('.popup-poi-details') as HTMLButtonElement | null;
@@ -261,6 +282,14 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
         this.emitBounds();
       }, 60);
       setTimeout(() => this.map?.invalidateSize(), 320);
+    }
+    if (changes['activePlan'] && this.map) {
+      this.renderRouteOverlay();
+      // Re-render markers so popups pick up the new "Add to trip" pill state.
+      this.lastIdSignature = '';
+      this.lastPoiSignature = '';
+      this.renderMarkers?.();
+      this.renderPois();
     }
     if (changes['pois'] && this.map) {
       // Signature guard mirrors the listing-cluster guard (line ~200): the parent
@@ -397,8 +426,21 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
               <span class="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>
+          ${this.addToTripHtml('poi', poi.id)}
         </div>
       </div>`;
+  }
+
+  /** "Add to trip" pill rendered inside a popup when an active trip exists. */
+  private addToTripHtml(kind: 'listing' | 'poi', id: number | string): string {
+    if (!this.activePlan) return '';
+    return `
+      <button type="button" class="popup-add-to-trip"
+        data-tp-kind="${kind}" data-tp-id="${this.escapeHtml(String(id))}"
+        aria-label="Add this stop to your trip">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_location</span>
+        Add to "${this.escapeHtml(this.activePlan.name)}"
+      </button>`;
   }
 
   /** True when a POI's `lastVerified` is more than 90 days old. */
@@ -495,12 +537,56 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
               <span class="material-symbols-outlined">arrow_forward</span>
             </a>
           </div>
+          ${this.addToTripHtml('listing', listing.id)}
         </div>
       </div>`;
   }
 
   private escapeHtml(s: string): string {
     return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+  }
+
+  /** Draws (or removes) the active trip's polyline + start/finish markers as a
+   *  dedicated layer ABOVE the listing + POI clusters. Re-runs on plan change. */
+  private renderRouteOverlay(): void {
+    if (!this.map) return;
+    if (this.routeLayer) { this.routeLayer.remove(); this.routeLayer = null; }
+    const stops = this.activePlan?.stops ?? [];
+    if (stops.length === 0) return;
+    const layer = L.layerGroup();
+    if (stops.length >= 2) {
+      L.polyline(stops.map(s => [s.lat, s.lng] as [number, number]), {
+        color: '#e3530d', weight: 4, opacity: 0.85, dashArray: '8,8', interactive: false,
+      }).addTo(layer);
+    }
+    const lastIdx = stops.length - 1;
+    stops.forEach((s, i) => {
+      const isStart = i === 0 && stops.length > 1;
+      const isEnd = i === lastIdx && stops.length > 1;
+      const color = isStart ? '#295d42' : isEnd ? '#9a3f0a' : '#e3530d';
+      const icon = isStart ? 'flag' : isEnd ? 'sports_score' : '';
+      const label = icon ? '' : String(i);
+      const html = `
+        <div style="position:relative;width:28px;height:36px;">
+          <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);
+                      width:24px;height:24px;border-radius:50%;background:${color};
+                      border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,0.3);
+                      display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">
+            ${icon ? `<span style="font-family:'Material Symbols Outlined';font-size:13px;font-variation-settings:'FILL' 1;">${icon}</span>` : label}
+          </div>
+          <div style="position:absolute;left:50%;top:20px;transform:translateX(-50%);
+                      width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;
+                      border-top:9px solid ${color};filter:drop-shadow(0 3px 3px rgba(0,0,0,0.18));"></div>
+        </div>`;
+      const m = L.marker([s.lat, s.lng], {
+        icon: L.divIcon({ html, className: 'cnt-trip-overlay-marker', iconSize: [28, 36], iconAnchor: [14, 32] }),
+        zIndexOffset: 1000,
+        interactive: false,
+      });
+      m.addTo(layer);
+    });
+    layer.addTo(this.map);
+    this.routeLayer = layer;
   }
 
   private emitBounds(): void {

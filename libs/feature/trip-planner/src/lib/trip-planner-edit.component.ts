@@ -62,6 +62,11 @@ interface ISearchHit {
                     class="bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1 text-xs font-body focus:outline-none focus:border-jungle-green">
                 </label>
               </div>
+              <a [routerLink]="['/search']" [queryParams]="{ openPlanner: 1 }"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 no-underline shrink-0">
+                <span class="material-symbols-outlined text-sm">map</span>
+                Plan on map
+              </a>
               <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">Saved {{ savedLabel }}</span>
             </div>
 
@@ -212,8 +217,10 @@ interface ISearchHit {
               <!-- Map -->
               <div class="rounded-2xl overflow-hidden border border-dark-text/8 bg-white" style="min-height: 70vh;">
                 <cnt-trip-planner-map [plan]="plan" [pinDropMode]="pinDropMode"
+                  [backgroundListings]="allListings" [backgroundPois]="allPois"
                   (pinDropped)="onPinDropped($event)"
-                  (markerClicked)="onMarkerClicked($event)"></cnt-trip-planner-map>
+                  (markerClicked)="onMarkerClicked($event)"
+                  (backgroundAdd)="onBackgroundAdd($event)"></cnt-trip-planner-map>
               </div>
             </div>
 
@@ -257,6 +264,9 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   pendingPinName = '';
 
   readonly rvTypeLabel = rvTypeLabel;
+  /** Background browse data for the map — every listing + POI shown at zoom >= 7. */
+  readonly allListings = ALL_LISTINGS;
+  readonly allPois = MOCK_POIS;
 
   private sub: Subscription | null = null;
   private planId: string | null = null;
@@ -465,6 +475,26 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   }
 
   onMarkerClicked(_stopId: string): void { /* reserved for stop details popover */ }
+
+  /** A "Add to trip" popup on a background listing/POI was clicked on the map. */
+  onBackgroundAdd(event: { kind: 'listing' | 'poi'; id: number | string }): void {
+    if (!this.plan) return;
+    if (event.kind === 'listing') {
+      const l = ALL_LISTINGS.find(x => x.id === event.id);
+      if (!l) return;
+      this.planner.addStop(this.plan.id, {
+        kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+        refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+      });
+    } else {
+      const p = MOCK_POIS.find(x => x.id === event.id);
+      if (!p) return;
+      this.planner.addStop(this.plan.id, {
+        kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+      });
+    }
+    this.toasts.success('Added to trip.');
+  }
 
   // ============ Derived ============
   get tripDistance(): number {

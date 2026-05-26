@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
-import { ITripPlan, TripStopKind } from '@cnt-workspace/data-access';
+import { ITripPlan, TripStopKind, IListing, IPoi } from '@cnt-workspace/data-access';
 
 /** Color + icon for each stop kind — keeps markers self-describing on the map. */
 const KIND_STYLE: Record<TripStopKind | 'start' | 'end', { color: string; icon: string }> = {
@@ -62,13 +62,22 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
   @Input() plan: ITripPlan | null = null;
   /** When true, clicking the map emits pinDropped instead of normal behavior. */
   @Input() pinDropMode = false;
+  /** Background listings + POIs to render under the route — gives the user the
+   * full "live map" picture while planning. Only drawn at zoom >= 7 to avoid
+   * a wall of dots on the continental view. */
+  @Input() backgroundListings: IListing[] = [];
+  @Input() backgroundPois: IPoi[] = [];
 
   @Output() pinDropped = new EventEmitter<{ lat: number; lng: number }>();
   @Output() markerClicked = new EventEmitter<string>();
+  /** Fires when a guest clicks a background listing/POI's "Add to trip" popup. */
+  @Output() backgroundAdd = new EventEmitter<{ kind: 'listing' | 'poi'; id: number | string }>();
 
   private map: L.Map | null = null;
   private markers: L.Marker[] = [];
   private polyline: L.Polyline | null = null;
+  private backgroundLayer: L.LayerGroup | null = null;
+  private bgZoomHandler: (() => void) | null = null;
   initError = '';
 
   constructor(@Inject(PLATFORM_ID) private platformId: object, private cdr: ChangeDetectorRef) {}
@@ -83,14 +92,82 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     }, 0);
   }
 
-  ngOnChanges(_changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (!this.map) return;
     this.render();
+    if (changes['backgroundListings'] || changes['backgroundPois']) {
+      this.renderBackground();
+    }
   }
 
   ngOnDestroy(): void {
     this.map?.remove();
     this.map = null;
+    this.backgroundLayer = null;
+  }
+
+  /** Draw a light background layer of listings + POIs (no clustering — keeps
+   *  this component dep-free; visual density is reasonable thanks to zoom-gating).
+   *  Hidden below zoom 7 so the continental view isn't a wall of dots. */
+  private renderBackground(): void {
+    if (!this.map) return;
+    if (this.backgroundLayer) { this.backgroundLayer.remove(); this.backgroundLayer = null; }
+    const zoom = this.map.getZoom();
+    if (zoom < 7) return;
+    const layer = L.layerGroup();
+
+    for (const l of this.backgroundListings) {
+      const color = l.kind === 'boondocking' ? '#3b6e3b' : '#e3530d';
+      const icon = l.kind === 'boondocking' ? 'landscape' : 'rv_hookup';
+      const html = `<div style="width:18px;height:18px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;">
+        <span style="color:#fff;font-family:'Material Symbols Outlined';font-size:10px;font-variation-settings:'FILL' 1;">${icon}</span>
+      </div>`;
+      const m = L.marker([l.lat, l.lng], {
+        icon: L.divIcon({ html, className: 'tp-bg-marker', iconSize: [18, 18], iconAnchor: [9, 9] }),
+        title: l.title,
+      });
+      m.bindPopup(`
+        <div style="font-family: 'Familjen Grotesk', sans-serif; min-width: 180px;">
+          <div style="font-weight:700;font-size:13px;color:#222;margin-bottom:2px;">${this.escape(l.title)}</div>
+          <div style="font-size:11px;color:#666;margin-bottom:8px;">${l.kind === 'boondocking' ? 'Boondocking' : 'Private spot'} · ${this.escape(l.location)}</div>
+          <button type="button" class="tp-bg-add" data-tp-kind="listing" data-tp-id="${l.id}"
+            style="display:flex;align-items:center;justify-content:center;gap:4px;width:100%;padding:6px 10px;background:#e3530d;color:#fff;border:none;border-radius:999px;font-family:'Asap Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;cursor:pointer;">
+            <span style="font-family:'Material Symbols Outlined';font-size:12px;font-variation-settings:'FILL' 1;">add_location</span>
+            Add to trip
+          </button>
+        </div>
+      `, { closeButton: true, maxWidth: 240 });
+      m.addTo(layer);
+    }
+
+    for (const p of this.backgroundPois) {
+      const html = `<div style="width:16px;height:16px;border-radius:50%;background:#b3760e;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;">
+        <span style="color:#fff;font-family:'Material Symbols Outlined';font-size:9px;font-variation-settings:'FILL' 1;">pin_drop</span>
+      </div>`;
+      const m = L.marker([p.lat, p.lng], {
+        icon: L.divIcon({ html, className: 'tp-bg-marker', iconSize: [16, 16], iconAnchor: [8, 8] }),
+        title: p.name,
+      });
+      m.bindPopup(`
+        <div style="font-family: 'Familjen Grotesk', sans-serif; min-width: 180px;">
+          <div style="font-weight:700;font-size:13px;color:#222;margin-bottom:2px;">${this.escape(p.name)}</div>
+          <div style="font-size:11px;color:#666;margin-bottom:8px;">POI · ${this.escape(p.address)}</div>
+          <button type="button" class="tp-bg-add" data-tp-kind="poi" data-tp-id="${this.escape(p.id)}"
+            style="display:flex;align-items:center;justify-content:center;gap:4px;width:100%;padding:6px 10px;background:#b3760e;color:#fff;border:none;border-radius:999px;font-family:'Asap Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;cursor:pointer;">
+            <span style="font-family:'Material Symbols Outlined';font-size:12px;font-variation-settings:'FILL' 1;">add_location</span>
+            Add to trip
+          </button>
+        </div>
+      `, { closeButton: true, maxWidth: 240 });
+      m.addTo(layer);
+    }
+
+    layer.addTo(this.map);
+    this.backgroundLayer = layer;
+  }
+
+  private escape(s: string): string {
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
   }
 
   private initMap(): void {
@@ -106,6 +183,23 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       if (!this.pinDropMode) return;
       this.pinDropped.emit({ lat: e.latlng.lat, lng: e.latlng.lng });
+    });
+    // Background markers are zoom-gated — render/clear on zoom changes.
+    this.bgZoomHandler = () => this.renderBackground();
+    this.map.on('zoomend', this.bgZoomHandler);
+    // Popup event delegation for the "Add to trip" pill on background markers.
+    this.map.getContainer().addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest?.('.tp-bg-add') as HTMLButtonElement | null;
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const kind = btn.getAttribute('data-tp-kind') as 'listing' | 'poi' | null;
+      const idAttr = btn.getAttribute('data-tp-id');
+      if (!kind || !idAttr) return;
+      const id: number | string = kind === 'listing' ? parseInt(idAttr, 10) : idAttr;
+      this.map?.closePopup();
+      this.backgroundAdd.emit({ kind, id });
     });
   }
 
