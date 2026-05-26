@@ -50,6 +50,36 @@
               [style.font-variation-settings]="favorited ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">favorite</span>
             {{ favorited ? 'Saved' : 'Save' }}
           </button>
+          <div class="relative">
+            <button type="button" (click)="toggleAddTripMenu($event)" #addTripBtn
+              [attr.aria-expanded]="addTripMenuOpen"
+              aria-haspopup="true"
+              class="inline-flex items-center gap-2 px-3 py-2 text-sm font-body font-bold text-dark-text hover:text-trinidad transition-colors underline-offset-4 hover:underline">
+              <span class="material-symbols-outlined text-lg">route</span>
+              Add to trip
+            </button>
+            @if (addTripMenuOpen) {
+              <div #addTripMenu role="menu" aria-label="Pick a trip"
+                class="absolute right-0 top-full mt-2 z-30 w-72 bg-white rounded-xl border border-dark-text/10 shadow-[0_12px_28px_rgba(0,0,0,0.18)] p-2 space-y-1">
+                @if (tripPlans.length === 0) {
+                  <div class="px-3 py-2 text-xs font-body text-muted-text">No trips yet — start one with this place.</div>
+                }
+                @for (p of tripPlans; track p.id) {
+                  <button type="button" (click)="addToTripPlan(p.id)" role="menuitem"
+                    class="w-full text-left px-3 py-2 rounded-md hover:bg-cream/60 transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-trinidad">route</span>
+                    <span class="flex-1 min-w-0 text-sm font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                    <span class="text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ p.stops.length }} {{ p.stops.length === 1 ? 'stop' : 'stops' }}</span>
+                  </button>
+                }
+                <button type="button" (click)="createTripWithListing()" role="menuitem"
+                  class="w-full text-left px-3 py-2 rounded-md border border-dashed border-trinidad/40 text-trinidad hover:bg-trinidad/5 transition-colors flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">add</span>
+                  <span class="text-xs font-button font-bold uppercase tracking-[0.1em]">Start a new trip with this place</span>
+                </button>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>

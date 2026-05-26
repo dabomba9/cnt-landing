@@ -20,7 +20,8 @@ import {
 import { IMyRv, IMyRvProfile, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvComplete, myRvMissingFields, rvTypeLabel, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, pushRecentlyViewed, ToastService, readFavoriteIds, addFavorite, removeFavorite } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
-import { AuthService, ReviewService, IUserReview, isOwnedByUser, HostReviewService, BookingService } from '@cnt-workspace/data-access';
+import { AuthService, ReviewService, IUserReview, isOwnedByUser, HostReviewService, BookingService,
+  TripPlannerService, ITripPlan } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -357,6 +358,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     private auth: AuthService,
     private reviewSvc: ReviewService,
     private hostReviewSvc: HostReviewService,
+    private planner: TripPlannerService,
     private bookingSvc: BookingService,
     private toasts: ToastService,
   ) {}
@@ -534,6 +536,56 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.favorited = this.favoriteSet.has(this.listing.id);
   }
 
+  // ---- Add-to-trip menu ----
+  tripPlans: ITripPlan[] = [];
+  addTripMenuOpen = false;
+  private plansSub: import('rxjs').Subscription | null = null;
+
+  toggleAddTripMenu(event: Event): void {
+    event.stopPropagation();
+    this.addTripMenuOpen = !this.addTripMenuOpen;
+    if (this.addTripMenuOpen && this.plansSub === null) {
+      this.plansSub = this.planner.plans$.subscribe(plans => {
+        this.tripPlans = plans.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      });
+    }
+  }
+
+  /** Close the menu when the user clicks anywhere else. */
+  @HostListener('document:click', ['$event'])
+  onDocClickForTripMenu(event: Event): void {
+    if (!this.addTripMenuOpen) return;
+    const t = event.target as HTMLElement | null;
+    if (t && !t.closest('[aria-haspopup="true"]') && !t.closest('[role="menu"]')) {
+      this.addTripMenuOpen = false;
+    }
+  }
+
+  /** Append this listing to a saved trip. */
+  addToTripPlan(planId: string): void {
+    if (!this.listing) return;
+    this.planner.addStop(planId, {
+      kind: this.listing.kind === 'boondocking' ? 'boondocking' : 'private',
+      refId: this.listing.id,
+      name: this.listing.title,
+      lat: this.listing.lat,
+      lng: this.listing.lng,
+      address: this.listing.location,
+      photo: this.listing.image,
+    });
+    this.planner.setActiveId(planId);
+    this.addTripMenuOpen = false;
+    this.toasts.success('Added to trip.');
+  }
+
+  /** Create a fresh trip seeded with this listing. */
+  createTripWithListing(): void {
+    if (!this.listing) return;
+    const name = `Trip with ${this.listing.title}`;
+    const plan = this.planner.create(name);
+    this.addToTripPlan(plan.id);
+  }
+
   isListingFavorite(id: number): boolean {
     return this.favoriteSet.has(id);
   }
@@ -662,6 +714,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.sectionObserver?.disconnect();
     this.bookingChangedSub?.unsubscribe();
     this.reviewsSub?.unsubscribe();
+    this.plansSub?.unsubscribe();
     this.seo.setStructuredData(null);
   }
 

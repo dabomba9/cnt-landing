@@ -713,20 +713,49 @@
     </div>
 
     <div class="flex-1 overflow-y-auto p-4 space-y-3">
-      <!-- Trip selector -->
-      <div class="flex items-center gap-2">
-        <select [value]="activePlan?.id || ''" (change)="selectPlan($any($event.target).value)"
-          class="flex-1 bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-          @if (!activePlan) { <option value="" disabled>Select a trip…</option> }
-          @for (p of tripPlans; track p.id) {
-            <option [value]="p.id">{{ p.name }}</option>
-          }
-        </select>
-        <button type="button" (click)="createPlanAndOpen()" aria-label="Create a new trip"
-          class="w-9 h-9 inline-flex items-center justify-center rounded-full bg-trinidad text-white hover:opacity-95 shrink-0">
-          <span class="material-symbols-outlined text-base">add</span>
-        </button>
-      </div>
+      <!-- Pending stop picker — set when "Add to trip" was clicked with no active plan. -->
+      @if (pendingStop) {
+        <div class="rounded-xl bg-jungle-green/8 border border-jungle-green/30 p-3 space-y-2.5">
+          <div class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5">add_location</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">Add to a trip</div>
+              <div class="text-xs font-body font-bold text-dark-text truncate">{{ pendingStop.name }}</div>
+            </div>
+            <button type="button" (click)="cancelPendingStop()" aria-label="Cancel" class="w-6 h-6 inline-flex items-center justify-center rounded-full hover:bg-white shrink-0">
+              <span class="material-symbols-outlined text-sm text-muted-text">close</span>
+            </button>
+          </div>
+          <div class="space-y-1">
+            @for (p of tripPlans; track p.id) {
+              <button type="button" (click)="pickPendingTrip(p.id)" class="w-full text-left px-3 py-2 rounded-md bg-white hover:bg-cream/60 transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-trinidad">route</span>
+                <span class="text-xs font-body font-bold text-dark-text truncate flex-1">{{ p.name }}</span>
+                <span class="text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ p.stops.length }} {{ p.stops.length === 1 ? 'stop' : 'stops' }}</span>
+              </button>
+            }
+            <button type="button" (click)="createTripForPendingStop()" class="w-full text-left px-3 py-2 rounded-md border border-dashed border-trinidad/40 text-trinidad hover:bg-trinidad/5 transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">add</span>
+              <span class="text-xs font-button font-bold uppercase tracking-[0.1em]">Start a new trip</span>
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Trip selector -->
+        <div class="flex items-center gap-2">
+          <select [value]="activePlan?.id || ''" (change)="selectPlan($any($event.target).value)"
+            class="flex-1 bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
+            @if (!activePlan) { <option value="" disabled>Select a trip…</option> }
+            @for (p of tripPlans; track p.id) {
+              <option [value]="p.id">{{ p.name }}</option>
+            }
+          </select>
+          <button type="button" (click)="createPlanAndOpen()" aria-label="Create a new trip"
+            class="w-9 h-9 inline-flex items-center justify-center rounded-full bg-trinidad text-white hover:opacity-95 shrink-0">
+            <span class="material-symbols-outlined text-base">add</span>
+          </button>
+        </div>
+      }
 
       @if (!activePlan) {
         <p class="text-xs text-muted-text text-center py-4">Pick a trip above or tap + to start a new one — then click any listing or POI on the map and "Add to trip".</p>

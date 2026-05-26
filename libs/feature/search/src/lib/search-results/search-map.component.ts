@@ -431,15 +431,18 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       </div>`;
   }
 
-  /** "Add to trip" pill rendered inside a popup when an active trip exists. */
+  /** "Add to trip" pill rendered in every popup. When there's no active plan
+   *  the parent opens a drawer in "pick a trip" mode for this pending stop. */
   private addToTripHtml(kind: 'listing' | 'poi', id: number | string): string {
-    if (!this.activePlan) return '';
+    const label = this.activePlan
+      ? `Add to &ldquo;${this.escapeHtml(this.activePlan.name)}&rdquo;`
+      : 'Add to a trip…';
     return `
       <button type="button" class="popup-add-to-trip"
         data-tp-kind="${kind}" data-tp-id="${this.escapeHtml(String(id))}"
-        aria-label="Add this stop to your trip">
+        aria-label="Add this stop to a trip">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_location</span>
-        Add to "${this.escapeHtml(this.activePlan.name)}"
+        ${label}
       </button>`;
   }
 

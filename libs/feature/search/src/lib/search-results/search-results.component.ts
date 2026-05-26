@@ -255,6 +255,9 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   plannerDrawerOpen = false;
   tripPlans: ITripPlan[] = [];
   activePlan: ITripPlan | null = null;
+  /** Pending stop waiting on the user to pick (or create) a trip — set when a
+   * map popup "Add to trip" was clicked but no active plan exists. */
+  pendingStop: { kind: 'listing' | 'poi'; id: number | string; name: string } | null = null;
   private plansSub: Subscription | null = null;
 
   ngOnInit(): void {
@@ -980,29 +983,65 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.plannerDrawerOpen = true;
   }
 
-  /** "Add to trip" pill clicked inside a search-map popup. Looks the source up
-   *  in ALL_LISTINGS / MOCK_POIS and appends it to the active plan. */
+  /** "Add to trip" pill clicked inside a search-map popup. If an active trip
+   *  is set, append the stop. Otherwise stash it as a pending stop and open
+   *  the drawer in "pick a trip" mode. */
   onMapAddToTrip(event: { kind: 'listing' | 'poi'; id: number | string }): void {
     if (!this.activePlan) {
-      this.toasts.info('Pick or create a trip first.');
+      const source = event.kind === 'listing'
+        ? ALL_LISTINGS.find(x => x.id === event.id)
+        : MOCK_POIS.find(x => x.id === event.id);
+      if (!source) return;
+      const name = event.kind === 'listing' ? (source as IListing).title : (source as IPoi).name;
+      this.pendingStop = { kind: event.kind, id: event.id, name };
       this.plannerDrawerOpen = true;
       return;
     }
+    this.commitAddToTrip(this.activePlan, event);
+  }
+
+  /** Internal: append a (kind, id) source onto a plan. */
+  private commitAddToTrip(plan: ITripPlan, event: { kind: 'listing' | 'poi'; id: number | string }): void {
     if (event.kind === 'listing') {
       const l = ALL_LISTINGS.find(x => x.id === event.id);
       if (!l) return;
-      this.planner.addStop(this.activePlan.id, {
+      this.planner.addStop(plan.id, {
         kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
         refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
       });
     } else {
       const p = MOCK_POIS.find(x => x.id === event.id);
       if (!p) return;
-      this.planner.addStop(this.activePlan.id, {
+      this.planner.addStop(plan.id, {
         kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
       });
     }
     this.toasts.success('Added to trip.');
+  }
+
+  /** From the drawer's "pending stop" picker — pick an existing trip. */
+  pickPendingTrip(planId: string): void {
+    if (!this.pendingStop) return;
+    this.planner.setActiveId(planId);
+    const plan = this.planner.get(planId);
+    if (!plan) return;
+    this.activePlan = plan;
+    this.commitAddToTrip(plan, this.pendingStop);
+    this.pendingStop = null;
+  }
+
+  /** From the drawer's "pending stop" picker — create a fresh trip on the fly. */
+  createTripForPendingStop(): void {
+    if (!this.pendingStop) return;
+    const name = `Trip with ${this.pendingStop.name}`;
+    const plan = this.planner.create(name);
+    this.activePlan = plan;
+    this.commitAddToTrip(plan, this.pendingStop);
+    this.pendingStop = null;
+  }
+
+  cancelPendingStop(): void {
+    this.pendingStop = null;
   }
 
   removeStopFromActive(stopId: string): void {

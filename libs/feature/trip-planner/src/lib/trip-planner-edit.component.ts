@@ -112,7 +112,7 @@ interface ISearchHit {
 
                 <!-- Search input + autocomplete -->
                 <div class="relative">
-                  <input #searchInput type="text" [(ngModel)]="query" (focus)="searchOpen = true" (blur)="onSearchBlur()" name="query"
+                  <input #searchInput type="text" [(ngModel)]="query" (focus)="searchOpen = true" (blur)="onSearchBlur()" (keydown.enter)="onSearchEnter()" name="query"
                     placeholder="Add a place..."
                     class="w-full bg-cream/60 border border-dark-text/15 rounded-md pl-3 pr-9 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
                   <span class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-text pointer-events-none">
@@ -140,20 +140,12 @@ interface ISearchHit {
                   }
                 </div>
 
-                <!-- Action buttons -->
-                <div class="grid grid-cols-2 gap-2">
-                  <button type="button" (click)="useMyLocation()" [disabled]="locating"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50 transition-colors">
-                    <span class="material-symbols-outlined text-base">my_location</span>
-                    My Location
-                  </button>
-                  <button type="button" (click)="reorderMode = !reorderMode"
-                    [ngClass]="reorderMode ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
-                    <span class="material-symbols-outlined text-base">swap_vert</span>
-                    {{ reorderMode ? 'Done' : 'Reorder' }}
-                  </button>
-                </div>
+                <!-- Action button -->
+                <button type="button" (click)="useMyLocation()" [disabled]="locating"
+                  class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50 transition-colors">
+                  <span class="material-symbols-outlined text-base">my_location</span>
+                  Use My Location
+                </button>
 
                 <!-- Stops list -->
                 <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="space-y-1.5">
@@ -161,10 +153,8 @@ interface ISearchHit {
                     <p class="text-xs text-muted-text text-center py-4">Add a site to your trip to begin.</p>
                   }
                   @for (s of plan.stops; track s.id; let i = $index, last = $last) {
-                    <div cdkDrag [cdkDragDisabled]="!reorderMode" class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
-                      @if (reorderMode) {
-                        <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
-                      }
+                    <div cdkDrag class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
+                      <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
                       <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
                         @if (i === 0 && plan.stops.length > 1) {
                           <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">flag</span>
@@ -257,7 +247,6 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   query = '';
   searchOpen = false;
-  reorderMode = false;
   pinDropMode = false;
   locating = false;
   pendingPin: { lat: number; lng: number } | null = null;
@@ -342,6 +331,12 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   onSearchBlur(): void {
     // Delay so a click on a result (mousedown) can fire before the dropdown closes.
     setTimeout(() => { this.searchOpen = false; }, 150);
+  }
+
+  /** Enter on the search input adds the top result. */
+  onSearchEnter(): void {
+    const top = this.searchResults[0];
+    if (top) this.addHit(top);
   }
 
   get corridorActive(): boolean {
