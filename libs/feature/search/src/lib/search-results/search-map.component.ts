@@ -555,6 +555,12 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
   }
 
+  /** Pan + zoom the map to a specific lat/lng. Parent uses this when the user
+   *  clicks a turn-by-turn step in the Directions panel. */
+  flyTo(lat: number, lng: number, zoom = 13): void {
+    this.map?.flyTo([lat, lng], zoom, { animate: true, duration: 0.8 });
+  }
+
   /** Draws (or removes) the active trip's polyline + start/finish markers as a
    *  dedicated layer ABOVE the listing + POI clusters. Re-runs on plan change. */
   private renderRouteOverlay(): void {

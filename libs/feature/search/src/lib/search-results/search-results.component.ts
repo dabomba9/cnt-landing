@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,8 +17,8 @@ import {
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
-  TripPlannerService, ITripPlan, totalTripMiles, ToastService, autoTripName, rvTypeLabel,
-  RoutingService, IRoute } from '@cnt-workspace/data-access';
+  TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
+  autoTripName, rvTypeLabel, RoutingService, IRoute } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
@@ -1094,7 +1094,21 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   removeStopFromActive(stopId: string): void {
     if (!this.activePlan) return;
-    this.planner.removeStop(this.activePlan.id, stopId);
+    const plan = this.activePlan;
+    const idx = plan.stops.findIndex(s => s.id === stopId);
+    if (idx === -1) return;
+    const removed: ITripStop = plan.stops[idx];
+    this.planner.removeStop(plan.id, stopId);
+    this.toasts.info(`"${removed.name}" removed.`, {
+      actionLabel: 'Undo',
+      action: () => {
+        const current = this.planner.get(plan.id);
+        if (!current) return;
+        const restored = current.stops.slice();
+        restored.splice(Math.min(idx, restored.length), 0, removed);
+        this.planner.update(plan.id, { stops: restored });
+      },
+    });
   }
 
   get activePlanDistance(): number {
@@ -1129,12 +1143,24 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   formatMiles = (mi: number): string => this.routing.formatDistance(mi);
   formatMins = (m: number): string => this.routing.formatDuration(m);
 
-  /** Click a step in the Directions list to fly the map to that point. */
+  /** Distance + drive time between stops i and i+1. Prefers the routed leg
+   *  (when the OSRM response is in); falls back to straight-line haversine so
+   *  the user sees *something* while the route is loading. */
+  legBetween(i: number): { miles: number; minutes: number } | null {
+    if (!this.activePlan) return null;
+    const stops = this.activePlan.stops;
+    if (i < 0 || i >= stops.length - 1) return null;
+    const leg = this.activeRoute?.legs?.[i];
+    if (leg) return { miles: leg.distanceMiles, minutes: leg.durationMinutes };
+    return { miles: haversineMiles(stops[i], stops[i + 1]), minutes: 0 };
+  }
+
+  @ViewChild(SearchMapComponent) private searchMap?: SearchMapComponent;
+
+  /** Click a step in the Directions list → fly the search map to its start. */
   flyToStep(step: { start: { lat: number; lng: number } }): void {
-    // search-map doesn't expose a flyTo today; the parent can't pan it from
-    // here, so for now the click just expands/highlights the step. Map zoom
-    // happens via the user's normal pan/zoom. (Phase 2: expose flyTo.)
-    void step;
+    if (!step?.start) return;
+    this.searchMap?.flyTo(step.start.lat, step.start.lng, 14);
   }
 
   /** Drag-reorder for the drawer's stops list. */

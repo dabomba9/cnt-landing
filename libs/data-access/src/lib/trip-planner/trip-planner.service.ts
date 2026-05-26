@@ -188,6 +188,27 @@ export class TripPlannerService {
     return all[idx];
   }
 
+  /** Clone an existing plan with fresh ids — stop list, dates, corridor are
+   *  all carried over; the name gets a "(copy)" suffix. */
+  duplicate(id: string): ITripPlan | null {
+    const original = this.get(id);
+    if (!original) return null;
+    const now = new Date().toISOString();
+    const copy: ITripPlan = {
+      ...original,
+      id: newId('tp'),
+      name: `${original.name} (copy)`,
+      stops: original.stops.map(s => ({ ...s, id: newId('s') })),
+      createdAt: now,
+      updatedAt: now,
+    };
+    const all = this._plans$.value.slice();
+    all.push(copy);
+    this.write(all);
+    this.setActiveId(copy.id);
+    return copy;
+  }
+
   delete(id: string): void {
     const next = this._plans$.value.filter(p => p.id !== id);
     this.write(next);

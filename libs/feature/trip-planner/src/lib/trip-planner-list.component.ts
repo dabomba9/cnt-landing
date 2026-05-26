@@ -67,10 +67,16 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
                           class="px-2.5 py-1 rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">Delete</button>
                       </span>
                     } @else {
-                      <button type="button" (click)="confirmingDeleteId = p.id" aria-label="Delete trip plan"
-                        class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
-                        <span class="material-symbols-outlined text-base">delete</span>
-                      </button>
+                      <span class="flex items-center gap-1.5">
+                        <button type="button" (click)="duplicate(p.id)" aria-label="Duplicate trip plan"
+                          class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-jungle-green hover:text-jungle-green transition-colors">
+                          <span class="material-symbols-outlined text-base">content_copy</span>
+                        </button>
+                        <button type="button" (click)="confirmingDeleteId = p.id" aria-label="Delete trip plan"
+                          class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
+                          <span class="material-symbols-outlined text-base">delete</span>
+                        </button>
+                      </span>
                     }
                   </div>
                 </article>
@@ -122,6 +128,14 @@ export class TripPlannerListComponent implements OnInit, OnDestroy {
     this.planner.delete(id);
     this.confirmingDeleteId = null;
     this.toasts.info('Trip removed.');
+  }
+
+  /** Duplicate this trip and land the user in the drawer on the new copy. */
+  duplicate(id: string): void {
+    const copy = this.planner.duplicate(id);
+    if (!copy) return;
+    this.toasts.success('Trip duplicated.');
+    this.router.navigate(['/search'], { queryParams: { openPlanner: 1, plan: copy.id } });
   }
 
   datesLabel(p: ITripPlan): string {

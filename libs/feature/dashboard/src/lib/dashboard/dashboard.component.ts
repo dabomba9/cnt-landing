@@ -8,7 +8,8 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
-import { BookingService, ReviewService, IUserReview, REVIEW_CREDIT_PER_NIGHT, ICreditEntry } from '@cnt-workspace/data-access';
+import { BookingService, ReviewService, IUserReview, REVIEW_CREDIT_PER_NIGHT, ICreditEntry,
+  TripPlannerService, ITripPlan, totalTripMiles } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 import { IMyRv, readMyRv, readRecentlyViewed } from '@cnt-workspace/data-access';
 import { IListing, MOCK_LISTINGS, ALL_LISTINGS, findListing } from '@cnt-workspace/data-access';
@@ -42,8 +43,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   myRv: IMyRv | null = null;
   savedListings: IListing[] = [];
   userReviews: IUserReview[] = [];
+  /** Active trip plan — drives the dashboard's "Trip in progress" card. */
+  activeTripPlan: ITripPlan | null = null;
+  activeTripMiles = 0;
   private bookingsSub: Subscription | null = null;
   private reviewsSub: Subscription | null = null;
+  private tripPlansSub: Subscription | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -52,6 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private reviewSvc: ReviewService,
     private seo: SeoService,
     private router: Router,
+    private planner: TripPlannerService,
   ) {}
 
   /** Flip to host view and head to the host dashboard — mirrors the host
@@ -79,11 +85,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       const email = this.user?.email;
       this.userReviews = email ? all.filter(r => r.userEmail === email) : [];
     });
+    this.tripPlansSub = this.planner.plans$.subscribe(plans => {
+      const activeId = this.planner.getActiveId();
+      this.activeTripPlan = (activeId && plans.find(p => p.id === activeId)) || null;
+      this.activeTripMiles = this.activeTripPlan ? totalTripMiles(this.activeTripPlan) : 0;
+    });
   }
 
   ngOnDestroy(): void {
     this.bookingsSub?.unsubscribe();
     this.reviewsSub?.unsubscribe();
+    this.tripPlansSub?.unsubscribe();
   }
 
   ngAfterViewInit(): void {

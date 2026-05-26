@@ -153,6 +153,12 @@ interface ISearchHit {
                     <p class="text-xs text-muted-text text-center py-4">Add a site to your trip to begin.</p>
                   }
                   @for (s of plan.stops; track s.id; let i = $index, last = $last) {
+                    @if (i > 0 && legBetween(i - 1); as leg) {
+                      <div class="flex items-center gap-1.5 pl-7 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">
+                        <span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                        {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
+                      </div>
+                    }
                     <div cdkDrag class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
                       <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
                       <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
@@ -230,7 +236,9 @@ interface ISearchHit {
                               </div>
                               <ol class="space-y-1.5">
                                 @for (step of leg.steps; track step) {
-                                  <li class="flex items-start gap-2 text-xs font-body text-dark-text">
+                                  <li class="flex items-start gap-2 text-xs font-body text-dark-text cursor-pointer hover:bg-cream/40 rounded px-1 py-0.5 -mx-1"
+                                    (click)="flyToStep(step)" role="button" tabindex="0"
+                                    (keydown.enter)="flyToStep(step)" (keydown.space)="flyToStep(step)">
                                     <span class="w-1.5 h-1.5 rounded-full bg-trinidad mt-1.5 shrink-0"></span>
                                     <span class="flex-1">{{ step.instruction }}</span>
                                     <span class="text-[0.65rem] text-muted-text shrink-0">{{ formatMiles(step.distanceMiles) }}</span>
@@ -282,6 +290,7 @@ interface ISearchHit {
 })
 export class TripPlannerEditComponent implements OnInit, OnDestroy {
   @ViewChild('panel', { static: false }) panel?: ElementRef<HTMLElement>;
+  @ViewChild(TripPlannerMapComponent) private tripMap?: TripPlannerMapComponent;
 
   plan: ITripPlan | null = null;
   /** Road-routed trip — refetched on stop-list changes. */
@@ -365,6 +374,29 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   formatMiles = (mi: number): string => this.routing.formatDistance(mi);
   formatMins = (m: number): string => this.routing.formatDuration(m);
+
+  /** Click a step in the Directions panel → fly the map to its start. */
+  flyToStep(step: { start: { lat: number; lng: number } }): void {
+    if (!step?.start) return;
+    this.tripMap?.flyTo(step.start.lat, step.start.lng, 14);
+  }
+
+  /** Routed leg between stops i and i+1, falling back to straight-line. */
+  legBetween(i: number): { miles: number; minutes: number } | null {
+    if (!this.plan) return null;
+    const stops = this.plan.stops;
+    if (i < 0 || i >= stops.length - 1) return null;
+    const leg = this.activeRoute?.legs?.[i];
+    if (leg) return { miles: leg.distanceMiles, minutes: leg.durationMinutes };
+    const haversine = (a: { lat: number; lng: number }, b: { lat: number; lng: number }): number => {
+      const R = 3959, toRad = (d: number) => (d * Math.PI) / 180;
+      const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    };
+    return { miles: haversine(stops[i], stops[i + 1]), minutes: 0 };
+  }
 
   /** Close the RV switcher when the user clicks outside the panel. */
   @HostListener('document:click', ['$event'])
@@ -514,7 +546,21 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   removeStop(stopId: string): void {
     if (!this.plan) return;
-    this.planner.removeStop(this.plan.id, stopId);
+    const plan = this.plan;
+    const idx = plan.stops.findIndex(s => s.id === stopId);
+    if (idx === -1) return;
+    const removed: ITripStop = plan.stops[idx];
+    this.planner.removeStop(plan.id, stopId);
+    this.toasts.info(`"${removed.name}" removed.`, {
+      actionLabel: 'Undo',
+      action: () => {
+        const current = this.planner.get(plan.id);
+        if (!current) return;
+        const restored = current.stops.slice();
+        restored.splice(Math.min(idx, restored.length), 0, removed);
+        this.planner.update(plan.id, { stops: restored });
+      },
+    });
   }
 
   // ============ Pin drop ============
