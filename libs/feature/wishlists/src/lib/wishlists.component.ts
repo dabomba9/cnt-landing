@@ -51,7 +51,7 @@ export class WishlistsComponent implements OnInit {
 
   ngOnInit(): void {
     this.seo.update({
-      title: 'Wishlists — CurbNTurf',
+      title: 'Favorites — CurbNTurf',
       description: 'Stays you saved on CurbNTurf.',
       url: '/wishlists',
       robots: 'noindex, nofollow',

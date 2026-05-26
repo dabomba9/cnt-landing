@@ -15,7 +15,7 @@ interface INavSlot {
 
 const GUEST_SLOTS: INavSlot[] = [
   { label: 'Explore',   icon: 'explore',   routerLink: '/search' },
-  { label: 'Wishlists', icon: 'favorite',  routerLink: '/wishlists' },
+  { label: 'Favorites', icon: 'favorite',  routerLink: '/wishlists' },
   { label: 'Trips',     icon: 'luggage',   routerLink: '/trips' },
   { label: 'Inbox',     icon: 'forum',     routerLink: '/inbox', isMessages: true },
   { label: 'Account',   icon: 'person',    routerLink: '/account' },
