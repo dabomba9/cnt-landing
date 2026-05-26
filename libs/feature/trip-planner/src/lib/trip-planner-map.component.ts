@@ -67,6 +67,9 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
    * a wall of dots on the continental view. */
   @Input() backgroundListings: IListing[] = [];
   @Input() backgroundPois: IPoi[] = [];
+  /** Road-following polyline geometry [lng, lat][]. When provided, replaces
+   *  the straight-line render. Null falls back to straight dashed lines. */
+  @Input() routeGeometry: [number, number][] | null = null;
 
   @Output() pinDropped = new EventEmitter<{ lat: number; lng: number }>();
   @Output() markerClicked = new EventEmitter<string>();
@@ -104,6 +107,12 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     this.map?.remove();
     this.map = null;
     this.backgroundLayer = null;
+  }
+
+  /** Pan + zoom the map to a specific lat/lng — used when the parent's
+   *  Directions list emits a click on a step. */
+  flyTo(lat: number, lng: number, zoom = 13): void {
+    this.map?.flyTo([lat, lng], zoom, { animate: true, duration: 0.8 });
   }
 
   /** Draw a light background layer of listings + POIs (no clustering — keeps
@@ -229,8 +238,19 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     });
 
     if (stops.length >= 2) {
-      const latlngs: L.LatLngExpression[] = stops.map(s => [s.lat, s.lng] as [number, number]);
-      this.polyline = L.polyline(latlngs, { color: '#e3530d', weight: 4, opacity: 0.85, dashArray: '8,8' }).addTo(this.map);
+      // Prefer the road-following geometry when available; fall back to a
+      // dashed straight line so the user always sees *something* connecting
+      // stops while the route is fetching (or if routing fails).
+      const useRoute = this.routeGeometry && this.routeGeometry.length >= 2;
+      const latlngs: L.LatLngExpression[] = useRoute
+        ? this.routeGeometry!.map(c => [c[1], c[0]] as [number, number])
+        : stops.map(s => [s.lat, s.lng] as [number, number]);
+      this.polyline = L.polyline(latlngs, {
+        color: '#e3530d',
+        weight: useRoute ? 5 : 4,
+        opacity: useRoute ? 0.9 : 0.7,
+        dashArray: useRoute ? undefined : '8,8',
+      }).addTo(this.map);
       this.map.fitBounds(this.polyline.getBounds(), { padding: [40, 40], maxZoom: 11 });
     } else if (stops.length === 1) {
       this.map.setView([stops[0].lat, stops[0].lng], 9);

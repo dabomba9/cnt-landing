@@ -1,5 +1,6 @@
 import { ApplicationConfig, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideIonicAngular } from '@ionic/angular/standalone';
@@ -28,6 +29,7 @@ Amplify.configure({
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(appRoutes),
+    provideHttpClient(),
     provideAnimationsAsync(),
     provideIonicAngular({}),
     // Populate the published-snapshot IDB cache before any route resolves so

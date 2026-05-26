@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop, TripStopKind,
   ALL_LISTINGS, MOCK_POIS, IListing, IPoi,
   IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile, rvTypeLabel,
-  totalTripMiles, pointToRouteMiles,
+  totalTripMiles, pointToRouteMiles, RoutingService, IRoute,
 } from '@cnt-workspace/data-access';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
@@ -202,12 +202,55 @@ interface ISearchHit {
                     <p class="text-[0.6rem] text-muted-text mt-1">{{ corridorActive ? 'Search results filtered to within this radius of your route.' : 'Set above 0 once you have 2+ stops to filter search to your route corridor.' }}</p>
                   </div>
                 </div>
+
+                <!-- Directions (collapsible). Road-routed step list. -->
+                @if (plan.stops.length >= 2) {
+                  <div class="rounded-xl border border-dark-text/10 bg-white overflow-hidden">
+                    <button type="button" (click)="directionsExpanded = !directionsExpanded" [attr.aria-expanded]="directionsExpanded"
+                      class="w-full flex items-center gap-2 px-3 py-2.5 text-left hover:bg-cream/40 transition-colors">
+                      <span class="material-symbols-outlined text-base text-trinidad">directions</span>
+                      <span class="flex-1 text-sm font-body font-bold text-dark-text">Driving directions</span>
+                      @if (routeLoading) {
+                        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Loading…</span>
+                      } @else if (activeRoute) {
+                        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">{{ formatMiles(activeRoute.totalMiles) }} · {{ formatMins(activeRoute.totalMinutes) }}</span>
+                      }
+                      <span class="material-symbols-outlined text-sm text-muted-text">{{ directionsExpanded ? 'expand_less' : 'expand_more' }}</span>
+                    </button>
+                    @if (directionsExpanded) {
+                      @if (!activeRoute && !routeLoading) {
+                        <p class="px-3 pb-3 text-xs text-muted-text">Couldn't load driving directions. Showing straight-line route on the map.</p>
+                      }
+                      @if (activeRoute) {
+                        <div class="px-3 pb-3 space-y-4 max-h-[28rem] overflow-y-auto">
+                          @for (leg of activeRoute.legs; track leg; let li = $index) {
+                            <div>
+                              <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad mb-1.5">
+                                Leg {{ li + 1 }} · {{ formatMiles(leg.distanceMiles) }} · {{ formatMins(leg.durationMinutes) }}
+                              </div>
+                              <ol class="space-y-1.5">
+                                @for (step of leg.steps; track step) {
+                                  <li class="flex items-start gap-2 text-xs font-body text-dark-text">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-trinidad mt-1.5 shrink-0"></span>
+                                    <span class="flex-1">{{ step.instruction }}</span>
+                                    <span class="text-[0.65rem] text-muted-text shrink-0">{{ formatMiles(step.distanceMiles) }}</span>
+                                  </li>
+                                }
+                              </ol>
+                            </div>
+                          }
+                        </div>
+                      }
+                    }
+                  </div>
+                }
               </aside>
 
               <!-- Map -->
               <div class="rounded-2xl overflow-hidden border border-dark-text/8 bg-white" style="min-height: 70vh;">
                 <cnt-trip-planner-map [plan]="plan" [pinDropMode]="pinDropMode"
                   [backgroundListings]="allListings" [backgroundPois]="allPois"
+                  [routeGeometry]="routeGeometry"
                   (pinDropped)="onPinDropped($event)"
                   (markerClicked)="onMarkerClicked($event)"
                   (backgroundAdd)="onBackgroundAdd($event)"></cnt-trip-planner-map>
@@ -241,6 +284,12 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   @ViewChild('panel', { static: false }) panel?: ElementRef<HTMLElement>;
 
   plan: ITripPlan | null = null;
+  /** Road-routed trip — refetched on stop-list changes. */
+  activeRoute: IRoute | null = null;
+  routeLoading = false;
+  directionsExpanded = true;
+  private routeSub: import('rxjs').Subscription | null = null;
+  private lastRouteKey = '';
   rvProfiles: IMyRvProfile[] = [];
   activeRv: IMyRvProfile | null = null;
   rvSwitcherOpen = false;
@@ -267,6 +316,8 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     private planner: TripPlannerService,
     private seo: SeoService,
     private toasts: ToastService,
+    private routing: RoutingService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -284,10 +335,36 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
           robots: 'noindex, nofollow',
         });
       }
+      this.maybeFetchRoute();
     });
   }
 
-  ngOnDestroy(): void { this.sub?.unsubscribe(); }
+  ngOnDestroy(): void { this.sub?.unsubscribe(); this.routeSub?.unsubscribe(); }
+
+  /** Re-fetch the road route when the stops sequence changes. */
+  private maybeFetchRoute(): void {
+    const stops = this.plan?.stops ?? [];
+    if (stops.length < 2) {
+      this.activeRoute = null;
+      this.lastRouteKey = '';
+      return;
+    }
+    const key = stops.map(s => `${s.lat.toFixed(5)},${s.lng.toFixed(5)}`).join(';');
+    if (key === this.lastRouteKey) return;
+    this.lastRouteKey = key;
+    this.routeLoading = true;
+    this.routeSub?.unsubscribe();
+    this.routeSub = this.routing.getRoute(stops).subscribe(r => {
+      this.activeRoute = r;
+      this.routeLoading = false;
+      this.cdr.markForCheck();
+    });
+  }
+
+  get routeGeometry(): [number, number][] | null { return this.activeRoute?.coordinates ?? null; }
+
+  formatMiles = (mi: number): string => this.routing.formatDistance(mi);
+  formatMins = (m: number): string => this.routing.formatDuration(m);
 
   /** Close the RV switcher when the user clicks outside the panel. */
   @HostListener('document:click', ['$event'])

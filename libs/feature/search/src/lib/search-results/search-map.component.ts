@@ -105,6 +105,9 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   /** Active trip plan — when set, overlays the route polyline + start/finish
    *  markers, and adds an "Add to trip" button to every popup. */
   @Input() activePlan: ITripPlan | null = null;
+  /** Optional road-following route geometry [lng, lat][] — when present,
+   *  replaces the straight-line dashed polyline with a solid roads line. */
+  @Input() routeGeometry: [number, number][] | null = null;
   @Output() markerHover = new EventEmitter<number | null>();
   @Output() markerClick = new EventEmitter<number>();
   @Output() popupClosed = new EventEmitter<void>();
@@ -290,6 +293,9 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       this.lastPoiSignature = '';
       this.renderMarkers?.();
       this.renderPois();
+    }
+    if (changes['routeGeometry'] && this.map) {
+      this.renderRouteOverlay();
     }
     if (changes['pois'] && this.map) {
       // Signature guard mirrors the listing-cluster guard (line ~200): the parent
@@ -558,8 +564,16 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     if (stops.length === 0) return;
     const layer = L.layerGroup();
     if (stops.length >= 2) {
-      L.polyline(stops.map(s => [s.lat, s.lng] as [number, number]), {
-        color: '#e3530d', weight: 4, opacity: 0.85, dashArray: '8,8', interactive: false,
+      const useRoute = this.routeGeometry && this.routeGeometry.length >= 2;
+      const latlngs: L.LatLngExpression[] = useRoute
+        ? this.routeGeometry!.map(c => [c[1], c[0]] as [number, number])
+        : stops.map(s => [s.lat, s.lng] as [number, number]);
+      L.polyline(latlngs, {
+        color: '#e3530d',
+        weight: useRoute ? 5 : 4,
+        opacity: useRoute ? 0.9 : 0.7,
+        dashArray: useRoute ? undefined : '8,8',
+        interactive: false,
       }).addTo(layer);
     }
     const lastIdx = stops.length - 1;

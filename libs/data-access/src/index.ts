@@ -26,4 +26,5 @@ export * from './lib/payments/payment-methods.service';
 export * from './lib/reviews/review.service';
 export * from './lib/reviews/host-review.service';
 export * from './lib/trip-planner/trip-planner.service';
+export * from './lib/trip-planner/routing.service';
 export * from './lib/notifications/notification.service';

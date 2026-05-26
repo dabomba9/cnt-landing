@@ -463,6 +463,7 @@
           (boundsChange)="onMapBoundsChange($event)"
           (poiClick)="onPoiClick($event)"
           [activePlan]="activePlan"
+          [routeGeometry]="activeRouteGeometry"
           (addToTrip)="onMapAddToTrip($event)"
           (poiFavoriteToggle)="onPoiPopupFavoriteToggle($event)"></cnt-search-map>
 
@@ -819,28 +820,73 @@
         @if (activePlan.stops.length === 0) {
           <p class="text-xs text-muted-text text-center py-4">No stops yet. Click any listing or POI on the map to add it.</p>
         }
-        @for (s of activePlan.stops; track s.id; let i = $index, last = $last) {
-          <div class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
-            <span class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white text-[10px] font-headline font-bold shrink-0"
-              [ngStyle]="{ background: i === 0 && activePlan.stops.length > 1 ? '#295d42' : last && activePlan.stops.length > 1 ? '#9a3f0a' : '#e3530d' }">
-              @if (i === 0 && activePlan.stops.length > 1) {
-                <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">flag</span>
-              } @else if (last && activePlan.stops.length > 1) {
-                <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">sports_score</span>
-              } @else {
-                {{ i + 1 }}
-              }
-            </span>
-            <div class="flex-1 min-w-0">
-              <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
-              @if (s.address) {
-                <div class="text-[0.6rem] text-muted-text truncate">{{ s.address }}</div>
-              }
+        <div cdkDropList (cdkDropListDropped)="onDrawerStopDrop($event)" class="space-y-1.5">
+          @for (s of activePlan.stops; track s.id; let i = $index, last = $last) {
+            <div cdkDrag class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
+              <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
+              <span class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white text-[10px] font-headline font-bold shrink-0"
+                [ngStyle]="{ background: i === 0 && activePlan.stops.length > 1 ? '#295d42' : last && activePlan.stops.length > 1 ? '#9a3f0a' : '#e3530d' }">
+                @if (i === 0 && activePlan.stops.length > 1) {
+                  <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">flag</span>
+                } @else if (last && activePlan.stops.length > 1) {
+                  <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">sports_score</span>
+                } @else {
+                  {{ i + 1 }}
+                }
+              </span>
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
+                @if (s.address) {
+                  <div class="text-[0.6rem] text-muted-text truncate">{{ s.address }}</div>
+                }
+              </div>
+              <button type="button" (click)="removeStopFromActive(s.id)" aria-label="Remove stop"
+                class="w-6 h-6 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
             </div>
-            <button type="button" (click)="removeStopFromActive(s.id)" aria-label="Remove stop"
-              class="w-6 h-6 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
-              <span class="material-symbols-outlined text-sm">close</span>
+          }
+        </div>
+
+        <!-- Directions (collapsible). Shows the road-routed step list. -->
+        @if (activePlan.stops.length >= 2) {
+          <div class="rounded-xl border border-dark-text/10 bg-cream/30 overflow-hidden">
+            <button type="button" (click)="directionsExpanded = !directionsExpanded" [attr.aria-expanded]="directionsExpanded"
+              class="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-cream/60 transition-colors">
+              <span class="material-symbols-outlined text-base text-trinidad">directions</span>
+              <span class="flex-1 text-xs font-body font-bold text-dark-text">Directions</span>
+              @if (routeLoading) {
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Loading…</span>
+              } @else if (activeRoute) {
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">{{ formatMiles(activeRoute.totalMiles) }} · {{ formatMins(activeRoute.totalMinutes) }}</span>
+              }
+              <span class="material-symbols-outlined text-sm text-muted-text">{{ directionsExpanded ? 'expand_less' : 'expand_more' }}</span>
             </button>
+            @if (directionsExpanded) {
+              @if (!activeRoute && !routeLoading) {
+                <p class="px-3 pb-3 text-[0.65rem] text-muted-text">Couldn't load driving directions. Showing straight-line route on the map.</p>
+              }
+              @if (activeRoute) {
+                <div class="px-3 pb-3 space-y-3 max-h-72 overflow-y-auto">
+                  @for (leg of activeRoute.legs; track leg; let li = $index) {
+                    <div>
+                      <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad mb-1">
+                        Leg {{ li + 1 }} · {{ formatMiles(leg.distanceMiles) }} · {{ formatMins(leg.durationMinutes) }}
+                      </div>
+                      <ol class="space-y-1">
+                        @for (step of leg.steps; track step) {
+                          <li class="flex items-start gap-2 text-[0.7rem] font-body text-dark-text">
+                            <span class="w-1 h-1 rounded-full bg-trinidad mt-1.5 shrink-0"></span>
+                            <span class="flex-1">{{ step.instruction }}</span>
+                            <span class="text-[0.6rem] text-muted-text shrink-0">{{ formatMiles(step.distanceMiles) }}</span>
+                          </li>
+                        }
+                      </ol>
+                    </div>
+                  }
+                </div>
+              }
+            }
           </div>
         }
       }

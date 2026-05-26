@@ -17,8 +17,10 @@ import {
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
-  TripPlannerService, ITripPlan, totalTripMiles, ToastService, autoTripName, rvTypeLabel } from '@cnt-workspace/data-access';
+  TripPlannerService, ITripPlan, totalTripMiles, ToastService, autoTripName, rvTypeLabel,
+  RoutingService, IRoute } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
 import { ListingCardComponent } from '@cnt-workspace/ui';
@@ -54,7 +56,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, DragDropModule, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })
@@ -245,6 +247,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private seo: SeoService,
     private planner: TripPlannerService,
     private toasts: ToastService,
+    private routing: RoutingService,
   ) {}
 
   /** Saved RV profiles + the active one — drives the per-card fit pills. */
@@ -263,7 +266,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   drawerActiveRv: IMyRvProfile | null = null;
   drawerRvSwitcherOpen = false;
   readonly rvTypeLabel = rvTypeLabel;
+  /** Road-following route for the active plan (fetched via RoutingService). */
+  activeRoute: IRoute | null = null;
+  routeLoading = false;
+  directionsExpanded = false;
   private plansSub: Subscription | null = null;
+  private routeSub: Subscription | null = null;
+  private lastFetchedRouteKey = '';
 
   ngOnInit(): void {
     this.seo.update({
@@ -283,6 +292,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       this.tripPlans = plans.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
       const activeId = this.planner.getActiveId();
       this.activePlan = (activeId && plans.find(p => p.id === activeId)) || null;
+      this.maybeFetchRoute();
     });
     // ?openPlanner=1 (or ?plan=… alone) opens the drawer.
     const qp = this.route.snapshot.queryParamMap;
@@ -1091,8 +1101,53 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.activePlan ? totalTripMiles(this.activePlan) : 0;
   }
 
+  /** Fetch (or pull from cache) the road route whenever the active plan's
+   * ordered stop coordinates change. Skips when fewer than 2 stops. */
+  private maybeFetchRoute(): void {
+    const stops = this.activePlan?.stops ?? [];
+    if (stops.length < 2) {
+      this.activeRoute = null;
+      this.lastFetchedRouteKey = '';
+      return;
+    }
+    const key = stops.map(s => `${s.lat.toFixed(5)},${s.lng.toFixed(5)}`).join(';');
+    if (key === this.lastFetchedRouteKey) return;
+    this.lastFetchedRouteKey = key;
+    this.routeLoading = true;
+    this.routeSub?.unsubscribe();
+    this.routeSub = this.routing.getRoute(stops).subscribe(route => {
+      this.activeRoute = route;
+      this.routeLoading = false;
+    });
+  }
+
+  get activeRouteGeometry(): [number, number][] | null {
+    return this.activeRoute?.coordinates ?? null;
+  }
+
+  /** Format helpers exposed to the template. */
+  formatMiles = (mi: number): string => this.routing.formatDistance(mi);
+  formatMins = (m: number): string => this.routing.formatDuration(m);
+
+  /** Click a step in the Directions list to fly the map to that point. */
+  flyToStep(step: { start: { lat: number; lng: number } }): void {
+    // search-map doesn't expose a flyTo today; the parent can't pan it from
+    // here, so for now the click just expands/highlights the step. Map zoom
+    // happens via the user's normal pan/zoom. (Phase 2: expose flyTo.)
+    void step;
+  }
+
+  /** Drag-reorder for the drawer's stops list. */
+  onDrawerStopDrop(event: CdkDragDrop<unknown>): void {
+    if (!this.activePlan) return;
+    const stops = this.activePlan.stops.slice();
+    moveItemInArray(stops, event.previousIndex, event.currentIndex);
+    this.planner.update(this.activePlan.id, { stops });
+  }
+
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
     this.plansSub?.unsubscribe();
+    this.routeSub?.unsubscribe();
   }
 }
