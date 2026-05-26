@@ -10,6 +10,12 @@ export interface IReviewSubScores {
   value: number;
 }
 
+/** Host's public reply to a guest's review. One per review, edit/remove allowed. */
+export interface IHostReviewResponse {
+  text: string;
+  respondedAt: string;     // ISO
+}
+
 export interface IUserReview {
   id: string;
   bookingId: string;
@@ -21,6 +27,8 @@ export interface IUserReview {
   text: string;
   subScores: IReviewSubScores;
   createdAt: string;
+  /** Optional host reply, rendered under the review. */
+  hostResponse?: IHostReviewResponse;
 }
 
 const REVIEWS_KEY = 'cnt-reviews';
@@ -107,6 +115,24 @@ export class ReviewService {
   remove(bookingId: string): void {
     const next = this._reviews$.value.filter(r => r.bookingId !== bookingId);
     this.write(next);
+  }
+
+  /** Set / replace / clear the host's public response on a review. Pass null
+   * (or empty/whitespace) to remove. Returns the updated review or null if
+   * the booking isn't reviewed. */
+  setHostResponse(bookingId: string, text: string | null): IUserReview | null {
+    const all = this.read();
+    const idx = all.findIndex(r => r.bookingId === bookingId);
+    if (idx === -1) return null;
+    const trimmed = text?.trim() ?? '';
+    const current = all[idx];
+    const next: IUserReview = trimmed
+      ? { ...current, hostResponse: { text: trimmed, respondedAt: new Date().toISOString() } }
+      // Drop the field cleanly when clearing.
+      : (() => { const { hostResponse: _drop, ...rest } = current; void _drop; return rest; })();
+    all[idx] = next;
+    this.write(all);
+    return next;
   }
 
   private read(): IUserReview[] {

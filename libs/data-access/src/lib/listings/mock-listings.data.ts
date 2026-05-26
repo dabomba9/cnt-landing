@@ -371,6 +371,11 @@ export interface IReview {
   date: string;            // "March 2026"
   rating: number;          // 1-5
   text: string;
+  /** Stable id for real user-submitted reviews — drives the host-respond button.
+   * Undefined for seeded mock reviews (they have no booking record). */
+  bookingId?: string;
+  /** Host's public reply, when present. */
+  hostResponse?: { text: string; respondedAt: string };
 }
 
 export interface ISubScores {

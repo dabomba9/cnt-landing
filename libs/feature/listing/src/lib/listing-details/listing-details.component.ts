@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -34,7 +35,7 @@ import { MiniMapComponent } from '@cnt-workspace/booking';
   selector: 'cnt-workspace-listing-details',
   standalone: true,
   imports: [
-    CommonModule, RouterLink,
+    CommonModule, FormsModule, RouterLink,
     NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
     ListingCardComponent, ReviewCardComponent, AccordionCardComponent, RvPhotosModalComponent,
@@ -257,7 +258,9 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return { passes: true, label: `Fits your ${typeStr}` };
   }
 
-  /** Map a UserReview into the listing's Review shape so the UI doesn't branch. */
+  /** Map a UserReview into the listing's Review shape so the UI doesn't branch.
+   * Passes `bookingId` + `hostResponse` through so the template can show the
+   * Respond button (real reviews only) and render the response block. */
   private userReviewAsReview(r: IUserReview): typeof this.detail.reviews[number] {
     const d = new Date(r.createdAt);
     const dateLabel = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -267,7 +270,38 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       date: dateLabel,
       rating: r.rating,
       text: r.text || '(No comment)',
+      bookingId: r.bookingId,
+      hostResponse: r.hostResponse,
     };
+  }
+
+  /** ============ Host response inline editor ============ */
+  respondingBookingId: string | null = null;
+  responseDraft = '';
+
+  openRespond(r: typeof this.detail.reviews[number]): void {
+    if (!this.isOwner || !r.bookingId) return;
+    this.respondingBookingId = r.bookingId;
+    this.responseDraft = r.hostResponse?.text ?? '';
+  }
+
+  cancelRespond(): void {
+    this.respondingBookingId = null;
+    this.responseDraft = '';
+  }
+
+  saveResponse(): void {
+    const id = this.respondingBookingId;
+    if (!id) return;
+    this.reviewSvc.setHostResponse(id, this.responseDraft);
+    this.toasts.success('Response posted.');
+    this.cancelRespond();
+  }
+
+  removeResponse(bookingId: string | undefined): void {
+    if (!bookingId) return;
+    this.reviewSvc.setHostResponse(bookingId, null);
+    this.toasts.info('Response removed.');
   }
 
   /** Reviews sorted by current sort key. Real user reviews are prepended (most recent first). */

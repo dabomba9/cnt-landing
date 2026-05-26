@@ -25,4 +25,14 @@
     <span class="ml-1 text-xs font-body font-bold text-dark-text">{{ review.rating.toFixed(1) }}</span>
   </div>
   <p class="text-base font-body text-dark-text leading-relaxed">{{ review.text }}</p>
+  @if (review.hostResponse; as resp) {
+    <div class="mt-4 ml-4 pl-4 border-l-2 border-jungle-green/40 bg-jungle-green/5 rounded-r-md py-3 pr-3">
+      <div class="flex items-center gap-1.5 text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-jungle-green mb-1">
+        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">reply</span>
+        Response from the host
+        <span class="text-muted-text font-normal normal-case tracking-normal">· {{ resp.respondedAt | date:'mediumDate' }}</span>
+      </div>
+      <p class="text-sm font-body text-dark-text leading-relaxed whitespace-pre-line">{{ resp.text }}</p>
+    </div>
+  }
 </article>

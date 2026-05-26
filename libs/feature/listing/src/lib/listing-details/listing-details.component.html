@@ -504,10 +504,40 @@
               </span>
             </div>
 
-            <!-- Review cards (2-col grid) -->
+            <!-- Review cards (2-col grid) — hosts get inline Respond UI on real reviews. -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               @for (r of visibleReviews; track r.authorName) {
-                <cnt-review-card [review]="r" />
+                <div>
+                  <cnt-review-card [review]="r" />
+                  @if (isOwner && r.bookingId) {
+                    @if (respondingBookingId === r.bookingId) {
+                      <div class="mt-2 rounded-2xl border border-trinidad/30 bg-trinidad/5 p-4">
+                        <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-trinidad mb-2">{{ r.hostResponse ? 'Edit your response' : 'Respond to this review' }}</div>
+                        <textarea [(ngModel)]="responseDraft" name="hostRespDraft" rows="3" maxlength="600"
+                          placeholder="Thanks for the kind words, see you next year…"
+                          class="w-full bg-white border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 resize-none"></textarea>
+                        <div class="flex items-center justify-end gap-2 mt-2">
+                          <button type="button" (click)="cancelRespond()"
+                            class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Cancel</button>
+                          <button type="button" (click)="saveResponse()" [disabled]="!responseDraft.trim()"
+                            class="px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 transition-opacity">{{ r.hostResponse ? 'Update' : 'Post response' }}</button>
+                        </div>
+                      </div>
+                    } @else if (r.hostResponse) {
+                      <div class="mt-2 flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold">
+                        <button type="button" (click)="openRespond(r)" class="text-dark-text hover:text-trinidad transition-colors">Edit response</button>
+                        <span class="text-dark-text/20">·</span>
+                        <button type="button" (click)="removeResponse(r.bookingId)" class="text-muted-text hover:text-trinidad transition-colors">Remove</button>
+                      </div>
+                    } @else {
+                      <button type="button" (click)="openRespond(r)"
+                        class="mt-2 inline-flex items-center gap-1.5 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                        <span class="material-symbols-outlined text-sm">reply</span>
+                        Respond to this review
+                      </button>
+                    }
+                  }
+                </div>
               }
             </div>
 
