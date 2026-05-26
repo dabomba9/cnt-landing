@@ -68,8 +68,8 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService } from '@cnt-wo
                   </a>
                   <div class="flex flex-wrap items-center gap-3 text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">
                     <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm text-jungle-green">trip_origin</span>{{ p.stops.length }} {{ p.stops.length === 1 ? 'stop' : 'stops' }}</span>
-                    @if (p.startPoint || p.endPoint) {
-                      <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm text-trinidad">route</span>Endpoints set</span>
+                    @if (p.stops.length >= 2) {
+                      <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm text-trinidad">route</span>{{ p.stops[0].name }} → {{ p.stops[p.stops.length - 1].name }}</span>
                     }
                   </div>
                   <div class="flex items-center justify-between gap-3 pt-3 border-t border-dark-text/8">

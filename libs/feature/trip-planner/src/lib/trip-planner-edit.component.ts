@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -8,11 +8,20 @@ import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop, TripStopKind,
   ALL_LISTINGS, MOCK_POIS, IListing, IPoi,
+  IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile, rvTypeLabel,
+  totalTripMiles, pointToRouteMiles,
 } from '@cnt-workspace/data-access';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
-type PickerTarget = 'stop' | 'start' | 'end';
-type PickerTab = 'listings' | 'pois' | 'pin';
+interface ISearchHit {
+  id: string;
+  kind: 'private' | 'boondocking' | 'poi';
+  name: string;
+  subtitle: string;
+  lat: number;
+  lng: number;
+  source: IListing | IPoi;
+}
 
 @Component({
   selector: 'cnt-trip-planner-edit',
@@ -32,223 +41,228 @@ type PickerTab = 'listings' | 'pois' | 'pin';
       } @else {
         <section class="px-[2%] py-4 md:py-6">
           <div class="max-w-[100rem] mx-auto px-2 md:px-4">
+
             <!-- Top bar -->
-            <div class="flex items-center justify-between gap-3 mb-4">
-              <a routerLink="/trip-planner" class="inline-flex items-center gap-1 text-xs font-button font-bold uppercase tracking-[0.12em] text-muted-text hover:text-trinidad transition-colors">
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              <a routerLink="/trip-planner" class="inline-flex items-center gap-1 text-xs font-button font-bold uppercase tracking-[0.12em] text-muted-text hover:text-trinidad transition-colors shrink-0">
                 <span class="material-symbols-outlined text-base">arrow_back</span>
                 All trips
               </a>
-              <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Last saved {{ savedLabel }}</span>
+              <input type="text" [(ngModel)]="plan.name" name="planName" maxlength="60" (blur)="commit('name', plan.name)"
+                class="flex-1 min-w-[12rem] max-w-md font-headline font-bold text-xl bg-transparent focus:bg-white border-b border-dark-text/15 focus:border-jungle-green outline-none px-2 py-1">
+              <div class="flex items-center gap-2 text-xs">
+                <label class="inline-flex items-center gap-1.5 text-muted-text">
+                  <span>From</span>
+                  <input type="date" [(ngModel)]="plan.startDate" name="startDate" (change)="commit('startDate', plan.startDate)"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1 text-xs font-body focus:outline-none focus:border-jungle-green">
+                </label>
+                <label class="inline-flex items-center gap-1.5 text-muted-text">
+                  <span>to</span>
+                  <input type="date" [(ngModel)]="plan.endDate" name="endDate" (change)="commit('endDate', plan.endDate)"
+                    class="bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1 text-xs font-body focus:outline-none focus:border-jungle-green">
+                </label>
+              </div>
+              <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">Saved {{ savedLabel }}</span>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
-              <!-- Side panel -->
-              <aside class="lg:col-span-2 space-y-4">
-                <!-- Trip name + dates -->
-                <div class="bg-white rounded-2xl border border-dark-text/8 p-5 space-y-4">
-                  <label class="block">
-                    <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Trip name</span>
-                    <input type="text" [(ngModel)]="plan.name" name="planName" maxlength="60" (blur)="commitField('name', plan.name)"
-                      class="mt-1 w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body font-bold focus:outline-none focus:border-jungle-green">
-                  </label>
-                  <div class="grid grid-cols-2 gap-3">
-                    <label class="block">
-                      <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Start date</span>
-                      <input type="date" [(ngModel)]="plan.startDate" name="startDate" (change)="commitField('startDate', plan.startDate)"
-                        class="mt-1 w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-                    </label>
-                    <label class="block">
-                      <span class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">End date</span>
-                      <input type="date" [(ngModel)]="plan.endDate" name="endDate" (change)="commitField('endDate', plan.endDate)"
-                        class="mt-1 w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-                    </label>
-                  </div>
-                </div>
+            <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
 
-                <!-- Start + End points -->
-                <div class="bg-white rounded-2xl border border-dark-text/8 p-5 space-y-3">
-                  <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Endpoints</div>
-                  <ng-container *ngTemplateOutlet="endpointRow; context: { stop: plan.startPoint, label: 'Start', target: 'start', color: 'bg-jungle-green' }"></ng-container>
-                  <ng-container *ngTemplateOutlet="endpointRow; context: { stop: plan.endPoint, label: 'Finish', target: 'end', color: 'bg-trinidad' }"></ng-container>
-                </div>
+              <!-- Compact left panel -->
+              <aside class="bg-white rounded-2xl border border-dark-text/8 p-4 space-y-3 self-start" #panel>
 
-                <!-- Stops list -->
-                <div class="bg-white rounded-2xl border border-dark-text/8 p-5">
-                  <div class="flex items-center justify-between gap-3 mb-3">
-                    <div>
-                      <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Stops</div>
-                      <div class="text-xs font-body text-dark-text">{{ plan.stops.length }} {{ plan.stops.length === 1 ? 'stop' : 'stops' }} · drag to reorder</div>
-                    </div>
-                    <button type="button" (click)="openPicker('stop')"
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
-                      <span class="material-symbols-outlined text-sm">add</span>
-                      Add stop
+                <!-- RV chip -->
+                <div class="relative">
+                  <div class="flex items-center gap-3 p-2 rounded-xl bg-cream/40">
+                    <button type="button" (click)="rvSwitcherOpen = !rvSwitcherOpen" aria-label="Switch RV profile" class="relative shrink-0">
+                      <span class="w-11 h-11 rounded-full bg-jungle-green text-white inline-flex items-center justify-center font-headline font-bold text-sm">{{ activeRvInitials }}</span>
+                      <span class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-trinidad text-white inline-flex items-center justify-center border-2 border-white">
+                        <span class="material-symbols-outlined text-[10px]">add</span>
+                      </span>
                     </button>
-                  </div>
-                  @if (plan.stops.length === 0) {
-                    <p class="text-xs text-muted-text font-body py-3 text-center">No stops yet — add private spots, boondocking, POIs, or drop a custom pin.</p>
-                  } @else {
-                    <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="space-y-2">
-                      @for (s of plan.stops; track s.id) {
-                        <div cdkDrag class="flex items-center gap-3 p-3 rounded-xl border border-dark-text/10 bg-cream/40 hover:border-trinidad/40 transition-colors">
-                          <span class="material-symbols-outlined text-base text-muted-text cursor-grab" cdkDragHandle>drag_indicator</span>
-                          <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white shrink-0"
-                            [ngStyle]="{ background: kindColor(s.kind) }">
-                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">{{ kindIcon(s.kind) }}</span>
-                          </span>
-                          <div class="flex-1 min-w-0">
-                            <div class="text-sm font-body font-bold text-dark-text truncate">{{ s.name }}</div>
-                            <div class="text-[0.65rem] text-muted-text font-body truncate">{{ kindLabel(s.kind) }}@if (s.address) {· {{ s.address }}}</div>
-                          </div>
-                          <button type="button" (click)="removeStop(s.id)" aria-label="Remove stop"
-                            class="w-7 h-7 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
-                            <span class="material-symbols-outlined text-sm">close</span>
-                          </button>
-                        </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">Bringing</div>
+                      <div class="text-sm font-body font-bold text-dark-text truncate">{{ activeRv?.name || 'No RV set' }}</div>
+                      @if (activeRv) {
+                        <div class="text-[0.65rem] text-muted-text">{{ rvTypeLabel(activeRv.type) }}</div>
                       }
+                    </div>
+                  </div>
+                  @if (rvSwitcherOpen) {
+                    <div class="absolute left-0 right-0 top-full mt-1 z-40 rounded-xl border border-dark-text/10 bg-white shadow-[0_12px_28px_rgba(0,0,0,0.12)] p-2 space-y-1">
+                      @for (p of rvProfiles; track p.id) {
+                        <button type="button" (click)="selectRv(p.id)"
+                          [ngClass]="p.id === activeRv?.id ? 'bg-cream/60' : ''"
+                          class="w-full text-left p-2 rounded-md flex items-center gap-2 hover:bg-cream/60 transition-colors">
+                          <span class="w-6 h-6 rounded-full bg-jungle-green text-white inline-flex items-center justify-center text-[10px] font-headline font-bold">{{ initials(p.name) }}</span>
+                          <span class="text-xs font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                        </button>
+                      }
+                      @if (rvProfiles.length === 0) {
+                        <p class="text-xs text-muted-text text-center py-2">No RVs saved yet.</p>
+                      }
+                      <a routerLink="/account" fragment="rig" class="block w-full text-center text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-1 hover:underline">Manage RVs →</a>
                     </div>
                   }
                 </div>
 
-                <!-- Picker drawer -->
-                @if (picker) {
-                  <div class="bg-white rounded-2xl border border-trinidad/30 p-5 space-y-3">
-                    <div class="flex items-center justify-between gap-3">
-                      <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-trinidad">Add {{ pickerTargetLabel }}</div>
-                      <button type="button" (click)="closePicker()" aria-label="Close picker"
-                        class="w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
-                        <span class="material-symbols-outlined text-base text-muted-text">close</span>
+                <!-- Search input + autocomplete -->
+                <div class="relative">
+                  <input #searchInput type="text" [(ngModel)]="query" (focus)="searchOpen = true" (blur)="onSearchBlur()" name="query"
+                    placeholder="Add a place..."
+                    class="w-full bg-cream/60 border border-dark-text/15 rounded-md pl-3 pr-9 py-2.5 text-sm font-body focus:outline-none focus:border-jungle-green">
+                  <span class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-text pointer-events-none">
+                    <span class="material-symbols-outlined text-base">search</span>
+                  </span>
+                  @if (searchOpen && query.trim() && searchResults.length > 0) {
+                    <div class="absolute left-0 right-0 top-full mt-1 z-40 bg-white rounded-md border border-dark-text/15 shadow-[0_12px_28px_rgba(0,0,0,0.12)] max-h-80 overflow-y-auto">
+                      @for (hit of searchResults; track hit.id) {
+                        <button type="button" (mousedown)="addHit(hit)" class="w-full text-left p-2.5 hover:bg-cream/60 transition-colors flex items-center gap-2.5 border-b border-dark-text/5 last:border-0">
+                          <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white shrink-0" [ngStyle]="{ background: kindColor(hit.kind) }">
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ kindIcon(hit.kind) }}</span>
+                          </span>
+                          <span class="flex-1 min-w-0">
+                            <span class="block text-sm font-body font-bold text-dark-text truncate">{{ hit.name }}</span>
+                            <span class="block text-[0.65rem] text-muted-text truncate">{{ hit.subtitle }}</span>
+                          </span>
+                        </button>
+                      }
+                    </div>
+                  }
+                  @if (searchOpen && query.trim() && searchResults.length === 0) {
+                    <div class="absolute left-0 right-0 top-full mt-1 z-40 bg-white rounded-md border border-dark-text/15 shadow-[0_12px_28px_rgba(0,0,0,0.12)] p-3 text-center">
+                      <p class="text-xs text-muted-text">No matches{{ corridorActive ? ' within ' + plan.corridorMiles + ' mi of your route' : '' }}.</p>
+                    </div>
+                  }
+                </div>
+
+                <!-- Action buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                  <button type="button" (click)="useMyLocation()" [disabled]="locating"
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50 transition-colors">
+                    <span class="material-symbols-outlined text-base">my_location</span>
+                    My Location
+                  </button>
+                  <button type="button" (click)="reorderMode = !reorderMode"
+                    [ngClass]="reorderMode ? 'bg-trinidad text-white border-trinidad' : 'bg-white text-dark-text border-dark-text/15'"
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    <span class="material-symbols-outlined text-base">swap_vert</span>
+                    {{ reorderMode ? 'Done' : 'Reorder' }}
+                  </button>
+                </div>
+
+                <!-- Stops list -->
+                <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="space-y-1.5">
+                  @if (plan.stops.length === 0) {
+                    <p class="text-xs text-muted-text text-center py-4">Add a site to your trip to begin.</p>
+                  }
+                  @for (s of plan.stops; track s.id; let i = $index, last = $last) {
+                    <div cdkDrag [cdkDragDisabled]="!reorderMode" class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
+                      @if (reorderMode) {
+                        <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
+                      }
+                      <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
+                        @if (i === 0 && plan.stops.length > 1) {
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">flag</span>
+                        } @else if (last && plan.stops.length > 1) {
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">sports_score</span>
+                        } @else if (plan.stops.length > 1) {
+                          {{ i }}
+                        } @else {
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">place</span>
+                        }
+                      </span>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
+                        <div class="text-[0.6rem] text-muted-text truncate">{{ stopBadge(i, last) }}@if (s.address) { · {{ s.address }} }</div>
+                      </div>
+                      <button type="button" (click)="removeStop(s.id)" aria-label="Remove stop"
+                        class="w-6 h-6 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+                        <span class="material-symbols-outlined text-sm">close</span>
                       </button>
                     </div>
-                    <div class="flex gap-1 bg-cream/60 rounded-full p-0.5 text-[0.6rem] font-button font-bold uppercase tracking-[0.12em]">
-                      @for (t of pickerTabs; track t.id) {
-                        <button type="button" (click)="setPickerTab(t.id)"
-                          [ngClass]="picker.tab === t.id ? 'bg-trinidad text-white' : 'text-dark-text hover:bg-white'"
-                          class="flex-1 px-3 py-1.5 rounded-full transition-colors">{{ t.label }}</button>
-                      }
-                    </div>
+                  }
+                </div>
 
-                    @if (picker.tab === 'listings') {
-                      <input type="search" [(ngModel)]="query" name="query" placeholder="Search by name or city…"
-                        class="w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-                      <div class="max-h-80 overflow-y-auto -mx-2 px-2 space-y-1">
-                        @for (l of filteredListings; track l.id) {
-                          <button type="button" (click)="addListing(l)"
-                            class="w-full text-left p-2.5 rounded-lg hover:bg-cream/60 transition-colors flex items-center gap-3">
-                            <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white shrink-0"
-                              [ngStyle]="{ background: l.kind === 'boondocking' ? '#3b6e3b' : '#e3530d' }">
-                              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ l.kind === 'boondocking' ? 'landscape' : 'rv_hookup' }}</span>
-                            </span>
-                            <span class="flex-1 min-w-0">
-                              <span class="block text-sm font-body font-bold text-dark-text truncate">{{ l.title }}</span>
-                              <span class="block text-[0.65rem] text-muted-text font-body truncate">{{ l.location }} · {{ l.kind === 'boondocking' ? 'Boondocking' : 'Private' }}</span>
-                            </span>
-                          </button>
-                        }
-                        @if (filteredListings.length === 0) {
-                          <p class="text-xs font-body text-muted-text text-center py-3">No matches.</p>
-                        }
-                      </div>
-                    }
+                <!-- Pin-drop toggle -->
+                <button type="button" (click)="togglePinDrop()"
+                  class="block w-full text-center text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold py-1.5 hover:underline"
+                  [ngClass]="pinDropMode ? 'text-trinidad' : 'text-muted-text'">
+                  <span class="inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">push_pin</span>
+                    {{ pinDropMode ? 'Click map to drop a pin · tap to cancel' : 'Or drop a pin on the map' }}
+                  </span>
+                </button>
 
-                    @if (picker.tab === 'pois') {
-                      <input type="search" [(ngModel)]="query" name="query" placeholder="Search POIs…"
-                        class="w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-                      <div class="max-h-80 overflow-y-auto -mx-2 px-2 space-y-1">
-                        @for (p of filteredPois; track p.id) {
-                          <button type="button" (click)="addPoi(p)"
-                            class="w-full text-left p-2.5 rounded-lg hover:bg-cream/60 transition-colors flex items-center gap-3">
-                            <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white bg-gold shrink-0">
-                              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pin_drop</span>
-                            </span>
-                            <span class="flex-1 min-w-0">
-                              <span class="block text-sm font-body font-bold text-dark-text truncate">{{ p.name }}</span>
-                              <span class="block text-[0.65rem] text-muted-text font-body truncate">{{ poiKindLabel(p.kind) }} · {{ p.address }}</span>
-                            </span>
-                          </button>
-                        }
-                        @if (filteredPois.length === 0) {
-                          <p class="text-xs font-body text-muted-text text-center py-3">No matches.</p>
-                        }
-                      </div>
-                    }
-
-                    @if (picker.tab === 'pin') {
-                      <div class="rounded-md border border-dashed border-trinidad/40 bg-trinidad/5 p-4 text-center">
-                        <span class="material-symbols-outlined text-2xl text-trinidad" style="font-variation-settings: 'FILL' 1;">push_pin</span>
-                        <p class="text-xs font-body text-dark-text mt-1">Click anywhere on the map to drop a pin. You'll be able to name it after.</p>
-                      </div>
-                      @if (pendingPin) {
-                        <div class="rounded-md border border-jungle-green/30 bg-jungle-green/5 p-3 space-y-2">
-                          <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">Pin dropped at {{ pendingPin.lat.toFixed(4) }}, {{ pendingPin.lng.toFixed(4) }}</div>
-                          <input type="text" [(ngModel)]="pendingPinName" name="pendingPinName" maxlength="60"
-                            placeholder="Name this place"
-                            class="w-full bg-white border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
-                          <div class="flex justify-end gap-2">
-                            <button type="button" (click)="cancelPin()" class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Discard</button>
-                            <button type="button" (click)="confirmPin()" [disabled]="!pendingPinName.trim()" class="px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40">Add pin</button>
-                          </div>
-                        </div>
-                      }
-                    }
+                <!-- Trip distance + corridor slider -->
+                <div class="pt-3 border-t border-dark-text/8 space-y-3">
+                  <div class="text-xs font-body text-dark-text text-center">
+                    Trip Distance: <span class="font-bold">{{ tripDistance }} {{ tripDistance === 1 ? 'mile' : 'miles' }}</span>
                   </div>
-                }
+                  <div>
+                    <div class="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
+                      <span class="text-muted-text">Corridor radius</span>
+                      <span class="text-trinidad">{{ plan.corridorMiles || 0 }} mi</span>
+                    </div>
+                    <input type="range" min="0" max="60" step="5" [ngModel]="plan.corridorMiles || 0" (ngModelChange)="setCorridor($event)" name="corridor" class="w-full mt-1 accent-trinidad">
+                    <p class="text-[0.6rem] text-muted-text mt-1">{{ corridorActive ? 'Search results filtered to within this radius of your route.' : 'Set above 0 once you have 2+ stops to filter search to your route corridor.' }}</p>
+                  </div>
+                </div>
               </aside>
 
               <!-- Map -->
-              <div class="lg:col-span-3 rounded-2xl overflow-hidden border border-dark-text/8 bg-white" style="min-height: 70vh;">
-                <cnt-trip-planner-map
-                  [plan]="plan"
-                  [pinDropMode]="pinDropMode"
+              <div class="rounded-2xl overflow-hidden border border-dark-text/8 bg-white" style="min-height: 70vh;">
+                <cnt-trip-planner-map [plan]="plan" [pinDropMode]="pinDropMode"
                   (pinDropped)="onPinDropped($event)"
                   (markerClicked)="onMarkerClicked($event)"></cnt-trip-planner-map>
               </div>
             </div>
+
+            <!-- Pin name modal -->
+            @if (pendingPin) {
+              <div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4" (click)="cancelPin()">
+                <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-[0_24px_64px_rgba(0,0,0,0.18)]" (click)="$event.stopPropagation()">
+                  <h3 class="font-headline font-bold text-lg mb-1 text-dark-text">Name this place</h3>
+                  <p class="text-xs text-muted-text mb-3">Dropped at {{ pendingPin.lat.toFixed(4) }}, {{ pendingPin.lng.toFixed(4) }}</p>
+                  <input type="text" [(ngModel)]="pendingPinName" name="pendingPinName" maxlength="60"
+                    placeholder="Grandma's house" (keydown.enter)="confirmPin()" autofocus
+                    class="w-full bg-cream/60 border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
+                  <div class="flex justify-end gap-2 mt-3">
+                    <button (click)="cancelPin()" class="px-4 py-2 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Cancel</button>
+                    <button (click)="confirmPin()" [disabled]="!pendingPinName.trim()" class="px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40">Add pin</button>
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         </section>
       }
-
-      <ng-template #endpointRow let-stop="stop" let-label="label" let-target="target" let-color="color">
-        <div class="flex items-center gap-3 p-3 rounded-xl border border-dark-text/10 bg-cream/40">
-          <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white shrink-0" [ngClass]="color">
-            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">{{ target === 'start' ? 'flag' : 'sports_score' }}</span>
-          </span>
-          <div class="flex-1 min-w-0">
-            <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text">{{ label }}</div>
-            @if (stop) {
-              <div class="text-sm font-body font-bold text-dark-text truncate">{{ stop.name }}</div>
-              <div class="text-[0.65rem] text-muted-text font-body truncate">{{ kindLabel(stop.kind) }}</div>
-            } @else {
-              <div class="text-xs font-body text-muted-text italic">Not set</div>
-            }
-          </div>
-          @if (stop) {
-            <button type="button" (click)="clearEndpoint(target)" class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors">Clear</button>
-          } @else {
-            <button type="button" (click)="openPicker(target)" class="px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">Set</button>
-          }
-        </div>
-      </ng-template>
     </main>
     <curbnturf-footer></curbnturf-footer>
   `,
 })
 export class TripPlannerEditComponent implements OnInit, OnDestroy {
+  @ViewChild('panel', { static: false }) panel?: ElementRef<HTMLElement>;
+
   plan: ITripPlan | null = null;
-  picker: { tab: PickerTab; target: PickerTarget } | null = null;
+  rvProfiles: IMyRvProfile[] = [];
+  activeRv: IMyRvProfile | null = null;
+  rvSwitcherOpen = false;
+
   query = '';
+  searchOpen = false;
+  reorderMode = false;
+  pinDropMode = false;
+  locating = false;
   pendingPin: { lat: number; lng: number } | null = null;
   pendingPinName = '';
-  readonly pickerTabs: { id: PickerTab; label: string }[] = [
-    { id: 'listings', label: 'Listings' },
-    { id: 'pois',     label: 'POIs' },
-    { id: 'pin',      label: 'Pin' },
-  ];
+
+  readonly rvTypeLabel = rvTypeLabel;
 
   private sub: Subscription | null = null;
   private planId: string | null = null;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
     private route: ActivatedRoute,
     private router: Router,
     private planner: TripPlannerService,
@@ -260,6 +274,7 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     this.planId = this.route.snapshot.paramMap.get('id');
     if (!this.planId) { this.router.navigate(['/trip-planner']); return; }
     this.planner.setActiveId(this.planId);
+    this.refreshRv();
     this.sub = this.planner.plans$.subscribe(plans => {
       this.plan = plans.find(p => p.id === this.planId) ?? null;
       if (this.plan) {
@@ -275,7 +290,139 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
 
-  // ============ Stops list ============
+  /** Close the RV switcher when the user clicks outside the panel. */
+  @HostListener('document:click', ['$event'])
+  onDocClick(e: Event): void {
+    if (!this.rvSwitcherOpen) return;
+    if (!this.panel?.nativeElement.contains(e.target as Node)) this.rvSwitcherOpen = false;
+  }
+
+  // ============ Fields ============
+  commit(key: 'name' | 'startDate' | 'endDate', value: string | undefined): void {
+    if (!this.plan) return;
+    this.planner.update(this.plan.id, { [key]: value || undefined });
+  }
+
+  setCorridor(value: number): void {
+    if (!this.plan) return;
+    this.planner.update(this.plan.id, { corridorMiles: value });
+  }
+
+  // ============ RV profile ============
+  private refreshRv(): void {
+    this.rvProfiles = listMyRvProfiles(this.platformId);
+    this.activeRv = getActiveRvProfile(this.platformId);
+  }
+  selectRv(id: string): void {
+    setActiveRvProfile(this.platformId, id);
+    this.refreshRv();
+    this.rvSwitcherOpen = false;
+    this.toasts.info('Active rig updated.');
+  }
+  get activeRvInitials(): string {
+    const n = this.activeRv?.name;
+    if (!n) return '?';
+    return n.split(/\s+/).filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase() || '?';
+  }
+  initials(name: string): string {
+    return name.split(/\s+/).filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  // ============ Search ============
+  onSearchBlur(): void {
+    // Delay so a click on a result (mousedown) can fire before the dropdown closes.
+    setTimeout(() => { this.searchOpen = false; }, 150);
+  }
+
+  get corridorActive(): boolean {
+    return !!(this.plan && (this.plan.corridorMiles ?? 0) > 0 && this.plan.stops.length >= 2);
+  }
+
+  get searchResults(): ISearchHit[] {
+    if (!this.plan) return [];
+    const q = this.query.trim().toLowerCase();
+    if (!q) return [];
+    const route = this.plan.stops.map(s => ({ lat: s.lat, lng: s.lng }));
+    const corridor = this.plan.corridorMiles ?? 0;
+    const useCorridor = corridor > 0 && route.length >= 2;
+    const inCorridor = (pt: { lat: number; lng: number }) => !useCorridor || pointToRouteMiles(pt, route) <= corridor;
+
+    const listingHits: ISearchHit[] = ALL_LISTINGS
+      .filter(l =>
+        (l.title.toLowerCase().includes(q) || l.location.toLowerCase().includes(q))
+        && inCorridor(l),
+      )
+      .slice(0, 5)
+      .map(l => ({
+        id: 'l-' + l.id,
+        kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+        name: l.title,
+        subtitle: (l.kind === 'boondocking' ? 'Boondocking' : 'Private spot') + ' · ' + l.location,
+        lat: l.lat,
+        lng: l.lng,
+        source: l,
+      }));
+
+    const poiHits: ISearchHit[] = MOCK_POIS
+      .filter(p =>
+        (p.name.toLowerCase().includes(q) || p.address.toLowerCase().includes(q) || p.kind.includes(q))
+        && inCorridor(p),
+      )
+      .slice(0, 5)
+      .map(p => ({
+        id: 'p-' + p.id,
+        kind: 'poi',
+        name: p.name,
+        subtitle: this.poiKindLabel(p.kind) + ' · ' + p.address,
+        lat: p.lat,
+        lng: p.lng,
+        source: p,
+      }));
+
+    return [...listingHits, ...poiHits];
+  }
+
+  addHit(hit: ISearchHit): void {
+    if (!this.plan) return;
+    if (hit.kind === 'poi') {
+      const p = hit.source as IPoi;
+      this.planner.addStop(this.plan.id, {
+        kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+      });
+    } else {
+      const l = hit.source as IListing;
+      this.planner.addStop(this.plan.id, {
+        kind: hit.kind, refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+      });
+    }
+    this.query = '';
+    this.searchOpen = false;
+    this.toasts.success('Stop added.');
+  }
+
+  // ============ My Location ============
+  useMyLocation(): void {
+    if (!this.plan || !isPlatformBrowser(this.platformId)) return;
+    if (!('geolocation' in navigator)) { this.toasts.error('Geolocation not supported on this device.'); return; }
+    this.locating = true;
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        this.locating = false;
+        if (!this.plan) return;
+        this.planner.addStop(this.plan.id, {
+          kind: 'custom', name: 'My location', lat: pos.coords.latitude, lng: pos.coords.longitude,
+        });
+        this.toasts.success('Added your current location.');
+      },
+      err => {
+        this.locating = false;
+        this.toasts.error(err.message || 'Could not get your location.');
+      },
+      { timeout: 10_000, maximumAge: 60_000 },
+    );
+  }
+
+  // ============ Stops ============
   onDrop(event: CdkDragDrop<ITripStop[]>): void {
     if (!this.plan) return;
     const stops = this.plan.stops.slice();
@@ -288,130 +435,65 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     this.planner.removeStop(this.plan.id, stopId);
   }
 
-  // ============ Endpoints ============
-  clearEndpoint(target: PickerTarget): void {
-    if (!this.plan) return;
-    if (target === 'start') this.planner.setStartPoint(this.plan.id, null);
-    else if (target === 'end') this.planner.setEndPoint(this.plan.id, null);
-  }
-
-  // ============ Field commits ============
-  commitField(key: 'name' | 'startDate' | 'endDate', value: string | undefined): void {
-    if (!this.plan) return;
-    this.planner.update(this.plan.id, { [key]: value || undefined });
-  }
-
-  // ============ Picker ============
-  openPicker(target: PickerTarget): void {
-    this.picker = { tab: 'listings', target };
-    this.query = '';
-    this.pendingPin = null;
-    this.pendingPinName = '';
-  }
-  closePicker(): void {
-    this.picker = null;
-    this.pendingPin = null;
-    this.pendingPinName = '';
-  }
-  setPickerTab(tab: PickerTab): void {
-    if (this.picker) this.picker = { ...this.picker, tab };
-  }
-
-  get pinDropMode(): boolean { return this.picker?.tab === 'pin'; }
-  get pickerTargetLabel(): string {
-    if (!this.picker) return '';
-    if (this.picker.target === 'start') return 'start point';
-    if (this.picker.target === 'end')   return 'finish point';
-    return 'stop';
+  // ============ Pin drop ============
+  togglePinDrop(): void {
+    this.pinDropMode = !this.pinDropMode;
+    if (!this.pinDropMode) this.cancelPin();
   }
 
   onPinDropped(coords: { lat: number; lng: number }): void {
-    if (!this.picker || this.picker.tab !== 'pin') return;
     this.pendingPin = coords;
     this.pendingPinName = '';
   }
-  cancelPin(): void { this.pendingPin = null; this.pendingPinName = ''; }
+
+  cancelPin(): void {
+    this.pendingPin = null;
+    this.pendingPinName = '';
+  }
+
   confirmPin(): void {
-    if (!this.plan || !this.picker || !this.pendingPin) return;
+    if (!this.plan || !this.pendingPin) return;
     const name = this.pendingPinName.trim();
     if (!name) return;
-    this.commitStop(this.picker.target, {
-      kind: 'custom',
-      name,
-      lat: this.pendingPin.lat,
-      lng: this.pendingPin.lng,
+    this.planner.addStop(this.plan.id, {
+      kind: 'custom', name, lat: this.pendingPin.lat, lng: this.pendingPin.lng,
     });
-    this.closePicker();
+    this.pendingPin = null;
+    this.pendingPinName = '';
+    this.pinDropMode = false;
+    this.toasts.success('Pin added.');
   }
 
-  addListing(l: IListing): void {
-    if (!this.plan || !this.picker) return;
-    this.commitStop(this.picker.target, {
-      kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
-      refId: l.id,
-      name: l.title,
-      lat: l.lat,
-      lng: l.lng,
-      address: l.location,
-      photo: l.image,
-    });
-    this.closePicker();
-  }
+  onMarkerClicked(_stopId: string): void { /* reserved for stop details popover */ }
 
-  addPoi(p: IPoi): void {
-    if (!this.plan || !this.picker) return;
-    this.commitStop(this.picker.target, {
-      kind: 'poi',
-      refId: p.id,
-      name: p.name,
-      lat: p.lat,
-      lng: p.lng,
-      address: p.address,
-      photo: p.photos?.[0],
-    });
-    this.closePicker();
-  }
-
-  private commitStop(target: PickerTarget, stop: Omit<ITripStop, 'id'>): void {
-    if (!this.plan) return;
-    if (target === 'start')      this.planner.setStartPoint(this.plan.id, stop);
-    else if (target === 'end')   this.planner.setEndPoint(this.plan.id, stop);
-    else                          this.planner.addStop(this.plan.id, stop);
-    this.toasts.success('Added.');
-  }
-
-  onMarkerClicked(_stopId: string): void {
-    // Reserved — Phase 2 will surface stop details (dates/notes) on click.
-  }
-
-  // ============ Filters ============
-  get filteredListings(): IListing[] {
-    const q = this.query.trim().toLowerCase();
-    if (!q) return ALL_LISTINGS.slice(0, 30);
-    return ALL_LISTINGS.filter(l =>
-      l.title.toLowerCase().includes(q) || l.location.toLowerCase().includes(q)
-    ).slice(0, 50);
-  }
-
-  get filteredPois(): IPoi[] {
-    const q = this.query.trim().toLowerCase();
-    if (!q) return MOCK_POIS.slice(0, 30);
-    return MOCK_POIS.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.address.toLowerCase().includes(q) ||
-      p.kind.includes(q)
-    ).slice(0, 50);
+  // ============ Derived ============
+  get tripDistance(): number {
+    return this.plan ? totalTripMiles(this.plan) : 0;
   }
 
   // ============ Labels ============
-  kindLabel(k: TripStopKind): string {
-    return ({ private: 'Private spot', boondocking: 'Boondocking', poi: 'POI', custom: 'Custom pin' } as Record<TripStopKind, string>)[k];
+  kindIcon(k: TripStopKind | 'private' | 'boondocking' | 'poi' | 'custom'): string {
+    return ({ private: 'rv_hookup', boondocking: 'landscape', poi: 'pin_drop', custom: 'push_pin' } as Record<string, string>)[k] ?? 'place';
   }
-  kindIcon(k: TripStopKind): string {
-    return ({ private: 'rv_hookup', boondocking: 'landscape', poi: 'pin_drop', custom: 'push_pin' } as Record<TripStopKind, string>)[k];
+  kindColor(k: TripStopKind | 'private' | 'boondocking' | 'poi' | 'custom'): string {
+    return ({ private: '#e3530d', boondocking: '#3b6e3b', poi: '#b3760e', custom: '#6b6b6b' } as Record<string, string>)[k] ?? '#6b6b6b';
   }
-  kindColor(k: TripStopKind): string {
-    return ({ private: '#e3530d', boondocking: '#3b6e3b', poi: '#b3760e', custom: '#6b6b6b' } as Record<TripStopKind, string>)[k];
+  stopMarkerColor(i: number, last: boolean): string {
+    if (!this.plan) return '#6b6b6b';
+    if (this.plan.stops.length > 1) {
+      if (i === 0) return '#295d42';
+      if (last) return '#9a3f0a';
+    }
+    return this.kindColor(this.plan.stops[i]?.kind ?? 'custom');
+  }
+  stopBadge(i: number, last: boolean): string {
+    if (!this.plan) return '';
+    if (this.plan.stops.length > 1) {
+      if (i === 0) return 'Start';
+      if (last) return 'Finish';
+    }
+    const k = this.plan.stops[i]?.kind;
+    return ({ private: 'Private spot', boondocking: 'Boondocking', poi: 'POI', custom: 'Custom pin' } as Record<string, string>)[k as string] ?? '';
   }
   poiKindLabel(k: string): string {
     return ({ dumpstation: 'Dump station', rest_area: 'Rest area', propane: 'Propane', potable_water: 'Potable water' } as Record<string, string>)[k] ?? k;

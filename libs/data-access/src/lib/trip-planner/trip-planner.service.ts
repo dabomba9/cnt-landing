@@ -30,11 +30,11 @@ export interface ITripPlan {
   /** Trip-level window. Per-stop dates must fall inside it when both are set. */
   startDate?: string;
   endDate?: string;
-  /** Origin and final destination. Same shape as a stop but logically pinned. */
-  startPoint?: ITripStop;
-  endPoint?: ITripStop;
-  /** Intermediate stops in route order (cdkDrag reorders this array). */
+  /** Ordered list of stops. First = trip start, last = trip finish. */
   stops: ITripStop[];
+  /** Corridor radius (miles) for filtering autocomplete results to candidates
+   *  within X miles of the existing route polyline. 0 = no filter. */
+  corridorMiles?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -59,30 +59,83 @@ export function haversineMiles(a: { lat: number; lng: number }, b: { lat: number
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-/** Nearest-neighbor ordering of `stops` between fixed start and end points.
- * Used by the (future) "Optimize route" button. Returns a new array. */
-export function nearestNeighborOrder(
-  start: { lat: number; lng: number },
-  end: { lat: number; lng: number },
-  stops: ITripStop[],
-): ITripStop[] {
-  const remaining = stops.slice();
+/** Distance (miles) from a point to a line segment, using an equirectangular
+ *  projection valid at small scales (well within a continental road trip). */
+export function pointToSegmentMiles(
+  p: { lat: number; lng: number },
+  a: { lat: number; lng: number },
+  b: { lat: number; lng: number },
+): number {
+  const midLat = ((a.lat + b.lat) / 2) * Math.PI / 180;
+  const kx = 69.172 * Math.cos(midLat);
+  const ky = 69.172;
+  const ax = a.lng * kx, ay = a.lat * ky;
+  const bx = b.lng * kx, by = b.lat * ky;
+  const px = p.lng * kx, py = p.lat * ky;
+  const dx = bx - ax, dy = by - ay;
+  if (dx === 0 && dy === 0) return Math.hypot(px - ax, py - ay);
+  let t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+/** Minimum distance (miles) from a candidate point to any segment of a route
+ *  polyline. Used for corridor filtering of autocomplete results. */
+export function pointToRouteMiles(
+  p: { lat: number; lng: number },
+  route: { lat: number; lng: number }[],
+): number {
+  if (route.length === 0) return Infinity;
+  if (route.length === 1) return haversineMiles(p, route[0]);
+  let best = Infinity;
+  for (let i = 0; i < route.length - 1; i++) {
+    const d = pointToSegmentMiles(p, route[i], route[i + 1]);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+/** Total trip distance — sum of haversine between consecutive stops. */
+export function totalTripMiles(plan: Pick<ITripPlan, 'stops'>): number {
+  let total = 0;
+  for (let i = 0; i < plan.stops.length - 1; i++) {
+    total += haversineMiles(plan.stops[i], plan.stops[i + 1]);
+  }
+  return Math.round(total);
+}
+
+/** Nearest-neighbor reorder of the middle stops, keeping first and last pinned. */
+export function nearestNeighborMiddle(stops: ITripStop[]): ITripStop[] {
+  if (stops.length <= 3) return stops.slice();
+  const first = stops[0];
+  const last = stops[stops.length - 1];
+  const middle = stops.slice(1, -1);
   const ordered: ITripStop[] = [];
-  let cursor: { lat: number; lng: number } = start;
-  while (remaining.length > 0) {
+  let cursor: { lat: number; lng: number } = first;
+  while (middle.length > 0) {
     let bestIdx = 0;
     let bestDist = Infinity;
-    for (let i = 0; i < remaining.length; i++) {
-      const d = haversineMiles(cursor, remaining[i]);
+    for (let i = 0; i < middle.length; i++) {
+      const d = haversineMiles(cursor, middle[i]);
       if (d < bestDist) { bestDist = d; bestIdx = i; }
     }
-    const next = remaining.splice(bestIdx, 1)[0];
+    const next = middle.splice(bestIdx, 1)[0];
     ordered.push(next);
     cursor = next;
   }
-  // End point is already pinned outside this list; we just return the inner order.
-  void end;
-  return ordered;
+  return [first, ...ordered, last];
+}
+
+/** One-time migration from the old startPoint/endPoint shape into the
+ *  unified stops list. Idempotent. */
+type LegacyShape = { startPoint?: ITripStop; endPoint?: ITripStop };
+function migratePlan(raw: ITripPlan & LegacyShape): ITripPlan {
+  const stops = Array.isArray(raw.stops) ? raw.stops.slice() : [];
+  if (raw.startPoint) stops.unshift(raw.startPoint);
+  if (raw.endPoint) stops.push(raw.endPoint);
+  const { startPoint: _s, endPoint: _e, ...rest } = raw;
+  void _s; void _e;
+  return { ...rest, stops };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -91,7 +144,10 @@ export class TripPlannerService {
   readonly plans$: Observable<ITripPlan[]> = this._plans$.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
-    this._plans$.next(this.read());
+    const migrated = this.read();
+    this._plans$.next(migrated);
+    // Persist the migrated shape back so future reads skip the work.
+    this.write(migrated, /* skipBus */ true);
   }
 
   list(): ITripPlan[] { return this._plans$.value; }
@@ -106,19 +162,19 @@ export class TripPlannerService {
       id: newId('tp'),
       name: name?.trim() || 'Untitled trip',
       stops: [],
+      corridorMiles: 0,
       createdAt: now,
       updatedAt: now,
     };
-    const all = this.read();
+    const all = this._plans$.value.slice();
     all.push(plan);
     this.write(all);
     this.setActiveId(plan.id);
     return plan;
   }
 
-  /** Shallow-merge a patch into the plan. Bumps updatedAt automatically. */
   update(id: string, patch: Partial<Omit<ITripPlan, 'id' | 'createdAt'>>): ITripPlan | null {
-    const all = this.read();
+    const all = this._plans$.value.slice();
     const idx = all.findIndex(p => p.id === id);
     if (idx === -1) return null;
     all[idx] = { ...all[idx], ...patch, id: all[idx].id, createdAt: all[idx].createdAt, updatedAt: new Date().toISOString() };
@@ -145,7 +201,7 @@ export class TripPlannerService {
     return this.update(planId, { stops: plan.stops.filter(s => s.id !== stopId) });
   }
 
-  /** Move a stop within the ordered list. Uses CDK drag conventions. */
+  /** Move a stop within the ordered list. CDK drag conventions. */
   reorderStops(planId: string, fromIndex: number, toIndex: number): ITripPlan | null {
     const plan = this.get(planId);
     if (!plan) return null;
@@ -157,23 +213,11 @@ export class TripPlannerService {
     return this.update(planId, { stops: next });
   }
 
-  setStartPoint(planId: string, stop: Omit<ITripStop, 'id'> | null): ITripPlan | null {
-    const withId = stop ? { ...stop, id: newId('s') } : undefined;
-    return this.update(planId, { startPoint: withId });
-  }
-
-  setEndPoint(planId: string, stop: Omit<ITripStop, 'id'> | null): ITripPlan | null {
-    const withId = stop ? { ...stop, id: newId('s') } : undefined;
-    return this.update(planId, { endPoint: withId });
-  }
-
-  /** Reorder the inner stops via nearest-neighbor from start. Start and end
-   * are pinned. Returns the updated plan (or null when start/end missing). */
+  /** Nearest-neighbor optimization on the middle stops; first + last are pinned. */
   optimizeRoute(planId: string): ITripPlan | null {
     const plan = this.get(planId);
-    if (!plan?.startPoint || !plan.endPoint || plan.stops.length <= 1) return plan;
-    const ordered = nearestNeighborOrder(plan.startPoint, plan.endPoint, plan.stops);
-    return this.update(planId, { stops: ordered });
+    if (!plan || plan.stops.length <= 3) return plan;
+    return this.update(planId, { stops: nearestNeighborMiddle(plan.stops) });
   }
 
   /** Last-edited plan id — drives the "resume" CTA on the list page. */
@@ -194,14 +238,15 @@ export class TripPlannerService {
     try {
       const raw = localStorage.getItem(TRIP_PLANS_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map((p: ITripPlan & LegacyShape) => migratePlan(p));
     } catch { return []; }
   }
 
-  private write(plans: ITripPlan[]): void {
+  private write(plans: ITripPlan[], skipBus = false): void {
     if (isPlatformBrowser(this.platformId)) {
       try { localStorage.setItem(TRIP_PLANS_KEY, JSON.stringify(plans)); } catch { /* noop */ }
     }
-    this._plans$.next(plans);
+    if (!skipBus) this._plans$.next(plans);
   }
 }

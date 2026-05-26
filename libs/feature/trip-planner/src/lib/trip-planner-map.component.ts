@@ -5,7 +5,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
-import { ITripPlan, ITripStop, TripStopKind } from '@cnt-workspace/data-access';
+import { ITripPlan, TripStopKind } from '@cnt-workspace/data-access';
 
 /** Color + icon for each stop kind — keeps markers self-describing on the map. */
 const KIND_STYLE: Record<TripStopKind | 'start' | 'end', { color: string; icon: string }> = {
@@ -109,7 +109,8 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     });
   }
 
-  /** Wipe + redraw all markers + the polyline. Called on plan changes. */
+  /** Wipe + redraw all markers + the polyline. Called on plan changes.
+   *  First stop = Start (green flag), last = Finish (trinidad), middle = numbered. */
   private render(): void {
     if (!this.map) return;
     for (const m of this.markers) m.remove();
@@ -118,24 +119,27 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
     this.polyline = null;
     if (!this.plan) return;
 
-    const points: { stop: ITripStop; kind: keyof typeof KIND_STYLE; index: number | null }[] = [];
-    if (this.plan.startPoint) points.push({ stop: this.plan.startPoint, kind: 'start', index: null });
-    this.plan.stops.forEach((s, i) => points.push({ stop: s, kind: s.kind, index: i + 1 }));
-    if (this.plan.endPoint) points.push({ stop: this.plan.endPoint, kind: 'end', index: null });
+    const stops = this.plan.stops;
+    const lastIdx = stops.length - 1;
 
-    for (const p of points) {
-      const m = L.marker([p.stop.lat, p.stop.lng], { icon: this.makeIcon(p.kind, p.index), title: p.stop.name });
-      m.on('click', () => this.markerClicked.emit(p.stop.id));
+    stops.forEach((stop, i) => {
+      let kind: keyof typeof KIND_STYLE;
+      let index: number | null;
+      if (i === 0 && stops.length > 1)            { kind = 'start'; index = null; }
+      else if (i === lastIdx && stops.length > 1) { kind = 'end';   index = null; }
+      else                                         { kind = stop.kind; index = stops.length > 1 ? i : null; }
+      const m = L.marker([stop.lat, stop.lng], { icon: this.makeIcon(kind, index), title: stop.name });
+      m.on('click', () => this.markerClicked.emit(stop.id));
       m.addTo(this.map!);
       this.markers.push(m);
-    }
+    });
 
-    if (points.length >= 2) {
-      const latlngs: L.LatLngExpression[] = points.map(p => [p.stop.lat, p.stop.lng] as [number, number]);
+    if (stops.length >= 2) {
+      const latlngs: L.LatLngExpression[] = stops.map(s => [s.lat, s.lng] as [number, number]);
       this.polyline = L.polyline(latlngs, { color: '#e3530d', weight: 4, opacity: 0.85, dashArray: '8,8' }).addTo(this.map);
       this.map.fitBounds(this.polyline.getBounds(), { padding: [40, 40], maxZoom: 11 });
-    } else if (points.length === 1) {
-      this.map.setView([points[0].stop.lat, points[0].stop.lng], 9);
+    } else if (stops.length === 1) {
+      this.map.setView([stops[0].lat, stops[0].lng], 9);
     }
   }
 
