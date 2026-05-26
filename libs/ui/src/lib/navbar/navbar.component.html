@@ -169,6 +169,10 @@
                       <span class="material-symbols-outlined text-lg text-dark-text">luggage</span>
                       Trips
                     </a>
+                    <a routerLink="/trip-planner" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">route</span>
+                      Trip planner
+                    </a>
                     <a routerLink="/wishlists" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                       <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
                       Favorites
@@ -248,6 +252,7 @@
       } @else {
         <a routerLink="/dashboard" (click)="closeMobileNav()" class="navigation-link">Dashboard</a>
         <a routerLink="/trips" (click)="closeMobileNav()" class="navigation-link">My trips</a>
+        <a routerLink="/trip-planner" (click)="closeMobileNav()" class="navigation-link">Trip planner</a>
         <a routerLink="/inbox" (click)="closeMobileNav()" class="navigation-link">Messages @if (unreadMessages > 0) { <span class="ml-1 text-trinidad font-bold">({{ unreadMessages }})</span> }</a>
         <button type="button" (click)="signOut(); closeMobileNav()" class="navigation-link text-left">Sign out</button>
       }
