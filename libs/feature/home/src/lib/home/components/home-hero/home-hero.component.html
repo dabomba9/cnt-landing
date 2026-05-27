@@ -114,7 +114,7 @@
                   <!-- Date Dropdown -->
                   @if (isDateDropdownOpen) {
                     <div class="absolute left-0 md:left-[30%] lg:left-[35%] top-[105%] w-auto max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl p-3 border border-jungle-green/10 z-50">
-                      <mat-calendar [selected]="selectedDateRange" [minDate]="today" (selectedChange)="onDateSelected($event)"></mat-calendar>
+                      <mat-calendar [selected]="selectedDateRange" [minDate]="today" (selectedChange)="onDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
                     </div>
                   }
 
