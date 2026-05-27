@@ -14,6 +14,7 @@ import {
   totalTripMiles, pointToRouteMiles, RoutingService, IRoute, suggestionsAlongRoute,
   BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel,
+  encodeTripShare,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -77,6 +78,11 @@ interface ISearchHit {
                 <span class="material-symbols-outlined text-sm">map</span>
                 Plan on map
               </a>
+              <button type="button" (click)="shareTrip()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm">ios_share</span>
+                Share
+              </button>
               <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">Saved {{ savedLabel }}</span>
             </div>
 
@@ -655,6 +661,23 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   setCorridor(value: number): void {
     if (!this.plan) return;
     this.planner.update(this.plan.id, { corridorMiles: value });
+  }
+
+  /** Build a share URL for the current trip and copy it to the clipboard. */
+  async shareTrip(): Promise<void> {
+    if (!this.plan || !isPlatformBrowser(this.platformId)) return;
+    if (this.plan.stops.length === 0) {
+      this.toasts.info('Add at least one stop before sharing.');
+      return;
+    }
+    const payload = encodeTripShare(this.plan);
+    const url = `${window.location.origin}/trip/share?t=${payload}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      this.toasts.success('Share link copied to clipboard.');
+    } catch {
+      this.toasts.info(url);
+    }
   }
 
   // ============ RV profile ============

@@ -58,6 +58,10 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/trip-planner').then(m => m.TripPlannerEditComponent),
   },
   {
+    path: 'trip/share',
+    loadComponent: () => import('@cnt-workspace/trip-planner').then(m => m.TripShareViewerComponent),
+  },
+  {
     path: 'inbox',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/inbox').then(m => m.InboxComponent),

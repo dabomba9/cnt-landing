@@ -20,7 +20,7 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
-  parseIsoDate, formatIsoDate, shortDateLabel } from '@cnt-workspace/data-access';
+  parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -1136,6 +1136,23 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       checkInDate: formatIsoDate(next.start),
       checkOutDate: formatIsoDate(next.end),
     });
+  }
+
+  /** Copy a public share URL for the active trip to the clipboard. */
+  async shareTrip(): Promise<void> {
+    if (!this.activePlan || !isPlatformBrowser(this.platformId)) return;
+    if (this.activePlan.stops.length === 0) {
+      this.toasts.info('Add at least one stop before sharing.');
+      return;
+    }
+    const payload = encodeTripShare(this.activePlan);
+    const url = `${window.location.origin}/trip/share?t=${payload}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      this.toasts.success('Share link copied to clipboard.');
+    } catch {
+      this.toasts.info(url);
+    }
   }
 
   private nextTripRange(current: DateRange<Date>, d: Date): DateRange<Date> {

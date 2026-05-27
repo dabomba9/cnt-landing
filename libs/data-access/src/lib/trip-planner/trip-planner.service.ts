@@ -80,6 +80,67 @@ export function shortDateLabel(d: Date | null | undefined, now: Date = new Date(
   return d.toLocaleDateString('en-US', opts);
 }
 
+/** Minimal trip payload baked into shareable URLs — strips ids, timestamps,
+ *  photo blobs. lat/lng rounded to 5 decimals (~1m precision) to shrink the URL. */
+export interface ITripShareV1 {
+  v: 1;
+  n: string;
+  s?: string;
+  e?: string;
+  c?: number;
+  S: Array<{
+    k: TripStopKind;
+    r?: number | string;
+    n: string;
+    a: number;
+    g: number;
+    d?: string;
+    i?: string;
+    o?: string;
+    t?: string;
+  }>;
+}
+
+/** Encode an ITripPlan into a URL-safe base64 string for sharing. */
+export function encodeTripShare(plan: ITripPlan): string {
+  const payload: ITripShareV1 = {
+    v: 1,
+    n: plan.name,
+    s: plan.startDate,
+    e: plan.endDate,
+    c: plan.corridorMiles,
+    S: plan.stops.map(s => ({
+      k: s.kind,
+      r: s.refId,
+      n: s.name,
+      a: Math.round(s.lat * 1e5) / 1e5,
+      g: Math.round(s.lng * 1e5) / 1e5,
+      d: s.address,
+      i: s.checkInDate,
+      o: s.checkOutDate,
+      t: s.notes,
+    })),
+  };
+  const json = JSON.stringify(payload);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/** Decode a share-link payload back into stop data the viewer can render. */
+export function decodeTripShare(payload: string): ITripShareV1 | null {
+  try {
+    const padded = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = padded.length % 4 ? '='.repeat(4 - (padded.length % 4)) : '';
+    const b64 = padded + pad;
+    const json = decodeURIComponent(escape(atob(b64)));
+    const parsed = JSON.parse(json);
+    if (parsed?.v !== 1 || !Array.isArray(parsed?.S)) return null;
+    return parsed as ITripShareV1;
+  } catch {
+    return null;
+  }
+}
+
 /** Great-circle distance between two points in miles. */
 export function haversineMiles(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 3959;
@@ -293,6 +354,38 @@ export class TripPlannerService {
     this.write(all);
     this.setActiveId(copy.id);
     return copy;
+  }
+
+  /** Materialize a decoded share payload into a new plan in localStorage and
+   *  mark it active. Returns the new plan id. */
+  importShare(payload: ITripShareV1): ITripPlan {
+    const now = new Date().toISOString();
+    const plan: ITripPlan = {
+      id: newId('tp'),
+      name: payload.n || 'Shared trip',
+      startDate: payload.s,
+      endDate: payload.e,
+      corridorMiles: payload.c ?? 0,
+      stops: payload.S.map(s => ({
+        id: newId('s'),
+        kind: s.k,
+        refId: s.r,
+        name: s.n,
+        lat: s.a,
+        lng: s.g,
+        address: s.d,
+        checkInDate: s.i,
+        checkOutDate: s.o,
+        notes: s.t,
+      })),
+      createdAt: now,
+      updatedAt: now,
+    };
+    const all = this._plans$.value.slice();
+    all.push(plan);
+    this.write(all);
+    this.setActiveId(plan.id);
+    return plan;
   }
 
   delete(id: string): void {
