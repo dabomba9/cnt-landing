@@ -216,7 +216,7 @@ interface ISearchHit {
 
                 <!-- Suggested stops along your route — when corridor is set + >= 2 stops. -->
                 @if (plan.corridorMiles && plan.corridorMiles > 0 && plan.stops.length >= 2 && (listingSuggestions.length > 0 || poiSuggestions.length > 0)) {
-                  <div class="rounded-xl border border-jungle-green/30 bg-jungle-green/5 p-3 space-y-2">
+                  <div class="rounded-md border border-jungle-green/30 bg-jungle-green/5 p-3 space-y-2">
                     <div class="flex items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">
                       <span class="material-symbols-outlined text-sm">explore</span>
                       Along your route
