@@ -31,6 +31,10 @@ export interface IMyRv {
   licensePhoto: string | null;
   /** Tow vehicle — only meaningful for towable rig types (see TOWABLE_RV_TYPES). */
   towVehicle: ITowVehicle | null;
+  /** Fuel economy in miles-per-gallon. Drives the trip-planner fuel estimate. */
+  mpg: number | null;
+  /** Fuel tank capacity in gallons. Drives per-leg range warnings in the planner. */
+  fuelTankGallons: number | null;
 }
 
 /** A named, saveable RV — a guest can keep several (a Class A, a teardrop, …). */
@@ -45,7 +49,7 @@ export interface IMyRvProfilesState {
 }
 
 export function emptyMyRv(): IMyRv {
-  return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null, towVehicle: null };
+  return { type: null, length: null, height: null, width: null, year: null, make: null, model: null, licensePlate: null, rvPhoto: null, licensePhoto: null, towVehicle: null, mpg: null, fuelTankGallons: null };
 }
 
 export function emptyTowVehicle(): ITowVehicle {
@@ -90,6 +94,8 @@ function normalizeRv(parsed: Partial<IMyRv>): IMyRv {
     rvPhoto: typeof parsed.rvPhoto === 'string' ? parsed.rvPhoto : null,
     licensePhoto: typeof parsed.licensePhoto === 'string' ? parsed.licensePhoto : null,
     towVehicle: normalizeTowVehicle(parsed.towVehicle),
+    mpg: typeof parsed.mpg === 'number' ? parsed.mpg : null,
+    fuelTankGallons: typeof parsed.fuelTankGallons === 'number' ? parsed.fuelTankGallons : null,
   };
 }
 

@@ -209,6 +209,27 @@ import {
           </div>
 
           <div>
+            <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Fuel</div>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex flex-col gap-2">
+                <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">MPG</span>
+                <div class="flex items-center bg-cream/60 border border-dark-text/15 rounded-xl overflow-hidden">
+                  <input type="number" min="0" step="0.1" [(ngModel)]="rv.mpg" name="mpg" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none bg-transparent">
+                  <span class="px-3 py-2.5 text-[0.65rem] font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">mi/gal</span>
+                </div>
+              </label>
+              <label class="flex flex-col gap-2">
+                <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] text-muted-text">Tank capacity</span>
+                <div class="flex items-center bg-cream/60 border border-dark-text/15 rounded-xl overflow-hidden">
+                  <input type="number" min="0" step="1" [(ngModel)]="rv.fuelTankGallons" name="fuelTankGallons" placeholder="0" class="flex-1 px-3 py-2.5 text-sm font-body focus:outline-none bg-transparent">
+                  <span class="px-3 py-2.5 text-[0.65rem] font-label uppercase tracking-[0.1em] bg-dark-text/5 border-l border-dark-text/10">gal</span>
+                </div>
+              </label>
+            </div>
+            <p class="text-[0.65rem] text-muted-text mt-2">Used by the trip planner to estimate fuel cost and warn when a leg exceeds your tank range.</p>
+          </div>
+
+          <div>
             <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-3">Photos</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="rounded-md border border-dark-text/8 p-4 bg-cream/30">

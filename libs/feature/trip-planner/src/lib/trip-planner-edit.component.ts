@@ -15,7 +15,7 @@ import {
   BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel,
   encodeTripShare, tripCostSummary, ITripCost,
-  isLongLeg,
+  isLongLeg, tripFuelEstimate, ITripFuel,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -177,10 +177,11 @@ interface ISearchHit {
                   @for (s of plan.stops; track s.id; let i = $index, last = $last) {
                     @if (i > 0 && legBetween(i - 1); as leg) {
                       <div class="flex items-center gap-1.5 pl-7 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold"
-                        [ngClass]="isLongLeg(leg.minutes) ? 'text-trinidad' : 'text-muted-text'">
-                        <span class="material-symbols-outlined text-[14px]">{{ isLongLeg(leg.minutes) ? 'warning' : 'arrow_downward' }}</span>
+                        [ngClass]="(isLongLeg(leg.minutes) || legExceedsRange(i - 1)) ? 'text-trinidad' : 'text-muted-text'">
+                        <span class="material-symbols-outlined text-[14px]">{{ (isLongLeg(leg.minutes) || legExceedsRange(i - 1)) ? 'warning' : 'arrow_downward' }}</span>
                         {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
-                        @if (isLongLeg(leg.minutes)) { <span class="normal-case tracking-normal font-body font-normal">· long drive — add a rest stop?</span> }
+                        @if (legExceedsRange(i - 1)) { <span class="normal-case tracking-normal font-body font-normal">· over tank range — plan a fuel stop</span> }
+                        @else if (isLongLeg(leg.minutes)) { <span class="normal-case tracking-normal font-body font-normal">· long drive — add a rest stop?</span> }
                       </div>
                     }
                     <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30">
@@ -321,6 +322,18 @@ interface ISearchHit {
                     </div>
                   } @else {
                     <div class="text-[0.65rem] text-muted-text text-center italic">Set check-in / check-out dates to estimate cost.</div>
+                  }
+                  @if (tripFuel) {
+                    <div class="text-xs font-body text-dark-text text-center">
+                      Trip Fuel: <span class="font-bold">~{{ tripFuel.cost | currency:'USD':'symbol':'1.0-0' }} · {{ tripFuel.gallons | number:'1.0-0' }} gal</span>
+                      @if (tripFuel.legsOverRange.length > 0) {
+                        <span class="text-trinidad">· {{ tripFuel.legsOverRange.length }} leg{{ tripFuel.legsOverRange.length === 1 ? '' : 's' }} over tank range</span>
+                      }
+                    </div>
+                  } @else if (fuelRequiresMpg && plan.stops.length >= 2) {
+                    <div class="text-[0.65rem] text-muted-text text-center italic">
+                      <a routerLink="/account" fragment="rig" class="text-trinidad hover:underline">Set MPG on your RV</a> to estimate fuel.
+                    </div>
                   }
                   <div>
                     <div class="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
@@ -961,6 +974,31 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     return this.plan
       ? tripCostSummary(this.plan, ALL_LISTINGS)
       : { totalNights: 0, paidNights: 0, totalCost: 0, unknownPrice: false };
+  }
+
+  /** Per-leg miles array for fuel range calculation — prefers OSRM legs, falls
+   *  back to haversine between consecutive stops when the route hasn't loaded. */
+  private get legsMiles(): number[] {
+    if (!this.plan || this.plan.stops.length < 2) return [];
+    if (this.activeRoute) return this.activeRoute.legs.map(l => l.distanceMiles);
+    const miles: number[] = [];
+    for (let i = 0; i < this.plan.stops.length - 1; i++) {
+      const leg = this.legBetween(i);
+      if (leg) miles.push(leg.miles);
+    }
+    return miles;
+  }
+
+  get tripFuel(): ITripFuel | null {
+    if (!this.plan) return null;
+    return tripFuelEstimate(this.tripDistance, this.legsMiles, this.activeRv?.mpg, this.activeRv?.fuelTankGallons);
+  }
+  /** True when the active rig has no MPG set — drives the inline "set MPG" hint. */
+  get fuelRequiresMpg(): boolean {
+    return !this.activeRv?.mpg || this.activeRv.mpg <= 0;
+  }
+  legExceedsRange(i: number): boolean {
+    return !!this.tripFuel?.legsOverRange.includes(i);
   }
 
   // ============ Labels ============

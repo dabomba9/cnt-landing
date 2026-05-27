@@ -21,7 +21,7 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare,
-  tripCostSummary, ITripCost, isLongLeg } from '@cnt-workspace/data-access';
+  tripCostSummary, ITripCost, isLongLeg, tripFuelEstimate, ITripFuel } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -1210,6 +1210,27 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.activePlan
       ? tripCostSummary(this.activePlan, ALL_LISTINGS)
       : { totalNights: 0, paidNights: 0, totalCost: 0, unknownPrice: false };
+  }
+
+  private get drawerLegsMiles(): number[] {
+    if (!this.activePlan || this.activePlan.stops.length < 2) return [];
+    if (this.activeRoute) return this.activeRoute.legs.map(l => l.distanceMiles);
+    const miles: number[] = [];
+    for (let i = 0; i < this.activePlan.stops.length - 1; i++) {
+      const leg = this.legBetween(i);
+      if (leg) miles.push(leg.miles);
+    }
+    return miles;
+  }
+  get activePlanFuel(): ITripFuel | null {
+    if (!this.activePlan) return null;
+    return tripFuelEstimate(this.activePlanDistance, this.drawerLegsMiles, this.drawerActiveRv?.mpg, this.drawerActiveRv?.fuelTankGallons);
+  }
+  get drawerFuelRequiresMpg(): boolean {
+    return !this.drawerActiveRv?.mpg || this.drawerActiveRv.mpg <= 0;
+  }
+  drawerLegExceedsRange(i: number): boolean {
+    return !!this.activePlanFuel?.legsOverRange.includes(i);
   }
 
   /** Fetch (or pull from cache) the road route whenever the active plan's

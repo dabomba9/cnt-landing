@@ -289,6 +289,37 @@ export function tripCostSummary(plan: Pick<ITripPlan, 'stops'>, listings: readon
  *  reasonable single-day RV ceiling. Future: per-RV-profile override. */
 export const LONG_LEG_MINUTES = 360;
 
+/** National-average regular gas price (USD/gal) used when the user hasn't
+ *  overridden the estimate. Refresh periodically; future: live AAA feed. */
+export const DEFAULT_GAS_PRICE_PER_GALLON = 3.75;
+
+export interface ITripFuel {
+  /** Total fuel needed for the whole trip at the given MPG. */
+  gallons: number;
+  /** Estimated dollar cost at the given gas price. */
+  cost: number;
+  /** Indices of legs that exceed the RV's tank range — would need a refuel mid-leg. */
+  legsOverRange: number[];
+}
+
+/** Estimate fuel use, cost, and per-leg range warnings for a trip. Returns
+ *  null when MPG is missing or zero — the caller renders a "set MPG" hint. */
+export function tripFuelEstimate(
+  totalMiles: number,
+  legsMiles: number[],
+  mpg: number | null | undefined,
+  tankGallons: number | null | undefined,
+  gasPricePerGallon = DEFAULT_GAS_PRICE_PER_GALLON,
+): ITripFuel | null {
+  if (!mpg || mpg <= 0) return null;
+  const gallons = totalMiles / mpg;
+  const cost = gallons * gasPricePerGallon;
+  const range = tankGallons && tankGallons > 0 ? tankGallons * mpg : Infinity;
+  const legsOverRange: number[] = [];
+  legsMiles.forEach((mi, i) => { if (mi > range) legsOverRange.push(i); });
+  return { gallons, cost, legsOverRange };
+}
+
 /** True when this leg's driving time pushes past the long-drive threshold. */
 export function isLongLeg(minutes: number): boolean {
   return minutes > 0 && minutes >= LONG_LEG_MINUTES;
