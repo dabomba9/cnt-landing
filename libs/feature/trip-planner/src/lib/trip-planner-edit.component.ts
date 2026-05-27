@@ -35,8 +35,8 @@ interface ISearchHit {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, DragDropModule, MatDatepickerModule, MatNativeDateModule, FocusTrapDirective, NavbarComponent, FooterComponent, TripPlannerMapComponent],
   template: `
-    <cnt-navbar></cnt-navbar>
-    <main class="pt-24 md:pt-28 min-h-screen bg-cream">
+    <cnt-navbar class="cnt-print-hide"></cnt-navbar>
+    <main class="pt-24 md:pt-28 min-h-screen bg-cream cnt-print-hide">
       @if (!plan) {
         <section class="px-[2%]">
           <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-12 text-center">
@@ -83,6 +83,11 @@ interface ISearchHit {
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
                 <span class="material-symbols-outlined text-sm">ios_share</span>
                 Share
+              </button>
+              <button type="button" (click)="printTrip()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm">print</span>
+                Print
               </button>
               <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text shrink-0">Saved {{ savedLabel }}</span>
             </div>
@@ -403,7 +408,57 @@ interface ISearchHit {
         </section>
       }
     </main>
-    <curbnturf-footer></curbnturf-footer>
+
+    @if (plan) {
+      <section class="cnt-print-only px-6 py-6 text-black font-sans">
+        <h1 class="text-2xl font-bold mb-1">{{ plan.name }}</h1>
+        <div class="text-sm mb-4">
+          @if (tripDateLabel) { {{ tripDateLabel }} · }
+          {{ tripDistance }} mi
+          @if (activeRoute) { · {{ formatMins(activeRoute.totalMinutes) }} drive }
+          @if (tripCost.totalCost > 0) { · {{ tripCost.paidNights }} nights · {{ tripCost.totalCost | currency:'USD':'symbol':'1.0-0' }} }
+        </div>
+
+        <h2 class="text-base font-bold mt-4 mb-2 border-b border-gray-300 pb-1">Stops</h2>
+        <ol class="space-y-3">
+          @for (s of plan.stops; track s.id; let i = $index, last = $last) {
+            <li class="cnt-print-stop">
+              <div class="flex items-baseline gap-2">
+                <span class="font-bold">{{ i + 1 }}.</span>
+                <span class="font-bold">{{ s.name }}</span>
+                @if (i === 0 && plan.stops.length > 1) { <span class="text-xs">(Start)</span> }
+                @else if (last && plan.stops.length > 1) { <span class="text-xs">(Finish)</span> }
+              </div>
+              @if (s.address) { <div class="text-sm pl-5">{{ s.address }}</div> }
+              @if (s.checkInDate || s.checkOutDate) { <div class="text-sm pl-5">{{ stopDateLabel(s) }}</div> }
+              @if (s.notes) { <div class="text-sm pl-5 italic">{{ s.notes }}</div> }
+            </li>
+          }
+        </ol>
+
+        @if (activeRoute) {
+          <h2 class="text-base font-bold mt-6 mb-2 border-b border-gray-300 pb-1">Driving directions</h2>
+          @for (leg of activeRoute.legs; track leg; let li = $index) {
+            <div class="cnt-print-leg mb-4">
+              <div class="font-bold text-sm">
+                Leg {{ li + 1 }}: {{ plan.stops[li].name }} → {{ plan.stops[li + 1].name }}
+              </div>
+              <div class="text-xs mb-2">
+                {{ formatMiles(leg.distanceMiles) }} · {{ formatMins(leg.durationMinutes) }}
+                @if (isLongLeg(leg.durationMinutes)) { · ⚠ Long drive — plan a rest stop }
+              </div>
+              <ol class="text-xs space-y-1 pl-5 list-decimal">
+                @for (step of leg.steps; track step) {
+                  <li>{{ step.instruction }} <span class="text-gray-600">({{ formatMiles(step.distanceMiles) }})</span></li>
+                }
+              </ol>
+            </div>
+          }
+        }
+      </section>
+    }
+
+    <curbnturf-footer class="cnt-print-hide"></curbnturf-footer>
   `,
 })
 export class TripPlannerEditComponent implements OnInit, OnDestroy {
@@ -673,6 +728,14 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   setCorridor(value: number): void {
     if (!this.plan) return;
     this.planner.update(this.plan.id, { corridorMiles: value });
+  }
+
+  /** Open the browser print dialog so the user can save a PDF or print
+   *  a paper copy of the itinerary (print-only block at the bottom of
+   *  the template handles the layout). */
+  printTrip(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    window.print();
   }
 
   /** Build a share URL for the current trip and copy it to the clipboard. */

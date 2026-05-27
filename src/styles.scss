@@ -1215,3 +1215,21 @@ body.cnt-modal-open .cnt-navbar {
     border-color: #E24A00 !important;
   }
 }
+
+/* ===== Print itinerary utilities =====================================
+   `.cnt-print-only` — block is invisible on screen, visible when printing.
+   `.cnt-print-hide` — block stays on screen, disappears when printing.
+   Used by the trip-planner editor and `/trip/share` viewer to render a
+   clean paper itinerary (stops + per-leg directions) while hiding the
+   navbar/footer/map/interactive chrome from the print preview. */
+@media screen {
+  .cnt-print-only { display: none !important; }
+}
+
+@media print {
+  .cnt-print-hide { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  @page { margin: 0.5in 0.6in; }
+  h1, h2, h3 { page-break-after: avoid; }
+  .cnt-print-leg, .cnt-print-stop { page-break-inside: avoid; }
+}

@@ -7,7 +7,7 @@ import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop,
   decodeTripShare, ITripShareV1,
   RoutingService, IRoute, parseIsoDate, shortDateLabel,
-  tripCostSummary, ITripCost, ALL_LISTINGS,
+  tripCostSummary, ITripCost, ALL_LISTINGS, isLongLeg,
 } from '@cnt-workspace/data-access';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
@@ -16,8 +16,8 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
   standalone: true,
   imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, TripPlannerMapComponent],
   template: `
-    <cnt-navbar></cnt-navbar>
-    <main class="pt-24 md:pt-28 min-h-screen bg-cream">
+    <cnt-navbar class="cnt-print-hide"></cnt-navbar>
+    <main class="pt-24 md:pt-28 min-h-screen bg-cream cnt-print-hide">
       @if (!plan) {
         <section class="px-[2%]">
           <div class="max-w-[60rem] mx-auto px-4 md:px-8 py-16 text-center">
@@ -43,6 +43,11 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
                   {{ tripDateLabel }}
                 </span>
               }
+              <button type="button" (click)="printTrip()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm">print</span>
+                Print
+              </button>
               <button type="button" (click)="importTrip()"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shrink-0">
                 <span class="material-symbols-outlined text-sm">bookmark_add</span>
@@ -104,7 +109,56 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
         </section>
       }
     </main>
-    <curbnturf-footer></curbnturf-footer>
+
+    @if (plan) {
+      <section class="cnt-print-only px-6 py-6 text-black font-sans">
+        <h1 class="text-2xl font-bold mb-1">{{ plan.name }}</h1>
+        <div class="text-sm mb-4">
+          @if (tripDateLabel) { {{ tripDateLabel }} · }
+          @if (activeRoute) { {{ formatMiles(activeRoute.totalMiles) }} · {{ formatMins(activeRoute.totalMinutes) }} drive }
+          @if (tripCost.totalCost > 0) { · {{ tripCost.paidNights }} nights · {{ tripCost.totalCost | currency:'USD':'symbol':'1.0-0' }} }
+        </div>
+
+        <h2 class="text-base font-bold mt-4 mb-2 border-b border-gray-300 pb-1">Stops</h2>
+        <ol class="space-y-3">
+          @for (s of plan.stops; track s.id; let i = $index, last = $last) {
+            <li class="cnt-print-stop">
+              <div class="flex items-baseline gap-2">
+                <span class="font-bold">{{ i + 1 }}.</span>
+                <span class="font-bold">{{ s.name }}</span>
+                @if (i === 0 && plan.stops.length > 1) { <span class="text-xs">(Start)</span> }
+                @else if (last && plan.stops.length > 1) { <span class="text-xs">(Finish)</span> }
+              </div>
+              @if (s.address) { <div class="text-sm pl-5">{{ s.address }}</div> }
+              @if (s.checkInDate || s.checkOutDate) { <div class="text-sm pl-5">{{ stopDateLabel(s) }}</div> }
+              @if (s.notes) { <div class="text-sm pl-5 italic">{{ s.notes }}</div> }
+            </li>
+          }
+        </ol>
+
+        @if (activeRoute) {
+          <h2 class="text-base font-bold mt-6 mb-2 border-b border-gray-300 pb-1">Driving directions</h2>
+          @for (leg of activeRoute.legs; track leg; let li = $index) {
+            <div class="cnt-print-leg mb-4">
+              <div class="font-bold text-sm">
+                Leg {{ li + 1 }}: {{ plan.stops[li].name }} → {{ plan.stops[li + 1].name }}
+              </div>
+              <div class="text-xs mb-2">
+                {{ formatMiles(leg.distanceMiles) }} · {{ formatMins(leg.durationMinutes) }}
+                @if (isLongLegFn(leg.durationMinutes)) { · ⚠ Long drive — plan a rest stop }
+              </div>
+              <ol class="text-xs space-y-1 pl-5 list-decimal">
+                @for (step of leg.steps; track step) {
+                  <li>{{ step.instruction }} <span class="text-gray-600">({{ formatMiles(step.distanceMiles) }})</span></li>
+                }
+              </ol>
+            </div>
+          }
+        }
+      </section>
+    }
+
+    <curbnturf-footer class="cnt-print-hide"></curbnturf-footer>
   `,
 })
 export class TripShareViewerComponent implements OnInit, OnDestroy {
@@ -219,6 +273,13 @@ export class TripShareViewerComponent implements OnInit, OnDestroy {
     }
     const k = this.plan?.stops[i]?.kind;
     return ({ private: '#e3530d', boondocking: '#3b6e3b', poi: '#b3760e', custom: '#6b6b6b' } as Record<string, string>)[k as string] ?? '#6b6b6b';
+  }
+
+  isLongLegFn = (m: number): boolean => isLongLeg(m);
+
+  printTrip(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    window.print();
   }
 
   importTrip(): void {
