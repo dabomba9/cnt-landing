@@ -169,7 +169,7 @@ interface ISearchHit {
                         {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
                       </div>
                     }
-                    <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30 overflow-hidden">
+                    <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30">
                       <div class="flex items-center gap-2 p-2">
                       <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
                       <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
@@ -199,7 +199,7 @@ interface ISearchHit {
                       </button>
                       </div>
                       @if (expandedStopId === s.id) {
-                        <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white">
+                        <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white rounded-b-lg">
                           <div class="relative">
                             <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in / Check-out</span>
                             <button type="button" (click)="toggleStopDates(s.id)" [attr.aria-expanded]="stopDatesOpenId === s.id"
