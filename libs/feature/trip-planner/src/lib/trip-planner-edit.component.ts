@@ -15,6 +15,7 @@ import {
   BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel,
   encodeTripShare, tripCostSummary, ITripCost,
+  isLongLeg,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -170,9 +171,11 @@ interface ISearchHit {
                   }
                   @for (s of plan.stops; track s.id; let i = $index, last = $last) {
                     @if (i > 0 && legBetween(i - 1); as leg) {
-                      <div class="flex items-center gap-1.5 pl-7 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">
-                        <span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                      <div class="flex items-center gap-1.5 pl-7 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold"
+                        [ngClass]="isLongLeg(leg.minutes) ? 'text-trinidad' : 'text-muted-text'">
+                        <span class="material-symbols-outlined text-[14px]">{{ isLongLeg(leg.minutes) ? 'warning' : 'arrow_downward' }}</span>
                         {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
+                        @if (isLongLeg(leg.minutes)) { <span class="normal-case tracking-normal font-body font-normal">· long drive — add a rest stop?</span> }
                       </div>
                     }
                     <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30">
@@ -506,6 +509,7 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   formatMiles = (mi: number): string => this.routing.formatDistance(mi);
   formatMins = (m: number): string => this.routing.formatDuration(m);
+  isLongLeg = (m: number): boolean => isLongLeg(m);
 
   /** Click a step in the Directions panel → fly the map to its start. */
   flyToStep(step: { start: { lat: number; lng: number } }): void {

@@ -284,6 +284,16 @@ export function tripCostSummary(plan: Pick<ITripPlan, 'stops'>, listings: readon
   return { totalNights, paidNights, totalCost, unknownPrice };
 }
 
+/** A leg longer than this (in minutes) is flagged as a "long drive" — the
+ *  default ~6h matches federal commercial-driver fatigue guidance and is a
+ *  reasonable single-day RV ceiling. Future: per-RV-profile override. */
+export const LONG_LEG_MINUTES = 360;
+
+/** True when this leg's driving time pushes past the long-drive threshold. */
+export function isLongLeg(minutes: number): boolean {
+  return minutes > 0 && minutes >= LONG_LEG_MINUTES;
+}
+
 /** Total trip distance — sum of haversine between consecutive stops. */
 export function totalTripMiles(plan: Pick<ITripPlan, 'stops'>): number {
   let total = 0;

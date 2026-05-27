@@ -835,9 +835,11 @@
         <div cdkDropList (cdkDropListDropped)="onDrawerStopDrop($event)" class="space-y-1.5">
           @for (s of activePlan.stops; track s.id; let i = $index, last = $last) {
             @if (i > 0 && legBetween(i - 1); as leg) {
-              <div class="flex items-center gap-1.5 pl-7 text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">
-                <span class="material-symbols-outlined text-[12px]">arrow_downward</span>
+              <div class="flex items-center gap-1.5 pl-7 text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
+                [ngClass]="isLongLeg(leg.minutes) ? 'text-trinidad' : 'text-muted-text'">
+                <span class="material-symbols-outlined text-[12px]">{{ isLongLeg(leg.minutes) ? 'warning' : 'arrow_downward' }}</span>
                 {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
+                @if (isLongLeg(leg.minutes)) { <span class="normal-case tracking-normal font-body font-normal">· long drive</span> }
               </div>
             }
             <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30">

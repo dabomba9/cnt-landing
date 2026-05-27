@@ -21,7 +21,7 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare,
-  tripCostSummary, ITripCost } from '@cnt-workspace/data-access';
+  tripCostSummary, ITripCost, isLongLeg } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -1239,6 +1239,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   /** Format helpers exposed to the template. */
   formatMiles = (mi: number): string => this.routing.formatDistance(mi);
   formatMins = (m: number): string => this.routing.formatDuration(m);
+  isLongLeg = (m: number): boolean => isLongLeg(m);
 
   /** Distance + drive time between stops i and i+1. Prefers the routed leg
    *  (when the OSRM response is in); falls back to straight-line haversine so
