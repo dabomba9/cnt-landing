@@ -254,6 +254,11 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     // Initial bounds emission once the map has size.
     setTimeout(() => { this.map?.invalidateSize(); this.emitBounds(); }, 50);
     setTimeout(() => { this.map?.invalidateSize(); this.emitBounds(); }, 300);
+    // If a plan / route was passed in via @Input *before* this lazy init
+    // completed, draw the overlay now — ngOnChanges already fired and was
+    // skipped due to the !this.map guard, so without this the route polyline
+    // never appears on a deep-link land like /search?openPlanner=1&plan=:id.
+    if (this.activePlan) this.renderRouteOverlay();
   }
 
   private lastIdSignature = '';
