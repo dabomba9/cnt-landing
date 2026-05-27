@@ -14,7 +14,7 @@ import {
   totalTripMiles, pointToRouteMiles, RoutingService, IRoute, suggestionsAlongRoute,
   BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel,
-  encodeTripShare,
+  encodeTripShare, tripCostSummary, ITripCost,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -301,11 +301,19 @@ interface ISearchHit {
                   </span>
                 </button>
 
-                <!-- Trip distance + corridor slider -->
+                <!-- Trip distance + cost + corridor slider -->
                 <div class="pt-3 border-t border-dark-text/8 space-y-3">
                   <div class="text-xs font-body text-dark-text text-center">
                     Trip Distance: <span class="font-bold">{{ tripDistance }} {{ tripDistance === 1 ? 'mile' : 'miles' }}</span>
                   </div>
+                  @if (tripCost.paidNights > 0 || tripCost.totalCost > 0) {
+                    <div class="text-xs font-body text-dark-text text-center">
+                      Trip Total: <span class="font-bold">{{ tripCost.paidNights }} {{ tripCost.paidNights === 1 ? 'night' : 'nights' }} · {{ tripCost.totalCost | currency:'USD':'symbol':'1.0-0' }}</span>
+                      @if (tripCost.unknownPrice) { <span class="text-muted-text">·  partial</span> }
+                    </div>
+                  } @else {
+                    <div class="text-[0.65rem] text-muted-text text-center italic">Set check-in / check-out dates to estimate cost.</div>
+                  }
                   <div>
                     <div class="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
                       <span class="text-muted-text">Corridor radius</span>
@@ -881,6 +889,11 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   // ============ Derived ============
   get tripDistance(): number {
     return this.plan ? totalTripMiles(this.plan) : 0;
+  }
+  get tripCost(): ITripCost {
+    return this.plan
+      ? tripCostSummary(this.plan, ALL_LISTINGS)
+      : { totalNights: 0, paidNights: 0, totalCost: 0, unknownPrice: false };
   }
 
   // ============ Labels ============

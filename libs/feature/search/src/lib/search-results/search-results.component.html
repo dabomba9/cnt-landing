@@ -1016,6 +1016,14 @@
             class="w-full mt-1 accent-trinidad">
         </div>
         <div class="text-xs font-body text-dark-text text-center">Trip Distance: <span class="font-bold">{{ activePlanDistance }} {{ activePlanDistance === 1 ? 'mile' : 'miles' }}</span></div>
+        @if (activePlanCost.paidNights > 0 || activePlanCost.totalCost > 0) {
+          <div class="text-xs font-body text-dark-text text-center">
+            Trip Total: <span class="font-bold">{{ activePlanCost.paidNights }} {{ activePlanCost.paidNights === 1 ? 'night' : 'nights' }} · {{ activePlanCost.totalCost | currency:'USD':'symbol':'1.0-0' }}</span>
+            @if (activePlanCost.unknownPrice) { <span class="text-muted-text">· partial</span> }
+          </div>
+        } @else {
+          <div class="text-[0.65rem] text-muted-text text-center italic">Set check-in / check-out dates to estimate cost.</div>
+        }
         <a [routerLink]="['/trip-planner', activePlan.id]" class="block w-full text-center text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-1.5 hover:underline">
           Open focused view →
         </a>

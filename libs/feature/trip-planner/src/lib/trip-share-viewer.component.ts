@@ -7,6 +7,7 @@ import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop,
   decodeTripShare, ITripShareV1,
   RoutingService, IRoute, parseIsoDate, shortDateLabel,
+  tripCostSummary, ITripCost, ALL_LISTINGS,
 } from '@cnt-workspace/data-access';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
@@ -56,6 +57,12 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
                   {{ plan.stops.length }} {{ plan.stops.length === 1 ? 'stop' : 'stops' }}
                   @if (activeRoute) { · {{ formatMiles(activeRoute.totalMiles) }} · {{ formatMins(activeRoute.totalMinutes) }} }
                 </div>
+                @if (tripCost.paidNights > 0 || tripCost.totalCost > 0) {
+                  <div class="text-xs font-body text-dark-text mb-2">
+                    <span class="font-bold">{{ tripCost.paidNights }} {{ tripCost.paidNights === 1 ? 'night' : 'nights' }} · {{ tripCost.totalCost | currency:'USD':'symbol':'1.0-0' }}</span>
+                    @if (tripCost.unknownPrice) { <span class="text-muted-text">· partial</span> }
+                  </div>
+                }
                 @for (s of plan.stops; track s.id; let i = $index, last = $last) {
                   <div class="flex items-start gap-2 p-2 rounded-lg bg-cream/30 border border-dark-text/8">
                     <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0"
@@ -180,6 +187,12 @@ export class TripShareViewerComponent implements OnInit, OnDestroy {
 
   formatMiles = (mi: number): string => this.routing.formatDistance(mi);
   formatMins = (m: number): string => this.routing.formatDuration(m);
+
+  get tripCost(): ITripCost {
+    return this.plan
+      ? tripCostSummary(this.plan, ALL_LISTINGS)
+      : { totalNights: 0, paidNights: 0, totalCost: 0, unknownPrice: false };
+  }
 
   get tripDateLabel(): string {
     const s = parseIsoDate(this.plan?.startDate);

@@ -20,7 +20,8 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
-  parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare } from '@cnt-workspace/data-access';
+  parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare,
+  tripCostSummary, ITripCost } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -1204,6 +1205,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   get activePlanDistance(): number {
     return this.activePlan ? totalTripMiles(this.activePlan) : 0;
+  }
+  get activePlanCost(): ITripCost {
+    return this.activePlan
+      ? tripCostSummary(this.activePlan, ALL_LISTINGS)
+      : { totalNights: 0, paidNights: 0, totalCost: 0, unknownPrice: false };
   }
 
   /** Fetch (or pull from cache) the road route whenever the active plan's

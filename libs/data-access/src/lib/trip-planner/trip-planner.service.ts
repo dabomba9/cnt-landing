@@ -2,6 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import type { IBooking } from '@cnt-workspace/models';
+import type { IListing } from '../listings/mock-listings.data';
 
 /** Kinds of stop a guest can add to a trip plan. */
 export type TripStopKind = 'private' | 'boondocking' | 'poi' | 'custom';
@@ -246,6 +247,41 @@ export function suggestionsAlongRoute<T extends { lat: number; lng: number }>(
   }
   scored.sort((a, b) => a.d - b.d);
   return scored.slice(0, max).map(s => s.c);
+}
+
+export interface ITripCost {
+  /** Nights across all stops that have both check-in and check-out set. */
+  totalNights: number;
+  /** Subset of totalNights that fall at private listings (the only paid kind). */
+  paidNights: number;
+  /** Sum of paidNights × listing.price across matched private stops. */
+  totalCost: number;
+  /** True when a private stop's refId didn't match any listing — pricing is incomplete. */
+  unknownPrice: boolean;
+}
+
+/** Estimate trip cost from stop check-in/out dates × matched listing prices.
+ *  Boondocking, POIs, and custom pins contribute nights but no cost. */
+export function tripCostSummary(plan: Pick<ITripPlan, 'stops'>, listings: readonly IListing[]): ITripCost {
+  let totalNights = 0;
+  let paidNights = 0;
+  let totalCost = 0;
+  let unknownPrice = false;
+  for (const s of plan.stops) {
+    const ci = parseIsoDate(s.checkInDate);
+    const co = parseIsoDate(s.checkOutDate);
+    if (!ci || !co) continue;
+    const nights = Math.max(0, Math.round((co.getTime() - ci.getTime()) / 86_400_000));
+    if (nights === 0) continue;
+    totalNights += nights;
+    if (s.kind !== 'private') continue;
+    const listing = listings.find(l => l.id === s.refId && l.kind !== 'boondocking');
+    if (!listing) { unknownPrice = true; continue; }
+    const price = (listing as { price?: number }).price ?? 0;
+    paidNights += nights;
+    totalCost += nights * price;
+  }
+  return { totalNights, paidNights, totalCost, unknownPrice };
 }
 
 /** Total trip distance — sum of haversine between consecutive stops. */
