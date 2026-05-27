@@ -878,6 +878,23 @@
                       rows="2" maxlength="400" placeholder="Wifi password, fire pit details, anything to remember…"
                       class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green resize-none"></textarea>
                   </label>
+                  @if (s.kind === 'private') {
+                    @if (drawerBookingForStop(s); as booking) {
+                      <a [routerLink]="['/booking/confirm', booking.id]"
+                        class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-md text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold no-underline transition-colors"
+                        [ngClass]="booking.status === 'pending' ? 'bg-gold/15 text-dark-text border border-gold/40 hover:bg-gold/25' : 'bg-jungle-green/10 text-jungle-green border border-jungle-green/30 hover:bg-jungle-green/20'">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ booking.status === 'pending' ? 'schedule' : 'check_circle' }}</span>
+                        {{ booking.status === 'pending' ? 'Request out — view' : 'Booked · view confirmation' }}
+                      </a>
+                    } @else {
+                      <a [routerLink]="['/booking/review']"
+                        [queryParams]="{ listingId: s.refId, start: s.checkInDate || null, end: s.checkOutDate || null }"
+                        class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold no-underline hover:opacity-95">
+                        <span class="material-symbols-outlined text-sm">event_available</span>
+                        Book this stay
+                      </a>
+                    }
+                  }
                 </div>
               }
             </div>

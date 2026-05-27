@@ -19,7 +19,8 @@ import {
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
   autoTripName, rvTypeLabel, RoutingService, IRoute,
-  suggestionsAlongRoute, pointToRouteMiles } from '@cnt-workspace/data-access';
+  suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop } from '@cnt-workspace/data-access';
+import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
@@ -249,7 +250,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private planner: TripPlannerService,
     private toasts: ToastService,
     private routing: RoutingService,
+    private bookingSvc: BookingService,
   ) {}
+
+  /** Current user's live bookings — drives "Booked ✓" badge on planner stops. */
+  userBookings: IBooking[] = [];
+  private bookingsSub: Subscription | null = null;
+  drawerBookingForStop(stop: ITripStop): IBooking | null {
+    return bookingForStop(stop, this.userBookings);
+  }
 
   /** Saved RV profiles + the active one — drives the per-card fit pills. */
   rvProfiles: IMyRvProfile[] = [];
@@ -301,6 +310,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       this.plannerDrawerOpen = true;
     }
     this.refreshDrawerRv();
+    this.bookingsSub = this.bookingSvc.bookings$.subscribe(all => { this.userBookings = all; });
     this.hydrateFiltersFromUrl();
     this.route.queryParams.subscribe(params => {
       this.searchParams = params;
@@ -1231,5 +1241,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.scrollTriggers.forEach(st => st.kill());
     this.plansSub?.unsubscribe();
     this.routeSub?.unsubscribe();
+    this.bookingsSub?.unsubscribe();
   }
 }

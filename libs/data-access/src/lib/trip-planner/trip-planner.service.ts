@@ -1,6 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
+import type { IBooking } from '@cnt-workspace/models';
 
 /** Kinds of stop a guest can add to a trip plan. */
 export type TripStopKind = 'private' | 'boondocking' | 'poi' | 'custom';
@@ -99,6 +100,37 @@ export function pointToRouteMiles(
     if (d < best) best = d;
   }
   return best;
+}
+
+/**
+ * Find the live booking (if any) that this stop already represents — drives
+ * the "Booked ✓" / "Request out" badges on private-listing stops in the
+ * planner. Only matches private listings (boondocking and POIs aren't
+ * bookable). Prefers a date-overlapping booking when stop dates are set;
+ * falls back to the newest active booking on the listing.
+ *
+ * Returns null when there's no match or the stop isn't a private listing.
+ */
+export function bookingForStop(
+  stop: Pick<ITripStop, 'kind' | 'refId' | 'checkInDate' | 'checkOutDate'>,
+  bookings: readonly IBooking[],
+): IBooking | null {
+  if (stop.kind !== 'private' || typeof stop.refId !== 'number') return null;
+  const live = bookings.filter(b =>
+    b.listingId === stop.refId && b.status !== 'cancelled' && b.status !== 'declined'
+  );
+  if (live.length === 0) return null;
+  if (stop.checkInDate && stop.checkOutDate) {
+    const sStart = new Date(stop.checkInDate + 'T00:00:00').getTime();
+    const sEnd = new Date(stop.checkOutDate + 'T00:00:00').getTime();
+    const overlap = live.find(b => {
+      const bs = new Date(b.dates.start).getTime();
+      const be = new Date(b.dates.end).getTime();
+      return bs <= sEnd && be >= sStart;
+    });
+    if (overlap) return overlap;
+  }
+  return live.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
 }
 
 /**

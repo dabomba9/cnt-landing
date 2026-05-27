@@ -10,7 +10,9 @@ import {
   ALL_LISTINGS, MOCK_POIS, IListing, IPoi,
   IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile, rvTypeLabel,
   totalTripMiles, pointToRouteMiles, RoutingService, IRoute, suggestionsAlongRoute,
+  BookingService, bookingForStop,
 } from '@cnt-workspace/data-access';
+import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
 interface ISearchHit {
@@ -208,6 +210,23 @@ interface ISearchHit {
                               rows="2" maxlength="400" placeholder="Wifi password, fire pit details, anything to remember…"
                               class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green resize-none"></textarea>
                           </label>
+                          @if (s.kind === 'private') {
+                            @if (bookingForStop(s); as booking) {
+                              <a [routerLink]="['/booking/confirm', booking.id]"
+                                class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-md text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold no-underline transition-colors"
+                                [ngClass]="booking.status === 'pending' ? 'bg-gold/15 text-dark-text border border-gold/40 hover:bg-gold/25' : 'bg-jungle-green/10 text-jungle-green border border-jungle-green/30 hover:bg-jungle-green/20'">
+                                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ booking.status === 'pending' ? 'schedule' : 'check_circle' }}</span>
+                                {{ booking.status === 'pending' ? 'Request out — view' : 'Booked · view confirmation' }}
+                              </a>
+                            } @else {
+                              <a [routerLink]="['/booking/review']"
+                                [queryParams]="{ listingId: s.refId, start: s.checkInDate || null, end: s.checkOutDate || null }"
+                                class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold no-underline hover:opacity-95">
+                                <span class="material-symbols-outlined text-sm">event_available</span>
+                                Book this stay
+                              </a>
+                            }
+                          }
                         </div>
                       }
                     </div>
@@ -395,13 +414,30 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     private toasts: ToastService,
     private routing: RoutingService,
     private cdr: ChangeDetectorRef,
+    private bookingSvc: BookingService,
   ) {}
+
+  /** Current user's live bookings — drives the "Booked ✓" badge on stops. */
+  userBookings: IBooking[] = [];
+  private bookingsSub: Subscription | null = null;
+
+  /** Returns the matching booking for a stop (or null) — used by template. */
+  bookingForStop(stop: ITripStop): IBooking | null {
+    return bookingForStop(stop, this.userBookings);
+  }
+
+  initBookingsSub(): void {
+    this.bookingsSub = this.bookingSvc.bookings$.subscribe(all => {
+      this.userBookings = all;
+    });
+  }
 
   ngOnInit(): void {
     this.planId = this.route.snapshot.paramMap.get('id');
     if (!this.planId) { this.router.navigate(['/trip-planner']); return; }
     this.planner.setActiveId(this.planId);
     this.refreshRv();
+    this.initBookingsSub();
     this.sub = this.planner.plans$.subscribe(plans => {
       this.plan = plans.find(p => p.id === this.planId) ?? null;
       if (this.plan) {
@@ -416,7 +452,7 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { this.sub?.unsubscribe(); this.routeSub?.unsubscribe(); }
+  ngOnDestroy(): void { this.sub?.unsubscribe(); this.routeSub?.unsubscribe(); this.bookingsSub?.unsubscribe(); }
 
   /** Re-fetch the road route when the stops sequence changes. */
   private maybeFetchRoute(): void {
