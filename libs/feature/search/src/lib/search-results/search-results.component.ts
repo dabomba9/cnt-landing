@@ -19,7 +19,8 @@ import {
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
   autoTripName, rvTypeLabel, RoutingService, IRoute,
-  suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop } from '@cnt-workspace/data-access';
+  suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
+  parseIsoDate, formatIsoDate, shortDateLabel } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -1079,6 +1080,68 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   commitPlanField(key: 'name' | 'startDate' | 'endDate' | 'corridorMiles', value: string | number | undefined): void {
     if (!this.activePlan) return;
     this.planner.update(this.activePlan.id, { [key]: value });
+  }
+
+  // ============ Trip-planner date range pickers (drawer) ============
+  tripDatesOpen = false;
+  stopDatesOpenId: string | null = null;
+
+  toggleTripDates(): void {
+    this.tripDatesOpen = !this.tripDatesOpen;
+    if (this.tripDatesOpen) this.stopDatesOpenId = null;
+  }
+  toggleStopDates(stopId: string): void {
+    this.stopDatesOpenId = this.stopDatesOpenId === stopId ? null : stopId;
+    if (this.stopDatesOpenId) this.tripDatesOpen = false;
+  }
+
+  get tripDateRange(): DateRange<Date> {
+    return new DateRange(parseIsoDate(this.activePlan?.startDate), parseIsoDate(this.activePlan?.endDate));
+  }
+  stopDateRange(s: ITripStop): DateRange<Date> {
+    return new DateRange(parseIsoDate(s.checkInDate), parseIsoDate(s.checkOutDate));
+  }
+
+  get tripDateLabel(): string {
+    const s = parseIsoDate(this.activePlan?.startDate);
+    const e = parseIsoDate(this.activePlan?.endDate);
+    if (!s && !e) return 'Pick trip dates';
+    if (s && !e) return `${shortDateLabel(s)} → …`;
+    if (!s && e) return `… → ${shortDateLabel(e)}`;
+    return `${shortDateLabel(s)} → ${shortDateLabel(e)}`;
+  }
+  stopDateLabel(s: ITripStop): string {
+    const ci = parseIsoDate(s.checkInDate);
+    const co = parseIsoDate(s.checkOutDate);
+    if (!ci && !co) return 'Pick dates';
+    if (ci && !co) return `${shortDateLabel(ci)} → …`;
+    if (!ci && co) return `… → ${shortDateLabel(co)}`;
+    return `${shortDateLabel(ci)} → ${shortDateLabel(co)}`;
+  }
+
+  onTripDateSelected(d: Date | null): void {
+    if (!this.activePlan || !d) return;
+    const next = this.nextTripRange(this.tripDateRange, d);
+    this.planner.update(this.activePlan.id, {
+      startDate: formatIsoDate(next.start),
+      endDate: formatIsoDate(next.end),
+    });
+  }
+  onStopDateSelected(stopId: string, d: Date | null): void {
+    if (!this.activePlan || !d) return;
+    const stop = this.activePlan.stops.find(x => x.id === stopId);
+    if (!stop) return;
+    const next = this.nextTripRange(this.stopDateRange(stop), d);
+    this.planner.updateStop(this.activePlan.id, stopId, {
+      checkInDate: formatIsoDate(next.start),
+      checkOutDate: formatIsoDate(next.end),
+    });
+  }
+
+  private nextTripRange(current: DateRange<Date>, d: Date): DateRange<Date> {
+    if (!current.start || current.end) return new DateRange(d, null);
+    if (d < current.start) return new DateRange(d, null);
+    return new DateRange(current.start, d);
   }
 
   /** Reload the drawer's RV-profile state — called on init and after a switch. */

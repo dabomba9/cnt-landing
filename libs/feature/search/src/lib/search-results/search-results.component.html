@@ -800,17 +800,23 @@
           }
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <label class="block">
-            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">From</span>
-            <input type="date" [(ngModel)]="activePlan.startDate" name="planStart" (change)="commitPlanField('startDate', activePlan.startDate)"
-              class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-          </label>
-          <label class="block">
-            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">To</span>
-            <input type="date" [(ngModel)]="activePlan.endDate" name="planEnd" (change)="commitPlanField('endDate', activePlan.endDate)"
-              class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-          </label>
+        <div class="relative">
+          <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Trip dates</span>
+          <button type="button" (click)="toggleTripDates()" [attr.aria-expanded]="tripDatesOpen"
+            class="mt-0.5 w-full inline-flex items-center gap-1.5 bg-cream/60 border border-dark-text/15 rounded-md px-2.5 py-1.5 text-xs font-body text-dark-text hover:border-jungle-green transition-colors">
+            <span class="material-symbols-outlined text-base text-jungle-green">calendar_today</span>
+            <span class="flex-1 text-left">{{ tripDateLabel }}</span>
+          </button>
+          @if (tripDatesOpen) {
+            <div role="dialog" aria-label="Trip dates" cntFocusTrap (escape)="tripDatesOpen = false"
+              class="review-popover absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+              <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
+                <button type="button" (click)="tripDatesOpen = false" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
+              </div>
+              <mat-calendar [selected]="tripDateRange" (selectedChange)="onTripDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+            </div>
+          }
         </div>
       }
 
@@ -860,17 +866,23 @@
               </div>
               @if (expandedDrawerStopId === s.id) {
                 <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white">
-                  <div class="grid grid-cols-2 gap-2">
-                    <label class="block">
-                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in</span>
-                      <input type="date" [ngModel]="s.checkInDate" (ngModelChange)="updateDrawerStopField(s.id, { checkInDate: $event || undefined })" [name]="'dcin-' + s.id"
-                        class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-                    </label>
-                    <label class="block">
-                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-out</span>
-                      <input type="date" [ngModel]="s.checkOutDate" (ngModelChange)="updateDrawerStopField(s.id, { checkOutDate: $event || undefined })" [name]="'dcout-' + s.id"
-                        class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-                    </label>
+                  <div class="relative">
+                    <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in / Check-out</span>
+                    <button type="button" (click)="toggleStopDates(s.id)" [attr.aria-expanded]="stopDatesOpenId === s.id"
+                      class="mt-0.5 w-full inline-flex items-center gap-1.5 bg-cream/60 border border-dark-text/15 rounded-md px-2.5 py-1.5 text-xs font-body text-dark-text hover:border-jungle-green transition-colors">
+                      <span class="material-symbols-outlined text-base text-jungle-green">calendar_today</span>
+                      <span class="flex-1 text-left">{{ stopDateLabel(s) }}</span>
+                    </button>
+                    @if (stopDatesOpenId === s.id) {
+                      <div role="dialog" aria-label="Stop dates" cntFocusTrap (escape)="stopDatesOpenId = null"
+                        class="review-popover absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                        <div class="flex items-center justify-between mb-2 px-1">
+                          <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
+                          <button type="button" (click)="stopDatesOpenId = null" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
+                        </div>
+                        <mat-calendar [selected]="stopDateRange(s)" (selectedChange)="onStopDateSelected(s.id, $event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                      </div>
+                    }
                   </div>
                   <label class="block">
                     <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Notes</span>

@@ -54,6 +54,32 @@ export function autoTripName(now: Date = new Date()): string {
   return `Trip — ${now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
 }
 
+/** Parse 'YYYY-MM-DD' or full ISO into a Date; null on garbage. */
+export function parseIsoDate(s: string | undefined | null): Date | null {
+  if (!s) return null;
+  const d = new Date(s.length === 10 ? `${s}T00:00:00` : s);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Date → 'YYYY-MM-DD' — matches how trip plans store dates. */
+export function formatIsoDate(d: Date | null | undefined): string | undefined {
+  if (!d) return undefined;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Short human label for a date pill, e.g. "May 27" or "May 27, 2026" when
+ *  the year differs from the current year. */
+export function shortDateLabel(d: Date | null | undefined, now: Date = new Date()): string {
+  if (!d) return '';
+  const opts: Intl.DateTimeFormatOptions = d.getFullYear() === now.getFullYear()
+    ? { month: 'short', day: 'numeric' }
+    : { month: 'short', day: 'numeric', year: 'numeric' };
+  return d.toLocaleDateString('en-US', opts);
+}
+
 /** Great-circle distance between two points in miles. */
 export function haversineMiles(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 3959;

@@ -3,14 +3,17 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { Subscription } from 'rxjs';
-import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop, TripStopKind,
   ALL_LISTINGS, MOCK_POIS, IListing, IPoi,
   IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile, rvTypeLabel,
   totalTripMiles, pointToRouteMiles, RoutingService, IRoute, suggestionsAlongRoute,
   BookingService, bookingForStop,
+  parseIsoDate, formatIsoDate, shortDateLabel,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -28,7 +31,7 @@ interface ISearchHit {
 @Component({
   selector: 'cnt-trip-planner-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, DragDropModule, NavbarComponent, FooterComponent, TripPlannerMapComponent],
+  imports: [CommonModule, FormsModule, RouterLink, DragDropModule, MatDatepickerModule, MatNativeDateModule, FocusTrapDirective, NavbarComponent, FooterComponent, TripPlannerMapComponent],
   template: `
     <cnt-navbar></cnt-navbar>
     <main class="pt-24 md:pt-28 min-h-screen bg-cream">
@@ -52,17 +55,22 @@ interface ISearchHit {
               </a>
               <input type="text" [(ngModel)]="plan.name" name="planName" maxlength="60" (blur)="commit('name', plan.name)"
                 class="flex-1 min-w-[12rem] max-w-md font-headline font-bold text-xl bg-transparent focus:bg-white border-b border-dark-text/15 focus:border-jungle-green outline-none px-2 py-1">
-              <div class="flex items-center gap-2 text-xs">
-                <label class="inline-flex items-center gap-1.5 text-muted-text">
-                  <span>From</span>
-                  <input type="date" [(ngModel)]="plan.startDate" name="startDate" (change)="commit('startDate', plan.startDate)"
-                    class="bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1 text-xs font-body focus:outline-none focus:border-jungle-green">
-                </label>
-                <label class="inline-flex items-center gap-1.5 text-muted-text">
-                  <span>to</span>
-                  <input type="date" [(ngModel)]="plan.endDate" name="endDate" (change)="commit('endDate', plan.endDate)"
-                    class="bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1 text-xs font-body focus:outline-none focus:border-jungle-green">
-                </label>
+              <div class="relative">
+                <button type="button" (click)="toggleTripDates()" [attr.aria-expanded]="tripDatesOpen"
+                  class="inline-flex items-center gap-1.5 bg-cream/60 border border-dark-text/15 rounded-md px-2.5 py-1.5 text-xs font-body text-dark-text hover:border-jungle-green transition-colors">
+                  <span class="material-symbols-outlined text-base text-jungle-green">calendar_today</span>
+                  <span>{{ tripDateLabel }}</span>
+                </button>
+                @if (tripDatesOpen) {
+                  <div role="dialog" aria-label="Trip dates" cntFocusTrap (escape)="tripDatesOpen = false"
+                    class="review-popover absolute left-0 top-full mt-2 z-50 bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3 w-[19rem]">
+                    <div class="flex items-center justify-between mb-2 px-1">
+                      <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
+                      <button type="button" (click)="tripDatesOpen = false" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
+                    </div>
+                    <mat-calendar [selected]="tripDateRange" (selectedChange)="onTripDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                  </div>
+                }
               </div>
               <a [routerLink]="['/search']" [queryParams]="{ openPlanner: 1 }"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 no-underline shrink-0">
@@ -192,17 +200,23 @@ interface ISearchHit {
                       </div>
                       @if (expandedStopId === s.id) {
                         <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white">
-                          <div class="grid grid-cols-2 gap-2">
-                            <label class="block">
-                              <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in</span>
-                              <input type="date" [ngModel]="s.checkInDate" (ngModelChange)="updateStopField(s.id, { checkInDate: $event || undefined })" [name]="'cin-' + s.id"
-                                class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-                            </label>
-                            <label class="block">
-                              <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-out</span>
-                              <input type="date" [ngModel]="s.checkOutDate" (ngModelChange)="updateStopField(s.id, { checkOutDate: $event || undefined })" [name]="'cout-' + s.id"
-                                class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
-                            </label>
+                          <div class="relative">
+                            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in / Check-out</span>
+                            <button type="button" (click)="toggleStopDates(s.id)" [attr.aria-expanded]="stopDatesOpenId === s.id"
+                              class="mt-0.5 w-full inline-flex items-center gap-1.5 bg-cream/60 border border-dark-text/15 rounded-md px-2.5 py-1.5 text-xs font-body text-dark-text hover:border-jungle-green transition-colors">
+                              <span class="material-symbols-outlined text-base text-jungle-green">calendar_today</span>
+                              <span class="flex-1 text-left">{{ stopDateLabel(s) }}</span>
+                            </button>
+                            @if (stopDatesOpenId === s.id) {
+                              <div role="dialog" aria-label="Stop dates" cntFocusTrap (escape)="stopDatesOpenId = null"
+                                class="review-popover absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                                <div class="flex items-center justify-between mb-2 px-1">
+                                  <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
+                                  <button type="button" (click)="stopDatesOpenId = null" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
+                                </div>
+                                <mat-calendar [selected]="stopDateRange(s)" (selectedChange)="onStopDateSelected(s.id, $event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                              </div>
+                            }
                           </div>
                           <label class="block">
                             <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Notes</span>
@@ -572,6 +586,70 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   commit(key: 'name' | 'startDate' | 'endDate', value: string | undefined): void {
     if (!this.plan) return;
     this.planner.update(this.plan.id, { [key]: value || undefined });
+  }
+
+  // ============ Date range pickers ============
+  tripDatesOpen = false;
+  stopDatesOpenId: string | null = null;
+
+  toggleTripDates(): void {
+    this.tripDatesOpen = !this.tripDatesOpen;
+    if (this.tripDatesOpen) this.stopDatesOpenId = null;
+  }
+  toggleStopDates(stopId: string): void {
+    this.stopDatesOpenId = this.stopDatesOpenId === stopId ? null : stopId;
+    if (this.stopDatesOpenId) this.tripDatesOpen = false;
+  }
+
+  get tripDateRange(): DateRange<Date> {
+    return new DateRange(parseIsoDate(this.plan?.startDate), parseIsoDate(this.plan?.endDate));
+  }
+  stopDateRange(s: ITripStop): DateRange<Date> {
+    return new DateRange(parseIsoDate(s.checkInDate), parseIsoDate(s.checkOutDate));
+  }
+
+  get tripDateLabel(): string {
+    const s = parseIsoDate(this.plan?.startDate);
+    const e = parseIsoDate(this.plan?.endDate);
+    if (!s && !e) return 'Pick trip dates';
+    if (s && !e) return `${shortDateLabel(s)} → …`;
+    if (!s && e) return `… → ${shortDateLabel(e)}`;
+    return `${shortDateLabel(s)} → ${shortDateLabel(e)}`;
+  }
+  stopDateLabel(s: ITripStop): string {
+    const ci = parseIsoDate(s.checkInDate);
+    const co = parseIsoDate(s.checkOutDate);
+    if (!ci && !co) return 'Pick dates';
+    if (ci && !co) return `${shortDateLabel(ci)} → …`;
+    if (!ci && co) return `… → ${shortDateLabel(co)}`;
+    return `${shortDateLabel(ci)} → ${shortDateLabel(co)}`;
+  }
+
+  onTripDateSelected(d: Date | null): void {
+    if (!this.plan || !d) return;
+    const next = this.nextRange(this.tripDateRange, d);
+    this.planner.update(this.plan.id, {
+      startDate: formatIsoDate(next.start),
+      endDate: formatIsoDate(next.end),
+    });
+  }
+  onStopDateSelected(stopId: string, d: Date | null): void {
+    if (!this.plan || !d) return;
+    const stop = this.plan.stops.find(x => x.id === stopId);
+    if (!stop) return;
+    const next = this.nextRange(this.stopDateRange(stop), d);
+    this.planner.updateStop(this.plan.id, stopId, {
+      checkInDate: formatIsoDate(next.start),
+      checkOutDate: formatIsoDate(next.end),
+    });
+  }
+
+  /** Booking-review-style range progression: click 1 = start, click 2 = end,
+   *  click on/before start = restart range. */
+  private nextRange(current: DateRange<Date>, d: Date): DateRange<Date> {
+    if (!current.start || current.end) return new DateRange(d, null);
+    if (d < current.start) return new DateRange(d, null);
+    return new DateRange(current.start, d);
   }
 
   setCorridor(value: number): void {
