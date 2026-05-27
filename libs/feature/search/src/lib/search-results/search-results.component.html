@@ -828,7 +828,8 @@
                 {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
               </div>
             }
-            <div cdkDrag class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
+            <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30 overflow-hidden">
+              <div class="flex items-center gap-2 p-2">
               <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
               <span class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white text-[10px] font-headline font-bold shrink-0"
                 [ngStyle]="{ background: i === 0 && activePlan.stops.length > 1 ? '#295d42' : last && activePlan.stops.length > 1 ? '#9a3f0a' : '#e3530d' }">
@@ -846,13 +847,80 @@
                   <div class="text-[0.6rem] text-muted-text truncate">{{ s.address }}</div>
                 }
               </div>
+              <button type="button" (click)="toggleDrawerStopExpand(s.id)"
+                [attr.aria-expanded]="expandedDrawerStopId === s.id"
+                aria-label="Toggle stop details"
+                class="w-6 h-6 inline-flex items-center justify-center rounded-full text-muted-text hover:bg-white hover:text-dark-text transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm">{{ expandedDrawerStopId === s.id ? 'expand_less' : 'expand_more' }}</span>
+              </button>
               <button type="button" (click)="removeStopFromActive(s.id)" aria-label="Remove stop"
                 class="w-6 h-6 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
                 <span class="material-symbols-outlined text-sm">close</span>
               </button>
+              </div>
+              @if (expandedDrawerStopId === s.id) {
+                <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white">
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="block">
+                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in</span>
+                      <input type="date" [ngModel]="s.checkInDate" (ngModelChange)="updateDrawerStopField(s.id, { checkInDate: $event || undefined })" [name]="'dcin-' + s.id"
+                        class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+                    </label>
+                    <label class="block">
+                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-out</span>
+                      <input type="date" [ngModel]="s.checkOutDate" (ngModelChange)="updateDrawerStopField(s.id, { checkOutDate: $event || undefined })" [name]="'dcout-' + s.id"
+                        class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+                    </label>
+                  </div>
+                  <label class="block">
+                    <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Notes</span>
+                    <textarea [ngModel]="s.notes" (ngModelChange)="updateDrawerStopField(s.id, { notes: $event || undefined })" [name]="'dnote-' + s.id"
+                      rows="2" maxlength="400" placeholder="Wifi password, fire pit details, anything to remember…"
+                      class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green resize-none"></textarea>
+                  </label>
+                </div>
+              }
             </div>
           }
         </div>
+
+        <!-- Suggested stops along your route -->
+        @if (activePlan.corridorMiles && activePlan.corridorMiles > 0 && activePlan.stops.length >= 2 && (drawerListingSuggestions.length > 0 || drawerPoiSuggestions.length > 0)) {
+          <div class="rounded-xl border border-jungle-green/30 bg-jungle-green/5 p-2.5 space-y-1.5">
+            <div class="flex items-center gap-1.5 text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green px-1">
+              <span class="material-symbols-outlined text-sm">explore</span>
+              Along your route
+              <span class="ml-auto text-muted-text normal-case tracking-normal">within {{ activePlan.corridorMiles }} mi</span>
+            </div>
+            @for (l of drawerListingSuggestions; track l.id) {
+              <button type="button" (click)="addDrawerSuggestionListing(l)"
+                class="w-full text-left p-1.5 rounded-md bg-white hover:bg-cream/60 transition-colors flex items-center gap-2 border border-dark-text/8">
+                <span class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white shrink-0"
+                  [ngStyle]="{ background: l.kind === 'boondocking' ? '#3b6e3b' : '#e3530d' }">
+                  <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">{{ l.kind === 'boondocking' ? 'landscape' : 'rv_hookup' }}</span>
+                </span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-[0.7rem] font-body font-bold text-dark-text truncate">{{ l.title }}</span>
+                  <span class="block text-[0.55rem] text-muted-text truncate">{{ l.location }} · {{ formatMiles(drawerMilesFromRoute(l)) }} from route</span>
+                </span>
+                <span class="material-symbols-outlined text-base text-trinidad shrink-0">add_circle</span>
+              </button>
+            }
+            @for (p of drawerPoiSuggestions; track p.id) {
+              <button type="button" (click)="addDrawerSuggestionPoi(p)"
+                class="w-full text-left p-1.5 rounded-md bg-white hover:bg-cream/60 transition-colors flex items-center gap-2 border border-dark-text/8">
+                <span class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white bg-gold shrink-0">
+                  <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">pin_drop</span>
+                </span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-[0.7rem] font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                  <span class="block text-[0.55rem] text-muted-text truncate">{{ drawerPoiKindLabel(p.kind) }} · {{ formatMiles(drawerMilesFromRoute(p)) }} from route</span>
+                </span>
+                <span class="material-symbols-outlined text-base text-trinidad shrink-0">add_circle</span>
+              </button>
+            }
+          </div>
+        }
 
         <!-- Directions (collapsible). Shows the road-routed step list. -->
         @if (activePlan.stops.length >= 2) {

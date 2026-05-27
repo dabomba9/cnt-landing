@@ -101,6 +101,34 @@ export function pointToRouteMiles(
   return best;
 }
 
+/**
+ * Generic "along the route" filter — returns the candidates within
+ * `corridorMiles` of the polyline through `routePoints`, sorted by distance,
+ * excluding any whose lat/lng matches an existing stop (so the same place
+ * isn't suggested twice). Used by both /search drawer and the focused editor
+ * to power the "Suggested stops along your route" panel.
+ *
+ * Generic so it works for IListing, IPoi, and anything with lat/lng.
+ */
+export function suggestionsAlongRoute<T extends { lat: number; lng: number }>(
+  candidates: readonly T[],
+  routePoints: readonly { lat: number; lng: number }[],
+  corridorMiles: number,
+  existingStops: readonly { lat: number; lng: number }[],
+  max = 5,
+): T[] {
+  if (corridorMiles <= 0 || routePoints.length < 2 || candidates.length === 0) return [];
+  const dupe = new Set(existingStops.map(s => `${s.lat.toFixed(4)},${s.lng.toFixed(4)}`));
+  const scored: { c: T; d: number }[] = [];
+  for (const c of candidates) {
+    if (dupe.has(`${c.lat.toFixed(4)},${c.lng.toFixed(4)}`)) continue;
+    const d = pointToRouteMiles(c, routePoints as { lat: number; lng: number }[]);
+    if (d <= corridorMiles) scored.push({ c, d });
+  }
+  scored.sort((a, b) => a.d - b.d);
+  return scored.slice(0, max).map(s => s.c);
+}
+
 /** Total trip distance — sum of haversine between consecutive stops. */
 export function totalTripMiles(plan: Pick<ITripPlan, 'stops'>): number {
   let total = 0;
@@ -226,6 +254,14 @@ export class TripPlannerService {
     const plan = this.get(planId);
     if (!plan) return null;
     return this.update(planId, { stops: plan.stops.filter(s => s.id !== stopId) });
+  }
+
+  /** Patch one stop in-place — for per-stop dates, notes, name edits. */
+  updateStop(planId: string, stopId: string, patch: Partial<Omit<ITripStop, 'id'>>): ITripPlan | null {
+    const plan = this.get(planId);
+    if (!plan) return null;
+    const stops = plan.stops.map(s => s.id === stopId ? { ...s, ...patch } : s);
+    return this.update(planId, { stops });
   }
 
   /** Move a stop within the ordered list. CDK drag conventions. */

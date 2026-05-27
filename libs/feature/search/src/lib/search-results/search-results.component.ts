@@ -18,7 +18,8 @@ import {
 } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
-  autoTripName, rvTypeLabel, RoutingService, IRoute } from '@cnt-workspace/data-access';
+  autoTripName, rvTypeLabel, RoutingService, IRoute,
+  suggestionsAlongRoute, pointToRouteMiles } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
@@ -1161,6 +1162,61 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   flyToStep(step: { start: { lat: number; lng: number } }): void {
     if (!step?.start) return;
     this.searchMap?.flyTo(step.start.lat, step.start.lng, 14);
+  }
+
+  /** Per-stop "expanded" state in the drawer — accordion-style. */
+  expandedDrawerStopId: string | null = null;
+  toggleDrawerStopExpand(stopId: string): void {
+    this.expandedDrawerStopId = this.expandedDrawerStopId === stopId ? null : stopId;
+  }
+  updateDrawerStopField(stopId: string, patch: Partial<ITripStop>): void {
+    if (!this.activePlan) return;
+    this.planner.updateStop(this.activePlan.id, stopId, patch);
+  }
+
+  /** Suggestions within the active plan's corridor — drives the drawer
+   * "Along your route" panel. */
+  get drawerListingSuggestions() {
+    if (!this.activePlan) return [];
+    return suggestionsAlongRoute(
+      ALL_LISTINGS,
+      this.activePlan.stops,
+      this.activePlan.corridorMiles ?? 0,
+      this.activePlan.stops,
+      5,
+    );
+  }
+  get drawerPoiSuggestions() {
+    if (!this.activePlan) return [];
+    return suggestionsAlongRoute(
+      MOCK_POIS,
+      this.activePlan.stops,
+      this.activePlan.corridorMiles ?? 0,
+      this.activePlan.stops,
+      5,
+    );
+  }
+  drawerMilesFromRoute(pt: { lat: number; lng: number }): number {
+    if (!this.activePlan || this.activePlan.stops.length < 2) return 0;
+    return pointToRouteMiles(pt, this.activePlan.stops);
+  }
+  addDrawerSuggestionListing(l: import('@cnt-workspace/data-access').IListing): void {
+    if (!this.activePlan) return;
+    this.planner.addStop(this.activePlan.id, {
+      kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+      refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+    });
+    this.toasts.success('Added to trip.');
+  }
+  addDrawerSuggestionPoi(p: import('@cnt-workspace/data-access').IPoi): void {
+    if (!this.activePlan) return;
+    this.planner.addStop(this.activePlan.id, {
+      kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+    });
+    this.toasts.success('Added to trip.');
+  }
+  drawerPoiKindLabel(k: string): string {
+    return ({ dumpstation: 'Dump station', rest_area: 'Rest area', propane: 'Propane', potable_water: 'Potable water' } as Record<string, string>)[k] ?? k;
   }
 
   /** Drag-reorder for the drawer's stops list. */

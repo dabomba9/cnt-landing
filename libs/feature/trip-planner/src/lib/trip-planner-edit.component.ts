@@ -9,7 +9,7 @@ import {
   SeoService, ToastService, TripPlannerService, ITripPlan, ITripStop, TripStopKind,
   ALL_LISTINGS, MOCK_POIS, IListing, IPoi,
   IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile, rvTypeLabel,
-  totalTripMiles, pointToRouteMiles, RoutingService, IRoute,
+  totalTripMiles, pointToRouteMiles, RoutingService, IRoute, suggestionsAlongRoute,
 } from '@cnt-workspace/data-access';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
 
@@ -159,7 +159,8 @@ interface ISearchHit {
                         {{ formatMiles(leg.miles) }}@if (leg.minutes > 0) { · {{ formatMins(leg.minutes) }} }
                       </div>
                     }
-                    <div cdkDrag class="flex items-center gap-2 p-2 rounded-lg border border-dark-text/10 bg-cream/30">
+                    <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30 overflow-hidden">
+                      <div class="flex items-center gap-2 p-2">
                       <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
                       <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
                         @if (i === 0 && plan.stops.length > 1) {
@@ -176,13 +177,80 @@ interface ISearchHit {
                         <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
                         <div class="text-[0.6rem] text-muted-text truncate">{{ stopBadge(i, last) }}@if (s.address) { · {{ s.address }} }</div>
                       </div>
+                      <button type="button" (click)="toggleStopExpand(s.id)"
+                        [attr.aria-expanded]="expandedStopId === s.id"
+                        aria-label="Toggle stop details"
+                        class="w-6 h-6 inline-flex items-center justify-center rounded-full text-muted-text hover:bg-white hover:text-dark-text transition-colors shrink-0">
+                        <span class="material-symbols-outlined text-sm">{{ expandedStopId === s.id ? 'expand_less' : 'expand_more' }}</span>
+                      </button>
                       <button type="button" (click)="removeStop(s.id)" aria-label="Remove stop"
                         class="w-6 h-6 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors shrink-0">
                         <span class="material-symbols-outlined text-sm">close</span>
                       </button>
+                      </div>
+                      @if (expandedStopId === s.id) {
+                        <div class="px-3 pb-3 pt-1 space-y-2 border-t border-dark-text/10 bg-white">
+                          <div class="grid grid-cols-2 gap-2">
+                            <label class="block">
+                              <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-in</span>
+                              <input type="date" [ngModel]="s.checkInDate" (ngModelChange)="updateStopField(s.id, { checkInDate: $event || undefined })" [name]="'cin-' + s.id"
+                                class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+                            </label>
+                            <label class="block">
+                              <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Check-out</span>
+                              <input type="date" [ngModel]="s.checkOutDate" (ngModelChange)="updateStopField(s.id, { checkOutDate: $event || undefined })" [name]="'cout-' + s.id"
+                                class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green">
+                            </label>
+                          </div>
+                          <label class="block">
+                            <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Notes</span>
+                            <textarea [ngModel]="s.notes" (ngModelChange)="updateStopField(s.id, { notes: $event || undefined })" [name]="'note-' + s.id"
+                              rows="2" maxlength="400" placeholder="Wifi password, fire pit details, anything to remember…"
+                              class="mt-0.5 w-full bg-cream/60 border border-dark-text/15 rounded-md px-2 py-1.5 text-xs font-body focus:outline-none focus:border-jungle-green resize-none"></textarea>
+                          </label>
+                        </div>
+                      }
                     </div>
                   }
                 </div>
+
+                <!-- Suggested stops along your route — when corridor is set + >= 2 stops. -->
+                @if (plan.corridorMiles && plan.corridorMiles > 0 && plan.stops.length >= 2 && (listingSuggestions.length > 0 || poiSuggestions.length > 0)) {
+                  <div class="rounded-xl border border-jungle-green/30 bg-jungle-green/5 p-3 space-y-2">
+                    <div class="flex items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">
+                      <span class="material-symbols-outlined text-sm">explore</span>
+                      Along your route
+                      <span class="ml-auto text-muted-text normal-case tracking-normal">within {{ plan.corridorMiles }} mi</span>
+                    </div>
+                    @for (l of listingSuggestions; track l.id) {
+                      <button type="button" (click)="addListingSuggestion(l)"
+                        class="w-full text-left p-2 rounded-md bg-white hover:bg-cream/60 transition-colors flex items-center gap-2 border border-dark-text/8">
+                        <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white shrink-0"
+                          [ngStyle]="{ background: l.kind === 'boondocking' ? '#3b6e3b' : '#e3530d' }">
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ l.kind === 'boondocking' ? 'landscape' : 'rv_hookup' }}</span>
+                        </span>
+                        <span class="flex-1 min-w-0">
+                          <span class="block text-xs font-body font-bold text-dark-text truncate">{{ l.title }}</span>
+                          <span class="block text-[0.6rem] text-muted-text truncate">{{ l.location }} · {{ formatMiles(milesFromRoute(l)) }} from route</span>
+                        </span>
+                        <span class="material-symbols-outlined text-base text-trinidad shrink-0">add_circle</span>
+                      </button>
+                    }
+                    @for (p of poiSuggestions; track p.id) {
+                      <button type="button" (click)="addPoiSuggestion(p)"
+                        class="w-full text-left p-2 rounded-md bg-white hover:bg-cream/60 transition-colors flex items-center gap-2 border border-dark-text/8">
+                        <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white bg-gold shrink-0">
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pin_drop</span>
+                        </span>
+                        <span class="flex-1 min-w-0">
+                          <span class="block text-xs font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                          <span class="block text-[0.6rem] text-muted-text truncate">{{ poiKindLabel(p.kind) }} · {{ formatMiles(milesFromRoute(p)) }} from route</span>
+                        </span>
+                        <span class="material-symbols-outlined text-base text-trinidad shrink-0">add_circle</span>
+                      </button>
+                    }
+                  </div>
+                }
 
                 <!-- Pin-drop toggle -->
                 <button type="button" (click)="togglePinDrop()"
@@ -379,6 +447,65 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   flyToStep(step: { start: { lat: number; lng: number } }): void {
     if (!step?.start) return;
     this.tripMap?.flyTo(step.start.lat, step.start.lng, 14);
+  }
+
+  /** One-click "Along your route" suggestion adders. Append to the trip
+   * without going through the picker UI. */
+  addListingSuggestion(l: IListing): void {
+    if (!this.plan) return;
+    this.planner.addStop(this.plan.id, {
+      kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+      refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+    });
+    this.toasts.success('Added.');
+  }
+  addPoiSuggestion(p: IPoi): void {
+    if (!this.plan) return;
+    this.planner.addStop(this.plan.id, {
+      kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+    });
+    this.toasts.success('Added.');
+  }
+
+  /** Per-stop "expanded" state — single id at a time, accordion-style. */
+  expandedStopId: string | null = null;
+  toggleStopExpand(stopId: string): void {
+    this.expandedStopId = this.expandedStopId === stopId ? null : stopId;
+  }
+
+  /** Commit a per-stop field edit (dates, notes) back to storage. */
+  updateStopField(stopId: string, patch: Partial<ITripStop>): void {
+    if (!this.plan) return;
+    this.planner.updateStop(this.plan.id, stopId, patch);
+  }
+
+  /** Listing + POI suggestions within the corridor — drives the "Along your
+   * route" panel. Empty when corridor is 0 or trip has < 2 stops. */
+  get listingSuggestions(): IListing[] {
+    if (!this.plan) return [];
+    return suggestionsAlongRoute(
+      ALL_LISTINGS,
+      this.plan.stops,
+      this.plan.corridorMiles ?? 0,
+      this.plan.stops,
+      5,
+    );
+  }
+  get poiSuggestions(): IPoi[] {
+    if (!this.plan) return [];
+    return suggestionsAlongRoute(
+      MOCK_POIS,
+      this.plan.stops,
+      this.plan.corridorMiles ?? 0,
+      this.plan.stops,
+      5,
+    );
+  }
+  /** Approximate distance from a candidate point to the existing route — for
+   * the "X mi from route" label on each suggestion. */
+  milesFromRoute(pt: { lat: number; lng: number }): number {
+    if (!this.plan || this.plan.stops.length < 2) return 0;
+    return pointToRouteMiles(pt, this.plan.stops);
   }
 
   /** Routed leg between stops i and i+1, falling back to straight-line. */
