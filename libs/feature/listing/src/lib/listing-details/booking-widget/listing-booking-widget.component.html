@@ -61,7 +61,7 @@
         <button type="button" (click)="booking.clearDates()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
       </div>
       <div class="mt-3 flex justify-center">
-        <mat-calendar [selected]="booking.selectedDateRange" [minDate]="booking.today" [dateFilter]="booking.dateFilter" (selectedChange)="booking.onDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+        <mat-calendar [selected]="booking.selectedDateRange" [minDate]="booking.today" [dateFilter]="booking.dateFilter" (selectedChange)="booking.onDateSelected($event)"></mat-calendar>
       </div>
       @if (booking.dateRangeError) {
         <div class="mt-2 text-xs font-body text-trinidad">{{ booking.dateRangeError }}</div>

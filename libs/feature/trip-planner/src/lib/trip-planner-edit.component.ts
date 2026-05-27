@@ -69,7 +69,7 @@ interface ISearchHit {
                       <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
                       <button type="button" (click)="tripDatesOpen = false" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
                     </div>
-                    <mat-calendar [selected]="tripDateRange" (selectedChange)="onTripDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                    <mat-calendar [selected]="tripDateRange" (selectedChange)="onTripDateSelected($event)"></mat-calendar>
                   </div>
                 }
               </div>
@@ -220,7 +220,7 @@ interface ISearchHit {
                                   <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick dates</span>
                                   <button type="button" (click)="stopDatesOpenId = null" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline">Done</button>
                                 </div>
-                                <mat-calendar [selected]="stopDateRange(s)" (selectedChange)="onStopDateSelected(s.id, $event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                                <mat-calendar [selected]="stopDateRange(s)" (selectedChange)="onStopDateSelected(s.id, $event)"></mat-calendar>
                               </div>
                             }
                           </div>

@@ -476,7 +476,7 @@
                   <button type="button" (click)="closeModifyDatesEditor()" class="text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:underline">Done</button>
                 </div>
                 <div class="flex justify-center">
-                  <mat-calendar [selected]="modifyRange" [minDate]="today" (selectedChange)="onModifyDateSelected($event)" class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                  <mat-calendar [selected]="modifyRange" [minDate]="today" (selectedChange)="onModifyDateSelected($event)"></mat-calendar>
                 </div>
               </div>
             }

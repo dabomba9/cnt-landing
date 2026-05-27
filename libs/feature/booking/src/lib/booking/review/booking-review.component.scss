@@ -1,27 +1,2 @@
-.review-popover {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  z-index: 30;
-  background: #fff;
-  border: 1px solid rgba(34, 34, 34, 0.1);
-  border-radius: 1.25rem;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
-  padding: 1rem;
-  min-width: 18rem;
-  animation: pop-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@keyframes pop-in {
-  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .review-popover { animation: none; }
-}
-
-/* Make the inline mat-calendar tighter so it fits the popover. */
-::ng-deep .review-popover .mat-calendar {
-  width: 100% !important;
-}
+/* Date/guest pickers use the canonical .review-popover wrapper defined
+   globally in src/styles.scss. No component-specific overrides needed. */
