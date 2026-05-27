@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
-import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName } from '@cnt-workspace/data-access';
+import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName,
+  ALL_LISTINGS, MOCK_POIS } from '@cnt-workspace/data-access';
+import { TripPlannerMapComponent } from './trip-planner-map.component';
 
 @Component({
   selector: 'cnt-trip-planner-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, TripPlannerMapComponent],
   template: `
     <cnt-navbar></cnt-navbar>
     <main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">
@@ -27,6 +29,26 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
               <span class="material-symbols-outlined text-base">add</span>
               New trip
             </button>
+          </div>
+
+          <!-- Discovery map — browse all private spots, boondocking, and POIs.
+               Click a marker → start a fresh trip seeded with that location. -->
+          <div class="mb-8 md:mb-10">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-headline font-bold text-dark-text text-lg md:text-xl">Browse the map</h2>
+              <div class="hidden md:flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">
+                <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-trinidad"></span>Private</span>
+                <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#3b6e3b"></span>Boondocking</span>
+                <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#b3760e"></span>POI</span>
+              </div>
+            </div>
+            <div class="rounded-2xl overflow-hidden border border-dark-text/8 bg-white" style="height: 420px;">
+              <cnt-trip-planner-map [plan]="null" [pinDropMode]="false"
+                [backgroundListings]="allListings" [backgroundPois]="allPois"
+                [routeGeometry]="null"
+                (backgroundAdd)="onBackgroundAdd($event)"></cnt-trip-planner-map>
+            </div>
+            <p class="text-xs text-muted-text font-body mt-2">Tap a marker → starts a new trip with that location as your first stop.</p>
           </div>
 
           @if (plans.length === 0) {
@@ -94,6 +116,9 @@ export class TripPlannerListComponent implements OnInit, OnDestroy {
   confirmingDeleteId: string | null = null;
   private sub: Subscription | null = null;
 
+  readonly allListings = ALL_LISTINGS;
+  readonly allPois = MOCK_POIS;
+
   constructor(
     private planner: TripPlannerService,
     private router: Router,
@@ -121,6 +146,30 @@ export class TripPlannerListComponent implements OnInit, OnDestroy {
    * inline-editable in the drawer. */
   startNewTrip(): void {
     const plan = this.planner.create(autoTripName());
+    this.router.navigate(['/search'], { queryParams: { openPlanner: 1, plan: plan.id } });
+  }
+
+  /** Click on a discovery-map marker → start a new trip seeded with that
+   *  location as the first stop, then open the drawer on it. */
+  onBackgroundAdd(event: { kind: 'listing' | 'poi'; id: number | string }): void {
+    const plan = this.planner.create(autoTripName());
+    if (event.kind === 'listing') {
+      const l = ALL_LISTINGS.find(x => x.id === event.id);
+      if (l) {
+        this.planner.addStop(plan.id, {
+          kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+          refId: l.id, name: l.title, lat: l.lat, lng: l.lng, address: l.location, photo: l.image,
+        });
+      }
+    } else {
+      const p = MOCK_POIS.find(x => x.id === event.id);
+      if (p) {
+        this.planner.addStop(plan.id, {
+          kind: 'poi', refId: p.id, name: p.name, lat: p.lat, lng: p.lng, address: p.address, photo: p.photos?.[0],
+        });
+      }
+    }
+    this.toasts.success('New trip started.');
     this.router.navigate(['/search'], { queryParams: { openPlanner: 1, plan: plan.id } });
   }
 
