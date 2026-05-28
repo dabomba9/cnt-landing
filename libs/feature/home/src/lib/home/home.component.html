@@ -645,7 +645,82 @@
     <!-- ================= FAQ Section ================= -->
     <cnt-home-faq></cnt-home-faq>
 
-    
+
+    <!-- ================= Trip Planner Promotion Section ================= -->
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+
+        <!-- Left: Aggressive Typography & Data -->
+        <div class="flex flex-col py-12 lg:py-0 order-2 lg:order-1">
+
+           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-5 block">Plan Your Adventure</span>
+           <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
+             Map Your Whole Road Trip.
+           </h2>
+           <p class="text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed">
+             Sketch a route from your driveway to the redwoods — stops, dates, road-routed directions, fuel cost, and budget all live in one view. Plan it now, drive it free.
+           </p>
+
+           <ul class="space-y-6 mb-12">
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-trinidad mt-1 text-2xl md:text-3xl" data-icon="explore">explore</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Discover What's Along Your Route:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Private spots, boondocking, and POIs surface as you build the trip.</div>
+               </div>
+             </li>
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-trinidad mt-1 text-2xl md:text-3xl" data-icon="calendar_today">calendar_today</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Plan Dates and Budget:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Pick check-in/out per stop — nights, cost, and fuel update in real time.</div>
+               </div>
+             </li>
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-trinidad mt-1 text-2xl md:text-3xl" data-icon="directions">directions</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Turn-By-Turn Directions:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Road-routed legs with long-drive and tank-range guardrails to keep you safe.</div>
+               </div>
+             </li>
+             <li class="flex items-start gap-4">
+               <span class="material-symbols-outlined text-trinidad mt-1 text-2xl md:text-3xl" data-icon="ios_share">ios_share</span>
+               <div>
+                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Share or Print:</div>
+                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Send a link to your travel partner or print a paper itinerary for offline use.</div>
+               </div>
+             </li>
+           </ul>
+
+           <!-- 3D Flip Button Component -->
+           <div>
+             <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block mt-4">
+               <a routerLink="/trip-planner" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                 <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   OPEN TRIP PLANNER
+                 </div>
+                 <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   OPEN TRIP PLANNER
+                 </div>
+                 <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                   OPEN TRIP PLANNER
+                 </div>
+               </a>
+             </div>
+           </div>
+
+        </div>
+
+        <!-- Right: Map screenshot / illustration -->
+        <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square object-cover flex justify-center drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] order-1 lg:order-2">
+          <img src="assets/images/network_map.webp" alt="Trip planner map" loading="lazy"
+               class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 hover:scale-105 will-change-transform">
+        </div>
+
+      </div>
+    </div>
+
+
     <!-- ================= Host Promotion Section ================= -->
     <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
