@@ -446,7 +446,21 @@
         } @else {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @for (l of listings; track l.id) {
-              <cnt-listing-card [listing]="l"></cnt-listing-card>
+              <div class="flex flex-col gap-2">
+                <cnt-listing-card [listing]="l"></cnt-listing-card>
+                <div class="flex items-center gap-2">
+                  <a [routerLink]="['/hosting/listings', l.id, 'edit']"
+                    class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors no-underline">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                    Edit
+                  </a>
+                  <a [routerLink]="['/hosting/listings', l.id, 'addons']"
+                    class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/15 transition-colors no-underline">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    Add-on
+                  </a>
+                </div>
+              </div>
             }
           </div>
         }
