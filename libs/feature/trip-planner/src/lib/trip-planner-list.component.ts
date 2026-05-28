@@ -43,10 +43,46 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
               </button>
             </div>
           } @else {
+            @if (selectedIds.size > 0) {
+              <div class="sticky top-24 z-20 mb-4 flex items-center justify-between gap-3 p-3 rounded-2xl bg-white border border-trinidad/30 shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
+                <div class="flex items-center gap-3">
+                  <span class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-trinidad text-white text-xs font-button font-bold">{{ selectedIds.size }}</span>
+                  <span class="text-sm font-body font-bold text-dark-text">{{ selectedIds.size === 1 ? 'trip' : 'trips' }} selected</span>
+                  <button type="button" (click)="selectAll()" class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Select all</button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="button" (click)="clearSelection()"
+                    class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Cancel</button>
+                  @if (confirmingBulkDelete) {
+                    <button type="button" (click)="confirmingBulkDelete = false"
+                      class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Keep</button>
+                    <button type="button" (click)="deleteSelected()"
+                      class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+                      <span class="material-symbols-outlined text-base">delete</span>
+                      Delete {{ selectedIds.size }}
+                    </button>
+                  } @else {
+                    <button type="button" (click)="confirmingBulkDelete = true"
+                      class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-trinidad/30 text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10">
+                      <span class="material-symbols-outlined text-base">delete</span>
+                      Delete
+                    </button>
+                  }
+                </div>
+              </div>
+            }
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               @for (p of plans; track p.id) {
-                <article class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 flex flex-col gap-3 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)]">
-                  <a [routerLink]="['/search']" [queryParams]="{ openPlanner: 1, plan: p.id }" class="no-underline group">
+                <article class="relative bg-white rounded-2xl border shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 flex flex-col gap-3 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)]"
+                  [ngClass]="selectedIds.has(p.id) ? 'border-trinidad ring-2 ring-trinidad/20' : 'border-dark-text/8'">
+                  <label class="absolute top-3 right-3 w-6 h-6 inline-flex items-center justify-center rounded-md bg-white border border-dark-text/20 hover:border-trinidad cursor-pointer transition-colors"
+                    [ngClass]="selectedIds.has(p.id) ? 'bg-trinidad border-trinidad text-white' : ''">
+                    <input type="checkbox" [checked]="selectedIds.has(p.id)" (change)="toggleSelect(p.id)" aria-label="Select trip" class="sr-only">
+                    @if (selectedIds.has(p.id)) {
+                      <span class="material-symbols-outlined text-base">check</span>
+                    }
+                  </label>
+                  <a [routerLink]="['/search']" [queryParams]="{ openPlanner: 1, plan: p.id }" class="no-underline group pr-8">
                     <h3 class="font-headline font-bold text-dark-text text-lg leading-tight group-hover:text-trinidad transition-colors">{{ p.name }}</h3>
                     <p class="text-xs text-muted-text font-body mt-1">{{ datesLabel(p) }}</p>
                   </a>
@@ -92,6 +128,10 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
 export class TripPlannerListComponent implements OnInit, OnDestroy {
   plans: ITripPlan[] = [];
   confirmingDeleteId: string | null = null;
+  /** Ids ticked via the per-card checkbox — drives the bulk-delete toolbar. */
+  selectedIds = new Set<string>();
+  /** Two-tap confirm gate on the bulk-delete action. */
+  confirmingBulkDelete = false;
   private sub: Subscription | null = null;
 
   constructor(
@@ -128,6 +168,26 @@ export class TripPlannerListComponent implements OnInit, OnDestroy {
     this.planner.delete(id);
     this.confirmingDeleteId = null;
     this.toasts.info('Trip removed.');
+  }
+
+  toggleSelect(id: string): void {
+    if (this.selectedIds.has(id)) this.selectedIds.delete(id);
+    else this.selectedIds.add(id);
+    this.confirmingBulkDelete = false;
+  }
+  selectAll(): void {
+    this.selectedIds = new Set(this.plans.map(p => p.id));
+  }
+  clearSelection(): void {
+    this.selectedIds.clear();
+    this.confirmingBulkDelete = false;
+  }
+  deleteSelected(): void {
+    const ids = Array.from(this.selectedIds);
+    if (ids.length === 0) return;
+    ids.forEach(id => this.planner.delete(id));
+    this.toasts.info(`${ids.length} ${ids.length === 1 ? 'trip' : 'trips'} deleted.`);
+    this.clearSelection();
   }
 
   /** Duplicate this trip and land the user in the drawer on the new copy. */
