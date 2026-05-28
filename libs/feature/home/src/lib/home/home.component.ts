@@ -10,6 +10,7 @@ import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
 import { HomeMasonryComponent } from './components/home-masonry/home-masonry.component';
 import { HomeHeroComponent } from './components/home-hero/home-hero.component';
+import { TripPreviewMapComponent } from './components/trip-preview-map/trip-preview-map.component';
 import { SeoService } from '@cnt-workspace/data-access';
 
 import { gsap } from 'gsap';
@@ -18,7 +19,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

@@ -750,8 +750,14 @@
           <span class="absolute bottom-5 left-5 w-4 h-4 border-b-2 border-l-2 border-[#F1B434]/80 pointer-events-none"></span>
           <span class="absolute bottom-5 right-5 w-4 h-4 border-b-2 border-r-2 border-[#F1B434]/80 pointer-events-none"></span>
 
-          <!-- Map canvas — OSM/Leaflet tile palette so it matches /search + trip planner -->
+          <!-- Live Leaflet preview — same tiles, markers, and polyline the
+               user sees on /search and /trip-planner. Mounts lazily when the
+               section scrolls into view. -->
           <div class="relative w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)] m-3 rounded-[1.75rem] overflow-hidden bg-[#f2efe9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-transform duration-700 hover:scale-[1.02] will-change-transform">
+            <cnt-home-trip-preview class="block w-full h-full"></cnt-home-trip-preview>
+          </div>
+          <!-- Legacy SVG mockup (kept commented for reference / fallback) -->
+          <ng-container *ngIf="false">
             <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 w-full h-full" aria-hidden="true">
               <defs>
                 <linearGradient id="cnt-tp-route" x1="0" y1="0" x2="1" y2="1">
@@ -907,7 +913,7 @@
               <!-- Vignette overlay for depth -->
               <rect width="600" height="600" fill="url(#cnt-tp-vignette)" pointer-events="none"/>
             </svg>
-          </div>
+          </ng-container>
 
           <!-- Floating route badge (sits on the frame) -->
           <div class="absolute -top-4 left-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-jungle-green border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur">
