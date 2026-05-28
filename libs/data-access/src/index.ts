@@ -9,6 +9,7 @@ export * from './lib/listings/mock-listings.data';
 export * from './lib/listings/mock-boondocking.data';
 export * from './lib/listings/draft-listing.types';
 export * from './lib/listings/host-listing-draft.service';
+export * from './lib/listings/addon-library.service';
 export * from './lib/listings/published-snapshot.util';
 export * from './lib/listings/edit-owner.guard';
 export * from './lib/pricing/pricing.util';

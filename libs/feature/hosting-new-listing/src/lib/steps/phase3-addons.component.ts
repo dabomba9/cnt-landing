@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { IDraftListing, IAddOn, downscalePhoto } from '@cnt-workspace/data-access';
+import { Subscription } from 'rxjs';
+import { IDraftListing, IAddOn, downscalePhoto, AddonLibraryService, IAddOnLibraryItem } from '@cnt-workspace/data-access';
 
 const DEFAULT_UNIT: IAddOn['unit'] = 'per stay';
 export const ADDON_DEFAULT_ICON = 'add_shopping_cart';
@@ -61,7 +62,22 @@ function makeId(): string {
         <div>
           @if (rows.length === 0) {
             <div class="rounded-2xl border border-dashed border-dark-text/15 bg-white p-8 text-center">
-              <p class="text-sm font-body text-muted-text mb-4">No add-ons yet — start from a common one:</p>
+              @if (library.length > 0) {
+                <p class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad mb-2 inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm">bookmark</span>
+                  From your library
+                </p>
+                <div class="flex flex-wrap justify-center gap-2 mb-4">
+                  @for (item of library; track item.libraryId) {
+                    <button type="button" (click)="addFromLibrary(item)" [disabled]="hasLabel(item.label)"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-trinidad/30 bg-trinidad/5 text-xs font-body font-bold text-dark-text hover:bg-trinidad/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                      <span class="material-symbols-outlined text-sm text-trinidad">{{ item.icon }}</span>
+                      {{ item.label }}
+                    </button>
+                  }
+                </div>
+              }
+              <p class="text-sm font-body text-muted-text mb-4">{{ library.length > 0 ? 'Or start from a common one:' : 'No add-ons yet — start from a common one:' }}</p>
               <div class="flex flex-wrap justify-center gap-2 mb-5">
                 @for (t of starterTemplates; track t.label) {
                   <button type="button" (click)="addFromTemplate(t)" [disabled]="hasLabel(t.label)"
@@ -193,13 +209,22 @@ function makeId(): string {
               }
             </div>
 
-            <!-- Add row + starter chips -->
+            <!-- Add row + library chips + starter chips -->
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" (click)="addRow()"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-dark-text/15 bg-white text-dark-text text-sm font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
                 <span class="material-symbols-outlined text-base">add</span>
                 Add another
               </button>
+              @for (item of library; track item.libraryId) {
+                @if (!hasLabel(item.label)) {
+                  <button type="button" (click)="addFromLibrary(item)" title="From your library"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-trinidad/30 bg-trinidad/5 text-xs font-body font-bold text-dark-text hover:bg-trinidad/10 transition-colors">
+                    <span class="material-symbols-outlined text-sm text-trinidad">{{ item.icon }}</span>
+                    {{ item.label }}
+                  </button>
+                }
+              }
               @for (t of starterTemplates; track t.label) {
                 @if (!hasLabel(t.label)) {
                   <button type="button" (click)="addFromTemplate(t)"
@@ -253,7 +278,7 @@ function makeId(): string {
     </div>
   `,
 })
-export class Phase3AddonsComponent {
+export class Phase3AddonsComponent implements OnInit, OnDestroy {
   @Input() set draft(value: IDraftListing | null) {
     const incoming = value?.addOns ?? [];
     this.rows = incoming.map(a => ({ ...a }));
@@ -262,9 +287,34 @@ export class Phase3AddonsComponent {
 
   rows: IAddOn[] = [];
   openPickerFor: string | null = null;
+  /** Host's personal saved add-on drafts — surfaced as one-click chips. */
+  library: IAddOnLibraryItem[] = [];
   readonly iconChoices = ICON_CHOICES;
   readonly starterTemplates = STARTER_TEMPLATES;
   readonly defaultIcon = DEFAULT_ICON;
+  private librarySub: Subscription | null = null;
+
+  constructor(private libraryService: AddonLibraryService) {}
+
+  ngOnInit(): void {
+    this.librarySub = this.libraryService.library$.subscribe(lib => { this.library = lib; });
+  }
+  ngOnDestroy(): void { this.librarySub?.unsubscribe(); }
+
+  /** Insert a library item as a new row (with a fresh per-listing id). */
+  addFromLibrary(item: IAddOnLibraryItem): void {
+    if (this.hasLabel(item.label)) return;
+    this.rows = [...this.rows, {
+      id: makeId(),
+      label: item.label,
+      description: item.description,
+      icon: item.icon,
+      price: item.price,
+      unit: item.unit,
+      photo: item.photo,
+    }];
+    this.emit();
+  }
 
   /** Rows complete enough to show in the guest preview / persist to guests. */
   get previewRows(): IAddOn[] {

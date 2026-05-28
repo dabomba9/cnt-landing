@@ -7,6 +7,7 @@ import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   AuthService, IPublicUser, IPrivateListing, getMyListings,
   HostListingDraftService, IAddOn, SeoService, ToastService, downscalePhoto,
+  AddonLibraryService, IAddOnLibraryItem,
 } from '@cnt-workspace/data-access';
 import {
   ADDON_ICON_CHOICES, ADDON_UNIT_CHOICES, ADDON_STARTER_TEMPLATES, ADDON_DEFAULT_ICON,
@@ -52,21 +53,34 @@ interface IAddOnDraft {
             <p class="text-sm text-muted-text font-body mt-1">Write the add-on once and pick which listings to attach it to. Each listing gets its own copy you can edit later.</p>
           </div>
 
-          @if (listings.length === 0) {
-            <div class="bg-white rounded-2xl border border-dark-text/8 p-10 text-center">
-              <span class="material-symbols-outlined text-3xl text-muted-text">storefront</span>
-              <h2 class="font-headline font-bold text-2xl mt-3 mb-2 text-dark-text">No listings yet</h2>
-              <p class="text-sm text-muted-text font-body mb-4">Publish at least one listing first — then come back to bulk-add extras.</p>
-              <a routerLink="/hosting/new" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
-                <span class="material-symbols-outlined text-base">add</span>
-                List your first property
-              </a>
-            </div>
-          } @else {
-            <div class="grid grid-cols-1 lg:grid-cols-[1fr_22rem] gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_22rem] gap-6">
 
               <!-- Add-on form -->
               <div class="bg-white rounded-2xl border border-dark-text/8 p-5 md:p-6 space-y-5">
+
+                <!-- Your library — saved drafts you can reload into the form. -->
+                @if (library.length > 0) {
+                  <div>
+                    <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-2 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-sm text-trinidad">bookmark</span>
+                      Your library
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      @for (item of library; track item.libraryId) {
+                        <span class="inline-flex items-center gap-1.5 pl-3 pr-1 py-1.5 rounded-full bg-trinidad/8 border border-trinidad/30 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                          <button type="button" (click)="applyLibraryItem(item)" class="inline-flex items-center gap-1.5 hover:text-trinidad transition-colors">
+                            <span class="material-symbols-outlined text-sm text-trinidad">{{ item.icon }}</span>
+                            {{ item.label }}
+                          </button>
+                          <button type="button" (click)="removeLibraryItem(item.libraryId)" aria-label="Remove from library"
+                            class="w-5 h-5 inline-flex items-center justify-center rounded-full hover:bg-trinidad hover:text-white text-muted-text transition-colors">
+                            <span class="material-symbols-outlined text-[12px]">close</span>
+                          </button>
+                        </span>
+                      }
+                    </div>
+                  </div>
+                }
 
                 <!-- Starter templates -->
                 <div>
@@ -164,55 +178,80 @@ interface IAddOnDraft {
                 </div>
               </div>
 
-              <!-- Listings checklist -->
-              <aside class="bg-white rounded-2xl border border-dark-text/8 p-5 md:p-6 self-start">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Your listings</div>
-                  <div class="flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
-                    <button type="button" (click)="selectAll()" class="text-trinidad hover:underline">All</button>
-                    <span class="text-muted-text">·</span>
-                    <button type="button" (click)="clearSelection()" class="text-muted-text hover:text-dark-text">None</button>
+              <!-- Right panel — listings checklist when present, library-only mode otherwise. -->
+              @if (listings.length > 0) {
+                <aside class="bg-white rounded-2xl border border-dark-text/8 p-5 md:p-6 self-start">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-dark-text">Your listings</div>
+                    <div class="flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold">
+                      <button type="button" (click)="selectAll()" class="text-trinidad hover:underline">All</button>
+                      <span class="text-muted-text">·</span>
+                      <button type="button" (click)="clearSelection()" class="text-muted-text hover:text-dark-text">None</button>
+                    </div>
                   </div>
-                </div>
-                <div class="space-y-2 max-h-[28rem] overflow-y-auto pr-1">
-                  @for (l of listings; track l.id) {
-                    <label class="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors"
-                      [ngClass]="selectedIds.has(l.id) ? 'bg-trinidad/5 border-trinidad/30' : 'bg-cream/40 border-dark-text/10 hover:border-trinidad/40'">
-                      <input type="checkbox" [checked]="selectedIds.has(l.id)" (change)="toggleListing(l.id)" class="sr-only">
-                      <span class="w-5 h-5 shrink-0 rounded-md border inline-flex items-center justify-center transition-colors"
-                        [ngClass]="selectedIds.has(l.id) ? 'bg-trinidad border-trinidad text-white' : 'bg-white border-dark-text/30 text-transparent'">
-                        <span class="material-symbols-outlined text-base leading-none" style="font-variation-settings: 'FILL' 1, 'wght' 700;">check</span>
-                      </span>
-                      <img [src]="l.image" [alt]="l.title" class="w-10 h-10 object-cover rounded-md border border-dark-text/10 shrink-0">
-                      <div class="flex-1 min-w-0">
-                        <div class="text-xs font-body font-bold text-dark-text truncate">{{ l.title }}</div>
-                        <div class="text-[0.6rem] text-muted-text truncate">{{ l.location }}</div>
-                      </div>
-                    </label>
-                  }
-                </div>
-              </aside>
+                  <div class="space-y-2 max-h-[28rem] overflow-y-auto pr-1">
+                    @for (l of listings; track l.id) {
+                      <label class="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors"
+                        [ngClass]="selectedIds.has(l.id) ? 'bg-trinidad/5 border-trinidad/30' : 'bg-cream/40 border-dark-text/10 hover:border-trinidad/40'">
+                        <input type="checkbox" [checked]="selectedIds.has(l.id)" (change)="toggleListing(l.id)" class="sr-only">
+                        <span class="w-5 h-5 shrink-0 rounded-md border inline-flex items-center justify-center transition-colors"
+                          [ngClass]="selectedIds.has(l.id) ? 'bg-trinidad border-trinidad text-white' : 'bg-white border-dark-text/30 text-transparent'">
+                          <span class="material-symbols-outlined text-base leading-none" style="font-variation-settings: 'FILL' 1, 'wght' 700;">check</span>
+                        </span>
+                        <img [src]="l.image" [alt]="l.title" class="w-10 h-10 object-cover rounded-md border border-dark-text/10 shrink-0">
+                        <div class="flex-1 min-w-0">
+                          <div class="text-xs font-body font-bold text-dark-text truncate">{{ l.title }}</div>
+                          <div class="text-[0.6rem] text-muted-text truncate">{{ l.location }}</div>
+                        </div>
+                      </label>
+                    }
+                  </div>
+                </aside>
+              } @else {
+                <aside class="bg-white rounded-2xl border border-dark-text/8 p-5 md:p-6 self-start">
+                  <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-trinidad/10 mb-3">
+                    <span class="material-symbols-outlined text-2xl text-trinidad">bookmark</span>
+                  </div>
+                  <div class="text-xs font-label uppercase tracking-[0.12em] font-bold text-trinidad mb-1">Library only</div>
+                  <h3 class="font-headline font-bold text-dark-text text-lg leading-tight mb-2">No listings yet — save for later</h3>
+                  <p class="text-sm text-muted-text font-body leading-relaxed mb-4">Draft your add-ons now. They'll appear as one-click chips inside any listing you publish later.</p>
+                  <a routerLink="/hosting/new" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors no-underline">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    Or list your first property
+                  </a>
+                </aside>
+              }
             </div>
-          }
         </div>
       </section>
 
-      @if (listings.length > 0) {
-        <!-- Sticky action bar -->
-        <div class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur border-t border-dark-text/10 shadow-[0_-12px_24px_rgba(0,0,0,0.06)]">
-          <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-3 flex items-center justify-between gap-3">
-            <div class="text-sm font-body text-dark-text">
+      <!-- Sticky action bar — always present so library-only hosts can save too. -->
+      <div class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur border-t border-dark-text/10 shadow-[0_-12px_24px_rgba(0,0,0,0.06)]">
+        <div class="max-w-[80rem] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div class="text-sm font-body text-dark-text">
+            @if (listings.length > 0) {
               <span class="font-bold">{{ selectedIds.size }}</span> {{ selectedIds.size === 1 ? 'listing' : 'listings' }} selected
-              @if (!formValid) { <span class="text-muted-text">· fill the title and price to save</span> }
-            </div>
-            <button type="button" (click)="save()" [disabled]="!canSave"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(227,83,13,0.2)]">
-              <span class="material-symbols-outlined text-base">save</span>
-              Save to {{ selectedIds.size }} {{ selectedIds.size === 1 ? 'listing' : 'listings' }}
+            } @else {
+              Library mode
+            }
+            @if (!formValid) { <span class="text-muted-text">· fill the title and price to save</span> }
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" (click)="saveToLibrary()" [disabled]="!formValid"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-trinidad/30 text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+              <span class="material-symbols-outlined text-base">bookmark_add</span>
+              Save to library
             </button>
+            @if (listings.length > 0) {
+              <button type="button" (click)="save()" [disabled]="!canSave"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(227,83,13,0.2)]">
+                <span class="material-symbols-outlined text-base">save</span>
+                Save to {{ selectedIds.size }} {{ selectedIds.size === 1 ? 'listing' : 'listings' }}
+              </button>
+            }
           </div>
         </div>
-      }
+      </div>
     </main>
     <curbnturf-footer></curbnturf-footer>
   `,
@@ -221,6 +260,7 @@ export class BulkAddonsBuilderComponent implements OnInit, OnDestroy {
   user: IPublicUser | null = null;
   listings: IPrivateListing[] = [];
   selectedIds = new Set<number>();
+  library: IAddOnLibraryItem[] = [];
 
   form: IAddOnDraft = {
     label: '',
@@ -241,6 +281,7 @@ export class BulkAddonsBuilderComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: object,
     private auth: AuthService,
     private drafts: HostListingDraftService,
+    private libraryService: AddonLibraryService,
     private router: Router,
     private seo: SeoService,
     private toasts: ToastService,
@@ -255,6 +296,7 @@ export class BulkAddonsBuilderComponent implements OnInit, OnDestroy {
     });
     this.user = this.auth.currentUser;
     if (this.user) this.listings = getMyListings(this.user.email);
+    this.subs.push(this.libraryService.library$.subscribe(lib => { this.library = lib; }));
   }
 
   ngOnDestroy(): void { this.subs.forEach(s => s.unsubscribe()); }
@@ -268,6 +310,35 @@ export class BulkAddonsBuilderComponent implements OnInit, OnDestroy {
       unit: t.unit,
       photo: t.photo,
     };
+  }
+
+  applyLibraryItem(item: IAddOnLibraryItem): void {
+    this.form = {
+      label: item.label,
+      description: item.description,
+      icon: item.icon,
+      price: item.price,
+      unit: item.unit,
+      photo: item.photo,
+    };
+  }
+
+  removeLibraryItem(libraryId: string): void {
+    this.libraryService.remove(libraryId);
+    this.toasts.info('Removed from library.');
+  }
+
+  saveToLibrary(): void {
+    if (!this.formValid) return;
+    this.libraryService.add({
+      label: this.form.label.trim(),
+      description: this.form.description.trim(),
+      icon: this.form.icon,
+      price: this.form.price ?? 0,
+      unit: this.form.unit,
+      photo: this.form.photo,
+    });
+    this.toasts.success('Saved to your library.');
   }
 
   pickIcon(icon: string): void {
