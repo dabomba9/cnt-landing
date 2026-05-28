@@ -40,6 +40,7 @@ import { Phase3AddonsComponent } from './steps/phase3-addons.component';
               <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block">Add-ons</span>
               <h1 class="font-headline font-bold text-dark-text text-3xl md:text-4xl leading-tight">{{ draft?.title || 'Edit add-ons' }}</h1>
               <p class="text-sm text-muted-text font-body mt-1">Add bookable extras like firewood, late check-out, or pet fees. Changes save automatically.</p>
+              <p class="text-xs text-muted-text font-body mt-1">Adding the same add-on to multiple listings? <a routerLink="/hosting/addons" class="text-trinidad font-button font-bold uppercase tracking-[0.1em] text-[0.65rem] hover:underline ml-1">Try the bulk builder →</a></p>
             </div>
             <button type="button" (click)="done()"
               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_8px_20px_rgba(227,83,13,0.2)] shrink-0">

@@ -5,19 +5,24 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { IDraftListing, IAddOn, downscalePhoto } from '@cnt-workspace/data-access';
 
 const DEFAULT_UNIT: IAddOn['unit'] = 'per stay';
-const DEFAULT_ICON = 'add_shopping_cart';
+export const ADDON_DEFAULT_ICON = 'add_shopping_cart';
+const DEFAULT_ICON = ADDON_DEFAULT_ICON;
 
 /** Curated icon set — Material Symbols names. Picked to cover the common
  * add-on categories hosts ask about: services, food, products, experiences. */
-const ICON_CHOICES: string[] = [
+export const ADDON_ICON_CHOICES: string[] = [
   'add_shopping_cart', 'local_fire_department', 'pets', 'directions_car', 'login', 'logout',
   'restaurant', 'wine_bar', 'sports_bar', 'coffee', 'local_pizza', 'cake',
   'kayaking', 'hiking', 'directions_bike', 'surfing', 'fishing', 'campaign',
   'cleaning_services', 'iron', 'local_laundry_service', 'wifi', 'electric_bolt', 'shower',
 ];
+const ICON_CHOICES = ADDON_ICON_CHOICES;
+
+/** Curated unit options. Surfaced both in the wizard row editor and the bulk builder. */
+export const ADDON_UNIT_CHOICES: IAddOn['unit'][] = ['per stay', 'per night', 'per person', 'per unit'];
 
 /** One-click presets so an empty add-ons list has an obvious starting point. */
-const STARTER_TEMPLATES: Omit<IAddOn, 'id'>[] = [
+export const ADDON_STARTER_TEMPLATES: Omit<IAddOn, 'id'>[] = [
   { label: 'Firewood bundle',  description: 'A bundle of seasoned firewood, ready to burn.',     icon: 'local_fire_department', price: 15, unit: 'per unit' },
   { label: 'Late check-out',   description: 'Stay a few hours past the standard departure time.', icon: 'logout',                price: 25, unit: 'per stay' },
   { label: 'Early check-in',   description: 'Arrive ahead of the standard check-in time.',        icon: 'login',                 price: 25, unit: 'per stay' },
@@ -25,6 +30,7 @@ const STARTER_TEMPLATES: Omit<IAddOn, 'id'>[] = [
   { label: 'Extra vehicle',    description: 'Park a second vehicle on the site.',                 icon: 'directions_car',        price: 15, unit: 'per night' },
   { label: 'Mid-stay cleaning',description: 'A refresh of the site partway through your stay.',    icon: 'cleaning_services',     price: 40, unit: 'per stay' },
 ];
+const STARTER_TEMPLATES = ADDON_STARTER_TEMPLATES;
 
 let nextId = 1;
 function makeId(): string {
