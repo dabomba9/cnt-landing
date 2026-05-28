@@ -75,12 +75,12 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
               @for (p of plans; track p.id) {
                 <article class="relative bg-white rounded-2xl border shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-5 flex flex-col gap-3 transition-shadow hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)]"
                   [ngClass]="selectedIds.has(p.id) ? 'border-trinidad ring-2 ring-trinidad/20' : 'border-dark-text/8'">
-                  <label class="absolute top-3 right-3 w-6 h-6 inline-flex items-center justify-center rounded-md bg-white border border-dark-text/20 hover:border-trinidad cursor-pointer transition-colors"
-                    [ngClass]="selectedIds.has(p.id) ? 'bg-trinidad border-trinidad text-white' : ''">
+                  <label class="absolute top-3 right-3 w-6 h-6 inline-flex items-center justify-center rounded-md border cursor-pointer transition-colors"
+                    [ngClass]="selectedIds.has(p.id)
+                      ? 'bg-trinidad border-trinidad text-white'
+                      : 'bg-white border-dark-text/30 text-transparent hover:border-trinidad'">
                     <input type="checkbox" [checked]="selectedIds.has(p.id)" (change)="toggleSelect(p.id)" aria-label="Select trip" class="sr-only">
-                    @if (selectedIds.has(p.id)) {
-                      <span class="material-symbols-outlined text-base">check</span>
-                    }
+                    <span class="material-symbols-outlined text-base leading-none" style="font-variation-settings: 'FILL' 1, 'wght' 700;">check</span>
                   </label>
                   <a [routerLink]="['/search']" [queryParams]="{ openPlanner: 1, plan: p.id }" class="no-underline group pr-8">
                     <h3 class="font-headline font-bold text-dark-text text-lg leading-tight group-hover:text-trinidad transition-colors">{{ p.name }}</h3>
