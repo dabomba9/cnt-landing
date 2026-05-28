@@ -316,11 +316,10 @@
       </div>
 
       <!-- Overlay Vignette to slightly pull focus to button -->
-      <div class="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>
+      <div class="absolute inset-0 z-[800] bg-white/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>
 
       <!-- Center Interactive Explore Button -->
-      <!-- Center Interactive Explore Button -->
-      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="absolute inset-0 z-[810] flex items-center justify-center pointer-events-none">
         
         <a routerLink="/search" [queryParams]="{ view: 'map' }" aria-label="Explore stays on the map"
           class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl no-underline">
