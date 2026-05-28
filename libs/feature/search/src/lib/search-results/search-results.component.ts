@@ -1139,6 +1139,27 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  /** Two-tap confirm gate for the drawer's delete-trip action. */
+  confirmingActiveDelete = false;
+
+  /** Clone the active plan and switch the drawer to the copy. */
+  duplicateActivePlan(): void {
+    if (!this.activePlan) return;
+    const copy = this.planner.duplicate(this.activePlan.id);
+    if (!copy) return;
+    this.planner.setActiveId(copy.id);
+    this.toasts.success('Trip duplicated.');
+  }
+
+  /** Delete the active plan after the user has armed the two-tap confirm. */
+  confirmDeleteActivePlan(): void {
+    if (!this.activePlan) return;
+    const removed = this.activePlan;
+    this.planner.delete(removed.id);
+    this.confirmingActiveDelete = false;
+    this.toasts.info(`"${removed.name}" deleted.`);
+  }
+
   /** Copy a public share URL for the active trip to the clipboard. */
   async shareTrip(): Promise<void> {
     if (!this.activePlan || !isPlatformBrowser(this.platformId)) return;

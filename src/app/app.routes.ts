@@ -1,6 +1,14 @@
-import { Route } from '@angular/router';
+import { Route, Router } from '@angular/router';
+import { inject } from '@angular/core';
 import { HomeComponent } from '@cnt-workspace/home';
 import { authGuard, editOwnerGuard } from '@cnt-workspace/data-access';
+
+/** /trip-planner now lands on the /search drawer experience (map + planner).
+ *  Returning a UrlTree from the guard preserves the openPlanner query param
+ *  which a plain `redirectTo` string can't express. */
+const tripPlannerToSearchDrawer = () => inject(Router).createUrlTree(['/search'], {
+  queryParams: { openPlanner: 1 },
+});
 
 export const appRoutes: Route[] = [
   { path: '', component: HomeComponent },
@@ -49,6 +57,12 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'trip-planner',
+    pathMatch: 'full',
+    canActivate: [authGuard, tripPlannerToSearchDrawer],
+    children: [],
+  },
+  {
+    path: 'trip-planner/all',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/trip-planner').then(m => m.TripPlannerListComponent),
   },

@@ -672,6 +672,27 @@
           <span class="material-symbols-outlined text-base">ios_share</span>
         </button>
       }
+      @if (activePlan) {
+        <button type="button" (click)="duplicateActivePlan()" aria-label="Duplicate trip"
+          class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-dark-text hover:text-jungle-green transition-colors shrink-0">
+          <span class="material-symbols-outlined text-base">content_copy</span>
+        </button>
+        @if (confirmingActiveDelete) {
+          <button type="button" (click)="confirmDeleteActivePlan()" aria-label="Confirm delete"
+            class="px-2 h-8 inline-flex items-center justify-center rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shrink-0">
+            Confirm
+          </button>
+          <button type="button" (click)="confirmingActiveDelete = false" aria-label="Cancel delete"
+            class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-muted-text transition-colors shrink-0">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        } @else {
+          <button type="button" (click)="confirmingActiveDelete = true" aria-label="Delete trip"
+            class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-dark-text hover:text-trinidad transition-colors shrink-0">
+            <span class="material-symbols-outlined text-base">delete</span>
+          </button>
+        }
+      }
       <button type="button" (click)="closePlannerDrawer()" aria-label="Close planner"
         class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors shrink-0">
         <span class="material-symbols-outlined text-base">close</span>
@@ -996,7 +1017,7 @@
           Open focused view →
         </a>
       } @else {
-        <a routerLink="/trip-planner" class="block w-full text-center text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-2 hover:underline">All trips →</a>
+        <a routerLink="/trip-planner/all" class="block w-full text-center text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad py-2 hover:underline">Manage all trips →</a>
       }
     </div>
   </aside>
