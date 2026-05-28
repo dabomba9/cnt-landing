@@ -801,7 +801,28 @@
       }
 
       @if (!activePlan) {
-        <p class="text-xs text-muted-text text-center py-4">Pick a trip above or tap + to start a new one — then click any listing or POI on the map and "Add to trip".</p>
+        @if (tripPlans.length === 0) {
+          <p class="text-xs text-muted-text text-center py-4">No trips yet. Tap + above to start one, then click any listing or POI on the map to add it.</p>
+        } @else {
+          <div class="space-y-2">
+            <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text px-1">Your trips</div>
+            @for (p of tripPlans; track p.id) {
+              <button type="button" (click)="selectPlan(p.id)"
+                class="w-full text-left rounded-xl border border-dark-text/10 bg-cream/30 hover:bg-cream/60 hover:border-trinidad transition-colors p-3">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined text-base text-trinidad">route</span>
+                  <span class="flex-1 text-sm font-body font-bold text-dark-text truncate">{{ p.name }}</span>
+                  <span class="text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text shrink-0">{{ p.stops.length }} {{ p.stops.length === 1 ? 'stop' : 'stops' }}</span>
+                </div>
+                @if (p.stops.length >= 2) {
+                  <div class="text-[0.65rem] text-muted-text truncate pl-6">{{ p.stops[0].name }} → {{ p.stops[p.stops.length - 1].name }}</div>
+                } @else if (p.stops.length === 1) {
+                  <div class="text-[0.65rem] text-muted-text truncate pl-6">{{ p.stops[0].name }}</div>
+                }
+              </button>
+            }
+          </div>
+        }
       } @else {
         @if (activePlan.stops.length === 0) {
           <p class="text-xs text-muted-text text-center py-4">No stops yet. Click any listing or POI on the map to add it.</p>
