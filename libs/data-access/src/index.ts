@@ -3,6 +3,7 @@ export * from './lib/auth/auth.guard';
 export * from './lib/booking/booking.service';
 export * from './lib/booking/booking-ics.util';
 export * from './lib/messaging/message.service';
+export * from './lib/messaging/quick-reply.service';
 export * from './lib/toast/toast.service';
 export * from './lib/seo/seo.service';
 export * from './lib/listings/mock-listings.data';

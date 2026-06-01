@@ -8,6 +8,7 @@ import { FooterComponent } from '@cnt-workspace/ui';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { SeoService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
+import { QuickReplyService, IQuickReply } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { HostReviewService } from '@cnt-workspace/data-access';
 import { IThread, MessageAuthor, IMessage, IBooking, STATUS_META, BookingStatus } from '@cnt-workspace/models';
@@ -59,14 +60,27 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScroll = false;
 
   @ViewChild('thread') threadEl?: ElementRef<HTMLDivElement>;
+  @ViewChild('composerTextarea') composerTextarea?: ElementRef<HTMLTextAreaElement>;
 
   STATUS_META = STATUS_META;
+
+  /** Host-side quick-reply chips (only rendered when the current user is the
+   *  host in the active thread). */
+  quickReplies: IQuickReply[] = [];
+  /** Inline editor state for adding/editing a quick reply. */
+  quickReplyEditorOpen = false;
+  quickReplyEditingId: string | null = null;
+  quickReplyDraftLabel = '';
+  quickReplyDraftBody = '';
+  /** Two-tap confirm: holds the id of the chip the host just tapped × on. */
+  confirmingDeleteQuickReplyId: string | null = null;
 
   constructor(
     private auth: AuthService,
     private msg: MessageService,
     private bookingSvc: BookingService,
     private hostReviews: HostReviewService,
+    private quickRepliesSvc: QuickReplyService,
     private route: ActivatedRoute,
     private router: Router,
     private seo: SeoService,
@@ -80,6 +94,10 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
       robots: 'noindex, nofollow',
     });
     this.user = this.auth.currentUser;
+
+    this.subs.push(
+      this.quickRepliesSvc.replies$.subscribe(list => { this.quickReplies = list; }),
+    );
 
     this.subs.push(
       this.msg.threads$.subscribe(() => {
@@ -236,6 +254,77 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.sendingMessageId === m.id) return 'sending';
     if (!this.user) return 'sent';
     return this.msg.hasBeenReadBy(t, m, this.user.email) ? 'seen' : 'sent';
+  }
+
+  // ============ Quick replies (host-side) ============
+
+  /** Pre-fill the composer with the chip's body, then focus + cursor-to-end. */
+  applyQuickReply(r: IQuickReply): void {
+    this.composeBody = r.body;
+    queueMicrotask(() => {
+      const el = this.composerTextarea?.nativeElement;
+      if (!el) return;
+      el.focus();
+      const len = el.value.length;
+      el.setSelectionRange(len, len);
+    });
+  }
+
+  /** Open the inline editor in "add" mode. */
+  startAddQuickReply(): void {
+    this.quickReplyEditingId = null;
+    this.quickReplyDraftLabel = '';
+    this.quickReplyDraftBody = '';
+    this.quickReplyEditorOpen = true;
+  }
+
+  /** Open the inline editor pre-filled with the chip's current label + body. */
+  startEditQuickReply(r: IQuickReply): void {
+    this.quickReplyEditingId = r.id;
+    this.quickReplyDraftLabel = r.label;
+    this.quickReplyDraftBody = r.body;
+    this.quickReplyEditorOpen = true;
+  }
+
+  cancelQuickReplyEditor(): void {
+    this.quickReplyEditorOpen = false;
+    this.quickReplyEditingId = null;
+    this.quickReplyDraftLabel = '';
+    this.quickReplyDraftBody = '';
+  }
+
+  saveQuickReplyDraft(): void {
+    const label = this.quickReplyDraftLabel.trim();
+    const body = this.quickReplyDraftBody.trim();
+    if (!label || !body) return;
+    if (this.quickReplyEditingId) {
+      this.quickRepliesSvc.update(this.quickReplyEditingId, { label, body });
+    } else {
+      this.quickRepliesSvc.add(label, body);
+    }
+    this.cancelQuickReplyEditor();
+  }
+
+  /** First tap arms; second tap confirms removal. */
+  tapDeleteQuickReply(r: IQuickReply, ev: Event): void {
+    ev.stopPropagation();
+    if (this.confirmingDeleteQuickReplyId === r.id) {
+      this.quickRepliesSvc.remove(r.id);
+      this.confirmingDeleteQuickReplyId = null;
+    } else {
+      this.confirmingDeleteQuickReplyId = r.id;
+      // Auto-disarm after 2.5s so a stray hover doesn't leave the chip primed.
+      setTimeout(() => {
+        if (this.confirmingDeleteQuickReplyId === r.id) this.confirmingDeleteQuickReplyId = null;
+      }, 2500);
+    }
+  }
+
+  /** True when the current user is the host in the active thread — gates the
+   *  chip strip render. */
+  showQuickReplies(t: IThread | null): boolean {
+    if (!t) return false;
+    return this.authorForCurrentUser(t) === 'host';
   }
 
   // ---- Stream rendering: date dividers + run grouping + typing indicator ----

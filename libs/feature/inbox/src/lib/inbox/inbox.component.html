@@ -271,8 +271,52 @@
                 }
               </div>
 
+              @if (showQuickReplies(activeThread)) {
+                <!-- Host-side quick-reply chips. Click to pre-fill composer; × to delete (two-tap confirm). -->
+                <div class="border-t border-dark-text/8 bg-white px-3 md:px-4 pt-3">
+                  @if (quickReplyEditorOpen) {
+                    <div class="mb-3 rounded-xl border border-trinidad/30 bg-trinidad/5 p-3 space-y-2">
+                      <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad">
+                        {{ quickReplyEditingId ? 'Edit quick reply' : 'New quick reply' }}
+                      </div>
+                      <input type="text" [(ngModel)]="quickReplyDraftLabel" name="qrLabel" maxlength="40" placeholder="Chip label (e.g. Gate code)"
+                        class="w-full bg-white border border-dark-text/15 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green">
+                      <textarea [(ngModel)]="quickReplyDraftBody" name="qrBody" rows="2" maxlength="300" placeholder="The full message text the chip inserts…"
+                        class="w-full bg-white border border-dark-text/15 rounded-lg px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green resize-none"></textarea>
+                      <div class="flex justify-end gap-2">
+                        <button type="button" (click)="cancelQuickReplyEditor()"
+                          class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">Cancel</button>
+                        <button type="button" (click)="saveQuickReplyDraft()" [disabled]="!quickReplyDraftLabel.trim() || !quickReplyDraftBody.trim()"
+                          class="px-4 py-1.5 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed">Save</button>
+                      </div>
+                    </div>
+                  }
+                  <div class="flex flex-nowrap items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                    @for (r of quickReplies; track r.id) {
+                      <span class="group inline-flex items-center bg-cream border border-dark-text/15 hover:border-trinidad rounded-full pl-3 pr-1 py-1.5 shrink-0 transition-colors">
+                        <button type="button" (click)="applyQuickReply(r)" [title]="r.body"
+                          class="text-[0.7rem] font-body font-bold text-dark-text uppercase tracking-[0.08em] mr-2">
+                          {{ r.label }}
+                        </button>
+                        <button type="button" (click)="tapDeleteQuickReply(r, $event)"
+                          [attr.aria-label]="confirmingDeleteQuickReplyId === r.id ? 'Confirm delete quick reply' : 'Delete quick reply'"
+                          [ngClass]="confirmingDeleteQuickReplyId === r.id ? 'bg-trinidad text-white' : 'text-muted-text hover:bg-dark-text/10'"
+                          class="w-5 h-5 inline-flex items-center justify-center rounded-full transition-colors">
+                          <span class="material-symbols-outlined text-[12px]">close</span>
+                        </button>
+                      </span>
+                    }
+                    <button type="button" (click)="startAddQuickReply()"
+                      class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-trinidad/40 text-trinidad text-[0.7rem] uppercase tracking-[0.08em] font-button font-bold hover:bg-trinidad/5 transition-colors">
+                      <span class="material-symbols-outlined text-sm">add</span>
+                      New
+                    </button>
+                  </div>
+                </div>
+              }
               <form (submit)="$event.preventDefault(); send()" class="border-t border-dark-text/8 bg-white px-3 md:px-4 py-3 flex items-end gap-2">
                 <textarea
+                  #composerTextarea
                   [(ngModel)]="composeBody"
                   name="composeBody"
                   rows="1"
