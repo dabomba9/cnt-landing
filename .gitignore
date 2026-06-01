@@ -45,3 +45,6 @@ Thumbs.db
 *.log
 serve.log
 recover.txt
+
+# Claude Code session state
+.claude/scheduled_tasks.lock
