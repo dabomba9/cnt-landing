@@ -375,23 +375,31 @@ export class BulkAddonsBuilderComponent implements OnInit, OnDestroy {
     if (!this.canSave) return;
     const ids = Array.from(this.selectedIds);
     let written = 0;
-    for (const id of ids) {
-      const draft = this.drafts.loadForEdit(id);
-      if (!draft) continue;
-      const next: IAddOn[] = [
-        ...(draft.addOns ?? []),
-        {
-          id: `addon-${Date.now().toString(36)}-${id}-${Math.random().toString(36).slice(2, 6)}`,
-          label: this.form.label.trim(),
-          description: this.form.description.trim(),
-          icon: this.form.icon,
-          price: this.form.price ?? 0,
-          unit: this.form.unit,
-          photo: this.form.photo,
-        },
-      ];
-      this.drafts.saveDraft({ addOns: next });
-      written++;
+    try {
+      for (const id of ids) {
+        const draft = this.drafts.loadForEdit(id);
+        if (!draft) continue;
+        const next: IAddOn[] = [
+          ...(draft.addOns ?? []),
+          {
+            id: `addon-${Date.now().toString(36)}-${id}-${Math.random().toString(36).slice(2, 6)}`,
+            label: this.form.label.trim(),
+            description: this.form.description.trim(),
+            icon: this.form.icon,
+            price: this.form.price ?? 0,
+            unit: this.form.unit,
+            photo: this.form.photo,
+          },
+        ];
+        this.drafts.saveDraft({ addOns: next });
+        written++;
+      }
+    } finally {
+      // Critical: the loop above puts HostListingDraftService into edit mode
+      // for the last listing. Without this, a subsequent /hosting/new wizard
+      // would write to that listing's snapshot instead of starting a fresh
+      // new-listing draft. exitEdit() restores the pre-bulk draft state.
+      this.drafts.exitEdit();
     }
     if (written === 0) {
       this.toasts.error('No listings were updated.');

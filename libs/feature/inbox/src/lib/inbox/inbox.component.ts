@@ -362,9 +362,11 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
       : !!b.reviewedAt;
 
     // Pick the current step — the first non-done step (excluding cancelled
-    // short-circuit handled above).
+    // short-circuit handled above). Pending status means the request was
+    // made and we're waiting on the host to approve, so 'approved' is the
+    // current step (Requested itself is always done once the thread exists).
     let current: string | null = null;
-    if (b.status === 'pending')        current = 'requested';
+    if (b.status === 'pending')        current = 'approved';
     else if (!approvedDone)            current = 'approved';
     else if (!paidDone)                current = 'paid';
     else if (!stayDone)                current = 'stayed';

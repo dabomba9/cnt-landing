@@ -101,7 +101,14 @@ export class HostingAddonsStandaloneComponent implements OnInit, OnDestroy {
     this.subs.push(this.drafts.draft$.subscribe(d => { this.draft = d; }));
   }
 
-  ngOnDestroy(): void { this.subs.forEach(s => s.unsubscribe()); }
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+    // ngOnInit called drafts.loadForEdit(id), which puts the singleton draft
+    // service into edit mode pointed at this listing. Without exitEdit() here,
+    // a subsequent /hosting/new wizard's saveDraft would write to this
+    // listing's snapshot instead of starting a fresh new-listing draft.
+    this.drafts.exitEdit();
+  }
 
   /** Phase3AddonsComponent emits a full add-ons patch on every row change —
    *  hand it straight to the draft service to persist (snapshots in edit mode). */
