@@ -327,6 +327,63 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.authorForCurrentUser(t) === 'host';
   }
 
+  // ============ Per-stay timeline ============
+
+  /** One step in the booking timeline strip pinned above the message stream. */
+  timelineSteps(t: IThread | null): { key: string; label: string; icon: string; state: 'done' | 'current' | 'pending' | 'cancelled' }[] {
+    if (!t) return [];
+    const b = this.activeBooking;
+    if (!b) return [];
+
+    // Short-circuit for terminal-fail states.
+    if (b.status === 'declined' || b.status === 'cancelled') {
+      const failLabel = b.status === 'declined' ? 'Declined' : 'Cancelled';
+      return [
+        { key: 'requested', label: 'Requested', icon: 'send',     state: 'done' },
+        { key: 'failed',    label: failLabel,   icon: 'cancel',   state: 'cancelled' },
+        { key: 'paid',      label: 'Paid',      icon: 'payments', state: 'pending' },
+        { key: 'stayed',    label: 'Stayed',    icon: 'nights_stay', state: 'pending' },
+        { key: 'reviewed',  label: 'Reviewed',  icon: 'rate_review', state: 'pending' },
+      ];
+    }
+
+    const now = Date.now();
+    const endMs = Date.parse(b.dates.end);
+    const stayDone = now > endMs;
+
+    // Approved / Paid derivation.
+    const approvedDone = b.status === 'approved' || b.status === 'confirmed';
+    const paidDone     = b.status === 'confirmed';
+
+    // Reviewed — per viewer side; otherwise pending.
+    const viewerRole = this.authorForCurrentUser(t);
+    const reviewedDone = viewerRole === 'host'
+      ? !!b.hostReviewedAt
+      : !!b.reviewedAt;
+
+    // Pick the current step — the first non-done step (excluding cancelled
+    // short-circuit handled above).
+    let current: string | null = null;
+    if (b.status === 'pending')        current = 'requested';
+    else if (!approvedDone)            current = 'approved';
+    else if (!paidDone)                current = 'paid';
+    else if (!stayDone)                current = 'stayed';
+    else if (!reviewedDone)            current = 'reviewed';
+
+    const stateOf = (key: string, done: boolean): 'done' | 'current' | 'pending' => {
+      if (done) return 'done';
+      return current === key ? 'current' : 'pending';
+    };
+
+    return [
+      { key: 'requested', label: 'Requested', icon: 'send',        state: stateOf('requested', true) },
+      { key: 'approved',  label: 'Approved',  icon: 'task_alt',    state: stateOf('approved', approvedDone) },
+      { key: 'paid',      label: 'Paid',      icon: 'payments',    state: stateOf('paid', paidDone) },
+      { key: 'stayed',    label: 'Stayed',    icon: 'nights_stay', state: stateOf('stayed', stayDone) },
+      { key: 'reviewed',  label: 'Reviewed',  icon: 'rate_review', state: stateOf('reviewed', reviewedDone) },
+    ];
+  }
+
   // ---- Stream rendering: date dividers + run grouping + typing indicator ----
 
   /** Build the renderable rows for the active thread: dividers, grouped messages, and a trailing typing bubble when applicable. */

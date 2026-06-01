@@ -184,6 +184,27 @@
                 </a>
               }
 
+              <!-- Per-stay timeline strip — Requested → Approved → Paid → Stayed → Reviewed.
+                   Renders only when the thread is tied to a booking. -->
+              @if (activeBooking; as booking) {
+                <div class="px-4 md:px-6 py-2.5 bg-cream/40 border-b border-dark-text/8">
+                  <ol class="flex flex-wrap items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold">
+                    @for (s of timelineSteps(activeThread); track s.key; let last = $last) {
+                      <li class="inline-flex items-center gap-1"
+                        [ngClass]="{
+                          'text-jungle-green': s.state === 'done',
+                          'text-trinidad':     s.state === 'current',
+                          'text-muted-text':   s.state === 'pending',
+                          'text-trinidad line-through opacity-80': s.state === 'cancelled'
+                        }">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ s.icon }}</span>
+                        {{ s.label }}
+                      </li>
+                      @if (!last) { <span class="text-dark-text/25">·</span> }
+                    }
+                  </ol>
+                </div>
+              }
               <div #thread class="inbox-thread__messages px-4 md:px-6 py-5">
                 @for (row of streamRows; track row.key) {
                   @switch (row.kind) {
