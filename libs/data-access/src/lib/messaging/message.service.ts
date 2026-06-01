@@ -117,6 +117,19 @@ export class MessageService {
     return !lastRead || lastRead < last.createdAt;
   }
 
+  /** True when the counterparty's lastReadAt is newer than this message's
+   *  createdAt — drives the "Seen ✓✓" indicator on outgoing bubbles. */
+  hasBeenReadBy(t: IThread, m: IMessage, viewerEmail: string): boolean {
+    if (m.author === 'system') return false;
+    const viewerRole = this.roleForUser(t, viewerEmail);
+    if (!viewerRole) return false;
+    // Counterparty key — opposite end of the thread.
+    const otherKey = viewerRole === 'guest' ? t.hostEmail : t.guestEmail;
+    const lastRead = t.lastReadAt?.[otherKey];
+    if (!lastRead) return false;
+    return Date.parse(lastRead) >= Date.parse(m.createdAt);
+  }
+
   markRead(threadId: string, email: string): void {
     const all = this.read();
     const idx = all.findIndex(t => t.id === threadId);

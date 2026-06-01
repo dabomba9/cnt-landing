@@ -198,16 +198,44 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.router.navigate(['/inbox']);
   }
 
+  /** Id of the message most recently sent by the viewer — drives the
+   *  transient "Sending…" indicator on the bubble + the disabled send
+   *  button. Cleared after a brief delay so the bubble flips to "Sent". */
+  sendingMessageId: string | null = null;
+  private sendingTimeout: ReturnType<typeof setTimeout> | null = null;
+
   send(): void {
     const t = this.activeThread;
     if (!t || !this.user) return;
+    if (this.sendingMessageId) return; // already mid-send; guard double-tap
     const author = this.authorForCurrentUser(t);
     if (!author) return;
     const body = this.composeBody.trim();
     if (!body) return;
-    this.msg.sendMessage(t.id, author, body);
+    const msg = this.msg.sendMessage(t.id, author, body);
     this.composeBody = '';
     this.shouldScroll = true;
+    if (msg) {
+      this.sendingMessageId = msg.id;
+      if (this.sendingTimeout) clearTimeout(this.sendingTimeout);
+      this.sendingTimeout = setTimeout(() => {
+        if (this.sendingMessageId === msg.id) this.sendingMessageId = null;
+      }, 600);
+    }
+  }
+
+  /** True when the given message was authored by the current viewer — used
+   *  by the template to decide whether to render the receipt indicator. */
+  isOutgoing(t: IThread, m: IMessage): boolean {
+    const me = this.authorForCurrentUser(t);
+    return !!me && m.author === me;
+  }
+
+  /** "sending" | "seen" | "sent" — picks which receipt label to render. */
+  receiptState(t: IThread, m: IMessage): 'sending' | 'seen' | 'sent' {
+    if (this.sendingMessageId === m.id) return 'sending';
+    if (!this.user) return 'sent';
+    return this.msg.hasBeenReadBy(t, m, this.user.email) ? 'seen' : 'sent';
   }
 
   // ---- Stream rendering: date dividers + run grouping + typing indicator ----
