@@ -8,7 +8,7 @@ import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
   getAddOnPerformance, IAddOnPerformance, hasOwnedListings,
-  HostListingDraftService,
+  HostListingDraftService, getListingDetail,
   HostReviewService, IHostReviewSubScores, GUEST_SUBSCORE_LABELS, averageHostSubScores, REVEAL_WINDOW_DAYS,
   MIN_REVIEW_CHARS_FOR_CREDIT,
 } from '@cnt-workspace/data-access';
@@ -40,6 +40,9 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   hostBookings: IBooking[] = [];
   /** Aggregated attach-rate / revenue per add-on the host offers. */
   addOnPerformance: IAddOnPerformance[] = [];
+  /** addOn id → owning listing id, precomputed for drill-in routing on the
+   *  analytics panel's Top sellers list. */
+  private addOnToListingId: Record<string, number> = {};
   private subs: Subscription[] = [];
 
   /** Action modal state — used for both decline (pending) and cancel (approved/confirmed). */
@@ -99,6 +102,7 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
           this.hostBookings = this.user ? getHostBookings(this.user.email, all) : [];
           this.stats = getHostStats(this.listings, this.hostBookings);
           this.addOnPerformance = getAddOnPerformance(this.listings, this.hostBookings);
+          this.recomputeAddOnLocations();
         }),
       );
     }
@@ -185,6 +189,53 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   /** Real revenue-counting bookings for the chart — confirmed + approved. */
   get countableHostBookings(): IBooking[] {
     return this.hostBookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+  }
+
+  // ============ Add-on revenue panel ============
+
+  /** Performance rows with at least one booking — drives the Top sellers list. */
+  get bookedAddOns(): IAddOnPerformance[] {
+    return this.addOnPerformance.filter(a => a.bookingsCount > 0).slice(0, 5);
+  }
+
+  /** True when the host offers ≥1 add-on (booked or not). Controls whether to
+   *  show the empty-state CTA in the analytics panel. */
+  get hasAnyAddOns(): boolean {
+    return this.addOnPerformance.length > 0;
+  }
+
+  /** Sum of revenue across every add-on the host offers. */
+  get totalAddOnRevenue(): number {
+    return this.addOnPerformance.reduce((sum, a) => sum + (a.totalRevenue || 0), 0);
+  }
+
+  /** Overall attach rate: % of eligible (confirmed/approved) bookings that
+   *  included at least one add-on. */
+  get overallAttachRate(): { pct: number; attached: number; total: number } {
+    const eligible = this.countableHostBookings;
+    const total = eligible.length;
+    const attached = eligible.filter(b => !!b.addOns?.length).length;
+    return { pct: total > 0 ? Math.round((attached / total) * 100) : 0, attached, total };
+  }
+
+  /** Resolve an add-on id back to its owning listing for the drill-in link. */
+  listingIdForAddOn(addOnId: string): number | null {
+    return this.addOnToListingId[addOnId] ?? null;
+  }
+
+  /** Build `addOnToListingId` from the current listings — called after the
+   *  bookings subscription refreshes `addOnPerformance`. */
+  private recomputeAddOnLocations(): void {
+    const map: Record<string, number> = {};
+    for (const l of this.listings) {
+      try {
+        const detail = getListingDetail(l);
+        for (const a of detail.addOns) {
+          if (!(a.id in map)) map[a.id] = l.id;
+        }
+      } catch { /* ignore */ }
+    }
+    this.addOnToListingId = map;
   }
 
   /** Completed bookings within the 14-day reveal window that the host hasn't

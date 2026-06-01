@@ -470,6 +470,89 @@
         }
       </section>
 
+      <!-- Add-on revenue panel -->
+      <section>
+        <div class="mb-4 flex items-end justify-between gap-3 flex-wrap">
+          <div>
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Add-on revenue</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Which extras earn</h2>
+          </div>
+          @if (hasAnyAddOns) {
+            <a routerLink="/hosting/addons" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-trinidad/30 text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 transition-colors no-underline">
+              <span class="material-symbols-outlined text-base">layers</span>
+              Bulk add-on
+            </a>
+          }
+        </div>
+
+        @if (!hasAnyAddOns) {
+          <div class="bg-white rounded-2xl border border-dark-text/8 p-8 text-center">
+            <span class="inline-flex w-12 h-12 rounded-full bg-trinidad/10 text-trinidad items-center justify-center mb-3">
+              <span class="material-symbols-outlined text-2xl">add_shopping_cart</span>
+            </span>
+            <h3 class="font-headline font-bold text-dark-text text-lg mb-1">No add-ons yet</h3>
+            <p class="text-sm text-muted-text font-body mb-4">Offer extras like firewood, late check-out, or pet fees to grow per-trip revenue.</p>
+            <a routerLink="/hosting/addons" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+              <span class="material-symbols-outlined text-base">layers</span>
+              Bulk-add an extra
+            </a>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] gap-4">
+            <!-- Top sellers -->
+            <div class="bg-white rounded-2xl border border-dark-text/8 p-5">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-3">Top sellers</div>
+              @if (bookedAddOns.length === 0) {
+                <p class="text-sm text-muted-text font-body">No add-ons booked yet. Your offerings will start showing here as guests buy them.</p>
+              } @else {
+                <ul class="space-y-2">
+                  @for (a of bookedAddOns; track a.id) {
+                    @if (listingIdForAddOn(a.id); as lid) {
+                      <li>
+                        <a [routerLink]="['/hosting/listings', lid, 'addons']"
+                          class="flex items-center gap-3 p-2 rounded-lg hover:bg-cream/50 transition-colors no-underline">
+                          <span class="w-10 h-10 shrink-0 rounded-lg bg-trinidad/10 inline-flex items-center justify-center">
+                            @if (a.photo) {
+                              <img [src]="a.photo" [alt]="a.label" class="w-full h-full object-cover rounded-lg">
+                            } @else {
+                              <span class="material-symbols-outlined text-xl text-trinidad">{{ a.icon || 'add_shopping_cart' }}</span>
+                            }
+                          </span>
+                          <div class="flex-1 min-w-0">
+                            <div class="text-sm font-body font-bold text-dark-text truncate">{{ a.label }}</div>
+                            <div class="text-[0.65rem] text-muted-text">{{ a.bookingsCount }} {{ a.bookingsCount === 1 ? 'booking' : 'bookings' }} · {{ a.attachRate }}% attach</div>
+                          </div>
+                          <div class="text-right shrink-0">
+                            <div class="font-headline font-bold text-dark-text text-base">${{ a.totalRevenue | number:'1.0-0' }}</div>
+                            <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">earned</div>
+                          </div>
+                        </a>
+                      </li>
+                    }
+                  }
+                </ul>
+              }
+            </div>
+
+            <!-- Attach rate -->
+            <div class="bg-white rounded-2xl border border-dark-text/8 p-5 lg:min-w-[10rem]">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-3">Attach rate</div>
+              <div class="font-headline font-bold text-dark-text text-4xl leading-none">{{ overallAttachRate.pct }}%</div>
+              <div class="text-xs text-muted-text font-body mt-2">
+                {{ overallAttachRate.attached }} of {{ overallAttachRate.total }} {{ overallAttachRate.total === 1 ? 'trip' : 'trips' }} chose an add-on
+              </div>
+            </div>
+
+            <!-- Total revenue -->
+            <div class="bg-white rounded-2xl border border-dark-text/8 p-5 lg:min-w-[10rem]">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-3">Total revenue</div>
+              <div class="font-headline font-bold text-jungle-green text-4xl leading-none">${{ totalAddOnRevenue | number:'1.0-0' }}</div>
+              <div class="text-xs text-muted-text font-body mt-2">From every add-on you've offered</div>
+            </div>
+          </div>
+        }
+      </section>
+
       <!-- Reviews snapshot -->
       <section>
         <div class="mb-4">
