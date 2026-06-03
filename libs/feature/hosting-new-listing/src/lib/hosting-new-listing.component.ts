@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, FocusTrapDirective, DuplicateRenameModalComponent } from '@cnt-workspace/ui';
 import {
   HostListingDraftService, IDraftListing, SeoService, ToastService,
   ALL_LISTINGS,
@@ -44,7 +44,7 @@ const PHASE3_STEPS_EDIT = ['Bookings', 'House rules', 'Pricing', 'Add-ons', 'Rev
   standalone: true,
   imports: [
     CommonModule, RouterLink,
-    NavbarComponent, FooterComponent, FocusTrapDirective,
+    NavbarComponent, FooterComponent, FocusTrapDirective, DuplicateRenameModalComponent,
     PhaseHubComponent,
     Phase1DescriptorsComponent, Phase1AddressComponent, Phase1BasicsComponent,
     Phase1AmenitiesComponent, Phase1VehiclesComponent,
@@ -197,16 +197,29 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     return ALL_LISTINGS.find(l => l.id === id)?.title || '';
   }
 
-  /** Fork the in-flight draft — copy goes to the shelved-drafts stack and the
-   *  host keeps editing the original. Surfaced as the "Duplicate draft" pill
-   *  in the top-bar. */
-  forkCurrentDraft(): void {
-    const fork = this.drafts.forkCurrentDraft();
-    if (!fork) {
+  // ─────────────── Save-a-copy rename modal ───────────────
+  renameModalOpen = false;
+  renameModalDefault = '';
+
+  askForkRename(): void {
+    if (!this.draft) {
       this.toasts.info('Add something to your draft before duplicating.');
       return;
     }
-    this.toasts.success('Forked. The copy is shelved — find it on /hosting.');
+    this.renameModalDefault = this.drafts.suggestCopyTitle(this.draft.title);
+    this.renameModalOpen = true;
+  }
+
+  closeRenameModal(): void {
+    this.renameModalOpen = false;
+    this.renameModalDefault = '';
+  }
+
+  onRenameSaved(title: string): void {
+    const fork = this.drafts.forkCurrentDraft(title);
+    this.closeRenameModal();
+    if (!fork) { this.toasts.info('Add something to your draft before duplicating.'); return; }
+    this.toasts.success('Saved a copy to your drafts.');
   }
 
   /** Thin proxy so the chip strip + TOC sidebar can ask completion-state per step.

@@ -50,6 +50,9 @@ export class HostListingDraftService {
   get editingListingId(): number | null { return this._editingListingId; }
   get isEditing(): boolean { return this._editingListingId !== null; }
   get shelvedDrafts(): IDraftListing[] { return this._shelvedDrafts$.value; }
+  /** Synchronous accessor for the in-flight draft — handy for callers that
+   *  need to read once (e.g., compute a copy title) without subscribing. */
+  get activeDraft(): IDraftListing | null { return this._draft$.value; }
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -101,7 +104,18 @@ export class HostListingDraftService {
     pct: number;
     phasesDone: [boolean, boolean, boolean];
   } | null {
-    const d = this._draft$.value;
+    return this.completionFor(this._draft$.value);
+  }
+
+  /** Per-step completion for an arbitrary draft — used by the shelved-card
+   *  renderer so each saved copy shows its own progress without touching
+   *  the in-flight slot. */
+  completionFor(d: IDraftListing | null): {
+    stepsDone: number;
+    stepsTotal: number;
+    pct: number;
+    phasesDone: [boolean, boolean, boolean];
+  } | null {
     if (!d) return null;
     const [phase1, phase2, phase3] = this.stepValidities(d);
     const allSteps = [...phase1, ...phase2, ...phase3];
@@ -251,7 +265,7 @@ export class HostListingDraftService {
    *
    * Returns the new draft, or null if no source could be resolved.
    */
-  duplicateAsDraft(sourceListingId: number): IDraftListing | null {
+  duplicateAsDraft(sourceListingId: number, customTitle?: string): IDraftListing | null {
     if (this._editingListingId !== null) this.exitEdit();
 
     const source = this.resolveDraftSource(sourceListingId);
@@ -275,7 +289,7 @@ export class HostListingDraftService {
     clone.updatedAt = now;
     clone.currentPhase = 1;
     clone.currentStep = 0;
-    clone.title = clone.title ? `${clone.title} (copy)` : undefined;
+    clone.title = customTitle?.trim() || this.suggestCopyTitle(clone.title);
     clone.clonedFromListingId = sourceListingId;
     delete clone.publishedAt;
     delete clone.publishedListingId;
@@ -296,7 +310,7 @@ export class HostListingDraftService {
    * Returns the clone, or null when there's no draft or the draft is the
    * bare skeleton (no fields to be worth forking).
    */
-  forkCurrentDraft(): IDraftListing | null {
+  forkCurrentDraft(customTitle?: string): IDraftListing | null {
     const current = this._draft$.value;
     if (!current || !this.draftHasContent(current)) return null;
 
@@ -305,7 +319,7 @@ export class HostListingDraftService {
     clone.id = this.newId();
     clone.createdAt = now;
     clone.updatedAt = now;
-    clone.title = clone.title ? `${clone.title} (copy)` : undefined;
+    clone.title = customTitle?.trim() || this.suggestCopyTitle(clone.title);
     delete clone.publishedAt;
     delete clone.publishedListingId;
     if (Array.isArray(clone.addOns)) {
@@ -321,8 +335,18 @@ export class HostListingDraftService {
   resumeShelvedDraft(): IDraftListing | null {
     const stack = this._shelvedDrafts$.value;
     if (stack.length === 0) return null;
-    const next = stack[stack.length - 1];
-    const rest = stack.slice(0, -1);
+    return this.resumeShelvedDraftById(stack[stack.length - 1].id);
+  }
+
+  /** Swap a specific shelved draft (by its draft id) with the in-flight one —
+   *  drives per-draft Resume buttons on the dashboard so the host can pick
+   *  any draft, not just the top of the stack. */
+  resumeShelvedDraftById(draftId: string): IDraftListing | null {
+    const stack = this._shelvedDrafts$.value;
+    const idx = stack.findIndex(d => d.id === draftId);
+    if (idx === -1) return null;
+    const next = stack[idx];
+    const rest = stack.filter(d => d.id !== draftId);
     const current = this._draft$.value;
     const newStack = current && this.draftHasContent(current) ? [...rest, current] : rest;
     this.writeShelved(newStack);
@@ -336,6 +360,34 @@ export class HostListingDraftService {
     const stack = this._shelvedDrafts$.value;
     if (stack.length === 0) return;
     this.writeShelved(stack.slice(0, -1));
+  }
+
+  /** Discard a specific shelved draft (by its draft id). */
+  discardShelvedDraftById(draftId: string): void {
+    this.writeShelved(this._shelvedDrafts$.value.filter(d => d.id !== draftId));
+  }
+
+  /** Smart copy-title suggestion that avoids the "(copy) (copy)" staircase.
+   *  Strips an existing `(copy N?)` suffix from the base, then mints the
+   *  smallest unused ordinal across published listings, the in-flight draft,
+   *  and every shelved draft. 0 matches → "<base> (copy)"; N matches →
+   *  "<base> (copy N+1)". */
+  suggestCopyTitle(baseTitle: string | undefined): string {
+    const raw = (baseTitle ?? '').trim();
+    if (!raw) return '(copy)';
+    const base = raw.replace(/\s*\(copy(?:\s*\d+)?\)\s*$/i, '');
+    const taken = new Set<string>();
+    for (const l of ALL_LISTINGS) if (l.title) taken.add(l.title);
+    const current = this._draft$.value;
+    if (current?.title) taken.add(current.title);
+    for (const d of this._shelvedDrafts$.value) if (d.title) taken.add(d.title);
+    const first = `${base} (copy)`;
+    if (!taken.has(first)) return first;
+    for (let n = 2; n < 100; n++) {
+      const candidate = `${base} (copy ${n})`;
+      if (!taken.has(candidate)) return candidate;
+    }
+    return `${base} (copy ${Date.now()})`;
   }
 
   /** Resolve a source draft for duplication. Prefers the publish-time snapshot

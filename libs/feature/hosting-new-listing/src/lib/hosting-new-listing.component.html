@@ -37,10 +37,10 @@
             </span>
           }
           @if (!editing && draft) {
-            <button type="button" (click)="forkCurrentDraft()" title="Save a copy of this draft to your shelf"
+            <button type="button" (click)="askForkRename()" title="Save a copy of this draft to your drafts"
               class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green hover:bg-jungle-green/10 transition-colors">
               <span class="material-symbols-outlined text-sm">content_copy</span>
-              Duplicate draft
+              Save a copy
             </button>
           }
           <button type="button" (click)="saveAndExit()"
@@ -232,6 +232,14 @@
       </div><!-- /optional lg:grid wrapper -->
     </div>
   </section>
+
+  @if (renameModalOpen) {
+    <cnt-duplicate-rename-modal
+      [defaultTitle]="renameModalDefault"
+      subtitle="Saving a copy of your in-progress draft."
+      (saved)="onRenameSaved($event)"
+      (cancelled)="closeRenameModal()"></cnt-duplicate-rename-modal>
+  }
 
   <!-- Discard confirmation modal — replaces native confirm() for a styled, focus-trapped experience. -->
   @if (discardModalOpen) {

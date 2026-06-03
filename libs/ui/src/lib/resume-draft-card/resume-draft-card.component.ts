@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -22,17 +22,23 @@ import {
   imports: [CommonModule, RouterLink],
   template: `
     @if (draft && completion) {
-      <div class="rounded-2xl border border-gold/40 bg-gold/8 p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+      <div class="rounded-2xl border p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-6"
+        [ngClass]="shelvedDraft
+          ? 'border-jungle-green/30 bg-jungle-green/8'
+          : 'border-gold/40 bg-gold/8'">
         <!-- Icon + label -->
         <div class="flex items-start gap-3 md:flex-1 min-w-0">
-          <span class="w-12 h-12 rounded-full bg-gold/25 inline-flex items-center justify-center shrink-0"
-            style="color: #8a5a00;">
-            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">drafts</span>
+          <span class="w-12 h-12 rounded-full inline-flex items-center justify-center shrink-0"
+            [ngClass]="shelvedDraft ? 'bg-jungle-green/15 text-jungle-green' : 'bg-gold/25'"
+            [style.color]="shelvedDraft ? null : '#8a5a00'">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">{{ shelvedDraft ? 'inventory_2' : 'drafts' }}</span>
           </span>
           <div class="flex-1 min-w-0">
             <div class="flex items-baseline gap-2 flex-wrap">
-              <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold" style="color: #8a5a00;">
-                Draft in progress
+              <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold"
+                [ngClass]="shelvedDraft ? 'text-jungle-green' : ''"
+                [style.color]="shelvedDraft ? null : '#8a5a00'">
+                {{ shelvedDraft ? 'Saved copy' : 'Draft in progress' }}
               </span>
               <span class="text-[0.65rem] font-body text-muted-text">· {{ updatedLabel }}</span>
             </div>
@@ -70,16 +76,24 @@ import {
 
         <!-- Actions -->
         <div class="flex items-center gap-2 shrink-0 md:flex-col md:items-stretch md:gap-2">
-          <a routerLink="/hosting/new"
-            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity no-underline">
-            Continue
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-          </a>
-          <button type="button" (click)="duplicate.emit()"
-            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-jungle-green/30 text-jungle-green text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-jungle-green/10 transition-colors">
-            <span class="material-symbols-outlined text-sm">content_copy</span>
-            Duplicate
-          </button>
+          @if (shelvedDraft) {
+            <button type="button" (click)="resume.emit()"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-jungle-green text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(41,93,66,0.25)] transition-opacity">
+              Resume
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          } @else {
+            <a routerLink="/hosting/new"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(227,83,13,0.25)] transition-opacity no-underline">
+              Continue
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </a>
+            <button type="button" (click)="duplicate.emit()"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-jungle-green/30 text-jungle-green text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-jungle-green/10 transition-colors">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+              Save a copy
+            </button>
+          }
           <button type="button" (click)="discard()"
             class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 transition-colors">
             <span class="material-symbols-outlined text-sm">delete</span>
@@ -91,12 +105,19 @@ import {
   `,
 })
 export class ResumeDraftCardComponent implements OnInit, OnDestroy {
-  /** Fires after the host discards the draft, so parent pages can refresh. */
+  /** Set this to render the card in "shelved" mode — Resume + Discard action
+   *  row, jungle-green palette, draft data sourced from the input rather than
+   *  the active in-flight draft. Leave unset for the default active mode. */
+  @Input() shelvedDraft: IDraftListing | null = null;
+
+  /** Fires after the host discards the draft (active or shelved), so parent
+   *  pages can refresh + the parent owns the actual discard side effect. */
   @Output() discarded = new EventEmitter<void>();
-  /** Fires when the host taps Duplicate — parent owns the fork action so the
-   *  toast and any post-fork navigation live alongside other dashboard side
-   *  effects. */
+  /** Fires when the host taps "Save a copy" on the active card. */
   @Output() duplicate = new EventEmitter<void>();
+  /** Fires when the host taps Resume on a shelved card — parent owns the
+   *  swap-in side effect via HostListingDraftService.resumeShelvedDraftById. */
+  @Output() resume = new EventEmitter<void>();
 
   draft: IDraftListing | null = null;
   completion: { stepsDone: number; stepsTotal: number; pct: number; phasesDone: [boolean, boolean, boolean] } | null = null;
@@ -108,6 +129,11 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (this.shelvedDraft) {
+      this.draft = this.shelvedDraft;
+      this.completion = this.drafts.completionFor(this.shelvedDraft);
+      return;
+    }
     this.sub = this.drafts.draft$.subscribe(d => {
       this.draft = d;
       this.completion = this.drafts.completion;
@@ -135,7 +161,9 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
 
   discard(): void {
     if (isPlatformBrowser(this.platformId) && !confirm('Discard your draft? This can\'t be undone.')) return;
-    this.drafts.discardDraft();
+    // For shelved cards, the parent owns the actual remove side effect so it
+    // can target the right id; the active card wipes the in-flight slot.
+    if (!this.shelvedDraft) this.drafts.discardDraft();
     this.discarded.emit();
   }
 

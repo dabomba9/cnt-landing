@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent, FocusTrapDirective, ResumeDraftCardComponent } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent, FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
@@ -28,7 +28,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
   imports: [
     CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
-    FocusTrapDirective, ResumeDraftCardComponent,
+    FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent,
   ],
   templateUrl: './host-dashboard.component.html',
 })
@@ -130,41 +130,74 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     if (this.countdownInterval) clearInterval(this.countdownInterval);
   }
 
-  /** Clone a listing into a new unpublished draft and open the wizard on it.
-   *  If the host has an in-flight new-listing draft, it's auto-shelved by the
-   *  service so they don't lose work. */
-  duplicateListing(listingId: number): void {
-    const dup = this.drafts.duplicateAsDraft(listingId);
-    if (!dup) {
-      this.toasts.error('Could not duplicate this listing.');
-      return;
-    }
-    this.toasts.success('Duplicated. Tweak the copy and publish when you\'re ready.');
-    this.router.navigate(['/hosting/new']);
-  }
-
-  /** Drafts auto-shelved by a duplicate that the host hasn't picked back up. */
+  /** Drafts the host saved via "Save a copy" / "Copy as new site" that
+   *  they haven't picked back up. Each renders as its own resume-style card. */
   get shelvedDrafts(): IDraftListing[] { return this.drafts.shelvedDrafts; }
 
-  /** Fork the in-flight new-listing draft — the original stays active, a copy
-   *  lands on the shelved-drafts stack. Surfaced by the resume-draft card's
-   *  Duplicate button. */
-  forkCurrentDraft(): void {
-    const fork = this.drafts.forkCurrentDraft();
-    if (!fork) {
+  // ─────────────── Rename modal state ───────────────
+  renameModalOpen = false;
+  renameModalDefault = '';
+  renameModalSubtitle = '';
+  /** What to do once the host saves the rename — either copy-from-listing or
+   *  fork-current-draft. */
+  private renameModalKind: { type: 'listing'; listingId: number } | { type: 'fork' } | null = null;
+
+  /** Open the rename modal pre-filled with `<title> (copy[ N])` for a
+   *  published listing → host renames → wizard opens with the chosen title. */
+  askListingDuplicateRename(listingId: number, sourceTitle: string): void {
+    this.renameModalKind = { type: 'listing', listingId };
+    this.renameModalDefault = this.drafts.suggestCopyTitle(sourceTitle);
+    this.renameModalSubtitle = `Copying "${sourceTitle}".`;
+    this.renameModalOpen = true;
+  }
+
+  /** Open the rename modal to fork the in-flight draft onto the shelf. */
+  askForkRename(): void {
+    const current = this.drafts.activeDraft;
+    if (!current) {
       this.toasts.info('Add something to your draft before duplicating.');
       return;
     }
-    this.toasts.success('Forked. The copy is shelved — swap to it when you\'re ready.');
+    this.renameModalKind = { type: 'fork' };
+    this.renameModalDefault = this.drafts.suggestCopyTitle(current.title);
+    this.renameModalSubtitle = 'Saving a copy of your in-progress draft.';
+    this.renameModalOpen = true;
   }
 
-  /** Swap the in-flight draft with the most recently shelved one, then open
-   *  the wizard so the host can pick up where they left off. */
-  resumeShelvedDraft(): void {
-    const resumed = this.drafts.resumeShelvedDraft();
+  closeRenameModal(): void {
+    this.renameModalOpen = false;
+    this.renameModalKind = null;
+    this.renameModalDefault = '';
+    this.renameModalSubtitle = '';
+  }
+
+  onRenameSaved(title: string): void {
+    const kind = this.renameModalKind;
+    if (!kind) return this.closeRenameModal();
+    if (kind.type === 'listing') {
+      const dup = this.drafts.duplicateAsDraft(kind.listingId, title);
+      this.closeRenameModal();
+      if (!dup) { this.toasts.error('Could not copy this listing.'); return; }
+      this.toasts.success('Copied. Name it whatever fits your second site.');
+      this.router.navigate(['/hosting/new']);
+      return;
+    }
+    const fork = this.drafts.forkCurrentDraft(title);
+    this.closeRenameModal();
+    if (!fork) { this.toasts.info('Add something to your draft before duplicating.'); return; }
+    this.toasts.success('Saved a copy to your drafts.');
+  }
+
+  resumeShelvedDraftById(draftId: string): void {
+    const resumed = this.drafts.resumeShelvedDraftById(draftId);
     if (!resumed) return;
-    this.toasts.info('Shelved draft restored.');
+    this.toasts.info('Draft restored.');
     this.router.navigate(['/hosting/new']);
+  }
+
+  discardShelvedDraftById(draftId: string): void {
+    this.drafts.discardShelvedDraftById(draftId);
+    this.toasts.info('Copy discarded.');
   }
 
   private tickCountdowns(): void {

@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
-import { NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective, DuplicateRenameModalComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
   IPrivateListing, getMyListings, getHostBookings, HostListingMetaService,
-  HostListingDraftService,
+  HostListingDraftService, IDraftListing,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -21,7 +21,7 @@ interface IRowModel {
 @Component({
   selector: 'cnt-hosting-listings',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, ResumeDraftCardComponent, FocusTrapDirective, DuplicateRenameModalComponent],
   templateUrl: './hosting-listings.component.html',
 })
 export class HostingListingsComponent implements OnInit, OnDestroy {
@@ -100,16 +100,47 @@ export class HostingListingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }
 
-  /** Fork the in-flight new-listing draft so the copy waits on the shelved
-   *  stack while the host keeps editing the original. Surfaced by the
-   *  resume-draft card's Duplicate button. */
-  forkCurrentDraft(): void {
-    const fork = this.drafts.forkCurrentDraft();
-    if (!fork) {
+  // ─────────────── Saved-copy rename modal (mirrors host-dashboard) ───────────────
+  get shelvedDrafts(): IDraftListing[] { return this.drafts.shelvedDrafts; }
+
+  renameModalOpen = false;
+  renameModalDefault = '';
+  renameModalSubtitle = '';
+
+  askForkRename(): void {
+    const current = this.drafts.activeDraft;
+    if (!current) {
       this.toasts.info('Add something to your draft before duplicating.');
       return;
     }
-    this.toasts.success('Forked. The copy is shelved — find it on /hosting.');
+    this.renameModalDefault = this.drafts.suggestCopyTitle(current.title);
+    this.renameModalSubtitle = 'Saving a copy of your in-progress draft.';
+    this.renameModalOpen = true;
+  }
+
+  closeRenameModal(): void {
+    this.renameModalOpen = false;
+    this.renameModalDefault = '';
+    this.renameModalSubtitle = '';
+  }
+
+  onRenameSaved(title: string): void {
+    const fork = this.drafts.forkCurrentDraft(title);
+    this.closeRenameModal();
+    if (!fork) { this.toasts.info('Add something to your draft before duplicating.'); return; }
+    this.toasts.success('Saved a copy to your drafts.');
+  }
+
+  resumeShelvedDraftById(draftId: string): void {
+    const resumed = this.drafts.resumeShelvedDraftById(draftId);
+    if (!resumed) return;
+    this.toasts.info('Draft restored.');
+    this.router.navigate(['/hosting/new']);
+  }
+
+  discardShelvedDraftById(draftId: string): void {
+    this.drafts.discardShelvedDraftById(draftId);
+    this.toasts.info('Copy discarded.');
   }
 
   get visibleRows(): IRowModel[] {
