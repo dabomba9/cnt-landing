@@ -367,6 +367,49 @@ export class HostListingDraftService {
     this.writeShelved(this._shelvedDrafts$.value.filter(d => d.id !== draftId));
   }
 
+  /** Walk an owned listing's `clonedFromListingId` chain via publish-time
+   *  snapshots until the chain terminates. Returns the *root* listing id of
+   *  the property — single-listing properties return their own id. Bounded
+   *  at 8 hops as a safety net against corrupted data forming a cycle. */
+  lineageRootOf(listingId: number): number {
+    let cursor = listingId;
+    for (let i = 0; i < 8; i++) {
+      const snap = readSnapshot(cursor);
+      const parent = snap?.draft?.clonedFromListingId;
+      if (parent == null || parent === cursor) return cursor;
+      cursor = parent;
+    }
+    return cursor;
+  }
+
+  /** Group a host's owned listings by their property root so multi-site
+   *  parcels (vineyard with three pads, brewery with two) render as a
+   *  cohesive section on the dashboard. Single-site groups still appear —
+   *  the caller decides whether to render them as sections or flat cards. */
+  groupOwnedByProperty(listings: IPrivateListing[]): {
+    rootId: number;
+    rootTitle: string;
+    sites: IPrivateListing[];
+  }[] {
+    const byRoot = new Map<number, IPrivateListing[]>();
+    for (const l of listings) {
+      const root = this.lineageRootOf(l.id);
+      const arr = byRoot.get(root) ?? [];
+      arr.push(l);
+      byRoot.set(root, arr);
+    }
+    const result: { rootId: number; rootTitle: string; sites: IPrivateListing[] }[] = [];
+    for (const [rootId, sites] of byRoot.entries()) {
+      // Title-sort within a group so D1's pattern-aware names (Pad 1, Pad 2,
+      // Pad 3) line up in numeric order.
+      const ordered = [...sites].sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
+      const rootListing = ordered.find(l => l.id === rootId) ?? ordered[0];
+      result.push({ rootId, rootTitle: rootListing.title, sites: ordered });
+    }
+    // Groups by most-recent member id (newest property to the top).
+    return result.sort((a, b) => Math.max(...b.sites.map(l => l.id)) - Math.max(...a.sites.map(l => l.id)));
+  }
+
   /** Smart copy-title suggestion. Hosts almost never want a literal "(copy)"
    *  — they want the next pad number / site letter. We detect common
    *  patterns in the source title and increment them:

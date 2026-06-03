@@ -134,6 +134,13 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
    *  they haven't picked back up. Each renders as its own resume-style card. */
   get shelvedDrafts(): IDraftListing[] { return this.drafts.shelvedDrafts; }
 
+  /** Owned listings grouped by property root (via clonedFromListingId chain).
+   *  Multi-site properties render as sections on the dashboard; single-site
+   *  groups render as plain cards under the "Your listings" heading. */
+  get propertyGroups(): { rootId: number; rootTitle: string; sites: IPrivateListing[] }[] {
+    return this.drafts.groupOwnedByProperty(this.listings);
+  }
+
   // ─────────────── Rename modal state ───────────────
   renameModalOpen = false;
   renameModalDefault = '';
