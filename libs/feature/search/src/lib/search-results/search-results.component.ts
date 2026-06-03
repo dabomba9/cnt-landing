@@ -21,7 +21,8 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare,
-  tripCostSummary, ITripCost, isLongLeg, tripFuelEstimate, ITripFuel } from '@cnt-workspace/data-access';
+  tripCostSummary, ITripCost, isLongLeg, tripFuelEstimate, ITripFuel,
+  ListingAvailabilityService } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -253,7 +254,16 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private toasts: ToastService,
     private routing: RoutingService,
     private bookingSvc: BookingService,
+    private availability: ListingAvailabilityService,
   ) {}
+
+  /** Local-time ISO YYYY-MM-DD key — matches HostAvailabilityService. */
+  private toIso(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
   /** Current user's live bookings — drives "Booked ✓" badge on planner stops. */
   userBookings: IBooking[] = [];
@@ -446,9 +456,12 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.filters.amenities.size > 0) {
       for (const a of this.filters.amenities) if (!l.amenities.includes(a)) return false;
     }
-    if (this.selectedDateRange?.start) {
-      const dayHash = Math.floor(this.selectedDateRange.start.getTime() / 86_400_000);
-      if (((l.id * 31) + dayHash) % 100 >= 85) return false;
+    // Only filter once the guest has picked a full range. A single anchor
+    // (no end) leaves the calendar exploratory; we don't prune yet.
+    if (this.selectedDateRange?.start && this.selectedDateRange?.end) {
+      const start = this.toIso(this.selectedDateRange.start);
+      const end   = this.toIso(this.selectedDateRange.end);
+      if (!this.availability.isAvailableForRange(l.id, start, end)) return false;
     }
     const bigRigs: RvType[] = ['class-a', 'fifth-wheel'];
     if (this.filters.rvType && bigRigs.includes(this.filters.rvType) && !l.amenities.includes('pull-through')) return false;

@@ -1,6 +1,7 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
-import { IAddOn, CancellationTier, IPrivateListing, IListingDetail } from '@cnt-workspace/data-access';
+import { Subscription } from 'rxjs';
+import { IAddOn, CancellationTier, IPrivateListing, IListingDetail, ListingAvailabilityService } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 
@@ -13,9 +14,13 @@ import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIG
  * subscribes to in order to call its own `syncBookingToUrl()` after each mutation.
  */
 @Injectable()
-export class BookingStateService {
-  // Per-listing config (set via setListing)
+export class BookingStateService implements OnDestroy {
+  /** Merged host-blocks + booked-nights set, kept live via the
+   *  ListingAvailabilityService subscription. Seeded from the listing's
+   *  mock unavailableDates on setListing so initial render is correct
+   *  before the first stream tick lands. */
   private unavailableSet = new Set<string>();
+  private availabilitySub: Subscription | null = null;
   maxGuests = 2;
   addOns: IAddOn[] = [];
   cancellationTier: CancellationTier = 'moderate';
@@ -42,6 +47,8 @@ export class BookingStateService {
   /** Fired after every mutating method so the parent can sync URL params. */
   readonly changed = new EventEmitter<void>();
 
+  constructor(private availability: ListingAvailabilityService) {}
+
   /** Bind per-listing data. Resets transient errors but preserves user-entered booking state. */
   setListing(listing: IPrivateListing, detail: IListingDetail): void {
     this.unavailableSet = new Set(detail.unavailableDates);
@@ -51,6 +58,23 @@ export class BookingStateService {
     this.nightlyPrice = listing.price;
     this.instantBook = listing.instantBook;
     this.dateRangeError = '';
+
+    // Drop the previous listing's subscription before subscribing to the
+    // new one, so a listing-to-listing navigation doesn't leak streams.
+    this.availabilitySub?.unsubscribe();
+    this.availabilitySub = this.availability.unavailableSet$(listing.id).subscribe(set => {
+      // Union the live merged set with the mock detail dates — keeps the
+      // demo "unavailableDates" stub working until we drop it.
+      const merged = new Set<string>(detail.unavailableDates);
+      for (const iso of set) merged.add(iso);
+      this.unavailableSet = merged;
+      this.changed.emit();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.availabilitySub?.unsubscribe();
+    this.availabilitySub = null;
   }
 
   /** Track the user's MyRv profile so canBook reflects whether photos are present. */
