@@ -416,6 +416,52 @@ export class HostListingDraftService {
     return clone;
   }
 
+  /**
+   * Mint N shelved copies of a listing in one pass — drives the inline
+   * "Add another site" N-stepper on the dashboard. Each iteration reuses
+   * the existing `duplicateAsShelvedDraft()` path; because
+   * `suggestCopyTitle()` walks the shelved-drafts list to find unused
+   * titles, the pattern-aware naming chains naturally (Pad 3, Pad 4,
+   * Pad 5, …) without any explicit numbering.
+   *
+   * Returns the array of newly-shelved drafts, or [] if none were
+   * created (bad source id or count ≤ 0).
+   */
+  duplicateAsShelvedDraftBatch(sourceListingId: number, count: number): IDraftListing[] {
+    const n = Math.max(0, Math.min(20, Math.floor(count)));
+    const drafts: IDraftListing[] = [];
+    for (let i = 0; i < n; i++) {
+      const d = this.duplicateAsShelvedDraft(sourceListingId);
+      if (d) drafts.push(d);
+    }
+    return drafts;
+  }
+
+  /** Move a shelved draft from one index to another. Mutates the LIFO order
+   *  the dashboard renders. Persists immediately via writeShelved(). */
+  reorderShelvedDraft(fromIndex: number, toIndex: number): void {
+    const stack = this._shelvedDrafts$.value.slice();
+    if (fromIndex < 0 || fromIndex >= stack.length) return;
+    const clampedTo = Math.max(0, Math.min(stack.length - 1, toIndex));
+    if (fromIndex === clampedTo) return;
+    const [moved] = stack.splice(fromIndex, 1);
+    stack.splice(clampedTo, 0, moved);
+    this.writeShelved(stack);
+  }
+
+  /** Patch a shelved draft's title in place — drives the inline title
+   *  rename on the shelved card. Bumps `updatedAt` and persists. No-op if
+   *  the draft id isn't on the shelf or the new title is empty. */
+  renameShelvedDraft(draftId: string, newTitle: string): void {
+    const trimmed = newTitle.trim();
+    if (!trimmed) return;
+    const stack = this._shelvedDrafts$.value.slice();
+    const idx = stack.findIndex(d => d.id === draftId);
+    if (idx === -1) return;
+    stack[idx] = { ...stack[idx], title: trimmed, updatedAt: new Date().toISOString() };
+    this.writeShelved(stack);
+  }
+
   /** Swap the in-flight new-listing draft with the most recently shelved one.
    *  The current in-flight draft (if meaningful) takes its slot on the stack. */
   resumeShelvedDraft(): IDraftListing | null {

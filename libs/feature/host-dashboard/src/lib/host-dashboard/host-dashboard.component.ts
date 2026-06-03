@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileComponent, FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
@@ -29,6 +30,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
     CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
     FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent,
+    DragDropModule,
   ],
   templateUrl: './host-dashboard.component.html',
 })
@@ -279,6 +281,41 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   discardShelvedDraftById(draftId: string): void {
     this.drafts.discardShelvedDraftById(draftId);
     this.toasts.info('Copy discarded.');
+  }
+
+  /** Drag-reorder handler for the shelved-cards list. */
+  onShelvedDrop(ev: CdkDragDrop<IDraftListing[]>): void {
+    if (ev.previousIndex === ev.currentIndex) return;
+    this.drafts.reorderShelvedDraft(ev.previousIndex, ev.currentIndex);
+  }
+
+  /** Inline-rename save from a shelved card's title input. */
+  renameShelvedDraft(draftId: string, title: string): void {
+    this.drafts.renameShelvedDraft(draftId, title);
+  }
+
+  // ─────────────── B3: inline N-stepper for "Add another site" ───────────────
+  /** Root listing id whose multi-site group is showing the inline N-stepper
+   *  builder. Null when every group renders the idle ghost-card CTA. */
+  bulkOpenForRootId: number | null = null;
+  bulkCount = 1;
+
+  openBulkBuilder(rootId: number): void {
+    this.bulkOpenForRootId = rootId;
+    this.bulkCount = 1;
+  }
+
+  closeBulkBuilder(): void {
+    this.bulkOpenForRootId = null;
+    this.bulkCount = 1;
+  }
+
+  bulkAddSites(rootId: number): void {
+    const n = Math.max(1, Math.min(10, this.bulkCount));
+    const minted = this.drafts.duplicateAsShelvedDraftBatch(rootId, n);
+    this.closeBulkBuilder();
+    if (!minted.length) { this.toasts.error('Could not copy this listing.'); return; }
+    this.toasts.success(`Saved ${minted.length} ${minted.length === 1 ? 'copy' : 'copies'} to your drafts.`);
   }
 
   private tickCountdowns(): void {

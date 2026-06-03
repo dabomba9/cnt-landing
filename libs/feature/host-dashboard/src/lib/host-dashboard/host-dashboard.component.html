@@ -35,10 +35,17 @@
       <!-- Resume-draft card — only renders when an in-progress wizard draft exists. -->
       <cnt-resume-draft-card (duplicate)="askForkRename()"></cnt-resume-draft-card>
 
-      @for (s of shelvedDrafts; track s.id) {
-        <cnt-resume-draft-card class="block mt-3" [shelvedDraft]="s" [sourceTitle]="sourceTitleFor(s)"
-          (resume)="resumeShelvedDraftById(s.id)"
-          (discarded)="discardShelvedDraftById(s.id)"></cnt-resume-draft-card>
+      @if (shelvedDrafts.length > 0) {
+        <div cdkDropList (cdkDropListDropped)="onShelvedDrop($event)" class="space-y-3 mt-3">
+          @for (s of shelvedDrafts; track s.id) {
+            <div cdkDrag class="block">
+              <cnt-resume-draft-card [shelvedDraft]="s" [sourceTitle]="sourceTitleFor(s)"
+                (resume)="resumeShelvedDraftById(s.id)"
+                (discarded)="discardShelvedDraftById(s.id)"
+                (renamed)="renameShelvedDraft(s.id, $event)"></cnt-resume-draft-card>
+            </div>
+          }
+        </div>
       }
 
       @if (renameModalOpen) {
@@ -519,12 +526,41 @@
                       </div>
                     </div>
                   }
-                  <!-- Add another site ghost card — opens rename modal with the root pre-bound. -->
-                  <button type="button" (click)="askListingDuplicateRename(group.rootId, group.rootTitle)"
-                    class="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-jungle-green/40 bg-white/50 text-jungle-green min-h-[12rem] hover:bg-jungle-green/8 transition-colors">
-                    <span class="material-symbols-outlined text-2xl">add_circle</span>
-                    <span class="text-xs font-button font-bold uppercase tracking-[0.12em] text-center">Add another site<br/>to this property</span>
-                  </button>
+                  @if (bulkOpenForRootId === group.rootId) {
+                    <!-- Inline N-stepper: mint several copies onto the shelved-drafts list in one tap. -->
+                    <div class="flex flex-col justify-center gap-3 rounded-2xl border-2 border-jungle-green/40 bg-white p-4 min-h-[12rem]">
+                      <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">How many sites?</div>
+                      <div class="flex items-center gap-3">
+                        <button type="button" (click)="bulkCount = bulkCount > 1 ? bulkCount - 1 : 1"
+                          class="w-9 h-9 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-dark-text">
+                          <span class="material-symbols-outlined text-base">remove</span>
+                        </button>
+                        <span class="font-headline font-bold text-dark-text text-3xl w-10 text-center">{{ bulkCount }}</span>
+                        <button type="button" (click)="bulkCount = bulkCount < 10 ? bulkCount + 1 : 10"
+                          class="w-9 h-9 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-dark-text">
+                          <span class="material-symbols-outlined text-base">add</span>
+                        </button>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button type="button" (click)="closeBulkBuilder()"
+                          class="flex-1 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-muted-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+                          Cancel
+                        </button>
+                        <button type="button" (click)="bulkAddSites(group.rootId)"
+                          class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_6px_16px_rgba(41,93,66,0.25)]">
+                          <span class="material-symbols-outlined text-sm">bookmark_add</span>
+                          Save {{ bulkCount }} {{ bulkCount === 1 ? 'copy' : 'copies' }}
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <!-- Idle ghost card — opens the inline N-stepper above when tapped. -->
+                    <button type="button" (click)="openBulkBuilder(group.rootId)"
+                      class="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-jungle-green/40 bg-white/50 text-jungle-green min-h-[12rem] hover:bg-jungle-green/8 transition-colors">
+                      <span class="material-symbols-outlined text-2xl">add_circle</span>
+                      <span class="text-xs font-button font-bold uppercase tracking-[0.12em] text-center">Add another site<br/>to this property</span>
+                    </button>
+                  }
                 </div>
               </section>
             } @else {

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
@@ -19,7 +20,7 @@ import {
 @Component({
   selector: 'cnt-resume-draft-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     @if (draft && completion) {
       <div class="rounded-2xl border p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-6"
@@ -41,14 +42,41 @@ import {
                 {{ shelvedDraft ? 'Saved copy' : 'Draft in progress' }}
               </span>
               <span class="text-[0.65rem] font-body text-muted-text">· {{ updatedLabel }}</span>
+              @if (shelvedDraft && isStale) {
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-dark-text/10 text-muted-text text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold">
+                  <span class="material-symbols-outlined text-[10px]">history</span>
+                  Stale
+                </span>
+              }
             </div>
-            <h3 class="font-headline font-bold text-dark-text text-lg md:text-xl leading-tight mt-0.5 truncate">
-              {{ draft.title || 'Untitled listing' }}
-            </h3>
+            @if (editingTitle && shelvedDraft) {
+              <input #titleInput type="text" [(ngModel)]="titleDraft" maxlength="80"
+                (blur)="commitTitleEdit()"
+                (keydown.enter)="commitTitleEdit()"
+                (keydown.escape)="cancelTitleEdit()"
+                class="mt-0.5 w-full font-headline font-bold text-dark-text text-lg md:text-xl leading-tight bg-white border border-jungle-green/40 rounded-md px-2 py-1 focus:outline-none focus:border-jungle-green">
+            } @else {
+              <h3 class="font-headline font-bold text-dark-text text-lg md:text-xl leading-tight mt-0.5 truncate"
+                [class.cursor-text]="shelvedDraft"
+                [attr.title]="shelvedDraft ? 'Click to rename' : null"
+                (click)="startTitleEdit()">
+                {{ draft.title || 'Untitled listing' }}
+              </h3>
+            }
             @if (shelvedDraft && sourceTitle) {
               <div class="text-[0.65rem] font-body text-muted-text mt-1 flex items-center gap-1 min-w-0">
                 <span class="material-symbols-outlined text-[12px]">subdirectory_arrow_right</span>
                 <span class="truncate">Copied from {{ sourceTitle }}</span>
+              </div>
+            }
+            @if (shelvedDraft && isAncient) {
+              <div class="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-dark-text/[0.04] text-muted-text text-[0.65rem] font-body">
+                <span class="material-symbols-outlined text-sm">schedule</span>
+                Untouched for 60+ days — still need this copy?
+                <button type="button" (click)="discard()"
+                  class="text-trinidad font-button font-bold uppercase tracking-[0.1em] text-[0.6rem] hover:underline">
+                  Discard
+                </button>
               </div>
             }
 
@@ -129,6 +157,15 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
   /** Fires when the host taps Resume on a shelved card — parent owns the
    *  swap-in side effect via HostListingDraftService.resumeShelvedDraftById. */
   @Output() resume = new EventEmitter<void>();
+  /** Fires when an inline title edit commits on a shelved card. The parent
+   *  routes the new title through HostListingDraftService.renameShelvedDraft. */
+  @Output() renamed = new EventEmitter<string>();
+
+  @ViewChild('titleInput') titleInputEl?: ElementRef<HTMLInputElement>;
+
+  /** Inline-rename state for shelved cards only. */
+  editingTitle = false;
+  titleDraft = '';
 
   draft: IDraftListing | null = null;
   completion: { stepsDone: number; stepsTotal: number; pct: number; phasesDone: [boolean, boolean, boolean] } | null = null;
@@ -176,6 +213,55 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
     // can target the right id; the active card wipes the in-flight slot.
     if (!this.shelvedDraft) this.drafts.discardDraft();
     this.discarded.emit();
+  }
+
+  // ─────────────── Inline rename (shelved cards only) ───────────────
+
+  startTitleEdit(): void {
+    if (!this.shelvedDraft || !this.draft) return;
+    this.titleDraft = this.draft.title ?? '';
+    this.editingTitle = true;
+    queueMicrotask(() => {
+      const el = this.titleInputEl?.nativeElement;
+      if (!el) return;
+      el.focus();
+      el.select();
+    });
+  }
+
+  commitTitleEdit(): void {
+    if (!this.editingTitle) return;
+    const trimmed = this.titleDraft.trim();
+    if (trimmed && this.draft && trimmed !== this.draft.title) {
+      this.renamed.emit(trimmed);
+      this.draft = { ...this.draft, title: trimmed };
+    }
+    this.editingTitle = false;
+  }
+
+  cancelTitleEdit(): void {
+    this.editingTitle = false;
+    this.titleDraft = '';
+  }
+
+  // ─────────────── Age (shelved cards only) ───────────────
+
+  /** True when the shelved draft hasn't been updated in 30+ days — drives
+   *  the muted "Stale" chip next to the eyebrow. */
+  get isStale(): boolean {
+    return this.daysSinceUpdate >= 30;
+  }
+  /** True at 60+ days — drives the soft "still need this copy?" prompt
+   *  inside the card body. */
+  get isAncient(): boolean {
+    return this.daysSinceUpdate >= 60;
+  }
+  private get daysSinceUpdate(): number {
+    const iso = this.draft?.updatedAt;
+    if (!iso) return 0;
+    const diff = Date.now() - Date.parse(iso);
+    if (Number.isNaN(diff) || diff < 0) return 0;
+    return Math.floor(diff / 86_400_000);
   }
 
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
