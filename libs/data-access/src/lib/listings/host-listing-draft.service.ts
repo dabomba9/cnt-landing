@@ -18,6 +18,7 @@ import { ToastService } from '../toast/toast.service';
 import { HostListingMetaService } from '../host/host-listing-meta.service';
 
 const DRAFT_STORAGE_KEY = 'cnt-listing-draft';
+const SHELVED_DRAFTS_KEY = 'cnt-shelved-drafts';
 
 import { IPublishedSnapshot, readAllPublishedSnapshots, readPublishedSnapshot as readSnapshot, writePublishedSnapshot, deletePublishedSnapshot } from './published-snapshot.util';
 import { MIN_VIABLE_LISTING_PRICE } from '../pricing/pricing.util';
@@ -41,9 +42,14 @@ export class HostListingDraftService {
   private _editingListingId: number | null = null;
   /** Stash of the user's in-progress new-listing draft while in edit mode. */
   private _savedNewListingDraft: IDraftListing | null = null;
+  /** LIFO stack of new-listing drafts shelved when the host duplicates a
+   *  listing. Surfaced on the dashboard's resume-draft card. */
+  private readonly _shelvedDrafts$ = new BehaviorSubject<IDraftListing[]>([]);
+  readonly shelvedDrafts$: Observable<IDraftListing[]> = this._shelvedDrafts$.asObservable();
 
   get editingListingId(): number | null { return this._editingListingId; }
   get isEditing(): boolean { return this._editingListingId !== null; }
+  get shelvedDrafts(): IDraftListing[] { return this._shelvedDrafts$.value; }
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -52,6 +58,7 @@ export class HostListingDraftService {
     private meta: HostListingMetaService,
   ) {
     this._draft$.next(this.read());
+    this._shelvedDrafts$.next(this.readShelved());
     this.hydratePublishedListings();
   }
 
@@ -223,6 +230,129 @@ export class HostListingDraftService {
     this._editingListingId = null;
     this._draft$.next(this._savedNewListingDraft);
     this._savedNewListingDraft = null;
+  }
+
+  /**
+   * Clone an existing listing's snapshot into a brand-new unpublished draft.
+   * Used by the "Duplicate" action on /hosting cards so a host can spin up a
+   * second site on the same property without re-walking the wizard from
+   * scratch.
+   *
+   * - If currently in edit mode, exits first so the duplicate becomes the new
+   *   in-flight new-listing draft (not an edit-mode write).
+   * - If a meaningful new-listing draft is already in flight, it's pushed onto
+   *   the shelved-drafts stack so the host doesn't lose work. The dashboard
+   *   surfaces a "Resume shelved draft" hint while the stack is non-empty.
+   * - Source resolves from the publish-time snapshot first (covers user-
+   *   published + previously-edited listings); falls back to the seed
+   *   `IPrivateListing` for unsnapshotted mock catalog entries.
+   * - Every add-on gets a fresh id so future edits in the new draft don't
+   *   bleed back to the source (same isolation pattern as the bulk builder).
+   *
+   * Returns the new draft, or null if no source could be resolved.
+   */
+  duplicateAsDraft(sourceListingId: number): IDraftListing | null {
+    if (this._editingListingId !== null) this.exitEdit();
+
+    const source = this.resolveDraftSource(sourceListingId);
+    if (!source) return null;
+
+    // Shelve the current in-flight draft if it has meaningful content so
+    // the host doesn't lose it. "Meaningful" = anything beyond the bare
+    // skeleton fields.
+    const current = this._draft$.value;
+    if (current && this.draftHasContent(current)) {
+      this.writeShelved([...this._shelvedDrafts$.value, current]);
+    }
+
+    const now = new Date().toISOString();
+    // Structured clone, then strip identity + status + regenerate fresh ids
+    // anywhere ids are local to the draft (add-ons today; future per-site
+    // ids would go here too).
+    const clone: IDraftListing = JSON.parse(JSON.stringify(source));
+    clone.id = this.newId();
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    clone.currentPhase = 1;
+    clone.currentStep = 0;
+    clone.title = clone.title ? `${clone.title} (copy)` : undefined;
+    clone.clonedFromListingId = sourceListingId;
+    delete clone.publishedAt;
+    delete clone.publishedListingId;
+    if (Array.isArray(clone.addOns)) {
+      clone.addOns = clone.addOns.map(a => ({ ...a, id: `addon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}` }));
+    }
+
+    this._draft$.next(clone);
+    this.write(clone);
+    return clone;
+  }
+
+  /** Swap the in-flight new-listing draft with the most recently shelved one.
+   *  The current in-flight draft (if meaningful) takes its slot on the stack. */
+  resumeShelvedDraft(): IDraftListing | null {
+    const stack = this._shelvedDrafts$.value;
+    if (stack.length === 0) return null;
+    const next = stack[stack.length - 1];
+    const rest = stack.slice(0, -1);
+    const current = this._draft$.value;
+    const newStack = current && this.draftHasContent(current) ? [...rest, current] : rest;
+    this.writeShelved(newStack);
+    this._draft$.next(next);
+    this.write(next);
+    return next;
+  }
+
+  /** Discard the most recently shelved draft (host explicitly drops it). */
+  discardShelvedDraft(): void {
+    const stack = this._shelvedDrafts$.value;
+    if (stack.length === 0) return;
+    this.writeShelved(stack.slice(0, -1));
+  }
+
+  /** Resolve a source draft for duplication. Prefers the publish-time snapshot
+   *  (always present for user-published listings); falls back to a minimal
+   *  seed built from the catalog row for unsnapshotted mock listings. */
+  private resolveDraftSource(listingId: number): IDraftListing | null {
+    const snap = readSnapshot(listingId);
+    if (snap?.draft) return snap.draft;
+    const seed = MOCK_LISTINGS.find(l => l.id === listingId);
+    if (!seed) return null;
+    // Minimal draft from a seed catalog row — enough so the wizard can open
+    // and the host can fill in the gaps.
+    const now = new Date().toISOString();
+    return {
+      id: this.newId(),
+      createdAt: now,
+      updatedAt: now,
+      currentPhase: 1,
+      currentStep: 0,
+      title: seed.title,
+      photos: seed.image ? [seed.image] : [],
+      nightlyPrice: seed.price,
+    };
+  }
+
+  /** A draft is "meaningful" once the host has filled in any user-visible
+   *  field beyond the bare skeleton — drives the auto-shelve gate. */
+  private draftHasContent(d: IDraftListing): boolean {
+    return !!(d.primaryType || d.title || d.address || (d.photos?.length ?? 0) > 0 || d.description);
+  }
+
+  private readShelved(): IDraftListing[] {
+    if (!isPlatformBrowser(this.platformId)) return [];
+    try {
+      const raw = localStorage.getItem(SHELVED_DRAFTS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
+  }
+
+  private writeShelved(stack: IDraftListing[]): void {
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(SHELVED_DRAFTS_KEY, JSON.stringify(stack)); } catch { /* quota */ }
+    }
+    this._shelvedDrafts$.next(stack);
   }
 
   /**

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
 import {
   HostListingDraftService, IDraftListing, SeoService, ToastService,
+  ALL_LISTINGS,
 } from '@cnt-workspace/data-access';
 import { Phase1DescriptorsComponent } from './steps/phase1-descriptors.component';
 import { Phase1AddressComponent } from './steps/phase1-address.component';
@@ -186,6 +187,14 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `Saved ${hours}h ago`;
     return 'Saved earlier';
+  }
+
+  /** Title of the listing this draft was duplicated from — drives the "Duplicated from …" chip
+   *  in the wizard top bar. Returns '' when the draft wasn't cloned or the source is unknown. */
+  get clonedFromTitle(): string {
+    const id = this.draft?.clonedFromListingId;
+    if (id == null) return '';
+    return ALL_LISTINGS.find(l => l.id === id)?.title || '';
   }
 
   /** Thin proxy so the chip strip + TOC sidebar can ask completion-state per step.

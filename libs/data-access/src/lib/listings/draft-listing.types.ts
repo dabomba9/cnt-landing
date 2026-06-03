@@ -286,6 +286,9 @@ export interface IDraftListing {
   // ─────────────── Status ───────────────
   publishedAt?: string;
   publishedListingId?: number;
+  /** Set when this draft was created via Duplicate. Drives the
+   *  "Duplicated from …" chip in the wizard top-bar and is cleared on publish. */
+  clonedFromListingId?: number;
 }
 
 /**

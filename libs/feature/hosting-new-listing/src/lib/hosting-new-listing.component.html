@@ -43,6 +43,14 @@
         </div>
       </div>
 
+      @if (draft?.clonedFromListingId; as srcId) {
+        <a [routerLink]="['/hosting/listings', srcId, 'edit']" target="_blank" rel="noopener"
+          class="inline-flex items-center gap-1.5 self-start mt-1 px-3 py-1 rounded-full bg-jungle-green/10 border border-jungle-green/30 text-jungle-green text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-jungle-green/15 transition-colors no-underline">
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          Duplicated from {{ clonedFromTitle || ('Listing #' + srcId) }} — open original ↗
+        </a>
+      }
+
       <!-- Step chip strip — click any chip to jump to that step. -->
       <div class="flex items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none;">
         <button type="button" (click)="jumpToPhaseHub(phase)"

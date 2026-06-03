@@ -8,7 +8,7 @@ import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
   getAddOnPerformance, IAddOnPerformance, hasOwnedListings,
-  HostListingDraftService, getListingDetail,
+  HostListingDraftService, getListingDetail, IDraftListing,
   HostReviewService, IHostReviewSubScores, GUEST_SUBSCORE_LABELS, averageHostSubScores, REVEAL_WINDOW_DAYS,
   MIN_REVIEW_CHARS_FOR_CREDIT,
 } from '@cnt-workspace/data-access';
@@ -128,6 +128,31 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     for (const s of this.subs) s.unsubscribe();
     if (this.countdownInterval) clearInterval(this.countdownInterval);
+  }
+
+  /** Clone a listing into a new unpublished draft and open the wizard on it.
+   *  If the host has an in-flight new-listing draft, it's auto-shelved by the
+   *  service so they don't lose work. */
+  duplicateListing(listingId: number): void {
+    const dup = this.drafts.duplicateAsDraft(listingId);
+    if (!dup) {
+      this.toasts.error('Could not duplicate this listing.');
+      return;
+    }
+    this.toasts.success('Duplicated. Tweak the copy and publish when you\'re ready.');
+    this.router.navigate(['/hosting/new']);
+  }
+
+  /** Drafts auto-shelved by a duplicate that the host hasn't picked back up. */
+  get shelvedDrafts(): IDraftListing[] { return this.drafts.shelvedDrafts; }
+
+  /** Swap the in-flight draft with the most recently shelved one, then open
+   *  the wizard so the host can pick up where they left off. */
+  resumeShelvedDraft(): void {
+    const resumed = this.drafts.resumeShelvedDraft();
+    if (!resumed) return;
+    this.toasts.info('Shelved draft restored.');
+    this.router.navigate(['/hosting/new']);
   }
 
   private tickCountdowns(): void {
