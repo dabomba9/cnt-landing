@@ -197,6 +197,18 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     return ALL_LISTINGS.find(l => l.id === id)?.title || '';
   }
 
+  /** Fork the in-flight draft — copy goes to the shelved-drafts stack and the
+   *  host keeps editing the original. Surfaced as the "Duplicate draft" pill
+   *  in the top-bar. */
+  forkCurrentDraft(): void {
+    const fork = this.drafts.forkCurrentDraft();
+    if (!fork) {
+      this.toasts.info('Add something to your draft before duplicating.');
+      return;
+    }
+    this.toasts.success('Forked. The copy is shelved — find it on /hosting.');
+  }
+
   /** Thin proxy so the chip strip + TOC sidebar can ask completion-state per step.
    * Accepts a plain number so template `p + 1` arithmetic works without casts. */
   stepValid(phase: number, step: number): boolean {

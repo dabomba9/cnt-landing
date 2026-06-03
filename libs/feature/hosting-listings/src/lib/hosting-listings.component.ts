@@ -100,6 +100,18 @@ export class HostingListingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }
 
+  /** Fork the in-flight new-listing draft so the copy waits on the shelved
+   *  stack while the host keeps editing the original. Surfaced by the
+   *  resume-draft card's Duplicate button. */
+  forkCurrentDraft(): void {
+    const fork = this.drafts.forkCurrentDraft();
+    if (!fork) {
+      this.toasts.info('Add something to your draft before duplicating.');
+      return;
+    }
+    this.toasts.success('Forked. The copy is shelved — find it on /hosting.');
+  }
+
   get visibleRows(): IRowModel[] {
     return this.showArchived ? this.rows : this.rows.filter(r => !r.archived);
   }

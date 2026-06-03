@@ -33,7 +33,7 @@
       </div>
 
       <!-- Resume-draft card — only renders when an in-progress wizard draft exists. -->
-      <cnt-resume-draft-card></cnt-resume-draft-card>
+      <cnt-resume-draft-card (duplicate)="forkCurrentDraft()"></cnt-resume-draft-card>
 
       @if (shelvedDrafts.length > 0) {
         <div class="flex flex-wrap items-center gap-3 px-4 py-2.5 rounded-xl bg-jungle-green/10 border border-jungle-green/30 text-jungle-green text-xs font-body">

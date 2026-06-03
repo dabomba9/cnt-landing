@@ -288,6 +288,34 @@ export class HostListingDraftService {
     return clone;
   }
 
+  /**
+   * Fork the in-flight new-listing draft — clone its current state with a
+   * fresh id and shelve the clone so the host keeps editing the original
+   * while the copy waits to be picked up later (via `resumeShelvedDraft()`).
+   *
+   * Returns the clone, or null when there's no draft or the draft is the
+   * bare skeleton (no fields to be worth forking).
+   */
+  forkCurrentDraft(): IDraftListing | null {
+    const current = this._draft$.value;
+    if (!current || !this.draftHasContent(current)) return null;
+
+    const now = new Date().toISOString();
+    const clone: IDraftListing = JSON.parse(JSON.stringify(current));
+    clone.id = this.newId();
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    clone.title = clone.title ? `${clone.title} (copy)` : undefined;
+    delete clone.publishedAt;
+    delete clone.publishedListingId;
+    if (Array.isArray(clone.addOns)) {
+      clone.addOns = clone.addOns.map(a => ({ ...a, id: `addon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}` }));
+    }
+
+    this.writeShelved([...this._shelvedDrafts$.value, clone]);
+    return clone;
+  }
+
   /** Swap the in-flight new-listing draft with the most recently shelved one.
    *  The current in-flight draft (if meaningful) takes its slot on the stack. */
   resumeShelvedDraft(): IDraftListing | null {

@@ -36,6 +36,13 @@
               <span class="hidden sm:inline">{{ justSaved ? 'Saved' : lastSavedLabel }}</span>
             </span>
           }
+          @if (!editing && draft) {
+            <button type="button" (click)="forkCurrentDraft()" title="Save a copy of this draft to your shelf"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green hover:bg-jungle-green/10 transition-colors">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+              Duplicate draft
+            </button>
+          }
           <button type="button" (click)="saveAndExit()"
             class="px-3 py-1.5 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text hover:text-trinidad transition-colors">
             {{ editing ? 'Done' : 'Save & exit' }}

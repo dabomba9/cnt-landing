@@ -146,6 +146,18 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   /** Drafts auto-shelved by a duplicate that the host hasn't picked back up. */
   get shelvedDrafts(): IDraftListing[] { return this.drafts.shelvedDrafts; }
 
+  /** Fork the in-flight new-listing draft — the original stays active, a copy
+   *  lands on the shelved-drafts stack. Surfaced by the resume-draft card's
+   *  Duplicate button. */
+  forkCurrentDraft(): void {
+    const fork = this.drafts.forkCurrentDraft();
+    if (!fork) {
+      this.toasts.info('Add something to your draft before duplicating.');
+      return;
+    }
+    this.toasts.success('Forked. The copy is shelved — swap to it when you\'re ready.');
+  }
+
   /** Swap the in-flight draft with the most recently shelved one, then open
    *  the wizard so the host can pick up where they left off. */
   resumeShelvedDraft(): void {

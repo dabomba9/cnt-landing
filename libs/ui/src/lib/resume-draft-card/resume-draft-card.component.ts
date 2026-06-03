@@ -75,6 +75,11 @@ import {
             Continue
             <span class="material-symbols-outlined text-base">arrow_forward</span>
           </a>
+          <button type="button" (click)="duplicate.emit()"
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-jungle-green/30 text-jungle-green text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-jungle-green/10 transition-colors">
+            <span class="material-symbols-outlined text-sm">content_copy</span>
+            Duplicate
+          </button>
           <button type="button" (click)="discard()"
             class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
             Discard
@@ -87,6 +92,10 @@ import {
 export class ResumeDraftCardComponent implements OnInit, OnDestroy {
   /** Fires after the host discards the draft, so parent pages can refresh. */
   @Output() discarded = new EventEmitter<void>();
+  /** Fires when the host taps Duplicate — parent owns the fork action so the
+   *  toast and any post-fork navigation live alongside other dashboard side
+   *  effects. */
+  @Output() duplicate = new EventEmitter<void>();
 
   draft: IDraftListing | null = null;
   completion: { stepsDone: number; stepsTotal: number; pct: number; phasesDone: [boolean, boolean, boolean] } | null = null;
