@@ -55,6 +55,15 @@ import { FocusTrapDirective } from '../directives/focus-trap.directive';
             {{ showSaveToDrafts ? 'Save copy & open' : 'Save copy' }}
           </button>
         </div>
+        @if (showQuickPublish) {
+          <div class="mt-3 text-right">
+            <button type="button" (click)="quickPublish()" [disabled]="!value.trim()"
+              class="inline-flex items-center gap-1 text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline">
+              <span class="material-symbols-outlined text-sm">bolt</span>
+              Or publish as-is →
+            </button>
+          </div>
+        }
       </div>
     </div>
   `,
@@ -69,9 +78,14 @@ export class DuplicateRenameModalComponent implements AfterViewInit, OnDestroy {
    *  primary "Save copy & open" button. Used on the dashboard listing-card
    *  duplicate flow so a host can stash a copy without leaving /hosting. */
   @Input() showSaveToDrafts = false;
+  /** When true, render a tertiary "Or publish as-is →" text link under the
+   *  button row. Only valid when the source is a real published listing so
+   *  the clone is guaranteed to pass publish-validation. */
+  @Input() showQuickPublish = false;
 
   @Output() saved = new EventEmitter<string>();
   @Output() savedToDrafts = new EventEmitter<string>();
+  @Output() quickPublished = new EventEmitter<string>();
   @Output() cancelled = new EventEmitter<void>();
 
   @ViewChild('input', { static: true }) inputEl?: ElementRef<HTMLInputElement>;
@@ -100,6 +114,12 @@ export class DuplicateRenameModalComponent implements AfterViewInit, OnDestroy {
     const trimmed = this.value.trim();
     if (!trimmed) return;
     this.savedToDrafts.emit(trimmed);
+  }
+
+  quickPublish(): void {
+    const trimmed = this.value.trim();
+    if (!trimmed) return;
+    this.quickPublished.emit(trimmed);
   }
 
   cancel(): void { this.cancelled.emit(); }

@@ -8,7 +8,7 @@ import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
   getAddOnPerformance, IAddOnPerformance, hasOwnedListings,
-  HostListingDraftService, getListingDetail, IDraftListing,
+  HostListingDraftService, getListingDetail, IDraftListing, ALL_LISTINGS,
   HostReviewService, IHostReviewSubScores, GUEST_SUBSCORE_LABELS, averageHostSubScores, REVEAL_WINDOW_DAYS,
   MIN_REVIEW_CHARS_FOR_CREDIT,
 } from '@cnt-workspace/data-access';
@@ -171,6 +171,22 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   get renameModalCanShelve(): boolean {
     return this.renameModalKind?.type === 'listing';
   }
+  /** True when the active rename source is a real published listing — so
+   *  the clone is guaranteed to pass publish-validation and a one-tap
+   *  publish makes sense. Same condition as canShelve today but kept
+   *  separate so a future fork-with-quick-publish could split. */
+  get renameModalCanQuickPublish(): boolean {
+    return this.renameModalKind?.type === 'listing';
+  }
+
+  /** Resolve a shelved draft's source listing title for the
+   *  "↳ Copied from X" breadcrumb. Returns '' when the draft has no
+   *  lineage (raw fork) or the source listing isn't in the catalog. */
+  sourceTitleFor(draft: IDraftListing): string {
+    const id = draft.clonedFromListingId;
+    if (id == null) return '';
+    return ALL_LISTINGS.find(l => l.id === id)?.title ?? '';
+  }
 
   /** Open the rename modal pre-filled with `<title> (copy[ N])` for a
    *  published listing → host renames → wizard opens with the chosen title. */
@@ -228,6 +244,29 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     const dup = this.drafts.duplicateAsShelvedDraft(kind.listingId, title);
     if (!dup) { this.toasts.error('Could not copy this listing.'); return; }
     this.toasts.success('Saved a copy to your drafts.');
+  }
+
+  /** Quick-publish path on the listing-card duplicate — mint a new
+   *  IPrivateListing in one shot. Falls back to opening the wizard when
+   *  validation fails so the host can fix whatever's missing. */
+  onQuickPublished(title: string): void {
+    const kind = this.renameModalKind;
+    this.closeRenameModal();
+    if (kind?.type !== 'listing') return;
+    const listing = this.drafts.duplicateAndPublish(kind.listingId, title);
+    if (listing) {
+      this.toasts.success('Published. Find it on /hosting/listings.');
+      // Refresh the dashboard's listings array so the new card shows up.
+      if (this.user) this.listings = getMyListings(this.user.email);
+      return;
+    }
+    // Defensive — the source already passed publish-validation when it
+    // was first published, but if something's stale we fall back to the
+    // wizard at the review step so the host can fix it.
+    const fallback = this.drafts.duplicateAsDraft(kind.listingId, title);
+    if (!fallback) { this.toasts.error('Could not publish this copy.'); return; }
+    this.toasts.info('Some fields need attention — opening the wizard.');
+    this.router.navigate(['/hosting/new']);
   }
 
   resumeShelvedDraftById(draftId: string): void {

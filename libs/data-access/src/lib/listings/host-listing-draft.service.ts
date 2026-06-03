@@ -303,6 +303,62 @@ export class HostListingDraftService {
   }
 
   /**
+   * Clone an existing listing and publish it immediately in one shot —
+   * powers the "Or publish as-is" link on the listing-card rename modal.
+   *
+   * Wraps the clone in stash/restore so the host's in-flight new-listing
+   * draft isn't bulldozed by `publish()`'s draft-wiping side effects.
+   * Returns the new listing, or null when the source can't be resolved or
+   * the clone would fail validation.
+   */
+  duplicateAndPublish(sourceListingId: number, customTitle?: string): IPrivateListing | null {
+    if (this._editingListingId !== null) this.exitEdit();
+    const source = this.resolveDraftSource(sourceListingId);
+    if (!source) return null;
+
+    const now = new Date().toISOString();
+    const clone: IDraftListing = JSON.parse(JSON.stringify(source));
+    clone.id = this.newId();
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    clone.currentPhase = 1;
+    clone.currentStep = 0;
+    clone.title = customTitle?.trim() || this.suggestCopyTitle(clone.title);
+    clone.clonedFromListingId = sourceListingId;
+    delete clone.publishedAt;
+    delete clone.publishedListingId;
+    if (Array.isArray(clone.addOns)) {
+      clone.addOns = clone.addOns.map(a => ({ ...a, id: `addon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}` }));
+    }
+
+    // Defensive: bail before mutating draft state if the clone wouldn't pass
+    // publish-validation. Falls back gracefully via the caller.
+    if (this.missingRequiredFields(clone).length > 0) return null;
+
+    // Stash any in-flight draft so publish()'s wipe doesn't lose work.
+    const stashed = this._draft$.value;
+    this._draft$.next(clone);
+    this.write(clone);
+
+    let listing: IPrivateListing | null = null;
+    try {
+      listing = this.publish();
+    } catch {
+      listing = null;
+    } finally {
+      // publish() clears localStorage's draft key on success; restore both
+      // the in-memory and persisted state from the stash either way.
+      if (stashed) {
+        this._draft$.next(stashed);
+        this.write(stashed);
+      } else {
+        this._draft$.next(null);
+      }
+    }
+    return listing;
+  }
+
+  /**
    * Like `duplicateAsDraft()` but writes the clone straight to the shelved-
    * drafts stack instead of swapping the in-flight draft. Powers the
    * "Save to drafts" branch on the listing-card rename modal — the host

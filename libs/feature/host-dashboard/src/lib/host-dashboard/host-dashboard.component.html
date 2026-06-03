@@ -36,7 +36,7 @@
       <cnt-resume-draft-card (duplicate)="askForkRename()"></cnt-resume-draft-card>
 
       @for (s of shelvedDrafts; track s.id) {
-        <cnt-resume-draft-card class="block mt-3" [shelvedDraft]="s"
+        <cnt-resume-draft-card class="block mt-3" [shelvedDraft]="s" [sourceTitle]="sourceTitleFor(s)"
           (resume)="resumeShelvedDraftById(s.id)"
           (discarded)="discardShelvedDraftById(s.id)"></cnt-resume-draft-card>
       }
@@ -46,8 +46,10 @@
           [defaultTitle]="renameModalDefault"
           [subtitle]="renameModalSubtitle"
           [showSaveToDrafts]="renameModalCanShelve"
+          [showQuickPublish]="renameModalCanQuickPublish"
           (saved)="onRenameSaved($event)"
           (savedToDrafts)="onRenameSavedToDrafts($event)"
+          (quickPublished)="onQuickPublished($event)"
           (cancelled)="closeRenameModal()"></cnt-duplicate-rename-modal>
       }
 

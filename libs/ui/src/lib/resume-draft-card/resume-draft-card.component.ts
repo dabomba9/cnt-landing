@@ -45,6 +45,12 @@ import {
             <h3 class="font-headline font-bold text-dark-text text-lg md:text-xl leading-tight mt-0.5 truncate">
               {{ draft.title || 'Untitled listing' }}
             </h3>
+            @if (shelvedDraft && sourceTitle) {
+              <div class="text-[0.65rem] font-body text-muted-text mt-1 flex items-center gap-1 min-w-0">
+                <span class="material-symbols-outlined text-[12px]">subdirectory_arrow_right</span>
+                <span class="truncate">Copied from {{ sourceTitle }}</span>
+              </div>
+            }
 
             <!-- Progress bar -->
             <div class="mt-3 flex items-center gap-2.5">
@@ -109,6 +115,11 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
    *  row, jungle-green palette, draft data sourced from the input rather than
    *  the active in-flight draft. Leave unset for the default active mode. */
   @Input() shelvedDraft: IDraftListing | null = null;
+  /** Title of the listing this shelved draft was copied from — drives the
+   *  "↳ Copied from X" breadcrumb on multi-copy shelves. Resolved by the
+   *  parent via ALL_LISTINGS lookup; empty when the lineage doesn't resolve
+   *  (or the draft was a raw fork). */
+  @Input() sourceTitle = '';
 
   /** Fires after the host discards the draft (active or shelved), so parent
    *  pages can refresh + the parent owns the actual discard side effect. */
