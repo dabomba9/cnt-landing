@@ -367,20 +367,56 @@ export class HostListingDraftService {
     this.writeShelved(this._shelvedDrafts$.value.filter(d => d.id !== draftId));
   }
 
-  /** Smart copy-title suggestion that avoids the "(copy) (copy)" staircase.
-   *  Strips an existing `(copy N?)` suffix from the base, then mints the
-   *  smallest unused ordinal across published listings, the in-flight draft,
-   *  and every shelved draft. 0 matches → "<base> (copy)"; N matches →
-   *  "<base> (copy N+1)". */
+  /** Smart copy-title suggestion. Hosts almost never want a literal "(copy)"
+   *  — they want the next pad number / site letter. We detect common
+   *  patterns in the source title and increment them:
+   *
+   *  - "Heritage Oak — Pad 1"  → "Heritage Oak — Pad 2"
+   *  - "Site 12"               → "Site 13"
+   *  - "Foo Site A"            → "Foo Site B" (single uppercase letter)
+   *
+   *  Falls back to the legacy "(copy)" / "(copy 2)" suffix when no pattern
+   *  matches. In every case we walk known titles (published + in-flight +
+   *  shelved) and keep incrementing until we mint an unused one, so the
+   *  staircase never returns.
+   */
   suggestCopyTitle(baseTitle: string | undefined): string {
     const raw = (baseTitle ?? '').trim();
     if (!raw) return '(copy)';
-    const base = raw.replace(/\s*\(copy(?:\s*\d+)?\)\s*$/i, '');
+
     const taken = new Set<string>();
     for (const l of ALL_LISTINGS) if (l.title) taken.add(l.title);
     const current = this._draft$.value;
     if (current?.title) taken.add(current.title);
     for (const d of this._shelvedDrafts$.value) if (d.title) taken.add(d.title);
+
+    // 1) Trailing integer — strongest signal. "Pad 3" → "Pad 4".
+    const numMatch = raw.match(/^(.*?)(\d+)\s*$/);
+    if (numMatch) {
+      const prefix = numMatch[1];
+      let n = parseInt(numMatch[2], 10) + 1;
+      // Bounded loop — find the next unused integer.
+      for (let i = 0; i < 200; i++, n++) {
+        const candidate = `${prefix}${n}`;
+        if (!taken.has(candidate)) return candidate;
+      }
+    }
+
+    // 2) Trailing single uppercase letter — "Site A" → "Site B".
+    //    Stop at Z so we don't roll into "AA"; defer to the copy suffix.
+    const letterMatch = raw.match(/^(.*?\s)([A-Y])\s*$/);
+    if (letterMatch) {
+      const prefix = letterMatch[1];
+      let code = letterMatch[2].charCodeAt(0) + 1;
+      for (let i = 0; i < 26 && code <= 'Z'.charCodeAt(0); i++, code++) {
+        const candidate = `${prefix}${String.fromCharCode(code)}`;
+        if (!taken.has(candidate)) return candidate;
+      }
+    }
+
+    // 3) Fallback — strip an existing "(copy N?)" suffix from the base,
+    //    then mint the smallest unused ordinal.
+    const base = raw.replace(/\s*\(copy(?:\s*\d+)?\)\s*$/i, '');
     const first = `${base} (copy)`;
     if (!taken.has(first)) return first;
     for (let n = 2; n < 100; n++) {

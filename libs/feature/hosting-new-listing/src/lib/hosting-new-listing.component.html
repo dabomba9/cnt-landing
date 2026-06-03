@@ -192,6 +192,18 @@
             </div>
           </div>
         } @else {
+          @if (draft?.clonedFromListingId) {
+            <div class="mb-6 flex flex-wrap items-start gap-3 p-4 md:p-5 rounded-2xl bg-jungle-green/8 border border-jungle-green/25">
+              <span class="w-11 h-11 rounded-full bg-jungle-green/15 inline-flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-jungle-green text-xl" style="font-variation-settings: 'FILL' 1;">content_copy</span>
+              </span>
+              <div class="flex-1 min-w-0">
+                <div class="text-[0.65rem] uppercase tracking-[0.14em] font-button font-bold text-jungle-green mb-1">Copied from {{ clonedFromTitle || ('listing #' + draft?.clonedFromListingId) }}</div>
+                <h3 class="font-headline font-bold text-dark-text text-lg md:text-xl leading-tight mb-1">Everything below is inherited.</h3>
+                <p class="text-sm text-muted-text font-body leading-relaxed">Review what makes sense as-is, then tap the phase chips above to change anything that's different for this site (typically just the title, pad number, photos, and price). Or scroll down and publish if it's good.</p>
+              </div>
+            </div>
+          }
           <cnt-phase3-review [draft]="draft"></cnt-phase3-review>
         }
       }

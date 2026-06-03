@@ -151,14 +151,30 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
       robots: 'noindex, nofollow',
     });
     // Hydrate from query params so refresh + back-button work.
+    let hasExplicitQueryStep = false;
     this.subs.push(this.route.queryParams.subscribe(q => {
       const phaseRaw = parseInt(q['phase'], 10);
       const stepRaw = parseInt(q['step'], 10);
+      hasExplicitQueryStep = Number.isFinite(phaseRaw) || Number.isFinite(stepRaw);
       if (phaseRaw === 1 || phaseRaw === 2 || phaseRaw === 3) this.phase = phaseRaw;
       else this.phase = 1;
       this.step = Number.isFinite(stepRaw) ? stepRaw : -1;
     }));
-    this.subs.push(this.drafts.draft$.subscribe(d => { this.draft = d; }));
+    this.subs.push(this.drafts.draft$.subscribe(d => {
+      const fresh = this.draft == null;
+      this.draft = d;
+      // Cloned drafts: when the host first lands on the wizard without an
+      // explicit phase/step in the URL, jump straight to the review step.
+      // Everything's inherited; they only need to tweak what differs.
+      if (fresh && d?.clonedFromListingId != null && !this.editing && !hasExplicitQueryStep) {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { phase: 3, step: 3 },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+    }));
   }
 
   /** Step components emit patches; we merge + persist + flash the saved indicator. */
