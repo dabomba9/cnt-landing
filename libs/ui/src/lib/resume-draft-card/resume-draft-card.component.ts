@@ -81,7 +81,8 @@ import {
             Duplicate
           </button>
           <button type="button" (click)="discard()"
-            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text transition-colors">
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/10 transition-colors">
+            <span class="material-symbols-outlined text-sm">delete</span>
             Discard
           </button>
         </div>
