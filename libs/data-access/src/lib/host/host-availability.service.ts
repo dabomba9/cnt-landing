@@ -74,6 +74,78 @@ export class HostAvailabilityService {
     this.write(all);
   }
 
+  // ============ Bulk fan-out for the /hosting/calendar multi-listing editor ============
+  /** Block or unblock a set of dates across multiple listings in one write. */
+  setBlockedBulk(listingIds: number[], dates: string[], blocked: boolean): void {
+    if (listingIds.length === 0 || dates.length === 0) return;
+    const all = { ...this._all$.value };
+    for (const id of listingIds) {
+      const current = clone(all[id] || EMPTY);
+      const set = new Set(current.blocked);
+      for (const d of dates) blocked ? set.add(d) : set.delete(d);
+      current.blocked = [...set].sort();
+      all[id] = current;
+    }
+    this.write(all);
+  }
+
+  /** Apply (or clear) a per-day price override across multiple listings. */
+  setPriceBulk(listingIds: number[], dates: string[], price: number | null): void {
+    if (listingIds.length === 0 || dates.length === 0) return;
+    const all = { ...this._all$.value };
+    for (const id of listingIds) {
+      const current = clone(all[id] || EMPTY);
+      for (const d of dates) {
+        if (price === null || isNaN(price)) delete current.prices[d];
+        else current.prices[d] = Math.round(price);
+      }
+      all[id] = current;
+    }
+    this.write(all);
+  }
+
+  /** Reset all blocks + overrides on a set of dates across multiple listings. */
+  resetDatesBulk(listingIds: number[], dates: string[]): void {
+    if (listingIds.length === 0 || dates.length === 0) return;
+    const all = { ...this._all$.value };
+    for (const id of listingIds) {
+      const current = clone(all[id] || EMPTY);
+      const blockedSet = new Set(current.blocked);
+      for (const d of dates) {
+        blockedSet.delete(d);
+        delete current.prices[d];
+      }
+      current.blocked = [...blockedSet].sort();
+      all[id] = current;
+    }
+    this.write(all);
+  }
+
+  /** Aggregate a single day's state across a set of scoped listings — drives
+   *  the day-cell render on the bulk calendar. `bookedByListing` is built once
+   *  per render from the bookings stream so this stays cheap per cell. */
+  aggregateDayState(
+    listingIds: number[],
+    iso: string,
+    bookedByListing: Record<number, Set<string>>,
+  ): { open: number; booked: number; blocked: number; priced: number; uniformPrice: number | null } {
+    let open = 0, booked = 0, blocked = 0, priced = 0;
+    const prices: number[] = [];
+    for (const id of listingIds) {
+      const avail = this._all$.value[id] || EMPTY;
+      if (bookedByListing[id]?.has(iso)) { booked++; continue; }
+      if (avail.blocked.includes(iso)) { blocked++; continue; }
+      open++;
+      const p = avail.prices[iso];
+      if (typeof p === 'number') { priced++; prices.push(p); }
+    }
+    const uniformPrice =
+      prices.length > 0 && prices.length === open && prices.every(p => p === prices[0])
+        ? prices[0]
+        : null;
+    return { open, booked, blocked, priced, uniformPrice };
+  }
+
   private read(): Record<number, IHostAvailability> {
     if (!isPlatformBrowser(this.platformId)) return {};
     try {

@@ -33,7 +33,7 @@ interface IDayCell {
         </div>
       </div>
 
-      <a routerLink="/hosting/listings" class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline mb-4">
+      <a routerLink="/hosting/calendar" class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline mb-4">
         Manage availability
         <span class="material-symbols-outlined text-sm">arrow_forward</span>
       </a>

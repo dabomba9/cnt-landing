@@ -82,6 +82,11 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/host-dashboard').then(m => m.HostDashboardComponent),
   },
   {
+    path: 'hosting/calendar',
+    canActivate: [authGuard],
+    loadComponent: () => import('@cnt-workspace/host-dashboard').then(m => m.HostBulkCalendarComponent),
+  },
+  {
     path: 'hosting/new',
     canActivate: [authGuard],
     loadComponent: () => import('@cnt-workspace/hosting-new-listing').then(m => m.HostingNewListingComponent),
