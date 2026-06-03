@@ -45,7 +45,9 @@
         <cnt-duplicate-rename-modal
           [defaultTitle]="renameModalDefault"
           [subtitle]="renameModalSubtitle"
+          [showSaveToDrafts]="renameModalCanShelve"
           (saved)="onRenameSaved($event)"
+          (savedToDrafts)="onRenameSavedToDrafts($event)"
           (cancelled)="closeRenameModal()"></cnt-duplicate-rename-modal>
       }
 
@@ -477,22 +479,41 @@
                   @for (l of group.sites; track l.id) {
                     <div class="flex flex-col gap-2">
                       <cnt-listing-card [listing]="l"></cnt-listing-card>
-                      <div class="flex items-center gap-2">
+                      <div class="relative flex items-center gap-2">
                         <a [routerLink]="['/hosting/listings', l.id, 'edit']"
                           class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors no-underline">
                           <span class="material-symbols-outlined text-sm">edit</span>
                           Edit
                         </a>
                         <a [routerLink]="['/hosting/listings', l.id, 'addons']"
-                          class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/15 transition-colors no-underline">
+                          class="hidden md:inline-flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/15 transition-colors no-underline">
                           <span class="material-symbols-outlined text-sm">add</span>
                           Add-on
                         </a>
                         <button type="button" (click)="askListingDuplicateRename(l.id, l.title)" [attr.aria-label]="'Copy ' + l.title + ' as a new site'"
-                          class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
+                          class="hidden md:inline-flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
                           <span class="material-symbols-outlined text-sm">content_copy</span>
                           Copy as new site
                         </button>
+                        <button type="button" (click)="toggleCardActions(l.id, $event)" aria-label="More actions"
+                          class="md:hidden w-10 h-10 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-dark-text transition-colors">
+                          <span class="material-symbols-outlined text-base">more_horiz</span>
+                        </button>
+                        @if (actionsOpenForId === l.id) {
+                          <div (click)="$event.stopPropagation()"
+                            class="md:hidden absolute right-0 top-full mt-2 z-30 min-w-[14rem] rounded-xl bg-white border border-dark-text/10 shadow-[0_12px_28px_rgba(0,0,0,0.12)] p-1.5">
+                            <a [routerLink]="['/hosting/listings', l.id, 'addons']"
+                              class="w-full inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-dark-text hover:bg-trinidad/10 transition-colors no-underline">
+                              <span class="material-symbols-outlined text-base text-trinidad">add</span>
+                              Add-on
+                            </a>
+                            <button type="button" (click)="actionsOpenForId = null; askListingDuplicateRename(l.id, l.title)"
+                              class="w-full inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-dark-text hover:bg-jungle-green/10 transition-colors text-left">
+                              <span class="material-symbols-outlined text-base text-jungle-green">content_copy</span>
+                              Copy as new site
+                            </button>
+                          </div>
+                        }
                       </div>
                     </div>
                   }
@@ -510,22 +531,41 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
                   <div class="flex flex-col gap-2">
                     <cnt-listing-card [listing]="l"></cnt-listing-card>
-                    <div class="flex items-center gap-2">
+                    <div class="relative flex items-center gap-2">
                       <a [routerLink]="['/hosting/listings', l.id, 'edit']"
                         class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors no-underline">
                         <span class="material-symbols-outlined text-sm">edit</span>
                         Edit
                       </a>
                       <a [routerLink]="['/hosting/listings', l.id, 'addons']"
-                        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/15 transition-colors no-underline">
+                        class="hidden md:inline-flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/15 transition-colors no-underline">
                         <span class="material-symbols-outlined text-sm">add</span>
                         Add-on
                       </a>
                       <button type="button" (click)="askListingDuplicateRename(l.id, l.title)" [attr.aria-label]="'Copy ' + l.title + ' as a new site'"
-                        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
+                        class="hidden md:inline-flex flex-1 items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
                         <span class="material-symbols-outlined text-sm">content_copy</span>
                         Copy as new site
                       </button>
+                      <button type="button" (click)="toggleCardActions(l.id, $event)" aria-label="More actions"
+                        class="md:hidden w-10 h-10 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-dark-text transition-colors">
+                        <span class="material-symbols-outlined text-base">more_horiz</span>
+                      </button>
+                      @if (actionsOpenForId === l.id) {
+                        <div (click)="$event.stopPropagation()"
+                          class="md:hidden absolute right-0 top-full mt-2 z-30 min-w-[14rem] rounded-xl bg-white border border-dark-text/10 shadow-[0_12px_28px_rgba(0,0,0,0.12)] p-1.5">
+                          <a [routerLink]="['/hosting/listings', l.id, 'addons']"
+                            class="w-full inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-dark-text hover:bg-trinidad/10 transition-colors no-underline">
+                            <span class="material-symbols-outlined text-base text-trinidad">add</span>
+                            Add-on
+                          </a>
+                          <button type="button" (click)="actionsOpenForId = null; askListingDuplicateRename(l.id, l.title)"
+                            class="w-full inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-dark-text hover:bg-jungle-green/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-base text-jungle-green">content_copy</span>
+                            Copy as new site
+                          </button>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>

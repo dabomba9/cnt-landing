@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -141,6 +141,21 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     return this.drafts.groupOwnedByProperty(this.listings);
   }
 
+  // ─────────────── Card action overflow (mobile) ───────────────
+  /** Listing id whose `⋯ More` menu is currently open. Null when none.
+   *  Tapping outside the menu (document click handler below) closes it. */
+  actionsOpenForId: number | null = null;
+
+  toggleCardActions(listingId: number, ev: Event): void {
+    ev.stopPropagation();
+    this.actionsOpenForId = this.actionsOpenForId === listingId ? null : listingId;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    if (this.actionsOpenForId !== null) this.actionsOpenForId = null;
+  }
+
   // ─────────────── Rename modal state ───────────────
   renameModalOpen = false;
   renameModalDefault = '';
@@ -148,6 +163,14 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   /** What to do once the host saves the rename — either copy-from-listing or
    *  fork-current-draft. */
   private renameModalKind: { type: 'listing'; listingId: number } | { type: 'fork' } | null = null;
+
+  /** True when the active rename-modal flow supports the secondary
+   *  "Save to drafts" button — currently only the listing-card duplicate
+   *  path. The fork path already shelves by default so the second button
+   *  would be redundant. */
+  get renameModalCanShelve(): boolean {
+    return this.renameModalKind?.type === 'listing';
+  }
 
   /** Open the rename modal pre-filled with `<title> (copy[ N])` for a
    *  published listing → host renames → wizard opens with the chosen title. */
@@ -192,6 +215,18 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
     const fork = this.drafts.forkCurrentDraft(title);
     this.closeRenameModal();
     if (!fork) { this.toasts.info('Add something to your draft before duplicating.'); return; }
+    this.toasts.success('Saved a copy to your drafts.');
+  }
+
+  /** Listing-card duplicate → write straight to the shelved-drafts stack
+   *  without touching the in-flight draft or navigating. The new copy
+   *  appears as its own shelved card on this same page. */
+  onRenameSavedToDrafts(title: string): void {
+    const kind = this.renameModalKind;
+    this.closeRenameModal();
+    if (kind?.type !== 'listing') return;
+    const dup = this.drafts.duplicateAsShelvedDraft(kind.listingId, title);
+    if (!dup) { this.toasts.error('Could not copy this listing.'); return; }
     this.toasts.success('Saved a copy to your drafts.');
   }
 

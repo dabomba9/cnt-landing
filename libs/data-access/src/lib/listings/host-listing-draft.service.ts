@@ -303,6 +303,36 @@ export class HostListingDraftService {
   }
 
   /**
+   * Like `duplicateAsDraft()` but writes the clone straight to the shelved-
+   * drafts stack instead of swapping the in-flight draft. Powers the
+   * "Save to drafts" branch on the listing-card rename modal — the host
+   * stays where they are (typically /hosting) and the copy waits on the
+   * shelf for later. Returns the new draft, or null when no source resolves.
+   */
+  duplicateAsShelvedDraft(sourceListingId: number, customTitle?: string): IDraftListing | null {
+    const source = this.resolveDraftSource(sourceListingId);
+    if (!source) return null;
+
+    const now = new Date().toISOString();
+    const clone: IDraftListing = JSON.parse(JSON.stringify(source));
+    clone.id = this.newId();
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    clone.currentPhase = 1;
+    clone.currentStep = 0;
+    clone.title = customTitle?.trim() || this.suggestCopyTitle(clone.title);
+    clone.clonedFromListingId = sourceListingId;
+    delete clone.publishedAt;
+    delete clone.publishedListingId;
+    if (Array.isArray(clone.addOns)) {
+      clone.addOns = clone.addOns.map(a => ({ ...a, id: `addon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}` }));
+    }
+
+    this.writeShelved([...this._shelvedDrafts$.value, clone]);
+    return clone;
+  }
+
+  /**
    * Fork the in-flight new-listing draft — clone its current state with a
    * fresh id and shelve the clone so the host keeps editing the original
    * while the copy waits to be picked up later (via `resumeShelvedDraft()`).
