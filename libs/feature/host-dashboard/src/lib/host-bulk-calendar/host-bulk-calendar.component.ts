@@ -59,6 +59,9 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   minNightsInput: number | null = null;
   tierNameInput = '';
   tierPriceInput: number | null = null;
+  blockReasonInput = '';
+  blockReasonCustom = '';
+  readonly blockReasonPresets = ['Private use', 'Cleaning', 'Maintenance', 'Held for repeat'];
 
   /** Type-in range fields — peer to drag-selecting on the grid. */
   rangeStart = '';
@@ -391,17 +394,26 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const ids = this.scopedListingIds;
     if (ids.length === 0 || this.selected.size === 0) return;
     const block = !this.allSelectedBlocked;
+    const reason = block ? this.effectiveBlockReason() : undefined;
     const skips = block ? this.countConflicts(ids) : 0;
-    this.availability.setBlockedBulk(ids, this.selectedDates, block);
+    this.availability.setBlockedBulk(ids, this.selectedDates, block, reason);
     const verb = block ? 'Blocked' : 'Reopened';
     const noun = this.selected.size === 1 ? 'day' : 'days';
     const scope = `${ids.length} ${ids.length === 1 ? 'listing' : 'listings'}`;
+    const reasonSuffix = block && reason ? ` · ${reason}` : '';
     if (skips > 0) {
-      this.toasts.info(`${verb} ${this.selected.size} ${noun} across ${scope}. Skipped ${skips} listing-${skips === 1 ? 'date' : 'dates'} with existing bookings.`);
+      this.toasts.info(`${verb} ${this.selected.size} ${noun} across ${scope}${reasonSuffix}. Skipped ${skips} listing-${skips === 1 ? 'date' : 'dates'} with existing bookings.`);
     } else {
-      this.toasts.info(`${verb} ${this.selected.size} ${noun} across ${scope}.`);
+      this.toasts.info(`${verb} ${this.selected.size} ${noun} across ${scope}${reasonSuffix}.`);
     }
+    this.blockReasonInput = '';
+    this.blockReasonCustom = '';
     this.clearSelection();
+  }
+
+  effectiveBlockReason(): string {
+    if (this.blockReasonInput === '__custom') return this.blockReasonCustom.trim();
+    return this.blockReasonInput;
   }
 
   applyPrice(): void {

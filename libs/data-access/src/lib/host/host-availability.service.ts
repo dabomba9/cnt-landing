@@ -39,6 +39,11 @@ export interface IHostAvailability {
   blocked: string[];
   /** Per-day price overrides keyed by ISO YYYY-MM-DD. */
   prices: Record<string, number>;
+  /** Optional human-readable reason per manually-blocked iso —
+   *  'Private use', 'Cleaning', 'Maintenance', 'Held for repeat', or
+   *  a custom string. Keyed by the same iso as `blocked[]`; cleaned
+   *  up whenever a date is un-blocked. */
+  blockReasons?: Record<string, string>;
   /** ISO dates imported from external feeds, grouped by source label so a
    *  re-sync can wipe and replace just one source. */
   externalBlocks?: Record<string, string[]>;
@@ -60,6 +65,7 @@ function clone(a: IHostAvailability): IHostAvailability {
   return {
     blocked: [...a.blocked],
     prices: { ...a.prices },
+    blockReasons: a.blockReasons ? { ...a.blockReasons } : undefined,
     externalBlocks: a.externalBlocks
       ? Object.fromEntries(Object.entries(a.externalBlocks).map(([k, v]) => [k, [...v]]))
       : undefined,
@@ -92,13 +98,26 @@ export class HostAvailabilityService {
     return this._all$.value[listingId] || EMPTY;
   }
 
-  /** Block or unblock a set of ISO dates for a listing. */
-  setBlocked(listingId: number, dates: string[], blocked: boolean): void {
+  /** Block or unblock a set of ISO dates for a listing. When blocking with
+   *  a non-empty `reason`, that label attaches to each date in
+   *  `blockReasons`. Unblock always clears the reason metadata too. */
+  setBlocked(listingId: number, dates: string[], blocked: boolean, reason?: string): void {
     if (dates.length === 0) return;
     const current = clone(this.get(listingId));
     const set = new Set(current.blocked);
-    for (const d of dates) blocked ? set.add(d) : set.delete(d);
+    const reasons = { ...(current.blockReasons ?? {}) };
+    const cleanReason = reason?.trim();
+    for (const d of dates) {
+      if (blocked) {
+        set.add(d);
+        if (cleanReason) reasons[d] = cleanReason;
+      } else {
+        set.delete(d);
+        delete reasons[d];
+      }
+    }
     current.blocked = [...set].sort();
+    current.blockReasons = Object.keys(reasons).length ? reasons : undefined;
     this.patch(listingId, current);
   }
 
@@ -133,17 +152,34 @@ export class HostAvailabilityService {
 
   // ============ Bulk fan-out for the /hosting/calendar multi-listing editor ============
   /** Block or unblock a set of dates across multiple listings in one write. */
-  setBlockedBulk(listingIds: number[], dates: string[], blocked: boolean): void {
+  setBlockedBulk(listingIds: number[], dates: string[], blocked: boolean, reason?: string): void {
     if (listingIds.length === 0 || dates.length === 0) return;
+    const cleanReason = reason?.trim();
     const all = { ...this._all$.value };
     for (const id of listingIds) {
       const current = clone(all[id] || EMPTY);
       const set = new Set(current.blocked);
-      for (const d of dates) blocked ? set.add(d) : set.delete(d);
+      const reasons = { ...(current.blockReasons ?? {}) };
+      for (const d of dates) {
+        if (blocked) {
+          set.add(d);
+          if (cleanReason) reasons[d] = cleanReason;
+        } else {
+          set.delete(d);
+          delete reasons[d];
+        }
+      }
       current.blocked = [...set].sort();
+      current.blockReasons = Object.keys(reasons).length ? reasons : undefined;
       all[id] = current;
     }
     this.write(all);
+  }
+
+  /** Read helper for templates + ICS export. Returns undefined when the
+   *  date isn't blocked or has no attached reason. */
+  blockReasonFor(listingId: number, iso: string): string | undefined {
+    return this.get(listingId).blockReasons?.[iso];
   }
 
   /** Apply (or clear) a per-day price override across multiple listings. */

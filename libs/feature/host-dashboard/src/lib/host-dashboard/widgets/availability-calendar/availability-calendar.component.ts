@@ -301,7 +301,8 @@ export class AvailabilityCalendarComponent implements OnDestroy {
         return { listingId: l.id, title: l.title, state: 'booked' as const };
       }
       if (avail.blocked.includes(iso)) {
-        return { listingId: l.id, title: l.title, state: 'blocked' as const };
+        const reason = avail.blockReasons?.[iso];
+        return { listingId: l.id, title: l.title, state: 'blocked' as const, detail: reason };
       }
       if (avail.externalBlocks) {
         for (const [src, dates] of Object.entries(avail.externalBlocks)) {
@@ -335,7 +336,7 @@ export class AvailabilityCalendarComponent implements OnDestroy {
     switch (row.state) {
       case 'open':     return 'Open';
       case 'booked':   return 'Booked';
-      case 'blocked':  return 'Blocked';
+      case 'blocked':  return row.detail || 'Blocked';
       case 'external': return row.detail || 'External';
       case 'priced':   return row.detail || 'Priced';
       default:         return '';

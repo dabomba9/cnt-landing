@@ -56,8 +56,12 @@ export function buildListingIcs(input: {
   bookings: IBooking[];
   blocks: string[];
   externalBlocks: Record<string, string[]>;
+  /** Optional reason label per blocked iso — annotated onto the
+   *  per-range VEVENT SUMMARY when the range's first date carries one. */
+  blockReasons?: Record<string, string>;
 }): string {
   const { listing, bookings, blocks, externalBlocks } = input;
+  const blockReasons = input.blockReasons ?? {};
   const lines: string[] = [
     'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CurbNTurf//Listing//EN',
     `X-WR-CALNAME:CurbNTurf — ${listing.title}`,
@@ -80,17 +84,29 @@ export function buildListingIcs(input: {
     );
   }
 
-  // 2) Manual host blocks — one all-day VEVENT per contiguous range.
-  for (const range of collapseToRanges(blocks)) {
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:block-${listing.id}-${range.start}@curbnturf`,
-      `DTSTAMP:${icsTimestamp(new Date())}`,
-      `DTSTART;VALUE=DATE:${icsDate(range.start)}`,
-      `DTEND;VALUE=DATE:${icsExclusiveEnd(range.end)}`,
-      `SUMMARY:CurbNTurf — Blocked`,
-      'END:VEVENT',
-    );
+  // 2) Manual host blocks — one all-day VEVENT per contiguous run of the
+  //    same reason. Partition by reason first so a run that mixes reasons
+  //    doesn't collapse into a single SUMMARY.
+  const blocksByReason = new Map<string, string[]>();
+  for (const iso of blocks) {
+    const key = blockReasons[iso] ?? '';
+    const bucket = blocksByReason.get(key) ?? [];
+    bucket.push(iso);
+    blocksByReason.set(key, bucket);
+  }
+  for (const [reason, isos] of blocksByReason.entries()) {
+    const summary = reason ? `CurbNTurf — Blocked (${reason})` : 'CurbNTurf — Blocked';
+    for (const range of collapseToRanges(isos)) {
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:block-${listing.id}-${range.start}@curbnturf`,
+        `DTSTAMP:${icsTimestamp(new Date())}`,
+        `DTSTART;VALUE=DATE:${icsDate(range.start)}`,
+        `DTEND;VALUE=DATE:${icsExclusiveEnd(range.end)}`,
+        `SUMMARY:${summary}`,
+        'END:VEVENT',
+      );
+    }
   }
 
   // 3) External blocks — keep source-tagged so a re-import or hosted

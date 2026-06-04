@@ -32,6 +32,8 @@ interface IDayCell {
   selected: boolean;
   /** Source label when the cell is blocked by an imported feed. */
   externalSource?: string;
+  /** Reason label when the cell is a manual block (state === 'blocked'). */
+  blockReason?: string;
 }
 
 @Component({
@@ -60,6 +62,11 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   minNightsInput: number | null = null;
   tierNameInput = '';
   tierPriceInput: number | null = null;
+  /** Reason dropdown for the Block action. '__custom' opens the custom-text
+   *  input below; '' means no reason attached. */
+  blockReasonInput = '';
+  blockReasonCustom = '';
+  readonly blockReasonPresets = ['Private use', 'Cleaning', 'Maintenance', 'Held for repeat'];
   /** Rule id currently being edited from the rules list (null = new rule). */
   editingRuleId: string | null = null;
 
@@ -196,6 +203,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         return d >= s && d <= e;
       });
       let externalSource: string | undefined;
+      let blockReason: string | undefined;
       if (covers) {
         bookingId = covers.id;
         state = covers.status === 'pending' ? 'pending' : 'booked';
@@ -203,6 +211,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         state = 'past';
       } else if (blockedSet.has(iso)) {
         state = 'blocked';
+        blockReason = this.availability.blockReasons?.[iso];
       } else if (this.availability.externalBlocks) {
         for (const [source, dates] of Object.entries(this.availability.externalBlocks)) {
           if (dates.includes(iso)) { state = 'external'; externalSource = source; break; }
@@ -228,6 +237,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         tierName,
         selected: this.selected.has(iso),
         externalSource,
+        blockReason,
       });
     }
     return cells;
@@ -339,6 +349,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
       bookings: this.bookings,
       blocks: this.availability.blocked,
       externalBlocks: this.availability.externalBlocks ?? {},
+      blockReasons: this.availability.blockReasons,
     });
   }
 
@@ -549,8 +560,23 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   toggleBlock(): void {
     if (!this.listing || this.selected.size === 0) return;
     const block = !this.allSelectedBlocked;
-    this.availabilitySvc.setBlocked(this.listing.id, this.selectedDates, block);
-    this.toasts.info(block ? `Blocked ${this.selected.size} ${this.selected.size === 1 ? 'day' : 'days'}.` : `Reopened ${this.selected.size} ${this.selected.size === 1 ? 'day' : 'days'}.`);
+    const reason = block ? this.effectiveBlockReason() : undefined;
+    this.availabilitySvc.setBlocked(this.listing.id, this.selectedDates, block, reason);
+    const n = this.selected.size;
+    const noun = n === 1 ? 'day' : 'days';
+    if (block) {
+      this.toasts.info(reason ? `Blocked ${n} ${noun} · ${reason}.` : `Blocked ${n} ${noun}.`);
+    } else {
+      this.toasts.info(`Reopened ${n} ${noun}.`);
+    }
+    this.blockReasonInput = '';
+    this.blockReasonCustom = '';
+  }
+
+  /** Resolve the reason string from the dropdown + optional custom input. */
+  effectiveBlockReason(): string {
+    if (this.blockReasonInput === '__custom') return this.blockReasonCustom.trim();
+    return this.blockReasonInput;
   }
 
   applyPrice(): void {
@@ -706,7 +732,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   cellLabel(cell: IDayCell): string {
     if (cell.state === 'booked') return 'Booked';
     if (cell.state === 'pending') return 'Pending';
-    if (cell.state === 'blocked') return 'Blocked';
+    if (cell.state === 'blocked') return cell.blockReason || 'Blocked';
     if (cell.state === 'external') return cell.externalSource || 'External';
     return '';
   }

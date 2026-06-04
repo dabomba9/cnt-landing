@@ -272,10 +272,26 @@
         </button>
       </div>
 
-      <button type="button" (click)="toggleBlock()"
-        class="px-4 py-2 rounded-md bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
-        {{ allSelectedBlocked ? 'Unblock' : 'Block' }}
-      </button>
+      <div class="flex items-center gap-2">
+        @if (!allSelectedBlocked) {
+          <select [(ngModel)]="blockReasonInput" name="bulkReason"
+            class="px-2 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green">
+            <option value="">No reason</option>
+            @for (preset of blockReasonPresets; track preset) {
+              <option [value]="preset">{{ preset }}</option>
+            }
+            <option value="__custom">Custom…</option>
+          </select>
+          @if (blockReasonInput === '__custom') {
+            <input type="text" maxlength="40" [(ngModel)]="blockReasonCustom" name="bulkReasonCustom" placeholder="Reason"
+              class="w-32 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+          }
+        }
+        <button type="button" (click)="toggleBlock()"
+          class="px-4 py-2 rounded-md bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+          {{ allSelectedBlocked ? 'Unblock' : 'Block' }}
+        </button>
+      </div>
 
       <button type="button" (click)="resetSelection()"
         class="px-4 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad">
