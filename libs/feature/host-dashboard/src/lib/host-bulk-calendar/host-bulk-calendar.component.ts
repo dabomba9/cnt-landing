@@ -1,7 +1,7 @@
 import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -75,6 +75,7 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private router: Router,
+    private route: ActivatedRoute,
     private auth: AuthService,
     private bookingSvc: BookingService,
     private availability: HostAvailabilityService,
@@ -104,6 +105,13 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
         this.rebuildBookedMap();
       }),
     );
+
+    // Deep-link from /hosting widget peek: ?day=YYYY-MM-DD pre-selects
+    // that single day and jumps the visible month to it.
+    const dayIso = this.route.snapshot.queryParamMap.get('day');
+    if (dayIso && /^\d{4}-\d{2}-\d{2}$/.test(dayIso)) {
+      this.selectByRange(dayIso, dayIso);
+    }
   }
 
   ngOnDestroy(): void { for (const s of this.subs) s.unsubscribe(); }
