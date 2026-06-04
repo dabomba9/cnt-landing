@@ -67,6 +67,8 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   rangeEndDate: Date | null = null;
   pickByDateOpen = false;
   pickerRange: DateRange<Date> | null = null;
+  pickerStartDate: Date | null = null;
+  pickerEndDate: Date | null = null;
 
   private subs: Subscription[] = [];
 
@@ -271,6 +273,8 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.pickerRange = (this.rangeStartDate && this.rangeEndDate)
       ? new DateRange<Date>(this.rangeStartDate, this.rangeEndDate)
       : null;
+    this.pickerStartDate = this.rangeStartDate;
+    this.pickerEndDate   = this.rangeEndDate;
   }
 
   onRangeDateChange(): void {
@@ -291,6 +295,19 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
       this.pickerRange = new DateRange<Date>(start, d);
       this.selectByRange(this.isoKey(start), this.isoKey(d));
     }
+    this.pickerStartDate = this.pickerRange?.start ?? null;
+    this.pickerEndDate   = this.pickerRange?.end   ?? null;
+  }
+
+  onPickerFieldChange(): void {
+    if (!this.pickerStartDate || !this.pickerEndDate) {
+      this.pickerRange = this.pickerStartDate ? new DateRange<Date>(this.pickerStartDate, null) : null;
+      return;
+    }
+    const start = this.pickerStartDate < this.pickerEndDate ? this.pickerStartDate : this.pickerEndDate;
+    const end   = this.pickerStartDate < this.pickerEndDate ? this.pickerEndDate   : this.pickerStartDate;
+    this.pickerRange = new DateRange<Date>(start, end);
+    this.selectByRange(this.isoKey(start), this.isoKey(end));
   }
 
   selectByRange(startIso: string, endIso: string): void {
@@ -341,6 +358,8 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.rangeStartDate = null;
     this.rangeEndDate = null;
     this.pickerRange = null;
+    this.pickerStartDate = null;
+    this.pickerEndDate = null;
   }
 
   get selectedDates(): string[] { return [...this.selected].sort(); }

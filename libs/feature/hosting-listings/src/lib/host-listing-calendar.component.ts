@@ -75,6 +75,10 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   pickByDateOpen = false;
   /** DateRange driving the inline mat-calendar in the picker popover. */
   pickerRange: DateRange<Date> | null = null;
+  /** Typed-entry peers inside the Pick-by-date popover, in sync with
+   *  pickerRange via onPickerFieldChange + write-back in onPickerDateSelected. */
+  pickerStartDate: Date | null = null;
+  pickerEndDate: Date | null = null;
   /** Inline rule-list edit state — keyed by rule id. */
   inlineEditId: string | null = null;
   inlineEditStartDate: Date | null = null;
@@ -392,6 +396,8 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     this.pickerRange = (this.rangeStartDate && this.rangeEndDate)
       ? new DateRange<Date>(this.rangeStartDate, this.rangeEndDate)
       : null;
+    this.pickerStartDate = this.rangeStartDate;
+    this.pickerEndDate   = this.rangeEndDate;
   }
 
   /** Mat-datepicker write-back for the action-bar Range row. */
@@ -416,6 +422,22 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
       this.pickerRange = new DateRange<Date>(start, d);
       this.selectByRange(this.isoKey(start), this.isoKey(d));
     }
+    // Mirror into the typed peers so they reflect calendar taps.
+    this.pickerStartDate = this.pickerRange?.start ?? null;
+    this.pickerEndDate   = this.pickerRange?.end   ?? null;
+  }
+
+  /** Typed-field writer inside the popover — peers with the inline
+   *  calendar. Both write through to the same `selected: Set<string>`. */
+  onPickerFieldChange(): void {
+    if (!this.pickerStartDate || !this.pickerEndDate) {
+      this.pickerRange = this.pickerStartDate ? new DateRange<Date>(this.pickerStartDate, null) : null;
+      return;
+    }
+    const start = this.pickerStartDate < this.pickerEndDate ? this.pickerStartDate : this.pickerEndDate;
+    const end   = this.pickerStartDate < this.pickerEndDate ? this.pickerEndDate   : this.pickerStartDate;
+    this.pickerRange = new DateRange<Date>(start, end);
+    this.selectByRange(this.isoKey(start), this.isoKey(end));
   }
 
   /** Date-field writer. Treats the typed range like a drag-selected
@@ -508,6 +530,8 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     this.rangeStartDate = null;
     this.rangeEndDate = null;
     this.pickerRange = null;
+    this.pickerStartDate = null;
+    this.pickerEndDate = null;
   }
 
   // ----- bulk actions -----

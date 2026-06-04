@@ -96,14 +96,29 @@
                 Today
               </button>
               @if (pickByDateOpen) {
-                <div class="absolute right-0 top-full mt-2 z-30 w-[20rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
                   <div class="flex items-center justify-between mb-2 px-1">
                     <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick a range</span>
                     <button type="button" (click)="togglePickByDate()" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline" aria-label="Close">Done</button>
                   </div>
+                  <div class="flex items-center gap-2 mb-3 px-1">
+                    <div class="cnt-date-field inline-flex flex-1 items-center gap-1 rounded-md bg-cream/40 border border-dark-text/15 px-2 py-1">
+                      <input matInput [matDatepicker]="pickerStartPicker" [(ngModel)]="pickerStartDate" name="pickerStart" (ngModelChange)="onPickerFieldChange()"
+                        placeholder="Start" class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
+                      <mat-datepicker-toggle [for]="pickerStartPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerStartPicker></mat-datepicker>
+                    </div>
+                    <span class="text-muted-text text-xs">→</span>
+                    <div class="cnt-date-field inline-flex flex-1 items-center gap-1 rounded-md bg-cream/40 border border-dark-text/15 px-2 py-1">
+                      <input matInput [matDatepicker]="pickerEndPicker" [(ngModel)]="pickerEndDate" name="pickerEnd" (ngModelChange)="onPickerFieldChange()"
+                        placeholder="End" class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
+                      <mat-datepicker-toggle [for]="pickerEndPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerEndPicker></mat-datepicker>
+                    </div>
+                  </div>
                   <mat-calendar [selected]="pickerRange" (selectedChange)="onPickerDateSelected($event)"
                     class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
-                  <p class="text-[0.65rem] text-muted-text font-body mt-2 leading-relaxed px-1">First tap = start, second tap = end. Then use the action bar to apply across scoped listings.</p>
+                  <p class="text-[0.65rem] text-muted-text font-body mt-2 leading-relaxed px-1">Type a range above or tap the calendar. Then use the action bar to apply across scoped listings.</p>
                 </div>
               }
             </div>
