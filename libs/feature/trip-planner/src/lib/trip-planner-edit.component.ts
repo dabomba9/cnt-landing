@@ -16,6 +16,7 @@ import {
   parseIsoDate, formatIsoDate, shortDateLabel,
   encodeTripShare, tripCostSummary, ITripCost,
   isLongLeg, tripFuelEstimate, ITripFuel,
+  ListingAvailabilityService, HostAvailabilityService,
 } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { TripPlannerMapComponent } from './trip-planner-map.component';
@@ -199,7 +200,16 @@ interface ISearchHit {
                         }
                       </span>
                       <div class="flex-1 min-w-0">
-                        <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
+                        <div class="flex items-center gap-1.5">
+                          <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
+                          @if (stopUnavailable[s.id]) {
+                            <button type="button" (click)="expandedStopId = s.id"
+                              class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold shrink-0 hover:bg-trinidad/15">
+                              <span class="material-symbols-outlined text-[12px]">warning</span>
+                              Unavailable
+                            </button>
+                          }
+                        </div>
                         <div class="text-[0.6rem] text-muted-text truncate">{{ stopBadge(i, last) }}@if (s.address) { · {{ s.address }} }</div>
                       </div>
                       <button type="button" (click)="toggleStopExpand(s.id)"
@@ -233,6 +243,24 @@ interface ISearchHit {
                               </div>
                             }
                           </div>
+                          @if (stopUnavailable[s.id]) {
+                            <div class="rounded-md bg-trinidad/10 border border-trinidad/30 px-2.5 py-2 flex flex-wrap items-center gap-2 text-[0.65rem] font-body text-dark-text">
+                              <span class="material-symbols-outlined text-base text-trinidad shrink-0">event_busy</span>
+                              <span class="flex-1 min-w-[8rem]">
+                                <strong class="font-bold">{{ stopDateBannerLabel(s) }}</strong> isn't available at this listing.
+                              </span>
+                              <button type="button" (click)="stopDatesOpenId = s.id"
+                                class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+                                Pick new dates
+                                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                              </button>
+                              <a [routerLink]="['/listing']" [queryParams]="{ id: s.refId }"
+                                class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green hover:underline no-underline">
+                                Open availability
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                              </a>
+                            </div>
+                          }
                           <label class="block">
                             <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Notes</span>
                             <textarea [ngModel]="s.notes" (ngModelChange)="updateStopField(s.id, { notes: $event || undefined })" [name]="'note-' + s.id"
@@ -514,7 +542,36 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     private routing: RoutingService,
     private cdr: ChangeDetectorRef,
     private bookingSvc: BookingService,
+    private availability: ListingAvailabilityService,
+    private hostAvailability: HostAvailabilityService,
   ) {}
+
+  /** stopId → true when the stop's listing is fully unavailable for its
+   *  picked dates. Drives the header chip and expanded banner. Recomputed
+   *  whenever the plan, bookings, or host availability change. */
+  stopUnavailable: Record<string, boolean> = {};
+  private hostAvailSub: Subscription | null = null;
+
+  private recomputeStopAvailability(): void {
+    const next: Record<string, boolean> = {};
+    for (const s of this.plan?.stops ?? []) {
+      if (s.kind !== 'private') continue;
+      if (typeof s.refId !== 'number') continue;
+      if (!s.checkInDate || !s.checkOutDate) continue;
+      if (!this.availability.isAvailableForRange(s.refId, s.checkInDate, s.checkOutDate)) {
+        next[s.id] = true;
+      }
+    }
+    this.stopUnavailable = next;
+  }
+
+  /** Human-readable "Apr 10 – Apr 12" label for the banner. */
+  stopDateBannerLabel(s: ITripStop): string {
+    const start = parseIsoDate(s.checkInDate);
+    const end = parseIsoDate(s.checkOutDate);
+    if (!start || !end) return '';
+    return `${shortDateLabel(start)} – ${shortDateLabel(end)}`;
+  }
 
   /** Current user's live bookings — drives the "Booked ✓" badge on stops. */
   userBookings: IBooking[] = [];
@@ -528,6 +585,7 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
   initBookingsSub(): void {
     this.bookingsSub = this.bookingSvc.bookings$.subscribe(all => {
       this.userBookings = all;
+      this.recomputeStopAvailability();
     });
   }
 
@@ -548,10 +606,20 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
         });
       }
       this.maybeFetchRoute();
+      this.recomputeStopAvailability();
     });
+    // Reflect host-side block edits live so a host blocking dates on
+    // /hosting/calendar in another tab surfaces the warning here without
+    // a refresh.
+    this.hostAvailSub = this.hostAvailability.all$.subscribe(() => this.recomputeStopAvailability());
   }
 
-  ngOnDestroy(): void { this.sub?.unsubscribe(); this.routeSub?.unsubscribe(); this.bookingsSub?.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    this.routeSub?.unsubscribe();
+    this.bookingsSub?.unsubscribe();
+    this.hostAvailSub?.unsubscribe();
+  }
 
   /** Re-fetch the road route when the stops sequence changes. */
   private maybeFetchRoute(): void {
@@ -728,6 +796,7 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
       checkInDate: formatIsoDate(next.start),
       checkOutDate: formatIsoDate(next.end),
     });
+    this.recomputeStopAvailability();
   }
 
   /** Booking-review-style range progression: click 1 = start, click 2 = end,
