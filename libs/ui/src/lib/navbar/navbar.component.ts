@@ -8,7 +8,7 @@ import { AuthService, IPublicUser, AppView } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { MessageService } from '@cnt-workspace/data-access';
 import { NotificationService, INotification } from '@cnt-workspace/data-access';
-import { readFavorites } from '@cnt-workspace/data-access';
+import { readFavorites, hasOwnedListings } from '@cnt-workspace/data-access';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,6 +28,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unreadMessages = 0;
   user: IPublicUser | null = null;
   view: AppView = 'guest';
+  /** True when the signed-in user owns at least one listing — drives
+   *  the navbar Hosting-calendar shortcut on the user dropdown. */
+  hasOwned = false;
 
   /** Notifications dropdown. */
   notificationsOpen = false;
@@ -57,6 +60,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.hydrateFavoritesCount();
     this.auth.currentUser$.subscribe(u => {
       this.user = u;
+      this.hasOwned = !!u && hasOwnedListings(u.email);
       this.unreadSub?.unsubscribe();
       this.unreadSub = null;
       this.unreadMessages = 0;

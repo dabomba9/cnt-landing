@@ -15,6 +15,12 @@
         </div>
       </div>
 
+      @if (ownedListingCount > 0) {
+        <div class="dashboard-anim">
+          <cnt-hosting-shortcut [ownedCount]="ownedListingCount"></cnt-hosting-shortcut>
+        </div>
+      }
+
       <!-- Snapshot: stat tiles + reward callout are paired summary -->
       <div class="space-y-5">
         <div class="dashboard-anim grid grid-cols-3 gap-4 md:gap-5">

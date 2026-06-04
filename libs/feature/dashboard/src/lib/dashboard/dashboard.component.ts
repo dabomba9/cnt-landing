@@ -7,7 +7,7 @@ import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { ListingCardComponent } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
-import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
+import { AuthService, IPublicUser, getMyListings } from '@cnt-workspace/data-access';
 import { BookingService, ReviewService, IUserReview, REVIEW_CREDIT_PER_NIGHT, ICreditEntry,
   TripPlannerService, ITripPlan, totalTripMiles } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
@@ -23,6 +23,7 @@ import { QuickActionsComponent } from './widgets/quick-actions/quick-actions.com
 import { TripPrepComponent } from './widgets/trip-prep/trip-prep.component';
 import { ReviewsWidgetComponent } from './widgets/reviews/reviews-widget.component';
 import { SpendingSummaryComponent } from './widgets/spending-summary/spending-summary.component';
+import { HostingShortcutComponent } from './widgets/hosting-shortcut/hosting-shortcut.component';
 import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
 
 @Component({
@@ -33,13 +34,16 @@ import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
     DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
     SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
     QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent, SpendingSummaryComponent,
-    FocusTrapDirective,
+    HostingShortcutComponent, FocusTrapDirective,
   ],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   user: IPublicUser | null = null;
   bookings: IBooking[] = [];
+  /** Owned-listings count — gates the Hosting shortcut card. Zero for
+   *  travel-only users so the dashboard stays clean. */
+  ownedListingCount = 0;
   myRv: IMyRv | null = null;
   savedListings: IListing[] = [];
   userReviews: IUserReview[] = [];
@@ -75,6 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       robots: 'noindex, nofollow',
     });
     this.user = this.auth.currentUser;
+    this.ownedListingCount = this.user ? getMyListings(this.user.email).length : 0;
     this.myRv = readMyRv(this.platformId);
     this.savedListings = this.readSavedListings();
     this.bookingsSub = this.bookingSvc.bookings$.subscribe(all => {

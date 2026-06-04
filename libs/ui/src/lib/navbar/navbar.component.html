@@ -152,6 +152,10 @@
                       <span class="material-symbols-outlined text-lg text-dark-text">dashboard</span>
                       Hosting
                     </a>
+                    <a routerLink="/hosting/calendar" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                      <span class="material-symbols-outlined text-lg text-dark-text">date_range</span>
+                      Calendar
+                    </a>
                     <a routerLink="/hosting/listings" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                       <span class="material-symbols-outlined text-lg text-dark-text">storefront</span>
                       Listings
@@ -177,6 +181,12 @@
                       <span class="material-symbols-outlined text-lg text-dark-text">favorite</span>
                       Favorites
                     </a>
+                    @if (hasOwned) {
+                      <a routerLink="/hosting/calendar" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
+                        <span class="material-symbols-outlined text-lg text-jungle-green">date_range</span>
+                        Host calendar
+                      </a>
+                    }
                   }
                   <a routerLink="/inbox" (click)="closeUserMenu()" class="flex items-center gap-3 px-4 py-2.5 text-sm font-body font-bold text-dark-text hover:bg-cream/60 transition-colors">
                     <span class="material-symbols-outlined text-lg text-dark-text">forum</span>
