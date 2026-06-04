@@ -54,6 +54,11 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   priceInput: number | null = null;
   minNightsInput: number | null = null;
 
+  /** Type-in range fields — peer to drag-selecting on the grid. */
+  rangeStart = '';
+  rangeEnd = '';
+  pickByDateOpen = false;
+
   private subs: Subscription[] = [];
 
   constructor(
@@ -236,7 +241,40 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('document:mouseup')
-  endDrag(): void { this.dragging = false; this.dragAnchor = null; }
+  endDrag(): void {
+    this.dragging = false;
+    this.dragAnchor = null;
+    this.syncRangeFields();
+  }
+
+  private syncRangeFields(): void {
+    const dates = this.selectedDates;
+    this.rangeStart = dates[0] ?? '';
+    this.rangeEnd   = dates[dates.length - 1] ?? '';
+  }
+
+  selectByRange(startIso: string, endIso: string): void {
+    if (!startIso || !endIso || startIso > endIso) return;
+    const startDate = new Date(startIso + 'T00:00:00');
+    this.calendarMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const next = new Set<string>();
+    const cursor = new Date(startIso + 'T00:00:00');
+    const last   = new Date(endIso   + 'T00:00:00');
+    while (cursor <= last) {
+      const iso = this.isoKey(cursor);
+      const cells = this.monthCells;
+      const cell = cells.find(c => c.iso === iso);
+      if (cell && this.canSelect(cell)) next.add(iso);
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    this.selected = next;
+  }
+
+  onRangeFieldChange(): void {
+    if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
+  }
+
+  togglePickByDate(): void { this.pickByDateOpen = !this.pickByDateOpen; }
 
   private applyDragSelection(currentIso: string): void {
     if (!this.dragAnchor) return;
@@ -256,7 +294,11 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.selected = next;
   }
 
-  clearSelection(): void { this.selected = new Set(); }
+  clearSelection(): void {
+    this.selected = new Set();
+    this.rangeStart = '';
+    this.rangeEnd = '';
+  }
 
   get selectedDates(): string[] { return [...this.selected].sort(); }
   get selectionCount(): number { return this.selected.size; }

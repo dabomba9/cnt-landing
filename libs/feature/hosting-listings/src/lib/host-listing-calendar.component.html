@@ -87,10 +87,38 @@
                 <span class="material-symbols-outlined text-xl text-dark-text">chevron_right</span>
               </button>
             </div>
-            <button type="button" (click)="goToday()"
-              class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
-              Today
-            </button>
+            <div class="flex items-center gap-2 relative">
+              <button type="button" (click)="togglePickByDate()" [attr.aria-expanded]="pickByDateOpen"
+                class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">date_range</span>
+                Pick by date
+              </button>
+              <button type="button" (click)="goToday()"
+                class="px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                Today
+              </button>
+              @if (pickByDateOpen) {
+                <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[0.65rem] uppercase tracking-[0.14em] text-dark-text font-button font-bold">Type a range</span>
+                    <button type="button" (click)="togglePickByDate()" class="text-muted-text text-xs hover:text-dark-text" aria-label="Close">×</button>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="flex items-center gap-2">
+                      <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text w-12">Start</span>
+                      <input type="date" [(ngModel)]="rangeStart" name="pickerStart" (ngModelChange)="onRangeFieldChange()"
+                        class="flex-1 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text w-12">End</span>
+                      <input type="date" [(ngModel)]="rangeEnd" name="pickerEnd" (ngModelChange)="onRangeFieldChange()"
+                        class="flex-1 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                    </label>
+                  </div>
+                  <p class="text-[0.65rem] text-muted-text font-body mt-3 leading-relaxed">Once both dates are set, jump to the action bar to Block, Set price, or Set min stay.</p>
+                </div>
+              }
+            </div>
           </div>
 
           <!-- Weekday headers -->
@@ -182,23 +210,53 @@
             </div>
             <ul class="flex flex-col gap-2">
               @for (rule of stayRules; track rule.id) {
-                <li class="flex flex-wrap items-center gap-2 rounded-xl border border-dark-text/10 bg-cream/30 px-3 py-2">
-                  <div class="flex-1 min-w-[10rem]">
-                    <div class="text-sm font-body font-bold text-dark-text">
-                      {{ rule.minNights }}-night minimum
+                @if (inlineEditId === rule.id) {
+                  <li class="flex flex-wrap items-center gap-2 rounded-md border border-jungle-green/40 bg-jungle-green/5 px-3 py-2">
+                    <label class="flex items-center gap-1">
+                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Start</span>
+                      <input type="date" [(ngModel)]="inlineEditStart" [name]="'editStart-' + rule.id"
+                        class="px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                    </label>
+                    <label class="flex items-center gap-1">
+                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">End</span>
+                      <input type="date" [(ngModel)]="inlineEditEnd" [name]="'editEnd-' + rule.id"
+                        class="px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                    </label>
+                    <label class="flex items-center gap-1">
+                      <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Min</span>
+                      <input type="number" min="1" step="1" [(ngModel)]="inlineEditMinNights" [name]="'editMin-' + rule.id"
+                        class="w-16 px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                    </label>
+                    <div class="flex items-center gap-1 ml-auto">
+                      <button type="button" (click)="saveInlineEdit()"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+                        Save
+                      </button>
+                      <button type="button" (click)="cancelInlineEdit()"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-white border border-dark-text/15 text-muted-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text">
+                        Cancel
+                      </button>
                     </div>
-                    <div class="text-[0.65rem] text-muted-text font-body">{{ formatRuleRange(rule) }}</div>
-                  </div>
-                  <button type="button" (click)="editStayRule(rule)"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                    Edit
-                  </button>
-                  <button type="button" (click)="removeStayRule(rule)" aria-label="Remove rule"
-                    class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                  </button>
-                </li>
+                  </li>
+                } @else {
+                  <li class="flex flex-wrap items-center gap-2 rounded-xl border border-dark-text/10 bg-cream/30 px-3 py-2">
+                    <div class="flex-1 min-w-[10rem]">
+                      <div class="text-sm font-body font-bold text-dark-text">
+                        {{ rule.minNights }}-night minimum
+                      </div>
+                      <div class="text-[0.65rem] text-muted-text font-body">{{ formatRuleRange(rule) }}</div>
+                    </div>
+                    <button type="button" (click)="startInlineEdit(rule)"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green">
+                      <span class="material-symbols-outlined text-sm">edit</span>
+                      Edit
+                    </button>
+                    <button type="button" (click)="removeStayRule(rule)" aria-label="Remove rule"
+                      class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
+                      <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                  </li>
+                }
               }
             </ul>
           </div>
@@ -297,7 +355,18 @@
 @if (listing && ownsListing && selectionCount > 0) {
   <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-dark-text/10 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"
     style="padding-bottom: env(safe-area-inset-bottom, 0);">
-    <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row md:items-center gap-3">
+    <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-3">
+      <!-- Type-in range row — peers with drag-select on the grid -->
+      <div class="flex flex-wrap items-center gap-2 pb-2 border-b border-dark-text/8">
+        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Range</span>
+        <input type="date" [(ngModel)]="rangeStart" name="actionRangeStart" (ngModelChange)="onRangeFieldChange()"
+          class="px-3 py-1.5 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+        <span class="text-muted-text text-xs">→</span>
+        <input type="date" [(ngModel)]="rangeEnd" name="actionRangeEnd" (ngModelChange)="onRangeFieldChange()"
+          class="px-3 py-1.5 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+        <span class="text-[0.65rem] text-muted-text font-body">or drag on the calendar above</span>
+      </div>
+      <div class="flex flex-col md:flex-row md:items-center gap-3">
       <div class="flex-1 min-w-0">
         <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-0.5">Selection</div>
         <div class="font-headline font-bold text-dark-text text-base tracking-tight">{{ selectionCount }} {{ selectionCount === 1 ? 'day' : 'days' }}</div>
@@ -335,6 +404,7 @@
         class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
         <span class="material-symbols-outlined text-xl text-muted-text">close</span>
       </button>
+      </div>
     </div>
   </div>
 }

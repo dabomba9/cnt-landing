@@ -54,6 +54,18 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   /** Rule id currently being edited from the rules list (null = new rule). */
   editingRuleId: string | null = null;
 
+  /** Type-in range fields — peer entry point to drag-selecting on the grid.
+   *  Both write into the same `selected` set; drag updates write back. */
+  rangeStart = '';
+  rangeEnd = '';
+  /** Header "Pick by date" popover visibility. */
+  pickByDateOpen = false;
+  /** Inline rule-list edit state — keyed by rule id. */
+  inlineEditId: string | null = null;
+  inlineEditStart = '';
+  inlineEditEnd = '';
+  inlineEditMinNights: number | null = null;
+
   private subs: Subscription[] = [];
 
   constructor(
@@ -329,6 +341,77 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   endDrag(): void {
     this.dragging = false;
     this.dragAnchor = null;
+    this.syncRangeFields();
+  }
+
+  /** Push the current selection's bounds back into the type-in fields so
+   *  the host can see what the grid says. */
+  private syncRangeFields(): void {
+    const dates = this.selectedDates;
+    this.rangeStart = dates[0] ?? '';
+    this.rangeEnd   = dates[dates.length - 1] ?? '';
+  }
+
+  /** Date-field writer. Treats the typed range like a drag-selected
+   *  rectangle: every selectable cell between start and end joins the
+   *  selection; past/booked days are skipped (canSelect == false). */
+  selectByRange(startIso: string, endIso: string): void {
+    if (!startIso || !endIso || startIso > endIso) return;
+    const next = new Set<string>();
+    const cursor = new Date(startIso + 'T00:00:00');
+    const last   = new Date(endIso   + 'T00:00:00');
+    while (cursor <= last) {
+      next.add(this.isoKey(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    // Jump the visible month to the start so the host sees the selection.
+    const startDate = new Date(startIso + 'T00:00:00');
+    this.calendarMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    // Filter to selectable cells now that the grid covers the right month.
+    const filtered = new Set<string>();
+    for (const iso of next) {
+      const cell = this.monthCellAtIso(iso);
+      if (cell && this.canSelect(cell)) filtered.add(iso);
+    }
+    this.selected = filtered;
+  }
+
+  /** (ngModelChange) handler for either date input. Re-runs selection
+   *  when both fields are populated. */
+  onRangeFieldChange(): void {
+    if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
+  }
+
+  togglePickByDate(): void { this.pickByDateOpen = !this.pickByDateOpen; }
+
+  // ----- inline rule-list edit -----
+  startInlineEdit(rule: IStayRule): void {
+    this.inlineEditId = rule.id;
+    this.inlineEditStart = rule.start;
+    this.inlineEditEnd = rule.end;
+    this.inlineEditMinNights = rule.minNights ?? null;
+  }
+
+  cancelInlineEdit(): void {
+    this.inlineEditId = null;
+    this.inlineEditStart = '';
+    this.inlineEditEnd = '';
+    this.inlineEditMinNights = null;
+  }
+
+  saveInlineEdit(): void {
+    if (!this.listing || !this.inlineEditId) return;
+    if (!this.inlineEditStart || !this.inlineEditEnd) { this.toasts.info('Pick both a start and end date.'); return; }
+    if (this.inlineEditMinNights == null || this.inlineEditMinNights < 1) { this.toasts.info('Pick at least 1 night.'); return; }
+    const saved = this.availabilitySvc.upsertStayRule(this.listing.id, {
+      id: this.inlineEditId,
+      start: this.inlineEditStart,
+      end: this.inlineEditEnd,
+      minNights: Math.round(this.inlineEditMinNights),
+    });
+    if (!saved) { this.toasts.error('Could not save the rule.'); return; }
+    this.toasts.success(`Updated ${saved.minNights}-night min stay · ${this.formatRuleRange(saved)}.`);
+    this.cancelInlineEdit();
   }
 
   /** Apply the current drag rectangle [anchor..current] to the selection set. */
@@ -352,7 +435,11 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     return this.monthCells.find(c => c.iso === iso);
   }
 
-  clearSelection(): void { this.selected = new Set(); }
+  clearSelection(): void {
+    this.selected = new Set();
+    this.rangeStart = '';
+    this.rangeEnd = '';
+  }
 
   // ----- bulk actions -----
   get selectedDates(): string[] { return [...this.selected].sort(); }
