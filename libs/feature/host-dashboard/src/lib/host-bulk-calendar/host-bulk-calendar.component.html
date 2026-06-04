@@ -166,11 +166,12 @@
                     }
                   </div>
                   <!-- Day grid -->
-                  <div class="grid grid-cols-7 gap-1">
+                  <div class="grid grid-cols-7 gap-1" style="touch-action: none">
                     @for (cell of m.cells; track cell.iso) {
                       <div
-                        (mousedown)="startDrag(cell, $event)"
-                        (mouseenter)="enterDrag(cell)"
+                        (pointerdown)="startDrag(cell, $event)"
+                        [attr.data-iso]="cell.iso"
+                        style="touch-action: none"
                         [ngClass]="cellTone(cell)"
                         [class.opacity-50]="!cell.inMonth"
                         [class.ring-2]="cell.selected"

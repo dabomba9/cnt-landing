@@ -374,7 +374,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     return `${Math.round(ms / 86_400_000)}d ago`;
   }
 
-  startDrag(cell: IDayCell, event: MouseEvent): void {
+  startDrag(cell: IDayCell, event: PointerEvent): void {
     if (!this.canSelect(cell)) return;
     event.preventDefault();
     this.dragging = true;
@@ -383,13 +383,25 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     this.applyDragSelection(cell.iso);
   }
 
-  enterDrag(cell: IDayCell): void {
-    if (!this.dragging || !this.dragAnchor) return;
-    if (!this.canSelect(cell)) return;
-    this.applyDragSelection(cell.iso);
+  /** Document-level move handler — touch drags don't fire pointerenter on
+   *  other cells once a pointer is implicitly captured by its target, so we
+   *  hit-test via document.elementFromPoint and the cell's data-iso attr. */
+  @HostListener('document:pointermove', ['$event'])
+  onPointerMove(event: PointerEvent): void {
+    if (!this.dragging) return;
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    if (!el) return;
+    const cellEl = (el as Element).closest('[data-iso]') as HTMLElement | null;
+    if (!cellEl) return;
+    const iso = cellEl.getAttribute('data-iso');
+    if (!iso) return;
+    const cell = this.monthCellAtIso(iso);
+    if (!cell || !this.canSelect(cell)) return;
+    this.applyDragSelection(iso);
   }
 
-  @HostListener('document:mouseup')
+  @HostListener('document:pointerup')
+  @HostListener('document:pointercancel')
   endDrag(): void {
     this.dragging = false;
     this.dragAnchor = null;
