@@ -96,24 +96,14 @@
                 Today
               </button>
               @if (pickByDateOpen) {
-                <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-4">
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-[0.65rem] uppercase tracking-[0.14em] text-dark-text font-button font-bold">Type a range</span>
-                    <button type="button" (click)="togglePickByDate()" class="text-muted-text text-xs hover:text-dark-text" aria-label="Close">×</button>
+                <div class="absolute right-0 top-full mt-2 z-30 w-[20rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                  <div class="flex items-center justify-between mb-2 px-1">
+                    <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick a range</span>
+                    <button type="button" (click)="togglePickByDate()" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline" aria-label="Close">Done</button>
                   </div>
-                  <div class="flex flex-col gap-2">
-                    <label class="flex items-center gap-2">
-                      <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text w-12">Start</span>
-                      <input type="date" [(ngModel)]="rangeStart" name="pickerStart" (ngModelChange)="onRangeFieldChange()"
-                        class="flex-1 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green" />
-                    </label>
-                    <label class="flex items-center gap-2">
-                      <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text w-12">End</span>
-                      <input type="date" [(ngModel)]="rangeEnd" name="pickerEnd" (ngModelChange)="onRangeFieldChange()"
-                        class="flex-1 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green" />
-                    </label>
-                  </div>
-                  <p class="text-[0.65rem] text-muted-text font-body mt-3 leading-relaxed">Once both dates are set, the action bar lets you Block, Set price, or Set min stay across every scoped listing.</p>
+                  <mat-calendar [selected]="pickerRange" (selectedChange)="onPickerDateSelected($event)"
+                    class="cnt-inline-calendar bg-transparent border-none"></mat-calendar>
+                  <p class="text-[0.65rem] text-muted-text font-body mt-2 leading-relaxed px-1">First tap = start, second tap = end. Then use the action bar to apply across scoped listings.</p>
                 </div>
               }
             </div>
@@ -215,11 +205,19 @@
     <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-3">
       <div class="flex flex-wrap items-center gap-2 pb-2 border-b border-dark-text/8">
         <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Range</span>
-        <input type="date" [(ngModel)]="rangeStart" name="actionRangeStart" (ngModelChange)="onRangeFieldChange()"
-          class="px-3 py-1.5 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+        <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-cream/40 border border-dark-text/15 px-2 py-1">
+          <input matInput [matDatepicker]="actionStartPicker" [(ngModel)]="rangeStartDate" name="actionRangeStart" (ngModelChange)="onRangeDateChange()"
+            placeholder="Start" class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-28" />
+          <mat-datepicker-toggle [for]="actionStartPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
+          <mat-datepicker #actionStartPicker></mat-datepicker>
+        </div>
         <span class="text-muted-text text-xs">→</span>
-        <input type="date" [(ngModel)]="rangeEnd" name="actionRangeEnd" (ngModelChange)="onRangeFieldChange()"
-          class="px-3 py-1.5 rounded-md bg-cream/40 border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+        <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-cream/40 border border-dark-text/15 px-2 py-1">
+          <input matInput [matDatepicker]="actionEndPicker" [(ngModel)]="rangeEndDate" name="actionRangeEnd" (ngModelChange)="onRangeDateChange()"
+            placeholder="End" class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-28" />
+          <mat-datepicker-toggle [for]="actionEndPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
+          <mat-datepicker #actionEndPicker></mat-datepicker>
+        </div>
         <span class="text-[0.65rem] text-muted-text font-body">or drag on the calendar above</span>
       </div>
       <div class="flex flex-col md:flex-row md:items-center gap-3">

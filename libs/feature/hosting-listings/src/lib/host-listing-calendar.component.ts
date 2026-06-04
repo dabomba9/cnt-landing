@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
+import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
@@ -33,7 +37,7 @@ interface IDayCell {
 @Component({
   selector: 'cnt-host-listing-calendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, NavbarComponent, FooterComponent],
   templateUrl: './host-listing-calendar.component.html',
 })
 export class HostListingCalendarComponent implements OnInit, OnDestroy {
@@ -60,21 +64,27 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   editingRuleId: string | null = null;
 
   /** Type-in range fields — peer entry point to drag-selecting on the grid.
-   *  Both write into the same `selected` set; drag updates write back. */
+   *  Both write into the same `selected` set; drag updates write back.
+   *  Date variants drive the Material datepicker inputs; ISO strings are
+   *  derived only inside selectByRange(). */
   rangeStart = '';
   rangeEnd = '';
+  rangeStartDate: Date | null = null;
+  rangeEndDate: Date | null = null;
   /** Header "Pick by date" popover visibility. */
   pickByDateOpen = false;
+  /** DateRange driving the inline mat-calendar in the picker popover. */
+  pickerRange: DateRange<Date> | null = null;
   /** Inline rule-list edit state — keyed by rule id. */
   inlineEditId: string | null = null;
-  inlineEditStart = '';
-  inlineEditEnd = '';
+  inlineEditStartDate: Date | null = null;
+  inlineEditEndDate: Date | null = null;
   inlineEditMinNights: number | null = null;
   /** Inline tier-list edit state — keyed by tier id. */
   inlineTierId: string | null = null;
   inlineTierName = '';
-  inlineTierStart = '';
-  inlineTierEnd = '';
+  inlineTierStartDate: Date | null = null;
+  inlineTierEndDate: Date | null = null;
   inlineTierPrice: number | null = null;
 
   private subs: Subscription[] = [];
@@ -146,6 +156,13 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${day}`;
+  }
+
+  /** Parse YYYY-MM-DD into a local-midnight Date. */
+  private parseIso(iso: string): Date | null {
+    if (!iso) return null;
+    const d = new Date(iso + 'T00:00:00');
+    return isNaN(d.getTime()) ? null : d;
   }
 
   /** 42-cell grid for the visible month. */
@@ -370,6 +387,35 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     const dates = this.selectedDates;
     this.rangeStart = dates[0] ?? '';
     this.rangeEnd   = dates[dates.length - 1] ?? '';
+    this.rangeStartDate = this.parseIso(this.rangeStart);
+    this.rangeEndDate   = this.parseIso(this.rangeEnd);
+    this.pickerRange = (this.rangeStartDate && this.rangeEndDate)
+      ? new DateRange<Date>(this.rangeStartDate, this.rangeEndDate)
+      : null;
+  }
+
+  /** Mat-datepicker write-back for the action-bar Range row. */
+  onRangeDateChange(): void {
+    this.rangeStart = this.rangeStartDate ? this.isoKey(this.rangeStartDate) : '';
+    this.rangeEnd   = this.rangeEndDate   ? this.isoKey(this.rangeEndDate)   : '';
+    if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
+  }
+
+  /** Inline mat-calendar in the Pick-by-date popover. Click-1 = start,
+   *  click-2 = end, click-before-start = restart. Mirrors the booking-widget
+   *  and trip-planner range selection pattern. */
+  onPickerDateSelected(d: Date | null): void {
+    if (!d) return;
+    const start = this.pickerRange?.start ?? null;
+    const end = this.pickerRange?.end ?? null;
+    if (!start || end) {
+      this.pickerRange = new DateRange<Date>(d, null);
+    } else if (d < start) {
+      this.pickerRange = new DateRange<Date>(d, null);
+    } else {
+      this.pickerRange = new DateRange<Date>(start, d);
+      this.selectByRange(this.isoKey(start), this.isoKey(d));
+    }
   }
 
   /** Date-field writer. Treats the typed range like a drag-selected
@@ -407,26 +453,26 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   // ----- inline rule-list edit -----
   startInlineEdit(rule: IStayRule): void {
     this.inlineEditId = rule.id;
-    this.inlineEditStart = rule.start;
-    this.inlineEditEnd = rule.end;
+    this.inlineEditStartDate = this.parseIso(rule.start);
+    this.inlineEditEndDate = this.parseIso(rule.end);
     this.inlineEditMinNights = rule.minNights ?? null;
   }
 
   cancelInlineEdit(): void {
     this.inlineEditId = null;
-    this.inlineEditStart = '';
-    this.inlineEditEnd = '';
+    this.inlineEditStartDate = null;
+    this.inlineEditEndDate = null;
     this.inlineEditMinNights = null;
   }
 
   saveInlineEdit(): void {
     if (!this.listing || !this.inlineEditId) return;
-    if (!this.inlineEditStart || !this.inlineEditEnd) { this.toasts.info('Pick both a start and end date.'); return; }
+    if (!this.inlineEditStartDate || !this.inlineEditEndDate) { this.toasts.info('Pick both a start and end date.'); return; }
     if (this.inlineEditMinNights == null || this.inlineEditMinNights < 1) { this.toasts.info('Pick at least 1 night.'); return; }
     const saved = this.availabilitySvc.upsertStayRule(this.listing.id, {
       id: this.inlineEditId,
-      start: this.inlineEditStart,
-      end: this.inlineEditEnd,
+      start: this.isoKey(this.inlineEditStartDate),
+      end: this.isoKey(this.inlineEditEndDate),
       minNights: Math.round(this.inlineEditMinNights),
     });
     if (!saved) { this.toasts.error('Could not save the rule.'); return; }
@@ -459,6 +505,9 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     this.selected = new Set();
     this.rangeStart = '';
     this.rangeEnd = '';
+    this.rangeStartDate = null;
+    this.rangeEndDate = null;
+    this.pickerRange = null;
   }
 
   // ----- bulk actions -----
@@ -564,29 +613,29 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   startInlineTierEdit(tier: IPricingTier): void {
     this.inlineTierId = tier.id;
     this.inlineTierName = tier.name;
-    this.inlineTierStart = tier.start;
-    this.inlineTierEnd = tier.end;
+    this.inlineTierStartDate = this.parseIso(tier.start);
+    this.inlineTierEndDate = this.parseIso(tier.end);
     this.inlineTierPrice = tier.nightlyPrice;
   }
 
   cancelInlineTierEdit(): void {
     this.inlineTierId = null;
     this.inlineTierName = '';
-    this.inlineTierStart = '';
-    this.inlineTierEnd = '';
+    this.inlineTierStartDate = null;
+    this.inlineTierEndDate = null;
     this.inlineTierPrice = null;
   }
 
   saveInlineTierEdit(): void {
     if (!this.listing || !this.inlineTierId) return;
     if (!this.inlineTierName.trim()) { this.toasts.info('Name the tier.'); return; }
-    if (!this.inlineTierStart || !this.inlineTierEnd) { this.toasts.info('Pick both a start and end date.'); return; }
+    if (!this.inlineTierStartDate || !this.inlineTierEndDate) { this.toasts.info('Pick both a start and end date.'); return; }
     if (this.inlineTierPrice == null || this.inlineTierPrice <= 0) { this.toasts.info('Pick a nightly rate above $0.'); return; }
     const saved = this.availabilitySvc.upsertPricingTier(this.listing.id, {
       id: this.inlineTierId,
       name: this.inlineTierName,
-      start: this.inlineTierStart,
-      end: this.inlineTierEnd,
+      start: this.isoKey(this.inlineTierStartDate),
+      end: this.isoKey(this.inlineTierEndDate),
       nightlyPrice: this.inlineTierPrice,
     });
     if (!saved) { this.toasts.error('Could not save the tier.'); return; }

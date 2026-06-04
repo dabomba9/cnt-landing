@@ -1216,6 +1216,31 @@ body.cnt-modal-open .cnt-navbar {
   }
 }
 
+/* ===== Compact mat-datepicker for host calendar action bars ===========
+   The native <input type="date"> was replaced with mat-datepicker on
+   /hosting/listings/:id/calendar + /hosting/calendar so the date entry
+   matches the rest of the site. These rules collapse the default
+   mat-form-field padding so the toggle buttons + matInput fit in the
+   tight action-bar rows next to the existing custom-styled inputs. */
+.cnt-date-field {
+  .mat-mdc-icon-button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    line-height: 28px;
+
+    .mat-mdc-button-touch-target { display: none; }
+    .mat-icon, svg { width: 18px; height: 18px; color: #295d42; }
+  }
+  input[matInput] {
+    padding: 0;
+    margin: 0;
+    line-height: 1.4;
+    font-family: 'Familjen Grotesk', sans-serif;
+    color: #222222;
+  }
+}
+
 /* ===== Print itinerary utilities =====================================
    `.cnt-print-only` — block is invisible on screen, visible when printing.
    `.cnt-print-hide` — block stays on screen, disappears when printing.

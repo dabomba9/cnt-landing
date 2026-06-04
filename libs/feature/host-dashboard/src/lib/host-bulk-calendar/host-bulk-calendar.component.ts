@@ -3,6 +3,10 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
+import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
@@ -30,7 +34,7 @@ interface IDayCell {
 @Component({
   selector: 'cnt-host-bulk-calendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, NavbarComponent, FooterComponent],
   templateUrl: './host-bulk-calendar.component.html',
 })
 export class HostBulkCalendarComponent implements OnInit, OnDestroy {
@@ -59,7 +63,10 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   /** Type-in range fields — peer to drag-selecting on the grid. */
   rangeStart = '';
   rangeEnd = '';
+  rangeStartDate: Date | null = null;
+  rangeEndDate: Date | null = null;
   pickByDateOpen = false;
+  pickerRange: DateRange<Date> | null = null;
 
   private subs: Subscription[] = [];
 
@@ -151,6 +158,12 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${day}`;
+  }
+
+  private parseIso(iso: string): Date | null {
+    if (!iso) return null;
+    const d = new Date(iso + 'T00:00:00');
+    return isNaN(d.getTime()) ? null : d;
   }
 
   /** Rebuild the listingId → Set<iso> booked-dates map whenever bookings change. */
@@ -253,6 +266,31 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const dates = this.selectedDates;
     this.rangeStart = dates[0] ?? '';
     this.rangeEnd   = dates[dates.length - 1] ?? '';
+    this.rangeStartDate = this.parseIso(this.rangeStart);
+    this.rangeEndDate   = this.parseIso(this.rangeEnd);
+    this.pickerRange = (this.rangeStartDate && this.rangeEndDate)
+      ? new DateRange<Date>(this.rangeStartDate, this.rangeEndDate)
+      : null;
+  }
+
+  onRangeDateChange(): void {
+    this.rangeStart = this.rangeStartDate ? this.isoKey(this.rangeStartDate) : '';
+    this.rangeEnd   = this.rangeEndDate   ? this.isoKey(this.rangeEndDate)   : '';
+    if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
+  }
+
+  onPickerDateSelected(d: Date | null): void {
+    if (!d) return;
+    const start = this.pickerRange?.start ?? null;
+    const end = this.pickerRange?.end ?? null;
+    if (!start || end) {
+      this.pickerRange = new DateRange<Date>(d, null);
+    } else if (d < start) {
+      this.pickerRange = new DateRange<Date>(d, null);
+    } else {
+      this.pickerRange = new DateRange<Date>(start, d);
+      this.selectByRange(this.isoKey(start), this.isoKey(d));
+    }
   }
 
   selectByRange(startIso: string, endIso: string): void {
@@ -300,6 +338,9 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.selected = new Set();
     this.rangeStart = '';
     this.rangeEnd = '';
+    this.rangeStartDate = null;
+    this.rangeEndDate = null;
+    this.pickerRange = null;
   }
 
   get selectedDates(): string[] { return [...this.selected].sort(); }
