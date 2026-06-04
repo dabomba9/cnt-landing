@@ -18,6 +18,20 @@ import { IBooking } from '@cnt-workspace/models';
 type AggregateState =
   | 'past' | 'open' | 'mixed' | 'all-booked' | 'all-blocked' | 'uniform-price';
 
+type BulkView = 'month' | '3month' | 'list';
+
+const VIEW_KEY = 'cnt-bulk-calendar-view';
+const LIST_WINDOW_DAYS = 60;
+
+interface IUpcomingEvent {
+  listingId: number;
+  title: string;
+  start: string;
+  end: string;
+  kind: 'booked' | 'blocked' | 'external' | 'priced' | 'tier' | 'min-stay';
+  detail?: string;
+}
+
 interface IDayCell {
   date: Date;
   iso: string;
@@ -49,6 +63,10 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
 
   calendarMonth: Date = new Date();
   readonly weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  /** Month grid, 3-month strip, or chronological list. Persisted per device
+   *  so the host's preference sticks across visits. */
+  viewMode: BulkView = 'month';
 
   selected = new Set<string>();
   private dragging = false;
@@ -95,6 +113,13 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
       robots: 'noindex, nofollow',
     });
     if (this.auth.currentView !== 'host') this.auth.setView('host');
+
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(VIEW_KEY);
+        if (stored === 'month' || stored === '3month' || stored === 'list') this.viewMode = stored;
+      } catch { /* ignore */ }
+    }
 
     const user = this.auth.currentUser;
     if (!user) return;
@@ -197,8 +222,12 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   // ============ Day grid ============
 
   get monthCells(): IDayCell[] {
-    const year = this.calendarMonth.getFullYear();
-    const month = this.calendarMonth.getMonth();
+    return this.cellsForMonth(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth());
+  }
+
+  /** 42-cell month grid for any anchor (year, month). Aggregate state per
+   *  cell is identical to the original single-month getter. */
+  private cellsForMonth(year: number, month: number): IDayCell[] {
     const startOffset = new Date(year, month, 1).getDay();
     const gridStart = new Date(year, month, 1 - startOffset);
     const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -328,9 +357,9 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const next = new Set<string>();
     const cursor = new Date(startIso + 'T00:00:00');
     const last   = new Date(endIso   + 'T00:00:00');
+    const cells = this.allVisibleCells();
     while (cursor <= last) {
       const iso = this.isoKey(cursor);
-      const cells = this.monthCells;
       const cell = cells.find(c => c.iso === iso);
       if (cell && this.canSelect(cell)) next.add(iso);
       cursor.setDate(cursor.getDate() + 1);
@@ -342,6 +371,40 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
   }
 
+  /** One entry per month currently rendered. n=1 in 'month' view, n=3 in
+   *  '3month' view. The list-view template skips this entirely. */
+  get visibleMonths(): Array<{ year: number; month: number; label: string; cells: IDayCell[] }> {
+    const base = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth(), 1);
+    const n = this.viewMode === '3month' ? 3 : 1;
+    const out: Array<{ year: number; month: number; label: string; cells: IDayCell[] }> = [];
+    for (let i = 0; i < n; i++) {
+      const m = new Date(base.getFullYear(), base.getMonth() + i, 1);
+      out.push({
+        year: m.getFullYear(),
+        month: m.getMonth(),
+        label: m.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        cells: this.cellsForMonth(m.getFullYear(), m.getMonth()),
+      });
+    }
+    return out;
+  }
+
+  /** Flattened cell pool for drag-select lookups — spans all visible months
+   *  so a drag started in month N can finish in month N+1 inside the 3mo strip. */
+  private allVisibleCells(): IDayCell[] {
+    return this.visibleMonths.flatMap(m => m.cells);
+  }
+
+  setViewMode(v: BulkView): void {
+    if (this.viewMode === v) return;
+    this.viewMode = v;
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(VIEW_KEY, v); } catch { /* ignore */ }
+    }
+    this.clearSelection();
+    this.pickByDateOpen = false;
+  }
+
   togglePickByDate(): void { this.pickByDateOpen = !this.pickByDateOpen; }
 
   private applyDragSelection(currentIso: string): void {
@@ -351,7 +414,7 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const start = a < b ? a : b;
     const end = a < b ? b : a;
     const next = new Set(this.selected);
-    const cells = this.monthCells;
+    const cells = this.allVisibleCells();
     const cellByIso = new Map(cells.map(c => [c.iso, c] as const));
     for (let d = new Date(start); d <= end; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
       const iso = this.isoKey(d);
@@ -493,6 +556,119 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
       case 'uniform-price':return 'bg-jungle-green/10 border border-jungle-green/30 text-dark-text';
       default:             return 'bg-cream/30 hover:bg-cream/60 text-dark-text';
     }
+  }
+
+  // ============ List view (T3.4) ============
+
+  readonly listWindowDays = LIST_WINDOW_DAYS;
+
+  /** Notable events across the next LIST_WINDOW_DAYS, grouped by listing
+   *  and collapsed into contiguous same-kind runs. Sorted by start date. */
+  get upcomingEvents(): IUpcomingEvent[] {
+    if (this.viewMode !== 'list') return [];   // skip the compute when hidden
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const horizon = new Date(today); horizon.setDate(horizon.getDate() + LIST_WINDOW_DAYS);
+
+    const out: IUpcomingEvent[] = [];
+    for (const l of this.listings) {
+      const av = this.availability.get(l.id);
+      const booked = this.bookedByListing[l.id] ?? new Set<string>();
+
+      // Walk the window day-by-day, classify each iso, then collapse runs.
+      type Kind = IUpcomingEvent['kind'];
+      const dailyKinds: Array<{ iso: string; kind: Kind | null; detail?: string }> = [];
+      for (let d = new Date(today); d <= horizon; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
+        const iso = this.isoKey(d);
+        let kind: Kind | null = null;
+        let detail: string | undefined;
+        if (booked.has(iso)) {
+          kind = 'booked';
+        } else if (av.blocked.includes(iso)) {
+          kind = 'blocked';
+          detail = av.blockReasons?.[iso];
+        } else if (av.externalBlocks) {
+          for (const [src, dates] of Object.entries(av.externalBlocks)) {
+            if (dates.includes(iso)) { kind = 'external'; detail = src; break; }
+          }
+        }
+        if (!kind && typeof av.prices?.[iso] === 'number') {
+          kind = 'priced';
+          detail = `$${av.prices[iso]}`;
+        }
+        if (!kind && av.pricingTiers) {
+          const tier = av.pricingTiers.find(t => iso >= t.start && iso <= t.end);
+          if (tier) { kind = 'tier'; detail = `${tier.name} · $${tier.nightlyPrice}`; }
+        }
+        if (!kind && av.stayRules) {
+          const rule = av.stayRules.find(r => iso >= r.start && iso <= r.end);
+          if (rule?.minNights) { kind = 'min-stay'; detail = `${rule.minNights}-night min`; }
+        }
+        dailyKinds.push({ iso, kind, detail });
+      }
+
+      // Collapse consecutive runs with the same (kind, detail).
+      let i = 0;
+      while (i < dailyKinds.length) {
+        const cur = dailyKinds[i];
+        if (!cur.kind) { i++; continue; }
+        let j = i + 1;
+        while (j < dailyKinds.length && dailyKinds[j].kind === cur.kind && dailyKinds[j].detail === cur.detail) j++;
+        out.push({
+          listingId: l.id,
+          title: l.title,
+          start: cur.iso,
+          end: dailyKinds[j - 1].iso,
+          kind: cur.kind,
+          detail: cur.detail,
+        });
+        i = j;
+      }
+    }
+
+    out.sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+    return out.slice(0, 100);
+  }
+
+  formatEventRange(ev: IUpcomingEvent): string {
+    const s = new Date(ev.start + 'T00:00:00');
+    const e = new Date(ev.end   + 'T00:00:00');
+    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    const sLabel = s.toLocaleDateString('en-US', opts);
+    if (ev.start === ev.end) return sLabel;
+    return `${sLabel} – ${e.toLocaleDateString('en-US', opts)}`;
+  }
+
+  eventChipLabel(ev: IUpcomingEvent): string {
+    switch (ev.kind) {
+      case 'booked':   return 'Booked';
+      case 'blocked':  return ev.detail || 'Blocked';
+      case 'external': return ev.detail || 'External';
+      case 'priced':   return ev.detail || 'Priced';
+      case 'tier':     return ev.detail || 'Tier';
+      case 'min-stay': return ev.detail || 'Min stay';
+      default:         return '';
+    }
+  }
+
+  eventChipClass(ev: IUpcomingEvent): string {
+    switch (ev.kind) {
+      case 'booked':   return 'bg-trinidad/15 text-trinidad';
+      case 'blocked':  return 'bg-cream/60 text-muted-text border border-dark-text/15';
+      case 'external': return 'bg-jungle-green/15 text-jungle-green';
+      case 'priced':   return 'bg-trinidad/10 text-trinidad';
+      case 'tier':     return 'bg-jungle-green/10 text-jungle-green';
+      case 'min-stay': return 'bg-gold/15 text-dark-text';
+      default:         return 'bg-cream/60 text-muted-text';
+    }
+  }
+
+  /** Flip to month view, jump the calendar to the event's start month,
+   *  and pre-select the range so the host can act immediately. */
+  openFromList(ev: IUpcomingEvent): void {
+    this.setViewMode('month');
+    const start = new Date(ev.start + 'T00:00:00');
+    this.calendarMonth = new Date(start.getFullYear(), start.getMonth(), 1);
+    this.selectByRange(ev.start, ev.end);
   }
 
   cellLabel(cell: IDayCell): string {
