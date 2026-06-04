@@ -8,10 +8,11 @@ import {
   SeoService, AuthService, BookingService, ToastService,
   HostAvailabilityService, IHostAvailability,
   IPrivateListing, MOCK_LISTINGS, getMyListings,
+  downloadListingIcs, parseIcsToDateRanges, expandRangesToDates,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
-type DayState = 'past' | 'open' | 'booked' | 'pending' | 'blocked';
+type DayState = 'past' | 'open' | 'booked' | 'pending' | 'blocked' | 'external';
 
 interface IDayCell {
   date: Date;
@@ -22,6 +23,8 @@ interface IDayCell {
   bookingId?: string;
   priceOverride?: number;
   selected: boolean;
+  /** Source label when the cell is blocked by an imported feed. */
+  externalSource?: string;
 }
 
 @Component({
@@ -145,6 +148,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         e.setHours(0, 0, 0, 0);
         return d >= s && d <= e;
       });
+      let externalSource: string | undefined;
       if (covers) {
         bookingId = covers.id;
         state = covers.status === 'pending' ? 'pending' : 'booked';
@@ -152,6 +156,10 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         state = 'past';
       } else if (blockedSet.has(iso)) {
         state = 'blocked';
+      } else if (this.availability.externalBlocks) {
+        for (const [source, dates] of Object.entries(this.availability.externalBlocks)) {
+          if (dates.includes(iso)) { state = 'external'; externalSource = source; break; }
+        }
       }
 
       cells.push({
@@ -163,6 +171,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         bookingId,
         priceOverride: this.availability.prices[iso],
         selected: this.selected.has(iso),
+        externalSource,
       });
     }
     return cells;
@@ -171,6 +180,131 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   // ----- selection -----
   canSelect(cell: IDayCell): boolean {
     return cell.state === 'open' || cell.state === 'blocked';
+  }
+
+  // ============ External feeds (T2.2 iCal import + T2.1 export) ============
+
+  /** Inline import-feed form state. Collapsed by default. */
+  feedFormOpen = false;
+  feedFormLabel = '';
+  feedFormUrl = '';
+  feedFormText = '';
+  feedFormError = '';
+  feedSaving = false;
+  /** Per-feed sync-in-progress flag, keyed by sourceLabel. */
+  syncingSource: string | null = null;
+
+  /** True when feeds panel should render (always once host owns the listing). */
+  get registeredFeeds() { return this.availability.feeds ?? []; }
+
+  openFeedForm(): void {
+    this.feedFormOpen = true;
+    this.feedFormLabel = '';
+    this.feedFormUrl = '';
+    this.feedFormText = '';
+    this.feedFormError = '';
+  }
+
+  closeFeedForm(): void {
+    this.feedFormOpen = false;
+    this.feedFormError = '';
+  }
+
+  async saveFeed(): Promise<void> {
+    if (!this.listing) return;
+    const label = this.feedFormLabel.trim();
+    const url = this.feedFormUrl.trim();
+    const text = this.feedFormText.trim();
+    if (!label) { this.feedFormError = 'Pick a name for this feed.'; return; }
+    if (!url && !text) { this.feedFormError = 'Paste a feed URL or the calendar text.'; return; }
+
+    this.feedSaving = true;
+    this.feedFormError = '';
+
+    let icsText = text;
+    if (!icsText && url) {
+      try {
+        const res = await fetch(url, { redirect: 'follow' });
+        if (!res.ok) throw new Error(String(res.status));
+        icsText = await res.text();
+      } catch {
+        this.feedFormError = 'Couldn\'t fetch automatically (likely CORS). Paste the calendar text below instead.';
+        this.feedSaving = false;
+        return;
+      }
+    }
+
+    const ranges = parseIcsToDateRanges(icsText);
+    if (ranges.length === 0) {
+      this.feedFormError = 'No events found in that calendar.';
+      this.feedSaving = false;
+      return;
+    }
+    const isoDates = expandRangesToDates(ranges);
+
+    this.availabilitySvc.upsertFeed(this.listing.id, { url: url || undefined, sourceLabel: label });
+    this.availabilitySvc.applyExternalBlocks(this.listing.id, label, isoDates);
+
+    this.toasts.success(`Imported ${isoDates.length} blocked ${isoDates.length === 1 ? 'night' : 'nights'} from ${label}.`);
+    this.feedSaving = false;
+    this.closeFeedForm();
+  }
+
+  async syncFeed(feed: { url?: string; sourceLabel: string }): Promise<void> {
+    if (!this.listing) return;
+    if (!feed.url) { this.toasts.info(`No URL on file for ${feed.sourceLabel} — paste new text via Add feed.`); return; }
+    this.syncingSource = feed.sourceLabel;
+    try {
+      const res = await fetch(feed.url, { redirect: 'follow' });
+      if (!res.ok) throw new Error(String(res.status));
+      const text = await res.text();
+      const ranges = parseIcsToDateRanges(text);
+      const isoDates = expandRangesToDates(ranges);
+      this.availabilitySvc.applyExternalBlocks(this.listing.id, feed.sourceLabel, isoDates);
+      this.toasts.success(`Re-synced ${feed.sourceLabel} (${isoDates.length} ${isoDates.length === 1 ? 'night' : 'nights'}).`);
+    } catch {
+      this.toasts.info(`Couldn\'t reach ${feed.sourceLabel} (likely CORS). Re-paste the calendar text via Add feed.`);
+    } finally {
+      this.syncingSource = null;
+    }
+  }
+
+  removeFeed(feed: { sourceLabel: string }): void {
+    if (!this.listing) return;
+    this.availabilitySvc.removeFeed(this.listing.id, feed.sourceLabel);
+    this.toasts.info(`Removed ${feed.sourceLabel}.`);
+  }
+
+  /** Build + download the per-listing .ics (booked + manual blocks + external). */
+  exportIcs(): void {
+    if (!this.listing) return;
+    downloadListingIcs({
+      listing: this.listing,
+      bookings: this.bookings,
+      blocks: this.availability.blocked,
+      externalBlocks: this.availability.externalBlocks ?? {},
+    });
+  }
+
+  /** Subscribe-URL popover state. */
+  subscribeOpen = false;
+  toggleSubscribe(): void { this.subscribeOpen = !this.subscribeOpen; }
+  get subscribeUrl(): string {
+    return this.listing ? `https://calendars.curbnturf.com/listing/${this.listing.id}.ics` : '';
+  }
+  copySubscribeUrl(): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(this.subscribeUrl);
+      this.toasts.success('URL copied — works after backend launch.');
+    }
+  }
+
+  formatRelative(iso: string): string {
+    const ms = Date.now() - new Date(iso).getTime();
+    if (ms < 60_000) return 'just now';
+    if (ms < 3_600_000) return `${Math.round(ms / 60_000)}m ago`;
+    if (ms < 86_400_000) return `${Math.round(ms / 3_600_000)}h ago`;
+    return `${Math.round(ms / 86_400_000)}d ago`;
   }
 
   startDrag(cell: IDayCell, event: MouseEvent): void {
@@ -255,11 +389,12 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   // ----- styling helpers (the template stays thin) -----
   cellTone(cell: IDayCell): string {
     switch (cell.state) {
-      case 'past':    return 'bg-transparent text-muted-text/40';
-      case 'booked':  return 'bg-trinidad/15 border border-trinidad/40 text-dark-text';
-      case 'pending': return 'bg-gold/20 border border-gold/40 text-dark-text';
-      case 'blocked': return 'bg-cream/40 text-muted-text';
-      default:        return 'bg-cream/30 hover:bg-cream/60 text-dark-text';
+      case 'past':     return 'bg-transparent text-muted-text/40';
+      case 'booked':   return 'bg-trinidad/15 border border-trinidad/40 text-dark-text';
+      case 'pending':  return 'bg-gold/20 border border-gold/40 text-dark-text';
+      case 'blocked':  return 'bg-cream/40 text-muted-text';
+      case 'external': return 'bg-jungle-green/10 text-dark-text';
+      default:         return 'bg-cream/30 hover:bg-cream/60 text-dark-text';
     }
   }
 
@@ -267,6 +402,7 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     if (cell.state === 'booked') return 'Booked';
     if (cell.state === 'pending') return 'Pending';
     if (cell.state === 'blocked') return 'Blocked';
+    if (cell.state === 'external') return cell.externalSource || 'External';
     return '';
   }
 

@@ -60,6 +60,9 @@ export class ListingAvailabilityService {
     ]).pipe(
       map(([avail, allBookings]) => {
         const set = new Set<string>(avail.blocked);
+        if (avail.externalBlocks) {
+          for (const dates of Object.values(avail.externalBlocks)) for (const iso of dates) set.add(iso);
+        }
         const booked = bookedByListing(allBookings)[listingId];
         if (booked) for (const iso of booked) set.add(iso);
         return set;
@@ -77,6 +80,9 @@ export class ListingAvailabilityService {
     if (!(start < end)) return true;
     const avail = this.hostAvailability.get(listingId);
     const blockedSet = new Set(avail.blocked);
+    if (avail.externalBlocks) {
+      for (const dates of Object.values(avail.externalBlocks)) for (const iso of dates) blockedSet.add(iso);
+    }
     const bookedSet = bookedByListing(this.bookings.getAll())[listingId] ?? new Set<string>();
     for (let d = new Date(start); d < end; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
       const iso = isoKey(d);

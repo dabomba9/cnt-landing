@@ -2,19 +2,41 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 
+/** External calendar feed registered on a listing (Airbnb, VRBO, Google
+ *  Cal, etc). `url` is optional because some feeds are paste-only
+ *  (browsers can't fetch arbitrary cross-origin ICS URLs). */
+export interface IHostExternalFeed {
+  url?: string;
+  sourceLabel: string;
+  lastSyncAt: string;
+}
+
 /** Per-listing host-controlled availability and pricing overrides. */
 export interface IHostAvailability {
   /** ISO YYYY-MM-DD dates the host has manually blocked. */
   blocked: string[];
   /** Per-day price overrides keyed by ISO YYYY-MM-DD. */
   prices: Record<string, number>;
+  /** ISO dates imported from external feeds, grouped by source label so a
+   *  re-sync can wipe and replace just one source. */
+  externalBlocks?: Record<string, string[]>;
+  /** Registered external feeds — the host's reference list, not the
+   *  source of truth for blocks (that's externalBlocks). */
+  feeds?: IHostExternalFeed[];
 }
 
 const AVAILABILITY_KEY = 'cnt-host-availability';
 const EMPTY: IHostAvailability = { blocked: [], prices: {} };
 
 function clone(a: IHostAvailability): IHostAvailability {
-  return { blocked: [...a.blocked], prices: { ...a.prices } };
+  return {
+    blocked: [...a.blocked],
+    prices: { ...a.prices },
+    externalBlocks: a.externalBlocks
+      ? Object.fromEntries(Object.entries(a.externalBlocks).map(([k, v]) => [k, [...v]]))
+      : undefined,
+    feeds: a.feeds ? a.feeds.map(f => ({ ...f })) : undefined,
+  };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -121,6 +143,60 @@ export class HostAvailabilityService {
     this.write(all);
   }
 
+  // ============ External calendar feeds (T2.2 iCal import) ============
+
+  /** Insert or update a registered feed by sourceLabel. Idempotent. */
+  upsertFeed(listingId: number, feed: { url?: string; sourceLabel: string }): void {
+    if (!feed.sourceLabel.trim()) return;
+    const current = clone(this.get(listingId));
+    const feeds = current.feeds ?? [];
+    const idx = feeds.findIndex(f => f.sourceLabel === feed.sourceLabel);
+    const stamp = new Date().toISOString();
+    if (idx === -1) {
+      feeds.push({ url: feed.url, sourceLabel: feed.sourceLabel, lastSyncAt: stamp });
+    } else {
+      feeds[idx] = { ...feeds[idx], url: feed.url ?? feeds[idx].url };
+    }
+    current.feeds = feeds;
+    this.patch(listingId, current);
+  }
+
+  /** Drop a feed + every external block tagged with that source. */
+  removeFeed(listingId: number, sourceLabel: string): void {
+    const current = clone(this.get(listingId));
+    if (current.feeds) current.feeds = current.feeds.filter(f => f.sourceLabel !== sourceLabel);
+    if (current.externalBlocks) {
+      const next = { ...current.externalBlocks };
+      delete next[sourceLabel];
+      current.externalBlocks = Object.keys(next).length ? next : undefined;
+    }
+    this.patch(listingId, current);
+  }
+
+  /** Replace the blocked-date set for one source. Sync semantics — a
+   *  re-import wipes the prior list rather than merging, so removed
+   *  external bookings disappear from CurbNTurf too. Bumps lastSyncAt
+   *  on the matching feed if present. */
+  applyExternalBlocks(listingId: number, sourceLabel: string, isoDates: string[]): void {
+    if (!sourceLabel.trim()) return;
+    const current = clone(this.get(listingId));
+    const ext = { ...(current.externalBlocks ?? {}) };
+    const sorted = [...new Set(isoDates)].sort();
+    if (sorted.length === 0) delete ext[sourceLabel];
+    else ext[sourceLabel] = sorted;
+    current.externalBlocks = Object.keys(ext).length ? ext : undefined;
+    if (current.feeds) {
+      const idx = current.feeds.findIndex(f => f.sourceLabel === sourceLabel);
+      if (idx !== -1) current.feeds[idx] = { ...current.feeds[idx], lastSyncAt: new Date().toISOString() };
+    }
+    this.patch(listingId, current);
+  }
+
+  /** Clear all blocks for one source without removing the feed itself. */
+  clearExternalBlocks(listingId: number, sourceLabel: string): void {
+    this.applyExternalBlocks(listingId, sourceLabel, []);
+  }
+
   /** Aggregate a single day's state across a set of scoped listings — drives
    *  the day-cell render on the bulk calendar. `bookedByListing` is built once
    *  per render from the bookings stream so this stays cheap per cell. */
@@ -135,6 +211,10 @@ export class HostAvailabilityService {
       const avail = this._all$.value[id] || EMPTY;
       if (bookedByListing[id]?.has(iso)) { booked++; continue; }
       if (avail.blocked.includes(iso)) { blocked++; continue; }
+      // External-feed blocks count as blocked in the aggregate. We don't
+      // distinguish them visually in the bulk grid — single-listing
+      // editor does that with its own tone.
+      if (avail.externalBlocks && Object.values(avail.externalBlocks).some(arr => arr.includes(iso))) { blocked++; continue; }
       open++;
       const p = avail.prices[iso];
       if (typeof p === 'number') { priced++; prices.push(p); }

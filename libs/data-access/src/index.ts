@@ -18,6 +18,7 @@ export * from './lib/photos/downscale.util';
 export * from './lib/host/mock-host-data';
 export * from './lib/host/host-listing-meta.service';
 export * from './lib/host/host-availability.service';
+export * from './lib/host/listing-ics.util';
 export * from './lib/listings/listing-availability.service';
 export * from './lib/my-rv.util';
 export * from './lib/recently-viewed.util';

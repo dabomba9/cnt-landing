@@ -19,12 +19,41 @@
         </div>
       } @else {
 
-        <!-- Bulk-calendar discovery breadcrumb -->
-        <div class="flex items-center justify-end mb-3">
+        <!-- Bulk-calendar breadcrumb + iCal export -->
+        <div class="flex items-center justify-between gap-3 mb-3">
           <a routerLink="/hosting/calendar" class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
             Bulk edit across listings
-            <span class="material-symbols-outlined text-sm">arrow_forward</span>
           </a>
+          <div class="flex items-center gap-2 relative">
+            <button type="button" (click)="exportIcs()"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
+              <span class="material-symbols-outlined text-sm">download</span>
+              Download .ics
+            </button>
+            <button type="button" (click)="toggleSubscribe()" [attr.aria-expanded]="subscribeOpen"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors">
+              <span class="material-symbols-outlined text-sm">link</span>
+              Subscribe URL
+            </button>
+            @if (subscribeOpen) {
+              <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[0.65rem] uppercase tracking-[0.14em] text-dark-text font-button font-bold">Subscribe URL</span>
+                  <button type="button" (click)="toggleSubscribe()" class="text-muted-text text-xs hover:text-dark-text" aria-label="Close">×</button>
+                </div>
+                <p class="text-[0.7rem] text-muted-text font-body leading-relaxed mb-2">Hosted feed launches with the backend — for now paste the downloaded <code>.ics</code> into other platforms.</p>
+                <div class="flex items-center gap-1.5 bg-cream/60 border border-dark-text/10 rounded-md px-2 py-1.5">
+                  <input type="text" readonly [value]="subscribeUrl"
+                    class="flex-1 min-w-0 bg-transparent text-[0.7rem] font-mono text-muted-text focus:outline-none" />
+                  <button type="button" (click)="copySubscribeUrl()"
+                    class="inline-flex items-center justify-center w-7 h-7 rounded-full hover:bg-white text-dark-text transition-colors" aria-label="Copy URL">
+                    <span class="material-symbols-outlined text-sm">content_copy</span>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
         </div>
 
         <!-- Header -->
@@ -97,14 +126,20 @@
                 </div>
 
                 @if (cell.state === 'blocked') {
-                  <!-- Diagonal stripes for blocked -->
+                  <!-- Diagonal stripes for manual blocks (warm grey) -->
                   <div class="absolute inset-0 rounded-md pointer-events-none opacity-30"
                     style="background-image: repeating-linear-gradient(45deg, rgba(34,34,34,0.4) 0, rgba(34,34,34,0.4) 4px, transparent 4px, transparent 10px);"></div>
+                }
+                @if (cell.state === 'external') {
+                  <!-- Cooler stripes for external feed blocks -->
+                  <div class="absolute inset-0 rounded-md pointer-events-none opacity-30"
+                    style="background-image: repeating-linear-gradient(45deg, rgba(41,93,66,0.55) 0, rgba(41,93,66,0.55) 4px, transparent 4px, transparent 10px);"></div>
                 }
 
                 @if (cellLabel(cell)) {
                   <span class="relative text-[0.55rem] uppercase tracking-[0.08em] font-button font-bold leading-tight"
                     [class.text-trinidad]="cell.state === 'booked'"
+                    [class.text-jungle-green]="cell.state === 'external'"
                     [class.text-dark-text]="cell.state === 'pending' || cell.state === 'blocked'">
                     {{ cellLabel(cell) }}
                   </span>
@@ -124,12 +159,102 @@
               </span>
               Blocked
             </span>
+            <span class="inline-flex items-center gap-1.5 text-muted-text">
+              <span class="w-3 h-2.5 rounded relative overflow-hidden bg-jungle-green/10 border border-jungle-green/30">
+                <span class="absolute inset-0" style="background-image: repeating-linear-gradient(45deg, rgba(41,93,66,0.55) 0, rgba(41,93,66,0.55) 2px, transparent 2px, transparent 5px);"></span>
+              </span>
+              External
+            </span>
             <span class="inline-flex items-center gap-1.5 text-muted-text"><span class="text-[0.55rem] font-button font-bold text-trinidad bg-trinidad/10 px-1.5 py-0.5 rounded">$X</span> Custom price</span>
           </div>
 
           <p class="text-[0.7rem] text-muted-text font-body mt-4 leading-relaxed">
             Tip: click and drag to select a range. Booked and past days can't be edited.
           </p>
+        </div>
+
+        <!-- External calendars panel -->
+        <div class="mt-5 bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-4 md:p-5">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <div>
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.6rem] font-bold block">External calendars</span>
+              <p class="text-xs text-muted-text font-body mt-0.5">Pull blocks in from Airbnb, VRBO, Google Cal, or any iCal feed.</p>
+            </div>
+            @if (!feedFormOpen) {
+              <button type="button" (click)="openFeedForm()"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+                <span class="material-symbols-outlined text-sm">add</span>
+                Add feed
+              </button>
+            }
+          </div>
+
+          @if (registeredFeeds.length === 0 && !feedFormOpen) {
+            <div class="rounded-xl bg-cream/40 border border-dashed border-dark-text/15 px-4 py-5 text-center">
+              <p class="text-xs text-muted-text font-body">No external feeds yet. Paste an Airbnb / VRBO calendar URL and we'll auto-block those nights here.</p>
+            </div>
+          }
+
+          @if (registeredFeeds.length > 0) {
+            <ul class="flex flex-col gap-2 mb-3">
+              @for (feed of registeredFeeds; track feed.sourceLabel) {
+                <li class="flex flex-wrap items-center gap-2 rounded-xl border border-dark-text/10 bg-cream/30 px-3 py-2">
+                  <div class="flex-1 min-w-[10rem]">
+                    <div class="text-sm font-body font-bold text-dark-text">{{ feed.sourceLabel }}</div>
+                    @if (feed.url) {
+                      <div class="text-[0.65rem] text-muted-text font-mono truncate max-w-md">{{ feed.url }}</div>
+                    } @else {
+                      <div class="text-[0.65rem] text-muted-text font-body italic">Paste-only feed</div>
+                    }
+                    <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button text-muted-text mt-0.5">Synced {{ formatRelative(feed.lastSyncAt) }}</div>
+                  </div>
+                  <button type="button" (click)="syncFeed(feed)" [disabled]="syncingSource === feed.sourceLabel"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    {{ syncingSource === feed.sourceLabel ? 'Syncing…' : 'Sync now' }}
+                  </button>
+                  <button type="button" (click)="removeFeed(feed)" aria-label="Remove feed"
+                    class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+
+          @if (feedFormOpen) {
+            <div class="rounded-xl border border-jungle-green/30 bg-jungle-green/5 p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">Add a feed</span>
+                <button type="button" (click)="closeFeedForm()" class="text-muted-text text-xs hover:text-dark-text">Cancel</button>
+              </div>
+              <label class="block">
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Source name</span>
+                <input type="text" [(ngModel)]="feedFormLabel" name="feedLabel" maxlength="40" placeholder="Airbnb · main pad"
+                  class="mt-1 w-full bg-white border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green" />
+              </label>
+              <label class="block">
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Feed URL <span class="text-muted-text normal-case tracking-normal font-body">(optional)</span></span>
+                <input type="url" [(ngModel)]="feedFormUrl" name="feedUrl" placeholder="https://airbnb.com/calendar/ical/123.ics"
+                  class="mt-1 w-full bg-white border border-dark-text/15 rounded-md px-3 py-2 text-sm font-body focus:outline-none focus:border-jungle-green" />
+              </label>
+              <label class="block">
+                <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Or paste calendar text</span>
+                <textarea [(ngModel)]="feedFormText" name="feedText" rows="3" placeholder="BEGIN:VCALENDAR..."
+                  class="mt-1 w-full bg-white border border-dark-text/15 rounded-md px-3 py-2 text-xs font-mono focus:outline-none focus:border-jungle-green resize-none"></textarea>
+              </label>
+              @if (feedFormError) {
+                <div class="text-[0.7rem] text-trinidad font-body">{{ feedFormError }}</div>
+              }
+              <div class="flex justify-end gap-2">
+                <button type="button" (click)="saveFeed()" [disabled]="feedSaving"
+                  class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+                  <span class="material-symbols-outlined text-sm">event_busy</span>
+                  {{ feedSaving ? 'Importing…' : 'Import blocks' }}
+                </button>
+              </div>
+            </div>
+          }
         </div>
       }
 
