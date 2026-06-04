@@ -228,7 +228,18 @@ export class BookingStateService implements OnDestroy {
   }
 
   get subtotal(): number {
-    return this.nightlyPrice * (this.nights || 0);
+    if (!this.selectedDateRange?.start || !this.selectedDateRange?.end || this.currentListingId == null) {
+      return this.nightlyPrice * (this.nights || 0);
+    }
+    const prices = this.availability.effectivePricesForRange(
+      this.currentListingId,
+      this.toIso(this.selectedDateRange.start),
+      this.toIso(this.selectedDateRange.end),
+      this.nightlyPrice,
+    );
+    let sum = 0;
+    for (const p of Object.values(prices)) sum += p;
+    return sum;
   }
 
   get addOnsTotal(): number {

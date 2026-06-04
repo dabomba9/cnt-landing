@@ -199,6 +199,10 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   get subtotal(): number {
+    // TODO(T3.1-followup): honor IHostAvailability.pricingTiers + per-day
+    // overrides here too. The /listing widget already does. Booking-review
+    // currently shows base-price × nights so the user may see a different
+    // (lower) subtotal than the widget when tiers are in play.
     return (this.listing?.price || 0) * this.nights;
   }
 

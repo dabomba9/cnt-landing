@@ -11,6 +11,18 @@ export interface IHostExternalFeed {
   lastSyncAt: string;
 }
 
+/** Seasonal pricing tier covering a date range. Sits between the
+ *  listing's base price and per-day overrides — host names the band,
+ *  sets one nightly rate, and the calendar applies it across the range
+ *  without stamping individual overrides. */
+export interface IPricingTier {
+  id: string;
+  name: string;
+  start: string;       // ISO YYYY-MM-DD, inclusive
+  end: string;         // ISO YYYY-MM-DD, inclusive
+  nightlyPrice: number;
+}
+
 /** Min/max-stay rule covering a date range. The rule applies to
  *  reservations whose check-in date falls inside [start, end]. */
 export interface IStayRule {
@@ -36,6 +48,9 @@ export interface IHostAvailability {
   /** Min/max-stay rules per date range. Booking widget + search +
    *  trip planner all enforce against these. */
   stayRules?: IStayRule[];
+  /** Seasonal pricing tiers — applied beneath per-day overrides and
+   *  above the listing's base price. */
+  pricingTiers?: IPricingTier[];
 }
 
 const AVAILABILITY_KEY = 'cnt-host-availability';
@@ -50,6 +65,7 @@ function clone(a: IHostAvailability): IHostAvailability {
       : undefined,
     feeds: a.feeds ? a.feeds.map(f => ({ ...f })) : undefined,
     stayRules: a.stayRules ? a.stayRules.map(r => ({ ...r })) : undefined,
+    pricingTiers: a.pricingTiers ? a.pricingTiers.map(t => ({ ...t })) : undefined,
   };
 }
 
@@ -272,6 +288,65 @@ export class HostAvailabilityService {
         maxNights: rule.maxNights,
       });
       current.stayRules = rules;
+      all[id] = current;
+    }
+    this.write(all);
+  }
+
+  // ============ Pricing tiers (T3.1) ============
+
+  upsertPricingTier(
+    listingId: number,
+    tier: { id?: string; name: string; start: string; end: string; nightlyPrice: number },
+  ): IPricingTier | null {
+    if (!tier.name?.trim()) return null;
+    if (!tier.start || !tier.end || tier.start > tier.end) return null;
+    if (!Number.isFinite(tier.nightlyPrice) || tier.nightlyPrice <= 0) return null;
+    const current = clone(this.get(listingId));
+    const tiers = current.pricingTiers ?? [];
+    const next: IPricingTier = {
+      id: tier.id ?? newId(),
+      name: tier.name.trim(),
+      start: tier.start,
+      end: tier.end,
+      nightlyPrice: Math.round(tier.nightlyPrice),
+    };
+    const idx = tiers.findIndex(t => t.id === next.id);
+    if (idx === -1) tiers.push(next);
+    else tiers[idx] = next;
+    current.pricingTiers = tiers;
+    this.patch(listingId, current);
+    return next;
+  }
+
+  removePricingTier(listingId: number, tierId: string): void {
+    const current = clone(this.get(listingId));
+    if (!current.pricingTiers) return;
+    current.pricingTiers = current.pricingTiers.filter(t => t.id !== tierId);
+    if (current.pricingTiers.length === 0) current.pricingTiers = undefined;
+    this.patch(listingId, current);
+  }
+
+  setPricingTierBulk(
+    listingIds: number[],
+    tier: { name: string; start: string; end: string; nightlyPrice: number },
+  ): void {
+    if (listingIds.length === 0) return;
+    if (!tier.name?.trim()) return;
+    if (!tier.start || !tier.end || tier.start > tier.end) return;
+    if (!Number.isFinite(tier.nightlyPrice) || tier.nightlyPrice <= 0) return;
+    const all = { ...this._all$.value };
+    for (const id of listingIds) {
+      const current = clone(all[id] || EMPTY);
+      const tiers = current.pricingTiers ?? [];
+      tiers.push({
+        id: newId(),
+        name: tier.name.trim(),
+        start: tier.start,
+        end: tier.end,
+        nightlyPrice: Math.round(tier.nightlyPrice),
+      });
+      current.pricingTiers = tiers;
       all[id] = current;
     }
     this.write(all);

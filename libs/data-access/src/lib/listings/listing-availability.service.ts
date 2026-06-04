@@ -70,6 +70,37 @@ export class ListingAvailabilityService {
     );
   }
 
+  /** Effective nightly price for one date — applies the standard layering:
+   *  per-day override > seasonal tier > listing base price. First matching
+   *  tier wins when multiple overlap (host controls order). */
+  effectiveNightlyPrice(listingId: number, iso: string, basePrice: number): number {
+    const avail = this.hostAvailability.get(listingId);
+    const override = avail.prices?.[iso];
+    if (typeof override === 'number') return override;
+    const tier = avail.pricingTiers?.find(t => iso >= t.start && iso <= t.end);
+    if (tier) return tier.nightlyPrice;
+    return basePrice;
+  }
+
+  /** Per-night effective prices across [startIso, endIso) — booking
+   *  convention, last night IS the checkout-eve, checkout day is free. */
+  effectivePricesForRange(
+    listingId: number,
+    startIso: string,
+    endIso: string,
+    basePrice: number,
+  ): Record<string, number> {
+    const out: Record<string, number> = {};
+    const start = new Date(startIso + 'T00:00:00');
+    const end   = new Date(endIso   + 'T00:00:00');
+    if (!(start < end)) return out;
+    for (let d = new Date(start); d < end; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
+      const iso = isoKey(d);
+      out[iso] = this.effectiveNightlyPrice(listingId, iso, basePrice);
+    }
+    return out;
+  }
+
   /** Min/max-stay rule check for a chosen [start, end). The rule that
    *  applies is the one whose [start, end] contains the check-in date
    *  (booking convention — guest's check-in night is the gate). */

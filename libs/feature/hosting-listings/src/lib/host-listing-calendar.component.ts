@@ -6,7 +6,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
-  HostAvailabilityService, IHostAvailability, IStayRule,
+  HostAvailabilityService, IHostAvailability, IStayRule, IPricingTier,
   IPrivateListing, MOCK_LISTINGS, getMyListings,
   downloadListingIcs, parseIcsToDateRanges, expandRangesToDates,
 } from '@cnt-workspace/data-access';
@@ -22,6 +22,9 @@ interface IDayCell {
   state: DayState;
   bookingId?: string;
   priceOverride?: number;
+  /** Tier covering this cell (when no per-day override). */
+  tierPrice?: number;
+  tierName?: string;
   selected: boolean;
   /** Source label when the cell is blocked by an imported feed. */
   externalSource?: string;
@@ -51,6 +54,8 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
 
   priceInput: number | null = null;
   minNightsInput: number | null = null;
+  tierNameInput = '';
+  tierPriceInput: number | null = null;
   /** Rule id currently being edited from the rules list (null = new rule). */
   editingRuleId: string | null = null;
 
@@ -65,6 +70,12 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   inlineEditStart = '';
   inlineEditEnd = '';
   inlineEditMinNights: number | null = null;
+  /** Inline tier-list edit state — keyed by tier id. */
+  inlineTierId: string | null = null;
+  inlineTierName = '';
+  inlineTierStart = '';
+  inlineTierEnd = '';
+  inlineTierPrice: number | null = null;
 
   private subs: Subscription[] = [];
 
@@ -177,6 +188,13 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         }
       }
 
+      const priceOverride = this.availability.prices[iso];
+      let tierPrice: number | undefined;
+      let tierName: string | undefined;
+      if (priceOverride == null && this.availability.pricingTiers) {
+        const tier = this.availability.pricingTiers.find(t => iso >= t.start && iso <= t.end);
+        if (tier) { tierPrice = tier.nightlyPrice; tierName = tier.name; }
+      }
       cells.push({
         date: d,
         iso,
@@ -184,7 +202,9 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
         isToday: d.getTime() === today.getTime(),
         state,
         bookingId,
-        priceOverride: this.availability.prices[iso],
+        priceOverride,
+        tierPrice,
+        tierName,
         selected: this.selected.has(iso),
         externalSource,
       });
@@ -518,6 +538,75 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     if (!this.listing) return;
     this.availabilitySvc.removeStayRule(this.listing.id, rule.id);
     this.toasts.info('Rule removed.');
+  }
+
+  // ----- pricing tiers -----
+  get pricingTiers(): IPricingTier[] { return this.availability.pricingTiers ?? []; }
+
+  applyTier(): void {
+    if (!this.listing || this.selected.size === 0) return;
+    if (!this.tierNameInput.trim()) { this.toasts.info('Name the tier first.'); return; }
+    if (this.tierPriceInput == null || this.tierPriceInput <= 0) { this.toasts.info('Pick a nightly rate above $0.'); return; }
+    const dates = this.selectedDates;
+    const saved = this.availabilitySvc.upsertPricingTier(this.listing.id, {
+      name: this.tierNameInput,
+      start: dates[0],
+      end: dates[dates.length - 1],
+      nightlyPrice: this.tierPriceInput,
+    });
+    if (!saved) { this.toasts.error('Could not save the tier.'); return; }
+    this.toasts.success(`Saved ${saved.name} tier · $${saved.nightlyPrice}/night · ${this.formatTierRange(saved)}.`);
+    this.tierNameInput = '';
+    this.tierPriceInput = null;
+    this.clearSelection();
+  }
+
+  startInlineTierEdit(tier: IPricingTier): void {
+    this.inlineTierId = tier.id;
+    this.inlineTierName = tier.name;
+    this.inlineTierStart = tier.start;
+    this.inlineTierEnd = tier.end;
+    this.inlineTierPrice = tier.nightlyPrice;
+  }
+
+  cancelInlineTierEdit(): void {
+    this.inlineTierId = null;
+    this.inlineTierName = '';
+    this.inlineTierStart = '';
+    this.inlineTierEnd = '';
+    this.inlineTierPrice = null;
+  }
+
+  saveInlineTierEdit(): void {
+    if (!this.listing || !this.inlineTierId) return;
+    if (!this.inlineTierName.trim()) { this.toasts.info('Name the tier.'); return; }
+    if (!this.inlineTierStart || !this.inlineTierEnd) { this.toasts.info('Pick both a start and end date.'); return; }
+    if (this.inlineTierPrice == null || this.inlineTierPrice <= 0) { this.toasts.info('Pick a nightly rate above $0.'); return; }
+    const saved = this.availabilitySvc.upsertPricingTier(this.listing.id, {
+      id: this.inlineTierId,
+      name: this.inlineTierName,
+      start: this.inlineTierStart,
+      end: this.inlineTierEnd,
+      nightlyPrice: this.inlineTierPrice,
+    });
+    if (!saved) { this.toasts.error('Could not save the tier.'); return; }
+    this.toasts.success(`Updated ${saved.name} tier · $${saved.nightlyPrice}/night.`);
+    this.cancelInlineTierEdit();
+  }
+
+  removePricingTier(tier: IPricingTier): void {
+    if (!this.listing) return;
+    this.availabilitySvc.removePricingTier(this.listing.id, tier.id);
+    this.toasts.info('Tier removed.');
+  }
+
+  formatTierRange(tier: IPricingTier): string {
+    const start = new Date(tier.start + 'T00:00:00');
+    const end   = new Date(tier.end   + 'T00:00:00');
+    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    const sLabel = start.toLocaleDateString('en-US', opts);
+    if (tier.start === tier.end) return sLabel;
+    return `${sLabel} – ${end.toLocaleDateString('en-US', opts)}`;
   }
 
   formatRuleRange(rule: IStayRule): string {

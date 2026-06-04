@@ -53,6 +53,8 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
 
   priceInput: number | null = null;
   minNightsInput: number | null = null;
+  tierNameInput = '';
+  tierPriceInput: number | null = null;
 
   /** Type-in range fields — peer to drag-selecting on the grid. */
   rangeStart = '';
@@ -368,6 +370,25 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const scope = `${ids.length} ${ids.length === 1 ? 'listing' : 'listings'}`;
     this.toasts.success(`${Math.round(this.minNightsInput)}-night minimum applied to ${scope}.`);
     this.minNightsInput = null;
+    this.clearSelection();
+  }
+
+  applyTier(): void {
+    const ids = this.scopedListingIds;
+    if (ids.length === 0 || this.selected.size === 0) return;
+    if (!this.tierNameInput.trim()) { this.toasts.info('Name the tier first.'); return; }
+    if (this.tierPriceInput == null || this.tierPriceInput <= 0) { this.toasts.info('Pick a nightly rate above $0.'); return; }
+    const dates = this.selectedDates;
+    this.availability.setPricingTierBulk(ids, {
+      name: this.tierNameInput.trim(),
+      start: dates[0],
+      end: dates[dates.length - 1],
+      nightlyPrice: this.tierPriceInput,
+    });
+    const scope = `${ids.length} ${ids.length === 1 ? 'listing' : 'listings'}`;
+    this.toasts.success(`Saved ${this.tierNameInput.trim()} tier · $${Math.round(this.tierPriceInput)}/night across ${scope}.`);
+    this.tierNameInput = '';
+    this.tierPriceInput = null;
     this.clearSelection();
   }
 
