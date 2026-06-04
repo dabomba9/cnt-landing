@@ -6,7 +6,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import {
   SeoService, AuthService, BookingService, ToastService,
-  HostAvailabilityService, IHostAvailability,
+  HostAvailabilityService, IHostAvailability, IStayRule,
   IPrivateListing, MOCK_LISTINGS, getMyListings,
   downloadListingIcs, parseIcsToDateRanges, expandRangesToDates,
 } from '@cnt-workspace/data-access';
@@ -50,6 +50,9 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   private dragAddMode = true;
 
   priceInput: number | null = null;
+  minNightsInput: number | null = null;
+  /** Rule id currently being edited from the rules list (null = new rule). */
+  editingRuleId: string | null = null;
 
   private subs: Subscription[] = [];
 
@@ -384,6 +387,59 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     if (!this.listing || this.selected.size === 0) return;
     this.availabilitySvc.resetDates(this.listing.id, this.selectedDates);
     this.toasts.info(`Reset ${this.selected.size} ${this.selected.size === 1 ? 'day' : 'days'} to base.`);
+  }
+
+  // ----- min-stay rules -----
+  get stayRules(): IStayRule[] { return this.availability.stayRules ?? []; }
+
+  applyMinStay(): void {
+    if (!this.listing || this.selected.size === 0 || this.minNightsInput == null) return;
+    if (this.minNightsInput < 1) { this.toasts.info('Pick at least 1 night.'); return; }
+    const dates = this.selectedDates;
+    const saved = this.availabilitySvc.upsertStayRule(this.listing.id, {
+      id: this.editingRuleId ?? undefined,
+      start: dates[0],
+      end: dates[dates.length - 1],
+      minNights: Math.round(this.minNightsInput),
+    });
+    if (!saved) { this.toasts.error('Could not save the rule.'); return; }
+    const action = this.editingRuleId ? 'Updated' : 'Set';
+    this.toasts.success(`${action} ${saved.minNights}-night min stay · ${this.formatRuleRange(saved)}.`);
+    this.minNightsInput = null;
+    this.editingRuleId = null;
+    this.clearSelection();
+  }
+
+  editStayRule(rule: IStayRule): void {
+    if (!this.listing) return;
+    // Re-select the rule's date range so applyMinStay edits in place.
+    const selected = new Set<string>();
+    const cursor = new Date(rule.start + 'T00:00:00');
+    const last   = new Date(rule.end   + 'T00:00:00');
+    while (cursor <= last) {
+      selected.add(this.isoKey(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    this.selected = selected;
+    this.minNightsInput = rule.minNights ?? null;
+    this.editingRuleId = rule.id;
+    this.calendarMonth = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    this.toasts.info('Editing rule — tweak min nights, then Set min stay.');
+  }
+
+  removeStayRule(rule: IStayRule): void {
+    if (!this.listing) return;
+    this.availabilitySvc.removeStayRule(this.listing.id, rule.id);
+    this.toasts.info('Rule removed.');
+  }
+
+  formatRuleRange(rule: IStayRule): string {
+    const start = new Date(rule.start + 'T00:00:00');
+    const end   = new Date(rule.end   + 'T00:00:00');
+    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    const sLabel = start.toLocaleDateString('en-US', opts);
+    if (rule.start === rule.end) return sLabel;
+    return `${sLabel} – ${end.toLocaleDateString('en-US', opts)}`;
   }
 
   // ----- styling helpers (the template stays thin) -----

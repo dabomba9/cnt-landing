@@ -70,6 +70,31 @@ export class ListingAvailabilityService {
     );
   }
 
+  /** Min/max-stay rule check for a chosen [start, end). The rule that
+   *  applies is the one whose [start, end] contains the check-in date
+   *  (booking convention — guest's check-in night is the gate). */
+  checkStayRule(
+    listingId: number,
+    startIso: string,
+    endIso: string,
+  ): { ok: true } | { ok: false; kind: 'min' | 'max'; requiredNights: number } {
+    const rules = this.hostAvailability.get(listingId).stayRules;
+    if (!rules || rules.length === 0) return { ok: true };
+    const start = new Date(startIso + 'T00:00:00');
+    const end   = new Date(endIso + 'T00:00:00');
+    const nights = Math.round((end.getTime() - start.getTime()) / 86_400_000);
+    if (nights <= 0) return { ok: true };
+    const rule = rules.find(r => startIso >= r.start && startIso <= r.end);
+    if (!rule) return { ok: true };
+    if (rule.minNights != null && nights < rule.minNights) {
+      return { ok: false, kind: 'min', requiredNights: rule.minNights };
+    }
+    if (rule.maxNights != null && nights > rule.maxNights) {
+      return { ok: false, kind: 'max', requiredNights: rule.maxNights };
+    }
+    return { ok: true };
+  }
+
   /** Sync range check for search and other filter pipelines. Booking
    *  convention: every night in [startIso, endIso) is required free,
    *  so checkout-day itself does not need to be open. Returns true when

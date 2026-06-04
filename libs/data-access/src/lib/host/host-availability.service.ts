@@ -11,6 +11,16 @@ export interface IHostExternalFeed {
   lastSyncAt: string;
 }
 
+/** Min/max-stay rule covering a date range. The rule applies to
+ *  reservations whose check-in date falls inside [start, end]. */
+export interface IStayRule {
+  id: string;
+  start: string;       // ISO YYYY-MM-DD, inclusive
+  end: string;         // ISO YYYY-MM-DD, inclusive
+  minNights?: number;
+  maxNights?: number;  // reserved — no UI in v1
+}
+
 /** Per-listing host-controlled availability and pricing overrides. */
 export interface IHostAvailability {
   /** ISO YYYY-MM-DD dates the host has manually blocked. */
@@ -23,6 +33,9 @@ export interface IHostAvailability {
   /** Registered external feeds — the host's reference list, not the
    *  source of truth for blocks (that's externalBlocks). */
   feeds?: IHostExternalFeed[];
+  /** Min/max-stay rules per date range. Booking widget + search +
+   *  trip planner all enforce against these. */
+  stayRules?: IStayRule[];
 }
 
 const AVAILABILITY_KEY = 'cnt-host-availability';
@@ -36,7 +49,13 @@ function clone(a: IHostAvailability): IHostAvailability {
       ? Object.fromEntries(Object.entries(a.externalBlocks).map(([k, v]) => [k, [...v]]))
       : undefined,
     feeds: a.feeds ? a.feeds.map(f => ({ ...f })) : undefined,
+    stayRules: a.stayRules ? a.stayRules.map(r => ({ ...r })) : undefined,
   };
+}
+
+function newId(): string {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+  return `r-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -195,6 +214,67 @@ export class HostAvailabilityService {
   /** Clear all blocks for one source without removing the feed itself. */
   clearExternalBlocks(listingId: number, sourceLabel: string): void {
     this.applyExternalBlocks(listingId, sourceLabel, []);
+  }
+
+  // ============ Min/max-stay rules (T2.3) ============
+
+  /** Insert (no id) or update (with id) a stay rule. Returns the stored rule.
+   *  Validates start <= end and minNights >= 1; bad input is a no-op return null. */
+  upsertStayRule(
+    listingId: number,
+    rule: { id?: string; start: string; end: string; minNights?: number; maxNights?: number },
+  ): IStayRule | null {
+    if (!rule.start || !rule.end || rule.start > rule.end) return null;
+    if (rule.minNights != null && rule.minNights < 1) return null;
+    if (rule.maxNights != null && rule.maxNights < 1) return null;
+    const current = clone(this.get(listingId));
+    const rules = current.stayRules ?? [];
+    const next: IStayRule = {
+      id: rule.id ?? newId(),
+      start: rule.start,
+      end: rule.end,
+      minNights: rule.minNights,
+      maxNights: rule.maxNights,
+    };
+    const idx = rules.findIndex(r => r.id === next.id);
+    if (idx === -1) rules.push(next);
+    else rules[idx] = next;
+    current.stayRules = rules;
+    this.patch(listingId, current);
+    return next;
+  }
+
+  removeStayRule(listingId: number, ruleId: string): void {
+    const current = clone(this.get(listingId));
+    if (!current.stayRules) return;
+    current.stayRules = current.stayRules.filter(r => r.id !== ruleId);
+    if (current.stayRules.length === 0) current.stayRules = undefined;
+    this.patch(listingId, current);
+  }
+
+  /** Bulk fan-out for the /hosting/calendar editor — each scoped listing
+   *  gets its own copy with its own id, so per-listing removal stays clean. */
+  setStayRuleBulk(
+    listingIds: number[],
+    rule: { start: string; end: string; minNights?: number; maxNights?: number },
+  ): void {
+    if (listingIds.length === 0) return;
+    if (!rule.start || !rule.end || rule.start > rule.end) return;
+    const all = { ...this._all$.value };
+    for (const id of listingIds) {
+      const current = clone(all[id] || EMPTY);
+      const rules = current.stayRules ?? [];
+      rules.push({
+        id: newId(),
+        start: rule.start,
+        end: rule.end,
+        minNights: rule.minNights,
+        maxNights: rule.maxNights,
+      });
+      current.stayRules = rules;
+      all[id] = current;
+    }
+    this.write(all);
   }
 
   /** Aggregate a single day's state across a set of scoped listings — drives

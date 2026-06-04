@@ -173,6 +173,37 @@
           </p>
         </div>
 
+        <!-- Stay rules panel -->
+        @if (stayRules.length > 0) {
+          <div class="mt-5 bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-4 md:p-5">
+            <div class="mb-3">
+              <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.6rem] font-bold block">Stay rules</span>
+              <p class="text-xs text-muted-text font-body mt-0.5">Minimum-night requirements applied to specific date ranges.</p>
+            </div>
+            <ul class="flex flex-col gap-2">
+              @for (rule of stayRules; track rule.id) {
+                <li class="flex flex-wrap items-center gap-2 rounded-xl border border-dark-text/10 bg-cream/30 px-3 py-2">
+                  <div class="flex-1 min-w-[10rem]">
+                    <div class="text-sm font-body font-bold text-dark-text">
+                      {{ rule.minNights }}-night minimum
+                    </div>
+                    <div class="text-[0.65rem] text-muted-text font-body">{{ formatRuleRange(rule) }}</div>
+                  </div>
+                  <button type="button" (click)="editStayRule(rule)"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                    Edit
+                  </button>
+                  <button type="button" (click)="removeStayRule(rule)" aria-label="Remove rule"
+                    class="w-8 h-8 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-muted-text hover:border-trinidad hover:text-trinidad transition-colors">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
         <!-- External calendars panel -->
         <div class="mt-5 bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-4 md:p-5">
           <div class="flex items-center justify-between gap-3 mb-3">
@@ -223,7 +254,7 @@
           }
 
           @if (feedFormOpen) {
-            <div class="rounded-xl border border-jungle-green/30 bg-jungle-green/5 p-4 flex flex-col gap-3">
+            <div class="rounded-md border border-jungle-green/30 bg-jungle-green/5 p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green">Add a feed</span>
                 <button type="button" (click)="closeFeedForm()" class="text-muted-text text-xs hover:text-dark-text">Cancel</button>
@@ -248,7 +279,7 @@
               }
               <div class="flex justify-end gap-2">
                 <button type="button" (click)="saveFeed()" [disabled]="feedSaving"
-                  class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
+                  class="inline-flex items-center gap-1 px-4 py-2 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50">
                   <span class="material-symbols-outlined text-sm">event_busy</span>
                   {{ feedSaving ? 'Importing…' : 'Import blocks' }}
                 </button>
@@ -278,6 +309,15 @@
         <button type="button" (click)="applyPrice()" [disabled]="priceInput == null || priceInput <= 0"
           class="px-4 py-2 rounded-md bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed">
           Set price
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="number" min="1" step="1" [(ngModel)]="minNightsInput" placeholder="Min nights"
+          class="w-28 px-3 py-2 rounded-md bg-cream/40 border border-dark-text/15 text-sm font-body text-dark-text focus:outline-none focus:border-jungle-green focus:ring-2 focus:ring-jungle-green/15 transition-all" />
+        <button type="button" (click)="applyMinStay()" [disabled]="minNightsInput == null || minNightsInput < 1"
+          class="px-4 py-2 rounded-md bg-jungle-green text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ editingRuleId ? 'Update rule' : 'Set min stay' }}
         </button>
       </div>
 

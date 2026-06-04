@@ -462,6 +462,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       const start = this.toIso(this.selectedDateRange.start);
       const end   = this.toIso(this.selectedDateRange.end);
       if (!this.availability.isAvailableForRange(l.id, start, end)) return false;
+      const stay = this.availability.checkStayRule(l.id, start, end);
+      if (!stay.ok) return false;
     }
     const bigRigs: RvType[] = ['class-a', 'fifth-wheel'];
     if (this.filters.rvType && bigRigs.includes(this.filters.rvType) && !l.amenities.includes('pull-through')) return false;

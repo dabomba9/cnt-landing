@@ -202,11 +202,11 @@ interface ISearchHit {
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1.5">
                           <div class="text-xs font-body font-bold text-dark-text truncate">{{ s.name }}</div>
-                          @if (stopUnavailable[s.id]) {
+                          @if (stopIssue[s.id]; as issue) {
                             <button type="button" (click)="expandedStopId = s.id"
                               class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-trinidad/10 border border-trinidad/30 text-trinidad text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold shrink-0 hover:bg-trinidad/15">
                               <span class="material-symbols-outlined text-[12px]">warning</span>
-                              Unavailable
+                              {{ issue.kind === 'min' ? issue.requiredNights + '-night min' : issue.kind === 'max' ? 'Too long' : 'Unavailable' }}
                             </button>
                           }
                         </div>
@@ -243,11 +243,11 @@ interface ISearchHit {
                               </div>
                             }
                           </div>
-                          @if (stopUnavailable[s.id]) {
+                          @if (stopIssue[s.id]) {
                             <div class="rounded-md bg-trinidad/10 border border-trinidad/30 px-2.5 py-2 flex flex-wrap items-center gap-2 text-[0.65rem] font-body text-dark-text">
                               <span class="material-symbols-outlined text-base text-trinidad shrink-0">event_busy</span>
                               <span class="flex-1 min-w-[8rem]">
-                                <strong class="font-bold">{{ stopDateBannerLabel(s) }}</strong> isn't available at this listing.
+                                {{ stopIssueMessage(s) }}
                               </span>
                               <button type="button" (click)="stopDatesOpenId = s.id"
                                 class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
@@ -546,23 +546,38 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
     private hostAvailability: HostAvailabilityService,
   ) {}
 
-  /** stopId → true when the stop's listing is fully unavailable for its
-   *  picked dates. Drives the header chip and expanded banner. Recomputed
-   *  whenever the plan, bookings, or host availability change. */
-  stopUnavailable: Record<string, boolean> = {};
+  /** stopId → reason the stop has a problem with its picked dates.
+   *  Drives the header chip and expanded banner. Recomputed whenever
+   *  the plan, bookings, or host availability change. */
+  stopIssue: Record<string, { kind: 'blocked' | 'min' | 'max'; requiredNights?: number }> = {};
   private hostAvailSub: Subscription | null = null;
 
   private recomputeStopAvailability(): void {
-    const next: Record<string, boolean> = {};
+    const next: Record<string, { kind: 'blocked' | 'min' | 'max'; requiredNights?: number }> = {};
     for (const s of this.plan?.stops ?? []) {
       if (s.kind !== 'private') continue;
       if (typeof s.refId !== 'number') continue;
       if (!s.checkInDate || !s.checkOutDate) continue;
       if (!this.availability.isAvailableForRange(s.refId, s.checkInDate, s.checkOutDate)) {
-        next[s.id] = true;
+        next[s.id] = { kind: 'blocked' };
+        continue;
+      }
+      const stay = this.availability.checkStayRule(s.refId, s.checkInDate, s.checkOutDate);
+      if (!stay.ok) {
+        next[s.id] = { kind: stay.kind, requiredNights: stay.requiredNights };
       }
     }
-    this.stopUnavailable = next;
+    this.stopIssue = next;
+  }
+
+  /** Banner copy switches on the issue kind. */
+  stopIssueMessage(s: ITripStop): string {
+    const issue = this.stopIssue[s.id];
+    if (!issue) return '';
+    const range = this.stopDateBannerLabel(s);
+    if (issue.kind === 'min') return `${range} needs at least a ${issue.requiredNights}-night minimum.`;
+    if (issue.kind === 'max') return `${range} can't exceed ${issue.requiredNights} nights.`;
+    return `${range} isn't available at this listing.`;
   }
 
   /** Human-readable "Apr 10 – Apr 12" label for the banner. */

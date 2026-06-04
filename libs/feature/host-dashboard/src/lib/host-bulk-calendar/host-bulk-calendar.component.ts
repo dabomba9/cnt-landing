@@ -52,6 +52,7 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   private dragAddMode = true;
 
   priceInput: number | null = null;
+  minNightsInput: number | null = null;
 
   private subs: Subscription[] = [];
 
@@ -309,6 +310,22 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const noun = this.selected.size === 1 ? 'day' : 'days';
     const scope = `${ids.length} ${ids.length === 1 ? 'listing' : 'listings'}`;
     this.toasts.info(`Reset ${this.selected.size} ${noun} across ${scope} to base.`);
+    this.clearSelection();
+  }
+
+  applyMinStay(): void {
+    const ids = this.scopedListingIds;
+    if (ids.length === 0 || this.selected.size === 0 || this.minNightsInput == null) return;
+    if (this.minNightsInput < 1) { this.toasts.info('Pick at least 1 night.'); return; }
+    const dates = this.selectedDates;
+    this.availability.setStayRuleBulk(ids, {
+      start: dates[0],
+      end: dates[dates.length - 1],
+      minNights: Math.round(this.minNightsInput),
+    });
+    const scope = `${ids.length} ${ids.length === 1 ? 'listing' : 'listings'}`;
+    this.toasts.success(`${Math.round(this.minNightsInput)}-night minimum applied to ${scope}.`);
+    this.minNightsInput = null;
     this.clearSelection();
   }
 

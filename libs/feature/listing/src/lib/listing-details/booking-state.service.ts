@@ -21,6 +21,7 @@ export class BookingStateService implements OnDestroy {
    *  before the first stream tick lands. */
   private unavailableSet = new Set<string>();
   private availabilitySub: Subscription | null = null;
+  private currentListingId: number | null = null;
   maxGuests = 2;
   addOns: IAddOn[] = [];
   cancellationTier: CancellationTier = 'moderate';
@@ -51,6 +52,7 @@ export class BookingStateService implements OnDestroy {
 
   /** Bind per-listing data. Resets transient errors but preserves user-entered booking state. */
   setListing(listing: IPrivateListing, detail: IListingDetail): void {
+    this.currentListingId = listing.id;
     this.unavailableSet = new Set(detail.unavailableDates);
     this.maxGuests = detail.maxGuests;
     this.addOns = detail.addOns;
@@ -151,6 +153,21 @@ export class BookingStateService implements OnDestroy {
         this.selectedDateRange = new DateRange(this.selectedDateRange.start, null);
         this.changed.emit();
         return;
+      }
+      if (this.currentListingId != null) {
+        const check = this.availability.checkStayRule(
+          this.currentListingId,
+          this.toIso(this.selectedDateRange.start),
+          this.toIso(date),
+        );
+        if (!check.ok) {
+          this.dateRangeError = check.kind === 'min'
+            ? `This range needs at least a ${check.requiredNights}-night minimum.`
+            : `This range can't exceed ${check.requiredNights} nights.`;
+          this.selectedDateRange = new DateRange(this.selectedDateRange.start, null);
+          this.changed.emit();
+          return;
+        }
       }
       this.selectedDateRange = new DateRange(this.selectedDateRange.start, date);
       // Auto-close calendar after a complete range is picked
