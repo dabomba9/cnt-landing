@@ -301,6 +301,54 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.reviewSvc.toggleHelpful(r.bookingId, email);
   }
 
+  // ============ Cancellation timeline + POI directions (P2.4 / D) ============
+
+  /** Three-segment cancellation timeline. Dates derive from the picked
+   *  check-in. `tone` drives the chip color; `dateLabel` is empty when
+   *  no check-in is picked yet (we show the static segment without a date). */
+  get cancellationSegments(): Array<{ label: string; tone: 'good' | 'warn' | 'bad'; dateLabel: string }> {
+    const tier = this.detail.cancellationTier;
+    const start = this.booking.selectedDateRange?.start ?? null;
+    const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const shift = (days: number): string => {
+      if (!start) return '';
+      const d = new Date(start);
+      d.setDate(d.getDate() - days);
+      return fmt(d);
+    };
+
+    if (tier === 'exclusive') {
+      return [{ label: 'Non-refundable from booking', tone: 'bad', dateLabel: '' }];
+    }
+    if (tier === 'easy-goin') {
+      return [
+        { label: 'Full refund', tone: 'good', dateLabel: shift(1) || '1 day before check-in' },
+        { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+      ];
+    }
+    if (tier === 'moderate') {
+      return [
+        { label: 'Full refund', tone: 'good', dateLabel: shift(3) || '3 days before check-in' },
+        { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+      ];
+    }
+    // 'strict'
+    return [
+      { label: 'Full refund', tone: 'good', dateLabel: shift(7)  || '7 days before check-in' },
+      { label: '50% refund',  tone: 'warn', dateLabel: shift(2)  || '2 days before check-in' },
+      { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+    ];
+  }
+
+  /** Google Maps directions URL for a POI relative to the listing.
+   *  Uses the listing as the origin (lat/lng we have) and the POI's
+   *  name as a text destination — Google resolves it. */
+  poiDirectionsUrl(poiName: string): string {
+    const origin = `${this.listing.lat},${this.listing.lng}`;
+    const destination = encodeURIComponent(`${poiName} near ${this.listing.location}`);
+    return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+  }
+
   // ============ Cross-sell add-to-trip (P2.4 / C) ============
 
   /** Add a cross-sell listing (Host's other stays / Similar stays) to

@@ -495,6 +495,30 @@
                   </span>
                 </div>
                 <p class="text-muted-text text-base font-body leading-relaxed">{{ CANCELLATION_TIER_META[detail.cancellationTier].summary }}</p>
+
+                <!-- Cancellation timeline (P2.4 / D) — segments derive dates from the picked check-in. -->
+                <div class="mt-4 flex flex-col sm:flex-row gap-2">
+                  @for (seg of cancellationSegments; track seg.label) {
+                    <div class="flex-1 rounded-md border px-3 py-2"
+                      [ngClass]="seg.tone === 'good' ? 'border-jungle-green/40 bg-jungle-green/5'
+                              : seg.tone === 'warn' ? 'border-gold/40 bg-gold/5'
+                              : 'border-trinidad/40 bg-trinidad/5'">
+                      <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
+                        [ngClass]="seg.tone === 'good' ? 'text-jungle-green'
+                                : seg.tone === 'warn' ? 'text-dark-text'
+                                : 'text-trinidad'">{{ seg.label }}</div>
+                      @if (seg.dateLabel) {
+                        <div class="text-sm font-body font-bold text-dark-text mt-0.5">until {{ seg.dateLabel }}</div>
+                      } @else {
+                        <div class="text-[0.65rem] font-body text-muted-text mt-0.5 italic">from then on</div>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (!booking.selectedDateRange?.start) {
+                  <p class="mt-2 text-[0.7rem] text-muted-text font-body italic">Pick check-in dates above to see exact cutoff dates.</p>
+                }
+
                 <a routerLink="/terms" class="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">
                   Read full policy
                   <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
@@ -660,7 +684,15 @@
                     <span class="material-symbols-outlined text-xl text-jungle-green shrink-0 w-7">{{ NEARBY_META[poi.type].icon }}</span>
                     <div class="flex-1 flex items-baseline justify-between gap-2 min-w-0">
                       <span class="font-body text-base text-dark-text truncate">{{ poi.name }}</span>
-                      <span class="font-body text-sm text-muted-text shrink-0">{{ poi.distance }}</span>
+                      <div class="flex items-center gap-2 shrink-0">
+                        <span class="font-body text-sm text-muted-text">{{ poi.distance }}</span>
+                        <a [href]="poiDirectionsUrl(poi.name)" target="_blank" rel="noopener"
+                          class="inline-flex items-center gap-0.5 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline"
+                          [attr.aria-label]="'Directions to ' + poi.name">
+                          Directions
+                          <span class="material-symbols-outlined text-sm">open_in_new</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 }
