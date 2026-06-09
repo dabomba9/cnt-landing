@@ -757,7 +757,9 @@
             <cnt-listing-card
               [listing]="l"
               [isFavorite]="isListingFavorite(l.id)"
-              (favoriteToggle)="toggleListingFavorite(l.id, $event)"></cnt-listing-card>
+              [showAddToTrip]="true"
+              (favoriteToggle)="toggleListingFavorite(l.id, $event)"
+              (addToTripClick)="addCrossSellToTrip(l)"></cnt-listing-card>
           }
         </div>
       </div>
@@ -784,7 +786,9 @@
             <cnt-listing-card
               [listing]="l"
               [isFavorite]="isListingFavorite(l.id)"
-              (favoriteToggle)="toggleListingFavorite(l.id, $event)"></cnt-listing-card>
+              [showAddToTrip]="true"
+              (favoriteToggle)="toggleListingFavorite(l.id, $event)"
+              (addToTripClick)="addCrossSellToTrip(l)"></cnt-listing-card>
           }
         </div>
       </div>

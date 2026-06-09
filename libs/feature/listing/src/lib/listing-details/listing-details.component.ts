@@ -301,6 +301,26 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.reviewSvc.toggleHelpful(r.bookingId, email);
   }
 
+  // ============ Cross-sell add-to-trip (P2.4 / C) ============
+
+  /** Add a cross-sell listing (Host's other stays / Similar stays) to
+   *  the user's active trip plan. Creates a fresh plan when none exists
+   *  so the user doesn't have to make one first. */
+  addCrossSellToTrip(l: IListing): void {
+    const planId = this.planner.getActiveId() ?? this.planner.create(autoTripName()).id;
+    this.planner.addStop(planId, {
+      kind: l.kind === 'boondocking' ? 'boondocking' : 'private',
+      refId: l.id,
+      name: l.title,
+      lat: l.lat,
+      lng: l.lng,
+      address: l.location,
+      photo: l.image,
+    });
+    this.planner.setActiveId(planId);
+    this.toasts.success(`Added ${l.title} to your trip.`);
+  }
+
   /** One-line fit summary derived from siteSpecs. */
   get fitSummary(): string {
     const s = this.detail.siteSpecs;

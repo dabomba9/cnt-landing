@@ -16,7 +16,12 @@ export class ListingCardComponent {
   @Input() nights = 0;
   /** Optional. When set, the card shows a "Fits / Too long for your <rig>" pill. */
   @Input() rvProfile: IMyRvProfile | null = null;
+  /** When true, render an "Add to trip" pill at the bottom of the card.
+   *  Used by the cross-sell sections on /listing/:id; the search results
+   *  + dashboard saved lists don't show it (different routing patterns). */
+  @Input() showAddToTrip = false;
   @Output() favoriteToggle = new EventEmitter<MouseEvent>();
+  @Output() addToTripClick = new EventEmitter<MouseEvent>();
 
   get hoverTotal(): number | null {
     if (this.listing.kind === 'boondocking') return null;
@@ -106,6 +111,12 @@ export class ListingCardComponent {
     event.preventDefault();
     event.stopPropagation();
     this.favoriteToggle.emit(event);
+  }
+
+  onAddToTripClick(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.addToTripClick.emit(event);
   }
 
   prevImage(event: MouseEvent): void {

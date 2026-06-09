@@ -142,5 +142,13 @@
         </span>
       }
     </div>
+
+    @if (showAddToTrip) {
+      <button type="button" (click)="onAddToTripClick($event)"
+        class="mt-1 inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-full bg-white border border-jungle-green/40 text-jungle-green text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-jungle-green/10 transition-colors">
+        <span class="material-symbols-outlined text-sm">add_road</span>
+        Add to trip
+      </button>
+    }
   </div>
 </a>
