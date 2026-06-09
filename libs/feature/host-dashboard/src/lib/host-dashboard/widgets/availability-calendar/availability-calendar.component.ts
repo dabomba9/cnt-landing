@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import {
   IListing, HostAvailabilityService, BookingService, ToastService,
+  isoKey,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -268,12 +269,7 @@ export class AvailabilityCalendarComponent implements OnDestroy {
     this.monthLabel = first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   }
 
-  private toIso(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
+  private toIso(d: Date): string { return isoKey(d); }
 
   // ============ Peek panel (T3.3) ============
 

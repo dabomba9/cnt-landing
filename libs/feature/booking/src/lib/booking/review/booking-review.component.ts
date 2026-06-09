@@ -12,6 +12,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
+import { parseIsoLocal } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRv, IMyRvProfile, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, isTowableRv, towVehicleHasData } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
@@ -576,8 +577,5 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     }, 500);
   }
 
-  private parseIso(s: string): Date | null {
-    const d = new Date(s.length === 10 ? `${s}T00:00:00` : s);
-    return isNaN(d.getTime()) ? null : d;
-  }
+  private parseIso(s: string): Date | null { return parseIsoLocal(s); }
 }

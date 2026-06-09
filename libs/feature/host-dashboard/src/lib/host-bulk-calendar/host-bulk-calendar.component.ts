@@ -12,6 +12,7 @@ import {
   SeoService, AuthService, BookingService, ToastService,
   HostAvailabilityService, HostListingDraftService,
   IPrivateListing, getMyListings,
+  isoKey, parseIsoLocal,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -191,18 +192,10 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     return this.calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   }
 
-  private isoKey(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
-  private parseIso(iso: string): Date | null {
-    if (!iso) return null;
-    const d = new Date(iso + 'T00:00:00');
-    return isNaN(d.getTime()) ? null : d;
-  }
+  /** Thin instance wrappers around the shared util so existing
+   *  `this.isoKey(d)` / `this.parseIso(s)` call sites compile. */
+  private isoKey(d: Date): string { return isoKey(d); }
+  private parseIso(iso: string): Date | null { return parseIsoLocal(iso); }
 
   /** Rebuild the listingId → Set<iso> booked-dates map whenever bookings change. */
   private rebuildBookedMap(): void {

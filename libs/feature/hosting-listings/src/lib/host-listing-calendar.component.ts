@@ -13,6 +13,7 @@ import {
   HostAvailabilityService, IHostAvailability, IStayRule, IPricingTier,
   IPrivateListing, MOCK_LISTINGS, getMyListings,
   downloadListingIcs, parseIcsToDateRanges, expandRangesToDates,
+  isoKey, parseIsoLocal,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -161,20 +162,11 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     return this.calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   }
 
-  /** ISO YYYY-MM-DD for a date. Uses local time to match what the host expects. */
-  private isoKey(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
-  /** Parse YYYY-MM-DD into a local-midnight Date. */
-  private parseIso(iso: string): Date | null {
-    if (!iso) return null;
-    const d = new Date(iso + 'T00:00:00');
-    return isNaN(d.getTime()) ? null : d;
-  }
+  /** Thin instance wrappers around the shared util so existing
+   *  `this.isoKey(d)` / `this.parseIso(s)` template + handler call
+   *  sites compile unchanged. */
+  isoKey(d: Date): string { return isoKey(d); }
+  private parseIso(iso: string): Date | null { return parseIsoLocal(iso); }
 
   /** 42-cell grid for the visible month. */
   get monthCells(): IDayCell[] {

@@ -1,5 +1,6 @@
 import { IBooking } from '@cnt-workspace/models';
 import { IPrivateListing } from '../listings/mock-listings.data';
+import { nextDayIso, priorDayIso } from '../shared/iso-date.util';
 
 /** Format a Date as a basic-form ICS UTC stamp (YYYYMMDDTHHmmssZ). */
 function icsTimestamp(d: Date): string {
@@ -30,16 +31,6 @@ export function collapseToRanges(isoDates: string[]): Array<{ start: string; end
   }
   out.push({ start: rangeStart, end: prev });
   return out;
-}
-
-/** "2026-04-12" → "2026-04-13". Local-time math via the Date constructor. */
-function nextDayIso(iso: string): string {
-  const [y, m, d] = iso.split('-').map(n => parseInt(n, 10));
-  const next = new Date(y, m - 1, d + 1);
-  const yy = next.getFullYear();
-  const mm = String(next.getMonth() + 1).padStart(2, '0');
-  const dd = String(next.getDate()).padStart(2, '0');
-  return `${yy}-${mm}-${dd}`;
 }
 
 /** "2026-04-12" → "20260413" (ICS DTEND is exclusive, so we add a day). */
@@ -189,15 +180,6 @@ function parseIcsDate(raw: string): string | null {
   const dt = v.match(/^(\d{4})(\d{2})(\d{2})T\d{6}Z?$/);
   if (dt) return `${dt[1]}-${dt[2]}-${dt[3]}`;
   return null;
-}
-
-function priorDayIso(iso: string): string {
-  const [y, m, d] = iso.split('-').map(n => parseInt(n, 10));
-  const prev = new Date(y, m - 1, d - 1);
-  const yy = prev.getFullYear();
-  const mm = String(prev.getMonth() + 1).padStart(2, '0');
-  const dd = String(prev.getDate()).padStart(2, '0');
-  return `${yy}-${mm}-${dd}`;
 }
 
 /** Expand a list of [start, end]-inclusive ranges into a flat list of

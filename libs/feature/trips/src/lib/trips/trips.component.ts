@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, FocusTrapDirective } from '@cnt-workspace/ui';
-import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, averageSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT, MOCK_LISTINGS } from '@cnt-workspace/data-access';
+import { SeoService, AuthService, BookingService, ToastService, ReviewService, IUserReview, IReviewSubScores, averageSubScores, REVIEW_CREDIT_PER_NIGHT, MIN_REVIEW_CHARS_FOR_CREDIT, MOCK_LISTINGS, isoKey } from '@cnt-workspace/data-access';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
 
 type TripFilter = 'upcoming' | 'past' | 'all';
@@ -160,12 +160,7 @@ export class TripsComponent implements OnInit, OnDestroy {
   }
 
   /** ISO YYYY-MM-DD using local time (matches what hosts/guests see in their tz). */
-  private isoKey(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
+  private isoKey(d: Date): string { return isoKey(d); }
 
   /** Strip time-of-day from a Date (returns a new Date at local midnight). */
   private dayStart(d: Date): Date {

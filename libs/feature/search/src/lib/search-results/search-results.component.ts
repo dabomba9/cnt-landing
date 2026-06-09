@@ -22,7 +22,8 @@ import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActive
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,
   parseIsoDate, formatIsoDate, shortDateLabel, encodeTripShare,
   tripCostSummary, ITripCost, isLongLeg, tripFuelEstimate, ITripFuel,
-  ListingAvailabilityService } from '@cnt-workspace/data-access';
+  ListingAvailabilityService,
+  isoKey } from '@cnt-workspace/data-access';
 import type { IBooking } from '@cnt-workspace/models';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -258,12 +259,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   ) {}
 
   /** Local-time ISO YYYY-MM-DD key — matches HostAvailabilityService. */
-  private toIso(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
+  private toIso(d: Date): string { return isoKey(d); }
 
   /** Current user's live bookings — drives "Booked ✓" badge on planner stops. */
   userBookings: IBooking[] = [];

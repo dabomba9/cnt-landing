@@ -3,16 +3,7 @@ import { Observable, combineLatest, map } from 'rxjs';
 import { HostAvailabilityService } from '../host/host-availability.service';
 import { BookingService } from '../booking/booking.service';
 import { IBooking } from '@cnt-workspace/models';
-
-/** Local-time ISO YYYY-MM-DD key. Matches the convention used in
- *  HostAvailabilityService, BookingStateService, and the host calendars.
- *  Deferring the full T4.1 centralization until the dedicated util ship. */
-function isoKey(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
+import { isoKey } from '../shared/iso-date.util';
 
 /** Iterate every ISO date in [start, end] inclusive. */
 function eachDateIso(start: Date, end: Date): string[] {

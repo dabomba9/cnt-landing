@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { IAddOn, CancellationTier, IPrivateListing, IListingDetail, ListingAvailabilityService } from '@cnt-workspace/data-access';
 import { IMyRv, emptyMyRv, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
+import { isoKey, parseIsoLocal } from '@cnt-workspace/data-access';
 
 /**
  * Per-listing booking state shared between the sidebar widget and the mobile bar.
@@ -316,17 +317,8 @@ export class BookingStateService implements OnDestroy {
   }
 
   // ---- Private helpers ----
-  private toIso(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
-  private parseIso(s: string): Date | null {
-    const d = new Date(s + (s.length === 10 ? 'T00:00:00' : ''));
-    return isNaN(d.getTime()) ? null : d;
-  }
+  private toIso(d: Date): string { return isoKey(d); }
+  private parseIso(s: string): Date | null { return parseIsoLocal(s); }
 
   private sameDate(a: Date | null, b: Date | null): boolean {
     if (!a && !b) return true;
