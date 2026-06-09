@@ -185,6 +185,11 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
     this.justSavedTimer = setTimeout(() => { this.justSaved = false; }, 1200);
   }
 
+  /** Explicit "Save now" trigger so hosts mid-form don't have to trust
+   *  the auto-save. Re-uses onPatch with an empty patch — saveDraft
+   *  bumps updatedAt + persists. */
+  saveNow(): void { this.onPatch({}); }
+
   /** Toggles a small "Saved" pulse next to the Save & exit button after each patch. */
   justSaved = false;
   private justSavedTimer: ReturnType<typeof setTimeout> | null = null;
