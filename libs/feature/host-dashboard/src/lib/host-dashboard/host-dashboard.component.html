@@ -155,44 +155,83 @@
         } @else {
           <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] divide-y divide-dark-text/8">
             @for (a of addOnPerformance; track a.id) {
-              <div class="flex items-center gap-4 p-4 md:p-5">
-                <!-- Art -->
-                <div class="shrink-0 w-12 h-12 rounded-xl overflow-hidden inline-flex items-center justify-center"
-                  [ngClass]="a.photo ? '' : 'bg-cream'">
-                  @if (a.photo) {
-                    <img [src]="a.photo" alt="" class="w-full h-full object-cover">
-                  } @else if (a.icon) {
-                    <span class="material-symbols-outlined text-2xl text-trinidad">{{ a.icon }}</span>
-                  }
-                </div>
-                <!-- Label + last booked -->
-                <div class="flex-1 min-w-0">
-                  <div class="font-headline font-bold text-dark-text text-base leading-tight truncate">{{ a.label }}</div>
-                  <div class="text-xs font-body text-muted-text mt-0.5">
-                    @if (a.lastBookedAt) {
-                      Last booked {{ formatRelative(a.lastBookedAt) }}
-                    } @else {
-                      Not booked yet
-                    }
-                    @if (a.totalUnits > a.bookingsCount) {
-                      · {{ a.totalUnits }} units sold
+              <div>
+                <button type="button" (click)="toggleAddOnRow(a.id)"
+                  [attr.aria-expanded]="expandedAddOnId === a.id"
+                  class="w-full flex items-center gap-4 p-4 md:p-5 text-left hover:bg-cream/30 transition-colors">
+                  <!-- Art -->
+                  <div class="shrink-0 w-12 h-12 rounded-xl overflow-hidden inline-flex items-center justify-center"
+                    [ngClass]="a.photo ? '' : 'bg-cream'">
+                    @if (a.photo) {
+                      <img [src]="a.photo" alt="" class="w-full h-full object-cover">
+                    } @else if (a.icon) {
+                      <span class="material-symbols-outlined text-2xl text-trinidad">{{ a.icon }}</span>
                     }
                   </div>
-                </div>
-                <!-- Attach rate bar -->
-                <div class="hidden sm:block w-40 shrink-0">
-                  <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mb-1.5 text-right">{{ a.attachRate }}% attach</div>
-                  <div class="h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
-                    <div class="h-full rounded-full transition-all duration-500"
-                      [ngClass]="a.attachRate >= 30 ? 'bg-jungle-green' : a.attachRate >= 10 ? 'bg-gold' : 'bg-dark-text/30'"
-                      [style.width.%]="a.attachRate"></div>
+                  <!-- Label + last booked -->
+                  <div class="flex-1 min-w-0">
+                    <div class="font-headline font-bold text-dark-text text-base leading-tight truncate">{{ a.label }}</div>
+                    <div class="text-xs font-body text-muted-text mt-0.5">
+                      @if (a.lastBookedAt) {
+                        Last booked {{ formatRelative(a.lastBookedAt) }}
+                      } @else {
+                        Not booked yet
+                      }
+                      @if (a.totalUnits > a.bookingsCount) {
+                        · {{ a.totalUnits }} units sold
+                      }
+                    </div>
                   </div>
-                </div>
-                <!-- Revenue -->
-                <div class="text-right w-24 shrink-0">
-                  <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(a.totalRevenue) }}</div>
-                  <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-1">Revenue</div>
-                </div>
+                  <!-- Attach rate bar -->
+                  <div class="hidden sm:block w-40 shrink-0">
+                    <div class="text-[0.65rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mb-1.5 text-right">{{ a.attachRate }}% attach</div>
+                    <div class="h-1.5 bg-dark-text/8 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-500"
+                        [ngClass]="a.attachRate >= 30 ? 'bg-jungle-green' : a.attachRate >= 10 ? 'bg-gold' : 'bg-dark-text/30'"
+                        [style.width.%]="a.attachRate"></div>
+                    </div>
+                  </div>
+                  <!-- Revenue -->
+                  <div class="text-right w-24 shrink-0">
+                    <div class="font-headline font-bold text-trinidad text-lg leading-none">{{ formatCurrency(a.totalRevenue) }}</div>
+                    <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text mt-1">Revenue</div>
+                  </div>
+                  <!-- Expand chevron -->
+                  <span class="material-symbols-outlined text-base text-muted-text shrink-0 transition-transform"
+                    [class.rotate-180]="expandedAddOnId === a.id">expand_more</span>
+                </button>
+
+                <!-- Per-listing drill-in (P3.2 / B). -->
+                @if (expandedAddOnId === a.id) {
+                  <div class="px-4 pb-4 md:px-5 md:pb-5 pt-1 bg-cream/20">
+                    <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-2 px-1">By listing</div>
+                    <div class="divide-y divide-dark-text/8">
+                      @for (row of addOnBreakdownFor(a.id); track row.listingId) {
+                        <div class="flex items-center gap-3 py-2 px-1 text-sm font-body"
+                          [class.opacity-60]="!row.offered">
+                          <div class="flex-1 min-w-0">
+                            <div class="font-bold text-dark-text truncate">{{ row.title }}</div>
+                            @if (!row.offered) {
+                              <div class="text-[0.65rem] text-muted-text font-body italic">Not offered on this listing</div>
+                            }
+                          </div>
+                          <div class="hidden sm:block w-32 shrink-0">
+                            <div class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold text-muted-text text-right mb-0.5">{{ row.attachRate }}% · {{ row.bookingsCount }}/{{ row.eligibleCount }}</div>
+                            <div class="h-1 bg-dark-text/8 rounded-full overflow-hidden">
+                              <div class="h-full rounded-full"
+                                [ngClass]="row.attachRate >= 30 ? 'bg-jungle-green' : row.attachRate >= 10 ? 'bg-gold' : 'bg-dark-text/20'"
+                                [style.width.%]="row.attachRate"></div>
+                            </div>
+                          </div>
+                          <div class="text-right w-20 shrink-0">
+                            <div class="font-bold text-trinidad text-sm leading-none">{{ formatCurrency(row.totalRevenue) }}</div>
+                            <div class="text-[0.55rem] uppercase tracking-[0.1em] font-button text-muted-text mt-0.5">{{ row.totalUnits }} {{ row.totalUnits === 1 ? 'unit' : 'units' }}</div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
               </div>
             }
           </div>

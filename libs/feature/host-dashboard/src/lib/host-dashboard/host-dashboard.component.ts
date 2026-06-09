@@ -8,7 +8,7 @@ import { NavbarComponent, FooterComponent, ListingCardComponent, StatTileCompone
 import {
   SeoService, AuthService, IPublicUser, ToastService, BookingService, IPrivateListing,
   getMyListings, getHostStats, getHostBookings, IHostStats,
-  getAddOnPerformance, IAddOnPerformance, hasOwnedListings,
+  getAddOnPerformance, IAddOnPerformance, IAddOnPerListingRow, getAddOnPerListingBreakdown, hasOwnedListings,
   HostListingDraftService, getListingDetail, IDraftListing, ALL_LISTINGS,
   HostReviewService, IHostReviewSubScores, GUEST_SUBSCORE_LABELS, averageHostSubScores, REVEAL_WINDOW_DAYS,
   MIN_REVIEW_CHARS_FOR_CREDIT,
@@ -44,6 +44,18 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   hostBookings: IBooking[] = [];
   /** Aggregated attach-rate / revenue per add-on the host offers. */
   addOnPerformance: IAddOnPerformance[] = [];
+
+  /** Add-on id currently expanded in the performance table — null when
+   *  all rows are collapsed. Drives the per-listing drill-in (P3.2 / B). */
+  expandedAddOnId: string | null = null;
+
+  toggleAddOnRow(id: string): void {
+    this.expandedAddOnId = this.expandedAddOnId === id ? null : id;
+  }
+
+  addOnBreakdownFor(id: string): IAddOnPerListingRow[] {
+    return getAddOnPerListingBreakdown(id, this.listings, this.hostBookings);
+  }
   /** addOn id → owning listing id, precomputed for drill-in routing on the
    *  analytics panel's Top sellers list. */
   private addOnToListingId: Record<string, number> = {};

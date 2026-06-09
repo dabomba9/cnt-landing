@@ -267,3 +267,78 @@ export function getAddOnPerformance(
   });
   return rows;
 }
+
+/** Per-listing breakdown of one add-on's performance. Drives the
+ *  P3.2 / B drill-in on the host dashboard so the host can answer
+ *  "which sites is this add-on actually selling on?" */
+export interface IAddOnPerListingRow {
+  listingId: number;
+  title: string;
+  /** True when the listing currently offers this add-on (the editor catalog wins). */
+  offered: boolean;
+  /** Bookings on this listing that included this add-on. */
+  bookingsCount: number;
+  /** Per-listing eligible bookings — denominator for attachRate. */
+  eligibleCount: number;
+  attachRate: number;             // 0–100, rounded
+  totalUnits: number;
+  totalRevenue: number;
+}
+
+/** Invert getAddOnPerformance for one add-on: rows are listings, not
+ *  add-ons. Returns one row per listing the host owns — listings that
+ *  don't offer the add-on appear with offered=false so the host can
+ *  spot uneven coverage. */
+export function getAddOnPerListingBreakdown(
+  addOnId: string,
+  listings: IListing[],
+  hostBookings: IBooking[],
+): IAddOnPerListingRow[] {
+  const rows = new Map<number, IAddOnPerListingRow>();
+  for (const l of listings) {
+    if (l.kind === 'boondocking') continue;
+    let offered = false;
+    try {
+      offered = getListingDetail(l).addOns.some(a => a.id === addOnId);
+    } catch { offered = false; }
+    rows.set(l.id, {
+      listingId: l.id,
+      title: l.title,
+      offered,
+      bookingsCount: 0,
+      eligibleCount: 0,
+      attachRate: 0,
+      totalUnits: 0,
+      totalRevenue: 0,
+    });
+  }
+
+  // Walk eligible bookings per listing, tallying both the eligible
+  // denominator + the per-add-on numerator.
+  const eligible = hostBookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+  for (const b of eligible) {
+    const row = rows.get(b.listingId);
+    if (!row) continue;
+    row.eligibleCount += 1;
+    if (!b.addOns?.length) continue;
+    for (const a of b.addOns) {
+      if (a.id !== addOnId) continue;
+      row.bookingsCount += 1;
+      row.totalRevenue += a.amount || 0;
+      row.totalUnits += a.quantity || 1;
+    }
+  }
+
+  const out = [...rows.values()];
+  for (const r of out) {
+    r.attachRate = r.eligibleCount === 0 ? 0 : Math.round((100 * r.bookingsCount) / r.eligibleCount);
+  }
+  // Listings that don't offer the add-on sink to the bottom; within each
+  // group, sort by revenue then attach rate.
+  out.sort((a, b) => {
+    if (a.offered !== b.offered) return a.offered ? -1 : 1;
+    if (a.totalRevenue !== b.totalRevenue) return b.totalRevenue - a.totalRevenue;
+    return b.attachRate - a.attachRate;
+  });
+  return out;
+}
