@@ -53,16 +53,17 @@ describe('ListingAvailabilityService', () => {
     it('merges manual + external blocks + booked nights', (done) => {
       host.setBlocked(1, ['2026-04-10'], true);
       host.applyExternalBlocks(1, 'Airbnb', ['2026-04-11']);
-      // 4-night booking — assert on inner days that hold across the
-      // TZ-sensitivity in bookedByListing's date math (existing
-      // behavior, not in scope for this spec to nail down).
-      bookings.set([mkBooking({ listingId: 1, dates: { start: '2026-04-15', end: '2026-04-18' } })]);
+      bookings.set([mkBooking({ listingId: 1, dates: { start: '2026-04-12', end: '2026-04-14' } })]);
 
       svc.unavailableSet$(1).pipe(take(1)).subscribe(set => {
+        // bookedByListing now slices the iso-day directly instead of
+        // round-tripping through a TZ-shifting Date — booked nights
+        // are inclusive [start, end].
         expect(set.has('2026-04-10')).toBe(true);
         expect(set.has('2026-04-11')).toBe(true);
-        expect(set.has('2026-04-16')).toBe(true);
-        expect(set.has('2026-04-17')).toBe(true);
+        expect(set.has('2026-04-12')).toBe(true);
+        expect(set.has('2026-04-13')).toBe(true);
+        expect(set.has('2026-04-14')).toBe(true);
         done();
       });
     });

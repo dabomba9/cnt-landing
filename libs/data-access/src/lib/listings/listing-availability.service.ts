@@ -3,15 +3,15 @@ import { Observable, combineLatest, map } from 'rxjs';
 import { HostAvailabilityService } from '../host/host-availability.service';
 import { BookingService } from '../booking/booking.service';
 import { IBooking } from '@cnt-workspace/models';
-import { isoKey } from '../shared/iso-date.util';
+import { isoKey, eachDateIso } from '../shared/iso-date.util';
 
-/** Iterate every ISO date in [start, end] inclusive. */
-function eachDateIso(start: Date, end: Date): string[] {
-  const out: string[] = [];
-  for (let d = new Date(start); d <= end; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
-    out.push(isoKey(d));
-  }
-  return out;
+/** Pull the YYYY-MM-DD calendar day out of a booking's stored date
+ *  string. Bookings persist either bare ISO dates ('2027-04-12') or
+ *  full timestamps ('2027-04-12T15:00:00Z') — we always want the
+ *  wall-clock day the guest is staying, not whatever local Date()
+ *  parsing shifts to in a negative-offset timezone. */
+function bookingIsoDay(dateString: string): string {
+  return dateString.slice(0, 10);
 }
 
 /** Booked-date set per listing, derived from the bookings stream.
@@ -22,10 +22,10 @@ function bookedByListing(bookings: IBooking[]): Record<number, Set<string>> {
   const map: Record<number, Set<string>> = {};
   for (const b of bookings) {
     if (b.status === 'cancelled' || b.status === 'declined') continue;
-    const s = new Date(b.dates.start); s.setHours(0, 0, 0, 0);
-    const e = new Date(b.dates.end);   e.setHours(0, 0, 0, 0);
+    const start = bookingIsoDay(b.dates.start);
+    const end   = bookingIsoDay(b.dates.end);
     const set = map[b.listingId] ?? (map[b.listingId] = new Set());
-    for (const iso of eachDateIso(s, e)) set.add(iso);
+    for (const iso of eachDateIso(start, end)) set.add(iso);
   }
   return map;
 }
