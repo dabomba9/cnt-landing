@@ -2,15 +2,24 @@
   <!-- Price header -->
   <div class="flex items-baseline justify-between mb-1">
     <div>
-      <span class="font-headline text-3xl font-bold text-dark-text">${{ listing.price }}</span>
-      <span class="text-muted-text font-body text-sm ml-1">/ night</span>
+      @if (booking.canBook) {
+        <span class="font-headline text-3xl font-bold text-dark-text">${{ booking.total }}</span>
+        <span class="text-muted-text font-body text-sm ml-1">for {{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }}</span>
+      } @else {
+        <span class="font-headline text-3xl font-bold text-dark-text">${{ listing.price }}</span>
+        <span class="text-muted-text font-body text-sm ml-1">/ night</span>
+      }
     </div>
     <span class="flex items-center gap-1 text-sm text-dark-text font-bold">
       <span class="material-symbols-outlined text-base text-trinidad" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
       {{ listing.rating }}
     </span>
   </div>
-  <p class="text-xs font-body text-muted-text mb-4">Prices include all fees.</p>
+  @if (booking.canBook) {
+    <p class="text-xs font-body text-muted-text mb-4">${{ listing.price }} × {{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }} · all fees included</p>
+  } @else {
+    <p class="text-xs font-body text-muted-text mb-4">Prices include all fees — no surprises at checkout.</p>
+  }
 
   <!-- Booking-mode signal: Instant Book chip OR host response time -->
   <div class="mb-5">
