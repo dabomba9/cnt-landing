@@ -23,7 +23,7 @@
             <span>{{ listing.location }}</span>
             @if (listing.kind !== 'boondocking') {
               <span class="text-dark-text/30">·</span>
-              <span class="text-dark-text font-bold"><span class="text-trinidad">${{ listing.price }}</span> / night</span>
+              <span class="text-dark-text font-bold">from <span class="text-trinidad">${{ displayPrice }}</span> / night</span>
             } @else if (listing.agency) {
               <span class="text-dark-text/30">·</span>
               <span class="text-jungle-green font-bold">{{ AGENCY_META[listing.agency].label }}</span>

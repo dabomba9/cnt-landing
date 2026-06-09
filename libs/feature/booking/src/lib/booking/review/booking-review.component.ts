@@ -12,7 +12,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
-import { parseIsoLocal } from '@cnt-workspace/data-access';
+import { parseIsoLocal, ListingAvailabilityService, isoKey } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, IPrivateListing, getListingDetail, IListingDetail, IAddOn, hasMyRvPhotos } from '@cnt-workspace/data-access';
 import { readMyRv, IMyRv, IMyRvProfile, rvTypeLabel, isMyRvSet, isMyRvComplete, myRvMissingFields, listMyRvProfiles, getActiveRvProfileId, setActiveRvProfile, isTowableRv, towVehicleHasData } from '@cnt-workspace/data-access';
 import { PaymentMethodsService, IPaymentMethod } from '@cnt-workspace/data-access';
@@ -98,6 +98,7 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     private seo: SeoService,
     private toasts: ToastService,
     private payments: PaymentMethodsService,
+    private availability: ListingAvailabilityService,
   ) {}
 
   ngOnInit(): void {
@@ -200,11 +201,18 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   get subtotal(): number {
-    // TODO(T3.1-followup): honor IHostAvailability.pricingTiers + per-day
-    // overrides here too. The /listing widget already does. Booking-review
-    // currently shows base-price × nights so the user may see a different
-    // (lower) subtotal than the widget when tiers are in play.
-    return (this.listing?.price || 0) * this.nights;
+    if (!this.listing || !this.startDate || !this.endDate || this.nights === 0) {
+      return (this.listing?.price || 0) * this.nights;
+    }
+    const prices = this.availability.effectivePricesForRange(
+      this.listing.id,
+      isoKey(this.startDate),
+      isoKey(this.endDate),
+      this.listing.price,
+    );
+    let sum = 0;
+    for (const p of Object.values(prices)) sum += p;
+    return sum;
   }
 
   /** Mock weekly discount: 10% off when stay >= 7 nights. */

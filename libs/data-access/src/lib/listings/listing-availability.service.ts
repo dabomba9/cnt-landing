@@ -73,6 +73,18 @@ export class ListingAvailabilityService {
     return basePrice;
   }
 
+  /** Lowest effective nightly price across [startIso, endIso) — drives
+   *  the "from $X" headline on /listing/:id when seasonal tiers create
+   *  a price floor different from the listing's base. */
+  lowestNightlyForRange(listingId: number, startIso: string, endIso: string, basePrice: number): number {
+    const prices = this.effectivePricesForRange(listingId, startIso, endIso, basePrice);
+    const values = Object.values(prices);
+    if (values.length === 0) return basePrice;
+    let min = values[0];
+    for (let i = 1; i < values.length; i++) if (values[i] < min) min = values[i];
+    return min;
+  }
+
   /** Per-night effective prices across [startIso, endIso) — booking
    *  convention, last night IS the checkout-eve, checkout day is free. */
   effectivePricesForRange(

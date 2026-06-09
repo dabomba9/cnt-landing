@@ -21,7 +21,8 @@ import { IMyRv, IMyRvProfile, emptyMyRv, readMyRv, writeMyRv, isMyRvSet, isMyRvC
 import { gsap } from 'gsap';
 import { BookingStateService } from './booking-state.service';
 import { AuthService, ReviewService, IUserReview, isOwnedByUser, HostReviewService, BookingService,
-  TripPlannerService, ITripPlan, autoTripName } from '@cnt-workspace/data-access';
+  TripPlannerService, ITripPlan, autoTripName,
+  ListingAvailabilityService, isoKey, addDaysIso } from '@cnt-workspace/data-access';
 import { ListingPhotoLightboxComponent } from './photo-lightbox/listing-photo-lightbox.component';
 import { ListingBookingWidgetComponent } from './booking-widget/listing-booking-widget.component';
 import { ListingMobileBookingBarComponent } from './mobile-booking-bar/listing-mobile-booking-bar.component';
@@ -361,7 +362,21 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     private planner: TripPlannerService,
     private bookingSvc: BookingService,
     private toasts: ToastService,
+    private availability: ListingAvailabilityService,
   ) {}
+
+  /** Lowest effective nightly across the next 90 days — drives the
+   *  "from $X / night" headline so seasonal tiers and per-day overrides
+   *  flow into the displayed floor. Falls back to listing base price.
+   *  Boondocking listings don't carry `price`; the template gates this
+   *  getter so we never read past the guard. */
+  get displayPrice(): number {
+    if (!this.listing || !('price' in this.listing)) return 0;
+    const base = (this.listing as IPrivateListing).price;
+    const start = isoKey(new Date());
+    const end = addDaysIso(start, 90);
+    return this.availability.lowestNightlyForRange(this.listing.id, start, end, base);
+  }
 
   private currentListingId = -1;
 
