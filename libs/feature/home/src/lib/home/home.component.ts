@@ -33,6 +33,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   isVideoOpen = false;
   videoUrl!: SafeResourceUrl;
   private readonly brandVideoEmbed = 'https://www.youtube.com/embed/vuisyx-U944?autoplay=1&rel=0';
+  /** Plain watch URL — used as the user-visible fallback when the
+   *  embedded iframe is blocked (corporate networks, tracking
+   *  prevention, etc). */
+  readonly brandVideoFallbackUrl = 'https://www.youtube.com/watch?v=vuisyx-U944';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
