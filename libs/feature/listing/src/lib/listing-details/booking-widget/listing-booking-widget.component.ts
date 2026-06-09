@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import {
   IPrivateListing, IListingDetail, CancellationTier, IAddOn,
 } from '@cnt-workspace/data-access';
@@ -21,7 +24,7 @@ import { AddonLightboxComponent } from '../addon-lightbox/addon-lightbox.compone
 @Component({
   selector: 'cnt-listing-booking-widget',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatDatepickerModule, MatNativeDateModule, AddonLightboxComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, AddonLightboxComponent],
   templateUrl: './listing-booking-widget.component.html',
 })
 export class ListingBookingWidgetComponent {
@@ -45,6 +48,14 @@ export class ListingBookingWidgetComponent {
   }
 
   constructor(public booking: BookingStateService) {}
+
+  /** Typed-input pair above the inline mat-calendar. Each setter forwards
+   *  to BookingStateService.onDateSelected — same click-1/click-2/range-reset
+   *  progression the calendar uses, so typing and tapping share one flow. */
+  get pickerStart(): Date | null { return this.booking.selectedDateRange?.start ?? null; }
+  set pickerStart(d: Date | null) { if (d) this.booking.onDateSelected(d); }
+  get pickerEnd(): Date | null { return this.booking.selectedDateRange?.end ?? null; }
+  set pickerEnd(d: Date | null) { if (d) this.booking.onDateSelected(d); }
 
   onReserve(): void { this.reserveClick.emit(); }
 
