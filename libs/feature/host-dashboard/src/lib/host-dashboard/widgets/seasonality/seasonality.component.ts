@@ -106,9 +106,13 @@ export class SeasonalityComponent implements OnChanges {
     let totalBookings = 0;
     for (const b of this.bookings) {
       if (b.status === 'cancelled' || b.status === 'declined') continue;
-      const start = new Date(b.dates.start);
-      if (Number.isNaN(start.getTime())) continue;
-      const m = start.getMonth();
+      // Read the month from the YYYY-MM-DD prefix instead of round-
+      // tripping through Date — JS parses bare iso as UTC midnight and
+      // shifts back a day in negative-offset TZs, which can flip Jan
+      // bookings into the prior December.
+      const monthDigits = b.dates.start.slice(5, 7);
+      const m = parseInt(monthDigits, 10) - 1;
+      if (!Number.isFinite(m) || m < 0 || m > 11) continue;
       const rev = b.total ?? 0;
       slots[m].revenue += rev;
       slots[m].bookings += 1;

@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import {
   IListing, HostAvailabilityService, BookingService, ToastService,
-  isoKey,
+  isoKey, eachDateIso,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -171,15 +171,14 @@ export class AvailabilityCalendarComponent implements OnDestroy {
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
 
   private rebuildBookedMap(all: IBooking[]): void {
+    // Iso-day slicing skips Date round-tripping (TZ-shift safe).
     const map: Record<number, Set<string>> = {};
     for (const b of all) {
       if (b.status === 'cancelled' || b.status === 'declined') continue;
-      const s = new Date(b.dates.start); s.setHours(0, 0, 0, 0);
-      const e = new Date(b.dates.end);   e.setHours(0, 0, 0, 0);
+      const start = b.dates.start.slice(0, 10);
+      const end = b.dates.end.slice(0, 10);
       const set = map[b.listingId] ?? (map[b.listingId] = new Set());
-      for (let d = new Date(s); d <= e; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
-        set.add(this.toIso(d));
-      }
+      for (const iso of eachDateIso(start, end)) set.add(iso);
     }
     this.bookedByListing = map;
   }

@@ -1009,6 +1009,20 @@ p {
   outline-offset: 2px;
 }
 
+/* Respect prefers-reduced-motion — collapses CSS transitions and animations
+   to a single near-instant tick. GSAP-driven entry animations gate
+   themselves where they matter (see per-component reduced-motion guards). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .login-wrap {
   justify-content: flex-start;
   align-items: center;

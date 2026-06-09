@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription, combineLatest } from 'rxjs';
 import {
   IPrivateListing, HostAvailabilityService, BookingService,
-  isoKey, addDaysIso,
+  isoKey, addDaysIso, eachDateIso,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -56,9 +56,12 @@ const WINDOW_DAYS = 90;
                 <div class="text-xs font-body font-bold text-dark-text truncate">{{ row.title }}</div>
                 <div class="text-[0.6rem] text-muted-text font-body">{{ row.occupancyPct | number:'1.0-0' }}% · {{ row.bookedCount }} {{ row.bookedCount === 1 ? 'night' : 'nights' }}</div>
               </div>
-              <div class="flex-1 grid gap-px overflow-hidden rounded" [style.grid-template-columns]="'repeat(' + WINDOW_DAYS + ', minmax(0, 1fr))'">
+              <div class="flex-1 grid gap-px overflow-hidden rounded"
+                role="img"
+                [attr.aria-label]="row.title + ': ' + (row.occupancyPct | number:'1.0-0') + ' percent occupancy over next ' + WINDOW_DAYS + ' days'"
+                [style.grid-template-columns]="'repeat(' + WINDOW_DAYS + ', minmax(0, 1fr))'">
                 @for (cell of row.cells; track cell.iso) {
-                  <div [ngClass]="cellTone(cell.state)" [title]="cell.iso + ' · ' + cell.state" class="h-5"></div>
+                  <div [ngClass]="cellTone(cell.state)" [title]="cell.iso + ' · ' + cell.state" aria-hidden="true" class="h-5"></div>
                 }
               </div>
             </div>
@@ -102,15 +105,15 @@ export class OccupancyHeatmapComponent implements OnChanges, OnDestroy {
     if (this.listings.length === 0) { this.rows = []; return; }
 
     // Build a fast lookup of per-listing booked ISOs (active statuses only).
+    // Iso-day slicing skips Date round-tripping (which shifts a day in
+    // negative-offset TZs when bare YYYY-MM-DD parses as UTC midnight).
     const bookedByListing: Record<number, Set<string>> = {};
     for (const b of allBookings) {
       if (b.status === 'cancelled' || b.status === 'declined') continue;
-      const s = new Date(b.dates.start); s.setHours(0, 0, 0, 0);
-      const e = new Date(b.dates.end);   e.setHours(0, 0, 0, 0);
+      const start = b.dates.start.slice(0, 10);
+      const end = b.dates.end.slice(0, 10);
       const set = bookedByListing[b.listingId] ?? (bookedByListing[b.listingId] = new Set());
-      for (let d = new Date(s); d <= e; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
-        set.add(isoKey(d));
-      }
+      for (const iso of eachDateIso(start, end)) set.add(iso);
     }
 
     const today = isoKey(new Date());
