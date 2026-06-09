@@ -92,14 +92,17 @@
 
             <div class="inline-flex items-center rounded-full bg-cream/40 p-1 border border-dark-text/15">
               <button type="button" (click)="setViewMode('month')"
+                [attr.aria-pressed]="viewMode === 'month'"
                 [class.bg-white]="viewMode === 'month'"
                 [class.shadow-sm]="viewMode === 'month'"
                 class="px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text transition-colors">Month</button>
               <button type="button" (click)="setViewMode('3month')"
+                [attr.aria-pressed]="viewMode === '3month'"
                 [class.bg-white]="viewMode === '3month'"
                 [class.shadow-sm]="viewMode === '3month'"
                 class="px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text transition-colors">3 months</button>
               <button type="button" (click)="setViewMode('list')"
+                [attr.aria-pressed]="viewMode === 'list'"
                 [class.bg-white]="viewMode === 'list'"
                 [class.shadow-sm]="viewMode === 'list'"
                 class="px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text transition-colors">List</button>
@@ -115,7 +118,9 @@
                 Today
               </button>
               @if (pickByDateOpen) {
-                <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                <div role="dialog" aria-modal="true" aria-label="Pick a date range"
+                  (keydown.escape)="togglePickByDate()"
+                  class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
                   <div class="flex items-center justify-between mb-2 px-1">
                     <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick a range</span>
                     <button type="button" (click)="togglePickByDate()" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline" aria-label="Close">Done</button>
@@ -170,7 +175,14 @@
                     @for (cell of m.cells; track cell.iso) {
                       <div
                         (pointerdown)="startDrag(cell, $event)"
+                        (keydown.enter)="toggleCellSelection(cell, $event)"
+                        (keydown.space)="toggleCellSelection(cell, $event)"
                         [attr.data-iso]="cell.iso"
+                        [attr.role]="canSelect(cell) ? 'button' : null"
+                        [attr.tabindex]="canSelect(cell) ? 0 : null"
+                        [attr.aria-selected]="canSelect(cell) ? cell.selected : null"
+                        [attr.aria-disabled]="!canSelect(cell)"
+                        [attr.aria-label]="cell.iso + (cell.selected ? ' (selected)' : '')"
                         style="touch-action: none"
                         [ngClass]="cellTone(cell) + (cell.selected ? ' bg-trinidad/15' : '')"
                         [class.opacity-50]="!cell.inMonth"
@@ -179,11 +191,12 @@
                         [class.cursor-pointer]="canSelect(cell)"
                         [class.cursor-default]="!canSelect(cell)"
                         [attr.title]="cell.breakdown || null"
-                        class="relative min-h-[5rem] md:min-h-[5.5rem] rounded-md p-1.5 flex flex-col items-start text-left transition-shadow">
+                        class="relative min-h-[5rem] md:min-h-[5.5rem] rounded-md p-1.5 flex flex-col items-start text-left transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-trinidad">
                         <div class="flex items-center gap-1 mb-1 w-full">
                           <span [class.font-bold]="cell.isToday" class="text-xs font-body">{{ cell.date.getDate() }}</span>
                           @if (cell.isToday) {
-                            <span class="w-1.5 h-1.5 rounded-full bg-jungle-green"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-jungle-green" aria-hidden="true"></span>
+                            <span class="sr-only">Today</span>
                           }
                           @if (cell.state === 'uniform-price' && cell.uniformPrice !== null) {
                             <span class="ml-auto text-[0.55rem] font-button font-bold text-trinidad bg-trinidad/10 px-1.5 py-0.5 rounded">${{ cell.uniformPrice }}</span>

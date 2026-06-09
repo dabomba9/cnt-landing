@@ -292,6 +292,18 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.applyDragSelection(cell.iso);
   }
 
+  /** Keyboard-friendly single-cell toggle. Enter/Space on a focused cell
+   *  toggles its membership in the selection without going through the
+   *  drag state machine. */
+  toggleCellSelection(cell: IDayCell, event: Event): void {
+    if (!this.canSelect(cell)) return;
+    event.preventDefault();
+    const next = new Set(this.selected);
+    if (next.has(cell.iso)) next.delete(cell.iso);
+    else next.add(cell.iso);
+    this.selected = next;
+  }
+
   /** Document-level move handler — touch drags don't fire pointerenter on
    *  other cells once a pointer is implicitly captured by its target, so we
    *  hit-test via document.elementFromPoint and the cell's data-iso attr. */
@@ -603,7 +615,7 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
 
   cellTone(cell: IDayCell): string {
     switch (cell.state) {
-      case 'past':         return 'bg-transparent text-muted-text/40';
+      case 'past':         return 'bg-transparent text-muted-text/70';
       case 'all-booked':   return 'bg-trinidad/15 border border-trinidad/40 text-dark-text';
       case 'all-blocked':  return 'bg-cream/40 text-muted-text';
       case 'mixed':        return 'bg-gold/10 border border-gold/30 text-dark-text';
