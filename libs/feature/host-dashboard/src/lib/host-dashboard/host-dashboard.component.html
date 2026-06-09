@@ -217,6 +217,17 @@
         </section>
       </div>
 
+      <!-- Occupancy heatmap — per-listing × next-90-day rollup (P3.2 / A). -->
+      @if (listings.length > 0) {
+        <section>
+          <div class="mb-4">
+            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Patterns</span>
+            <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight">Occupancy outlook</h2>
+          </div>
+          <cnt-occupancy-heatmap [listings]="listings"></cnt-occupancy-heatmap>
+        </section>
+      }
+
       <!-- Active reservations (real bookings: approved or confirmed) -->
       @if (activeHostBookings.length > 0) {
         <section id="reservations">

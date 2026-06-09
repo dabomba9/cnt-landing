@@ -17,6 +17,7 @@ import { IBooking } from '@cnt-workspace/models';
 import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.component';
 import { ReviewsSnapshotComponent } from './widgets/reviews-snapshot/reviews-snapshot.component';
 import { AvailabilityCalendarComponent } from './widgets/availability-calendar/availability-calendar.component';
+import { OccupancyHeatmapComponent } from './widgets/occupancy-heatmap/occupancy-heatmap.component';
 
 type ModalAction = 'decline' | 'cancel';
 
@@ -29,6 +30,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
   imports: [
     CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
+    OccupancyHeatmapComponent,
     FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent,
     DragDropModule,
   ],
