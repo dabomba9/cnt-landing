@@ -236,6 +236,47 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return this.reviewSvc.aggregateRating(this.listing.rating, this.listing.reviewCount, this.listing.id);
   }
 
+  /** Weighted overall rating across every listing this host runs — drives
+   *  the host-card credibility chip. Empty/no-data hosts return 0. */
+  get hostRating(): { rating: number; count: number } {
+    if (this.isBoondocking) return { rating: 0, count: 0 };
+    const hostName = this.detail.host.name;
+    // MOCK_LISTINGS is private-only; boondocking lives in MOCK_BOONDOCKING.
+    const peers = MOCK_LISTINGS.filter(l => getListingDetail(l).host.name === hostName);
+    let weightedSum = 0;
+    let total = 0;
+    for (const l of peers) {
+      const ag = this.reviewSvc.aggregateRating(l.rating, l.reviewCount, l.id);
+      weightedSum += ag.rating * ag.count;
+      total += ag.count;
+    }
+    if (total === 0) return { rating: 0, count: 0 };
+    return { rating: weightedSum / total, count: total };
+  }
+
+  /** Percentage of inbound booking requests the host has explicitly
+   *  decided (approve / decline / cancel) vs left in pending. Returns
+   *  null for boondocking hosts and when there's no signal. */
+  get hostResponseRate(): number | null {
+    if (this.isBoondocking) return null;
+    const hostName = this.detail.host.name;
+    const hostListingIds = new Set(
+      MOCK_LISTINGS.filter(l => getListingDetail(l).host.name === hostName).map(l => l.id),
+    );
+    if (hostListingIds.size === 0) return null;
+    const all = this.bookingSvc.getAll().filter(b => hostListingIds.has(b.listingId));
+    if (all.length === 0) return null;
+    const responded = all.filter(b => b.status !== 'pending').length;
+    return responded / all.length;
+  }
+
+  /** Eligible when the host's overall rating ≥ 4.8 with at least 10
+   *  reviews. Surfaces as a "Superhost" chip next to the verified badge. */
+  get isSuperhost(): boolean {
+    const hr = this.hostRating;
+    return hr.count >= 10 && hr.rating >= 4.8;
+  }
+
   /** One-line fit summary derived from siteSpecs. */
   get fitSummary(): string {
     const s = this.detail.siteSpecs;
