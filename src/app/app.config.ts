@@ -6,7 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { Amplify } from 'aws-amplify';
 import { environment } from '../environments/environment';
-import { initPublishedSnapshots } from '@cnt-workspace/data-access';
+import { initPublishedSnapshots, DateTriggerService } from '@cnt-workspace/data-access';
 
 Amplify.configure({
   Auth: {
@@ -39,6 +39,15 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: () => () => initPublishedSnapshots(),
+    },
+    // Eagerly instantiate DateTriggerService so its bookings-stream
+    // subscription + 60-min recheck timer are running from app load,
+    // not from the first time a feature happens to inject it.
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [DateTriggerService],
+      useFactory: () => () => Promise.resolve(),
     },
   ],
 };
