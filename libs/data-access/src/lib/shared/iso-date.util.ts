@@ -24,8 +24,12 @@ export function parseIsoLocal(iso: string | null | undefined): Date | null {
   const mo = parseInt(m[2], 10);
   const d = parseInt(m[3], 10);
   if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
   const out = new Date(y, mo - 1, d, 12, 0, 0, 0);
-  return Number.isNaN(out.getTime()) ? null : out;
+  if (Number.isNaN(out.getTime())) return null;
+  // Reject silent JS Date rollover (e.g. 2026-04-31 → May 1, 2026-13-01 → Jan 2027).
+  if (out.getFullYear() !== y || out.getMonth() !== mo - 1 || out.getDate() !== d) return null;
+  return out;
 }
 
 /** "2026-04-12" → "2026-04-13". Local-time math via the Date constructor. */
