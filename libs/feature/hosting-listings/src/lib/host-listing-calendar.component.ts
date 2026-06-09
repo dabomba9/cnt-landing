@@ -485,7 +485,42 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     if (this.rangeStart && this.rangeEnd) this.selectByRange(this.rangeStart, this.rangeEnd);
   }
 
-  togglePickByDate(): void { this.pickByDateOpen = !this.pickByDateOpen; }
+  /** localStorage key for last typed/picked range so a host returning
+   *  to the popover gets their previous picks pre-seeded. */
+  private readonly LAST_RANGE_KEY = 'cnt-listing-calendar-last-range';
+
+  togglePickByDate(): void {
+    const opening = !this.pickByDateOpen;
+    if (!opening) this.persistLastRange();
+    else if (this.selected.size === 0) this.seedFromLastRange();
+    this.pickByDateOpen = opening;
+  }
+
+  private persistLastRange(): void {
+    if (typeof localStorage === 'undefined') return;
+    if (!this.pickerStartDate || !this.pickerEndDate) return;
+    try {
+      localStorage.setItem(this.LAST_RANGE_KEY, JSON.stringify({
+        start: this.isoKey(this.pickerStartDate),
+        end:   this.isoKey(this.pickerEndDate),
+      }));
+    } catch { /* ignore */ }
+  }
+
+  private seedFromLastRange(): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(this.LAST_RANGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const start = this.parseIso(parsed?.start);
+      const end = this.parseIso(parsed?.end);
+      if (!start || !end) return;
+      this.pickerStartDate = start;
+      this.pickerEndDate = end;
+      this.pickerRange = new DateRange<Date>(start, end);
+    } catch { /* ignore */ }
+  }
 
   // ----- inline rule-list edit -----
   startInlineEdit(rule: IStayRule): void {
@@ -547,6 +582,9 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
     this.pickerRange = null;
     this.pickerStartDate = null;
     this.pickerEndDate = null;
+    if (typeof localStorage !== 'undefined') {
+      try { localStorage.removeItem(this.LAST_RANGE_KEY); } catch { /* ignore */ }
+    }
   }
 
   // ----- bulk actions -----

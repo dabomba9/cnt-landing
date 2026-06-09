@@ -227,9 +227,13 @@
                 </button>
               </div>
             } @else {
-              <ul class="flex flex-col gap-2">
+              <ul class="flex flex-col gap-2 pb-24">
                 @for (ev of upcomingEvents; track ev.listingId + '-' + ev.start + '-' + ev.kind) {
-                  <li class="flex flex-wrap items-center gap-3 rounded-md border border-dark-text/10 bg-cream/20 px-3 py-2">
+                  <li class="flex flex-wrap items-center gap-3 rounded-md border border-dark-text/10 bg-cream/20 px-3 py-2"
+                    [class.ring-2]="isEventSelected(ev)"
+                    [class.ring-jungle-green]="isEventSelected(ev)">
+                    <input type="checkbox" [checked]="isEventSelected(ev)" (change)="toggleEventSelected(ev)"
+                      class="w-4 h-4 accent-jungle-green shrink-0" aria-label="Select event" />
                     <span class="font-button font-bold text-[0.6rem] uppercase tracking-[0.12em] text-trinidad shrink-0 min-w-[7rem]">{{ formatEventRange(ev) }}</span>
                     <span class="font-body font-bold text-dark-text text-sm flex-1 truncate">{{ ev.title }}</span>
                     <span [ngClass]="eventChipClass(ev)" class="text-[0.55rem] uppercase tracking-[0.1em] font-button font-bold px-2 py-0.5 rounded-full">{{ eventChipLabel(ev) }}</span>
@@ -273,6 +277,30 @@
     </div>
   </section>
 </main>
+
+<!-- List-view sticky strip -->
+@if (viewMode === 'list' && selectedEventCount > 0) {
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-dark-text/10 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"
+    style="padding-bottom: env(safe-area-inset-bottom, 0);">
+    <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-4 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-0">
+        <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-0.5">Selected</div>
+        <div class="font-headline font-bold text-dark-text text-base tracking-tight">
+          {{ selectedEventCount }} {{ selectedEventCount === 1 ? 'event' : 'events' }}
+        </div>
+      </div>
+      <button type="button" (click)="blockSelectedEvents()"
+        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-dark-text text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
+        <span class="material-symbols-outlined text-base">event_busy</span>
+        Block all
+      </button>
+      <button type="button" (click)="clearEventSelection()"
+        class="px-4 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad">
+        Clear
+      </button>
+    </div>
+  </div>
+}
 
 <!-- Floating action bar -->
 @if (listings.length > 0 && selectionCount > 0 && scopedCount > 0) {

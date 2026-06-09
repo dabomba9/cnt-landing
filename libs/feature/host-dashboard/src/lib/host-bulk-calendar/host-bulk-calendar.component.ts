@@ -12,7 +12,7 @@ import {
   SeoService, AuthService, BookingService, ToastService,
   HostAvailabilityService, HostListingDraftService,
   IPrivateListing, getMyListings,
-  isoKey, parseIsoLocal,
+  isoKey, parseIsoLocal, eachDateIso,
 } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -22,6 +22,7 @@ type AggregateState =
 type BulkView = 'month' | '3month' | 'list';
 
 const VIEW_KEY = 'cnt-bulk-calendar-view';
+const LAST_RANGE_KEY = 'cnt-bulk-calendar-last-range';
 const LIST_WINDOW_DAYS = 60;
 
 interface IUpcomingEvent {
@@ -417,7 +418,45 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.pickByDateOpen = false;
   }
 
-  togglePickByDate(): void { this.pickByDateOpen = !this.pickByDateOpen; }
+  togglePickByDate(): void {
+    const opening = !this.pickByDateOpen;
+    if (!opening) {
+      // Closing: persist the current pair if both are set.
+      this.persistLastRange();
+    } else if (this.selected.size === 0) {
+      // Opening fresh (no current selection): seed from the last
+      // range the host typed/picked so they can iterate without
+      // re-typing the season.
+      this.seedFromLastRange();
+    }
+    this.pickByDateOpen = opening;
+  }
+
+  private persistLastRange(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.pickerStartDate || !this.pickerEndDate) return;
+    try {
+      localStorage.setItem(LAST_RANGE_KEY, JSON.stringify({
+        start: this.isoKey(this.pickerStartDate),
+        end:   this.isoKey(this.pickerEndDate),
+      }));
+    } catch { /* ignore */ }
+  }
+
+  private seedFromLastRange(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const raw = localStorage.getItem(LAST_RANGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const start = this.parseIso(parsed?.start);
+      const end = this.parseIso(parsed?.end);
+      if (!start || !end) return;
+      this.pickerStartDate = start;
+      this.pickerEndDate = end;
+      this.pickerRange = new DateRange<Date>(start, end);
+    } catch { /* ignore */ }
+  }
 
   private applyDragSelection(currentIso: string): void {
     if (!this.dragAnchor) return;
@@ -446,6 +485,9 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     this.pickerRange = null;
     this.pickerStartDate = null;
     this.pickerEndDate = null;
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.removeItem(LAST_RANGE_KEY); } catch { /* ignore */ }
+    }
   }
 
   get selectedDates(): string[] { return [...this.selected].sort(); }
@@ -681,6 +723,53 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
     const start = new Date(ev.start + 'T00:00:00');
     this.calendarMonth = new Date(start.getFullYear(), start.getMonth(), 1);
     this.selectByRange(ev.start, ev.end);
+  }
+
+  // ----- List view multi-select (C3) -----
+  /** Stable composite id matching the @for track expression. */
+  eventId(ev: IUpcomingEvent): string {
+    return `${ev.listingId}-${ev.start}-${ev.kind}`;
+  }
+
+  /** Set of event ids the host has ticked in List view. Drives the
+   *  sticky bottom strip + Block all action. */
+  selectedEventIds = new Set<string>();
+  get selectedEventCount(): number { return this.selectedEventIds.size; }
+
+  isEventSelected(ev: IUpcomingEvent): boolean {
+    return this.selectedEventIds.has(this.eventId(ev));
+  }
+
+  toggleEventSelected(ev: IUpcomingEvent): void {
+    const id = this.eventId(ev);
+    const next = new Set(this.selectedEventIds);
+    next.has(id) ? next.delete(id) : next.add(id);
+    this.selectedEventIds = next;
+  }
+
+  clearEventSelection(): void { this.selectedEventIds = new Set(); }
+
+  /** Block every iso in every checked event across its own listing. */
+  blockSelectedEvents(): void {
+    const ids = this.selectedEventIds;
+    if (ids.size === 0) return;
+    const byListing = new Map<number, Set<string>>();
+    for (const ev of this.upcomingEvents) {
+      if (!ids.has(this.eventId(ev))) continue;
+      const set = byListing.get(ev.listingId) ?? new Set<string>();
+      for (const iso of eachDateIso(ev.start, ev.end)) set.add(iso);
+      byListing.set(ev.listingId, set);
+    }
+    let totalNights = 0;
+    for (const [listingId, dates] of byListing.entries()) {
+      const arr = [...dates];
+      this.availability.setBlocked(listingId, arr, true);
+      totalNights += arr.length;
+    }
+    const evCount = ids.size;
+    const lCount = byListing.size;
+    this.toasts.success(`Blocked ${totalNights} ${totalNights === 1 ? 'night' : 'nights'} across ${evCount} ${evCount === 1 ? 'event' : 'events'} · ${lCount} ${lCount === 1 ? 'listing' : 'listings'}.`);
+    this.clearEventSelection();
   }
 
   cellLabel(cell: IDayCell): string {
