@@ -213,6 +213,8 @@
                   @for (a of detail!.addOns; track a.id) {
                     <li>
                       <button type="button" (click)="toggleAddOn(a.id)"
+                        [attr.aria-pressed]="isAddOnSelected(a.id)"
+                        [attr.aria-label]="(isAddOnSelected(a.id) ? 'Remove ' : 'Add ') + a.label"
                         class="w-full text-left flex items-center gap-3 p-4 rounded-md border transition-colors"
                         [ngClass]="isAddOnSelected(a.id) ? 'border-trinidad bg-trinidad/5' : 'border-dark-text/10 hover:border-trinidad/40'">
                         <span class="material-symbols-outlined text-jungle-green shrink-0">{{ a.icon }}</span>
@@ -305,11 +307,12 @@
               <!-- Cancellation timeline — same segment shape as /listing/:id
                    so the trust signal stays coherent across the funnel. -->
               @if (cancellationSegments.length > 0) {
-                <div class="mb-5">
-                  <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Cancellation policy</div>
+                <div class="mb-5" role="group" aria-label="Cancellation policy timeline">
+                  <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2" id="booking-cancellation-policy-label">Cancellation policy</div>
                   <div class="flex flex-col sm:flex-row gap-2">
                     @for (seg of cancellationSegments; track seg.label) {
                       <div class="flex-1 rounded-md border px-3 py-2"
+                        [attr.aria-label]="seg.label + (seg.dateLabel ? ' until ' + seg.dateLabel : ' (from then on)')"
                         [ngClass]="seg.tone === 'good' ? 'border-jungle-green/40 bg-jungle-green/5'
                                 : seg.tone === 'warn' ? 'border-gold/40 bg-gold/5'
                                 : 'border-trinidad/40 bg-trinidad/5'">

@@ -51,12 +51,14 @@
           </div>
           <div class="px-8 md:px-16 py-10 md:py-14 text-center max-w-2xl mx-auto relative">
             <div class="confirm-checkmark inline-flex items-center justify-center w-16 h-16 rounded-full mb-5 shadow-[0_12px_28px_rgba(41,93,66,0.3)]"
+              role="img"
+              [attr.aria-label]="'Booking status: ' + booking.status"
               [ngClass]="{
                 'bg-jungle-green text-white': booking.status === 'confirmed' || booking.status === 'approved',
                 'bg-gold text-dark-text': booking.status === 'pending',
                 'bg-trinidad text-white': booking.status === 'declined' || booking.status === 'cancelled'
               }">
-              <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">
                 @switch (booking.status) {
                   @case ('pending') { hourglass_top }
                   @case ('declined') { do_not_disturb_on }
@@ -66,6 +68,7 @@
               </span>
             </div>
             <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-2"
+              role="status" aria-live="polite"
               [ngClass]="{
                 'text-jungle-green': booking.status === 'approved',
                 'text-trinidad': booking.status !== 'approved'

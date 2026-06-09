@@ -299,6 +299,7 @@
             <div class="mt-5 flex flex-wrap gap-2">
               @for (a of AMENITY_GROUP; track a) {
                 <button type="button" (click)="toggleAmenity(a)"
+                  [attr.aria-pressed]="isAmenitySelected(a)"
                   [ngClass]="isAmenitySelected(a)
                     ? 'bg-trinidad text-white border-trinidad'
                     : 'bg-white text-dark-text border-dark-text/20 hover:border-trinidad'"

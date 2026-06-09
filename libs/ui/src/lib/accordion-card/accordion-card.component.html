@@ -2,12 +2,14 @@
   [class.border-trinidad]="open"
   [class.shadow-md]="open">
   <button type="button" (click)="toggled.emit()"
+    [attr.aria-expanded]="open"
+    [attr.aria-controls]="panelId"
     class="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 text-left hover:bg-cream/50 transition-colors">
     <span class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug pr-4">{{ title }}</span>
-    <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" [class.rotate-45]="open">add</span>
+    <span class="material-symbols-outlined shrink-0 text-2xl text-trinidad transition-transform duration-300" aria-hidden="true" [class.rotate-45]="open">add</span>
   </button>
   @if (open) {
-    <div class="px-6 md:px-8 pb-6 pt-1">
+    <div [id]="panelId" role="region" [attr.aria-label]="title" class="px-6 md:px-8 pb-6 pt-1">
       <ng-content />
     </div>
   }

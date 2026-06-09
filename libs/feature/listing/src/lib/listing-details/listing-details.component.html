@@ -90,7 +90,7 @@
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
       <div class="listing-gallery">
         <!-- Large primary photo (slightly wider than thumb stack on left half) -->
-        <button type="button" (click)="openLightbox(0)" class="relative h-[280px] sm:h-[420px] md:h-[560px] overflow-hidden rounded-2xl group cursor-pointer p-0 border-0">
+        <button type="button" (click)="openLightbox(0)" aria-label="Open photo gallery" class="relative h-[280px] sm:h-[420px] md:h-[560px] overflow-hidden rounded-2xl group cursor-pointer p-0 border-0">
           <img [src]="detail.photos[0]" [alt]="listing.title" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform" (load)="onImageLoad($event)">
         </button>
         <!-- 2x2 grid of 4 thumbnails (right half) -->
