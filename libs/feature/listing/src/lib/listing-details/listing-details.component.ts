@@ -9,7 +9,7 @@ import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import {
-  MOCK_LISTINGS, IListing, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
+  MOCK_LISTINGS, IListing, IReview, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
   IListingDetail, getListingDetail, CANCELLATION_TIER_META,
   TRUST_BADGE_META, NEARBY_META,
   PAD_TYPE_META, LEVELING_META, SEWER_META, CLEARANCE_META,
@@ -277,6 +277,30 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     return hr.count >= 10 && hr.rating >= 4.8;
   }
 
+  // ============ Review helpful-vote wiring (P2.4 / B) ============
+
+  helpfulCountFor(r: IReview): number {
+    if (!r.bookingId) return 0;
+    return this.reviewSvc.helpfulCount(r.bookingId);
+  }
+
+  hasVotedFor(r: IReview): boolean {
+    if (!r.bookingId) return false;
+    const email = this.auth.currentUser?.email;
+    if (!email) return false;
+    return this.reviewSvc.hasUserVoted(r.bookingId, email);
+  }
+
+  onHelpfulToggle(r: IReview): void {
+    if (!r.bookingId) return;
+    const email = this.auth.currentUser?.email;
+    if (!email) {
+      this.toasts.info('Sign in to mark reviews helpful.');
+      return;
+    }
+    this.reviewSvc.toggleHelpful(r.bookingId, email);
+  }
+
   /** One-line fit summary derived from siteSpecs. */
   get fitSummary(): string {
     const s = this.detail.siteSpecs;
@@ -315,6 +339,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
       text: r.text || '(No comment)',
       bookingId: r.bookingId,
       hostResponse: r.hostResponse,
+      photos: r.photos,
     };
   }
 

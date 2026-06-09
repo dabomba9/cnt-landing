@@ -486,6 +486,32 @@
         </div>
       </label>
 
+      <div class="flex flex-col gap-2 mb-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-label uppercase tracking-[0.1em] text-muted-text font-bold">Photos <span class="normal-case tracking-normal font-body font-normal text-muted-text/70">(optional · up to {{ maxReviewPhotos }})</span></span>
+          @if (reviewPhotos.length < maxReviewPhotos) {
+            <label class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-sm">add_a_photo</span>
+              Add photo
+              <input type="file" accept="image/*" multiple class="hidden" (change)="onReviewPhotoChange($event)" />
+            </label>
+          }
+        </div>
+        @if (reviewPhotos.length > 0) {
+          <div class="flex flex-wrap gap-2">
+            @for (photo of reviewPhotos; track photo + $index) {
+              <div class="relative w-20 h-20 rounded-md overflow-hidden border border-dark-text/10 bg-cream/60">
+                <img [src]="photo" alt="Review photo" class="w-full h-full object-cover" />
+                <button type="button" (click)="removeReviewPhoto($index)" aria-label="Remove photo"
+                  class="absolute top-1 right-1 w-5 h-5 inline-flex items-center justify-center rounded-full bg-white/90 text-trinidad hover:bg-trinidad hover:text-white transition-colors">
+                  <span class="material-symbols-outlined text-[14px]">close</span>
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
       <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end">
         <button type="button" (click)="closeReview()" [disabled]="reviewSaving"
           class="px-5 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-dark-text disabled:opacity-50 transition-colors">

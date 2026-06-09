@@ -560,7 +560,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               @for (r of visibleReviews; track r.authorName) {
                 <div>
-                  <cnt-review-card [review]="r" />
+                  <cnt-review-card [review]="r"
+                    [helpfulCount]="helpfulCountFor(r)"
+                    [hasVoted]="hasVotedFor(r)"
+                    (helpfulToggle)="onHelpfulToggle(r)" />
                   @if (isOwner && r.bookingId) {
                     @if (respondingBookingId === r.bookingId) {
                       <div class="mt-2 rounded-2xl border border-trinidad/30 bg-trinidad/5 p-4">

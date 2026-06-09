@@ -80,6 +80,9 @@ export class TripsComponent implements OnInit, OnDestroy {
   reviewTarget: IBooking | null = null;
   reviewText = '';
   reviewSubScores: IReviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
+  /** Photos the guest is attaching to this review — data URLs, capped at 6. */
+  reviewPhotos: string[] = [];
+  readonly maxReviewPhotos = 6;
   reviewSaving = false;
   /** Existing reviews keyed by bookingId — drives "Leave a review" vs "Edit review". */
   reviewByBookingId: Record<string, IUserReview> = {};
@@ -458,15 +461,42 @@ export class TripsComponent implements OnInit, OnDestroy {
     if (existing) {
       this.reviewText = existing.text;
       this.reviewSubScores = { ...existing.subScores };
+      this.reviewPhotos = [...(existing.photos ?? [])];
     } else {
       this.reviewText = '';
       this.reviewSubScores = { cleanliness: 5, communication: 5, location: 5, hookups: 5, value: 5 };
+      this.reviewPhotos = [];
     }
   }
 
   closeReview(): void {
     if (this.reviewSaving) return;
     this.reviewTarget = null;
+  }
+
+  // ----- Review photo attachments -----
+  onReviewPhotoChange(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files) return;
+    const remaining = this.maxReviewPhotos - this.reviewPhotos.length;
+    if (remaining <= 0) return;
+    const batch = Array.from(files).slice(0, remaining);
+    for (const file of batch) {
+      if (!file.type.startsWith('image/')) continue;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const url = reader.result as string;
+        if (this.reviewPhotos.length < this.maxReviewPhotos) {
+          this.reviewPhotos = [...this.reviewPhotos, url];
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  removeReviewPhoto(index: number): void {
+    this.reviewPhotos = this.reviewPhotos.filter((_, i) => i !== index);
   }
 
   /** True when the listing being reviewed has no hookups (off-grid). The
@@ -521,6 +551,7 @@ export class TripsComponent implements OnInit, OnDestroy {
         rating: this.overallRating,
         text: trimmedText,
         subScores: this.reviewSubScores,
+        photos: this.reviewPhotos.length ? [...this.reviewPhotos] : undefined,
       });
 
       // Mark the booking reviewed only when the text earns credit. Edits that

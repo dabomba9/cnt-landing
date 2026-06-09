@@ -29,9 +29,12 @@ export interface IUserReview {
   createdAt: string;
   /** Optional host reply, rendered under the review. */
   hostResponse?: IHostReviewResponse;
+  /** Optional photo data URLs the guest attached. */
+  photos?: string[];
 }
 
 const REVIEWS_KEY = 'cnt-reviews';
+const HELPFUL_KEY = 'cnt-review-helpful';
 
 /** Average of the review sub-scores. Drives the derived overall rating.
  * Off-grid stays (no hookups) skip the Hookups score so an N/A field can't
@@ -61,8 +64,40 @@ export class ReviewService {
   private readonly _reviews$ = new BehaviorSubject<IUserReview[]>([]);
   readonly reviews$: Observable<IUserReview[]> = this._reviews$.asObservable();
 
+  /** reviewId → set of user emails who voted helpful. Emits on every
+   *  toggle so consumers can re-render counts without resubscribing
+   *  to the reviews stream itself. */
+  private readonly _helpful$ = new BehaviorSubject<Record<string, string[]>>({});
+  readonly helpful$: Observable<Record<string, string[]>> = this._helpful$.asObservable();
+
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     this._reviews$.next(this.read());
+    this._helpful$.next(this.readHelpful());
+  }
+
+  /** Number of unique helpful votes for a review. */
+  helpfulCount(reviewId: string): number {
+    return (this._helpful$.value[reviewId] ?? []).length;
+  }
+
+  /** True when the given user has already voted helpful on a review. */
+  hasUserVoted(reviewId: string, userEmail: string): boolean {
+    return (this._helpful$.value[reviewId] ?? []).includes(userEmail);
+  }
+
+  /** Toggle a user's helpful vote on a review. Returns the new vote
+   *  state ('voted' | 'unvoted'). Per-user persisted via localStorage. */
+  toggleHelpful(reviewId: string, userEmail: string): 'voted' | 'unvoted' {
+    if (!reviewId || !userEmail) return 'unvoted';
+    const all = { ...this._helpful$.value };
+    const set = new Set(all[reviewId] ?? []);
+    let result: 'voted' | 'unvoted';
+    if (set.has(userEmail)) { set.delete(userEmail); result = 'unvoted'; }
+    else { set.add(userEmail); result = 'voted'; }
+    all[reviewId] = [...set];
+    if (all[reviewId].length === 0) delete all[reviewId];
+    this.writeHelpful(all);
+    return result;
   }
 
   list(): IUserReview[] { return this._reviews$.value; }
@@ -149,5 +184,21 @@ export class ReviewService {
       try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews)); } catch {}
     }
     this._reviews$.next(reviews);
+  }
+
+  private readHelpful(): Record<string, string[]> {
+    if (!isPlatformBrowser(this.platformId)) return {};
+    try {
+      const raw = localStorage.getItem(HELPFUL_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch { return {}; }
+  }
+
+  private writeHelpful(map: Record<string, string[]>): void {
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(HELPFUL_KEY, JSON.stringify(map)); } catch {}
+    }
+    this._helpful$.next(map);
   }
 }
