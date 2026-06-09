@@ -172,7 +172,7 @@
                         (pointerdown)="startDrag(cell, $event)"
                         [attr.data-iso]="cell.iso"
                         style="touch-action: none"
-                        [ngClass]="cellTone(cell)"
+                        [ngClass]="cellTone(cell) + (cell.selected ? ' bg-trinidad/15' : '')"
                         [class.opacity-50]="!cell.inMonth"
                         [class.ring-2]="cell.selected"
                         [class.ring-trinidad]="cell.selected"

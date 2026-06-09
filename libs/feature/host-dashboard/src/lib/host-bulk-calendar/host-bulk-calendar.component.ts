@@ -135,10 +135,17 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
       }),
     );
 
-    // Deep-link from /hosting widget peek: ?day=YYYY-MM-DD pre-selects
-    // that single day and jumps the visible month to it.
-    const dayIso = this.route.snapshot.queryParamMap.get('day');
-    if (dayIso && /^\d{4}-\d{2}-\d{2}$/.test(dayIso)) {
+    // Deep-link support: ?day=YYYY-MM-DD pre-selects that single day,
+    // or ?from=YYYY-MM-DD&to=YYYY-MM-DD pre-selects a range. Both jump
+    // the visible month to the start and open the action bar.
+    const params = this.route.snapshot.queryParamMap;
+    const dayIso = params.get('day');
+    const fromIso = params.get('from');
+    const toIso = params.get('to');
+    const ISO_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
+    if (fromIso && toIso && ISO_SHAPE.test(fromIso) && ISO_SHAPE.test(toIso) && fromIso <= toIso) {
+      this.selectByRange(fromIso, toIso);
+    } else if (dayIso && ISO_SHAPE.test(dayIso)) {
       this.selectByRange(dayIso, dayIso);
     }
   }

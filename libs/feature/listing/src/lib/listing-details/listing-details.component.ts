@@ -518,6 +518,13 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
     // Section observer — track which section is in view to highlight its pill.
     setTimeout(() => this.setupSectionObserver(), 500);
+
+    // Deep-link from /trip-planner unavailable-stop banner:
+    // /listing?id=X#availability scrolls to the booking widget aside.
+    const fragment = this.route.snapshot.fragment;
+    if (fragment) {
+      setTimeout(() => document.getElementById(fragment)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+    }
   }
 
   private setupSectionObserver(): void {

@@ -254,7 +254,7 @@ interface ISearchHit {
                                 Pick new dates
                                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                               </button>
-                              <a [routerLink]="['/listing']" [queryParams]="{ id: s.refId }"
+                              <a [routerLink]="['/listing']" [queryParams]="{ id: s.refId }" fragment="availability"
                                 class="inline-flex items-center gap-1 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green hover:underline no-underline">
                                 Open availability
                                 <span class="material-symbols-outlined text-sm">open_in_new</span>
