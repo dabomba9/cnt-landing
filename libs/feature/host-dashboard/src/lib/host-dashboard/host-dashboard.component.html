@@ -267,6 +267,13 @@
         </section>
       }
 
+      <!-- Seasonality — month-of-year revenue heatmap (P3.2 / C). -->
+      @if (listings.length > 0) {
+        <section>
+          <cnt-seasonality [bookings]="hostBookings"></cnt-seasonality>
+        </section>
+      }
+
       <!-- Active reservations (real bookings: approved or confirmed) -->
       @if (activeHostBookings.length > 0) {
         <section id="reservations">

@@ -18,6 +18,7 @@ import { EarningsChartComponent } from './widgets/earnings-chart/earnings-chart.
 import { ReviewsSnapshotComponent } from './widgets/reviews-snapshot/reviews-snapshot.component';
 import { AvailabilityCalendarComponent } from './widgets/availability-calendar/availability-calendar.component';
 import { OccupancyHeatmapComponent } from './widgets/occupancy-heatmap/occupancy-heatmap.component';
+import { SeasonalityComponent } from './widgets/seasonality/seasonality.component';
 
 type ModalAction = 'decline' | 'cancel';
 
@@ -30,7 +31,7 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
   imports: [
     CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
     StatTileComponent, EarningsChartComponent, ReviewsSnapshotComponent, AvailabilityCalendarComponent,
-    OccupancyHeatmapComponent,
+    OccupancyHeatmapComponent, SeasonalityComponent,
     FocusTrapDirective, ResumeDraftCardComponent, DuplicateRenameModalComponent,
     DragDropModule,
   ],
