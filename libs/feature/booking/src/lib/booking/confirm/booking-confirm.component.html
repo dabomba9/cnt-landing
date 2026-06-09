@@ -103,10 +103,22 @@
             </p>
 
             @if (booking.status === 'pending' && decisionCountdownLabel) {
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-dark-text text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold mb-6">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
-                Decision expected in {{ decisionCountdownLabel }}
+              <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-dark-text text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold">
+                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+                  Decision expected in {{ decisionCountdownLabel }}
+                </span>
+                @if (isCancellable) {
+                  <button type="button" (click)="openCancelModal()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.7rem] font-button uppercase tracking-[0.12em] font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+                    <span class="material-symbols-outlined text-[14px]">close</span>
+                    Cancel request
+                  </button>
+                }
               </div>
+              <p class="text-[0.75rem] text-muted-text font-body italic mb-6 max-w-xl mx-auto">
+                Hosts have up to 24 hours to respond. We'll email + notify in-app the moment they do — no need to refresh.
+              </p>
             }
             @if (booking.status === 'declined') {
               <a routerLink="/search" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shadow-[0_10px_24px_rgba(227,83,13,0.25)] mb-2">

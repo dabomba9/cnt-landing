@@ -377,6 +377,43 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
+  /** Cancellation timeline mirroring /listing/:id (P2.3 / C). Segments
+   *  derive dates from the picked check-in + the listing's cancellation
+   *  tier — keeping the trust signal coherent across the funnel. */
+  get cancellationSegments(): Array<{ label: string; tone: 'good' | 'warn' | 'bad'; dateLabel: string }> {
+    const tier = this.detail?.cancellationTier;
+    if (!tier) return [];
+    const start = this.startDate;
+    const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const shift = (days: number): string => {
+      if (!start) return '';
+      const d = new Date(start);
+      d.setDate(d.getDate() - days);
+      return fmt(d);
+    };
+    if (tier === 'exclusive') {
+      return [{ label: 'Non-refundable from booking', tone: 'bad', dateLabel: '' }];
+    }
+    if (tier === 'easy-goin') {
+      return [
+        { label: 'Full refund', tone: 'good', dateLabel: shift(1) || '1 day before check-in' },
+        { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+      ];
+    }
+    if (tier === 'moderate') {
+      return [
+        { label: 'Full refund', tone: 'good', dateLabel: shift(3) || '3 days before check-in' },
+        { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+      ];
+    }
+    // 'strict'
+    return [
+      { label: 'Full refund', tone: 'good', dateLabel: shift(7) || '7 days before check-in' },
+      { label: '50% refund',  tone: 'warn', dateLabel: shift(2) || '2 days before check-in' },
+      { label: 'No refund',   tone: 'bad',  dateLabel: '' },
+    ];
+  }
+
   /** "You'll be charged" date = check-in. */
   get chargeDate(): string {
     if (!this.startDate) return 'check-in';

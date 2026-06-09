@@ -296,17 +296,37 @@
                   <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                   <span>{{ listing!.instantBook ? 'Your reservation confirms immediately — no waiting on the host.' : 'The host has 24 hours to approve your request.' }}</span>
                 </li>
-                @if (freeCancelDate) {
-                  <li class="flex gap-3">
-                    <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">policy</span>
-                    <span><strong>Free cancellation</strong> until {{ freeCancelDate }}, then 50% refund up to 24 hrs before check-in.</span>
-                  </li>
-                }
                 <li class="flex gap-3">
                   <span class="material-symbols-outlined text-base text-jungle-green shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                   <span>You'll receive the exact arrival address as soon as the booking is confirmed.</span>
                 </li>
               </ul>
+
+              <!-- Cancellation timeline — same segment shape as /listing/:id
+                   so the trust signal stays coherent across the funnel. -->
+              @if (cancellationSegments.length > 0) {
+                <div class="mb-5">
+                  <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] text-muted-text font-bold mb-2">Cancellation policy</div>
+                  <div class="flex flex-col sm:flex-row gap-2">
+                    @for (seg of cancellationSegments; track seg.label) {
+                      <div class="flex-1 rounded-md border px-3 py-2"
+                        [ngClass]="seg.tone === 'good' ? 'border-jungle-green/40 bg-jungle-green/5'
+                                : seg.tone === 'warn' ? 'border-gold/40 bg-gold/5'
+                                : 'border-trinidad/40 bg-trinidad/5'">
+                        <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
+                          [ngClass]="seg.tone === 'good' ? 'text-jungle-green'
+                                  : seg.tone === 'warn' ? 'text-dark-text'
+                                  : 'text-trinidad'">{{ seg.label }}</div>
+                        @if (seg.dateLabel) {
+                          <div class="text-sm font-body font-bold text-dark-text mt-0.5">until {{ seg.dateLabel }}</div>
+                        } @else {
+                          <div class="text-[0.65rem] font-body text-muted-text mt-0.5 italic">from then on</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
               <label class="flex items-start gap-3 cursor-pointer p-4 rounded-xl bg-cream/60 border border-dark-text/8 hover:border-trinidad/40 transition-colors">
                 <input type="checkbox" [(ngModel)]="acceptedTerms" name="terms" class="mt-1 w-4 h-4 accent-trinidad cursor-pointer">
                 <span class="text-sm text-dark-text font-body">I agree to the <a routerLink="/terms" class="text-trinidad font-bold hover:underline">booking terms</a> and the host's house rules.</span>
@@ -365,9 +385,28 @@
                 <div class="p-5">
                   <span class="text-muted-text text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold">{{ listing!.location }}</span>
                   <h3 class="font-headline font-bold text-dark-text text-lg leading-tight line-clamp-2 mt-1">{{ listing!.title }}</h3>
-                  <div class="flex items-center gap-2 mt-3">
-                    <div class="w-7 h-7 rounded-full bg-jungle-green text-white flex items-center justify-center text-[10px] font-headline font-bold">{{ detail!.host.initials }}</div>
-                    <span class="text-xs text-muted-text font-body">Hosted by {{ detail!.host.name }}</span>
+                  <!-- Host strip — mirrors /listing/:id so the guest sees who
+                       they're paying before checkout (P2.3 / C). -->
+                  <div class="flex items-center gap-3 mt-3 pt-3 border-t border-dark-text/8">
+                    <div class="relative shrink-0 w-10 h-10 rounded-full overflow-hidden ring-2 ring-white shadow-sm bg-jungle-green/15">
+                      @if (detail!.host.avatar) {
+                        <img [src]="detail!.host.avatar" [alt]="detail!.host.name" class="w-full h-full object-cover">
+                      } @else {
+                        <div class="w-full h-full flex items-center justify-center text-[11px] font-headline font-bold text-jungle-green">{{ detail!.host.initials }}</div>
+                      }
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-sm font-body font-bold text-dark-text">Hosted by {{ detail!.host.name }}</span>
+                        @if (detail!.trustBadges.includes('verified-host')) {
+                          <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-jungle-green/10 text-jungle-green text-[0.55rem] font-button uppercase tracking-[0.1em] font-bold">
+                            <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                            Verified
+                          </span>
+                        }
+                      </div>
+                      <div class="text-[0.7rem] text-muted-text font-body">Replies within {{ detail!.host.responseHours }}h</div>
+                    </div>
                   </div>
                 </div>
               </div>
