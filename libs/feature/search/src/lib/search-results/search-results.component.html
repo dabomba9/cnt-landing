@@ -195,7 +195,7 @@
                       ? 'bg-trinidad text-white border-trinidad'
                       : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
                     class="rv-type-card border rounded-lg p-3 flex flex-col items-center gap-2 transition-colors">
-                    <img [src]="t.image" [alt]="t.label" class="h-10 w-auto object-contain rv-type-illustration">
+                    <img [src]="t.image" [alt]="t.label" loading="lazy" decoding="async" class="h-10 w-auto object-contain rv-type-illustration">
                     <span class="text-[0.65rem] font-label uppercase tracking-[0.1em] font-bold">{{ t.label }}</span>
                   </button>
                 }
@@ -611,7 +611,7 @@
               <button type="button" (click)="selectRvType(t.id)"
                 [ngClass]="filters.rvType === t.id ? 'bg-trinidad/10 border-trinidad text-trinidad' : 'bg-white text-dark-text border-dark-text/15 hover:border-trinidad'"
                 class="border rounded-md p-2.5 flex flex-col items-center gap-1 transition-colors">
-                <img [src]="t.image" [alt]="t.label" class="h-8 w-auto object-contain">
+                <img [src]="t.image" [alt]="t.label" loading="lazy" decoding="async" class="h-8 w-auto object-contain">
                 <span class="text-[0.55rem] font-label uppercase tracking-[0.05em] font-bold leading-tight text-center">{{ t.label }}</span>
               </button>
             }

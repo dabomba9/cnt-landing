@@ -91,7 +91,7 @@
       <div class="listing-gallery">
         <!-- Large primary photo (slightly wider than thumb stack on left half) -->
         <button type="button" (click)="openLightbox(0)" aria-label="Open photo gallery" class="relative h-[280px] sm:h-[420px] md:h-[560px] overflow-hidden rounded-2xl group cursor-pointer p-0 border-0">
-          <img [src]="detail.photos[0]" [alt]="listing.title" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform" (load)="onImageLoad($event)">
+          <img [src]="detail.photos[0]" [alt]="listing.title" fetchpriority="high" decoding="async" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform" (load)="onImageLoad($event)">
         </button>
         <!-- 2x2 grid of 4 thumbnails (right half) -->
         <div class="grid grid-cols-2 grid-rows-2 gap-1.5 h-[280px] sm:h-[420px] md:h-[560px]">
@@ -194,7 +194,7 @@
           @if (listing.kind !== 'boondocking') {
             <div class="flex items-center gap-4 py-4 border-b border-dark-text/10">
               <div class="relative shrink-0 w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
-                <img [src]="detail.host.avatar" [alt]="detail.host.name" class="w-full h-full object-cover">
+                <img [src]="detail.host.avatar" [alt]="detail.host.name" loading="lazy" decoding="async" class="w-full h-full object-cover">
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
@@ -465,7 +465,7 @@
                         <button type="button" (click)="openAddonLightbox(a, $event)"
                           class="shrink-0 w-14 h-14 rounded-xl overflow-hidden hover:ring-2 hover:ring-trinidad/40 transition-shadow"
                           aria-label="View photo">
-                          <img [src]="a.photo" alt="" class="w-full h-full object-cover">
+                          <img [src]="a.photo" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
                         </button>
                       } @else {
                         <span class="material-symbols-outlined text-2xl shrink-0"
@@ -751,7 +751,7 @@
                    and the booking widget; desktop sticks both. -->
               <div class="bg-white rounded-2xl border border-dark-text/10 p-4 flex items-center gap-3">
                 <img [src]="detail.host.avatar" [alt]="detail.host.name"
-                  class="w-12 h-12 rounded-full object-cover shrink-0" loading="lazy">
+                  class="w-12 h-12 rounded-full object-cover shrink-0" loading="lazy" decoding="async">
                 <div class="flex-1 min-w-0">
                   <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Hosted by</div>
                   <div class="font-body text-sm font-bold text-dark-text truncate">{{ detail.host.name }}</div>
