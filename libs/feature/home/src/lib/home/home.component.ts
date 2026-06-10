@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { HomeFaqComponent } from './components/home-faq/home-faq.component';
@@ -74,13 +75,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    // Skip every decorative animation when the OS reports reduced
+    // motion — the global CSS rule in styles.scss already collapses
+    // CSS transitions; this bails the JS-driven ScrollTriggers too.
+    if (prefersReducedMotion()) return;
+
+    // All home animations are below-the-fold ScrollTriggers. Defer
+    // the setup to browser-idle so it doesn't compete with the LCP
+    // paint. The user can't see anything we'd be animating yet.
+    runWhenIdle(() => {
       gsap.registerPlugin(ScrollTrigger);
       this.initStickyScroll();
       this.initLineAnimations();
-
-      
-      // GSAP interactions
       this.initStaggeredCards();
       this.initHowItWorks();
       // Magnetic-button behavior now handled by MagneticBtnDirective
@@ -90,7 +97,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initTrustColorShift();
       this.initAppDownloadSection();
       this.initCtaSection();
-    }
+    });
   }
 
   // -----------------------------
@@ -164,6 +171,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const st = ScrollTrigger.create({
         trigger: line,
         start: 'top 85%',
+        once: true,
         onEnter: () => line.classList.add('is-visible')
       });
       this.scrollTriggers.push(st);
@@ -187,6 +195,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const stHosts = ScrollTrigger.create({
         trigger: hostsWrap,
         start: 'top 85%',
+        once: true,
         onEnter: () => hostAnimation.play()
       });
       this.scrollTriggers.push(stHosts);

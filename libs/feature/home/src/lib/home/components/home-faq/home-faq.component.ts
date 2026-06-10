@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective, prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -19,10 +19,12 @@ export class HomeFaqComponent implements AfterViewInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (prefersReducedMotion()) return;
+    runWhenIdle(() => {
       gsap.registerPlugin(ScrollTrigger);
       this.initFaqSection();
-    }
+    });
   }
 
   private initFaqSection(): void {

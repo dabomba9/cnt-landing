@@ -2,6 +2,7 @@ import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-home-masonry',
@@ -16,10 +17,12 @@ export class HomeMasonryComponent implements AfterViewInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (prefersReducedMotion()) return;
+    runWhenIdle(() => {
       gsap.registerPlugin(ScrollTrigger);
       this.initCommunityMasonry();
-    }
+    });
   }
 
   private initCommunityMasonry(): void {

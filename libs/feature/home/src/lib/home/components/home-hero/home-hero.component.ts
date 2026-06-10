@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLA
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective, prefersReducedMotion } from '@cnt-workspace/ui';
 import { HeroDatePickerComponent } from './hero-date-picker.component';
 
 /** Local mirror of MatDatepicker's DateRange shape so the eager
@@ -181,14 +181,16 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      gsap.registerPlugin(ScrollTrigger);
-      this.initHeroEntry();
-      this.initHeroExpand();
-      
-      // Force native video playback internally bypassing restrictive browser DOM policies
-      this.heroVideoRef?.nativeElement?.play().catch(() => {});
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
+    // Force native video playback internally bypassing restrictive browser DOM policies
+    this.heroVideoRef?.nativeElement?.play().catch(() => {});
+    // Reduced-motion users skip the hero text fly-in + the
+    // scroll-driven sticky expand entirely. The hero text just
+    // appears in place; the sticky pill stays its initial size.
+    if (prefersReducedMotion()) return;
+    gsap.registerPlugin(ScrollTrigger);
+    this.initHeroEntry();
+    this.initHeroExpand();
   }
 
   private initHeroEntry(): void {

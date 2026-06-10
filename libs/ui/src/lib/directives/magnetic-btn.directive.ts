@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
+import { prefersReducedMotion } from '../util/motion.util';
 
 /**
  * Magnetic-button cursor pull. Auto-attaches to any element with the
@@ -30,6 +31,9 @@ export class MagneticBtnDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+    // Reduced-motion users skip the cursor-pull entirely — the button
+    // stays still under the cursor instead of magnetizing.
+    if (prefersReducedMotion()) return;
     const btn = this.el.nativeElement;
 
     this.zone.runOutsideAngular(() => {
