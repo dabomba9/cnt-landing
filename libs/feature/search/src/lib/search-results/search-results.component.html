@@ -375,6 +375,13 @@
           }
         </div>
       } @else {
+        <!-- Result count — sticks to the top of the list pane on
+             scroll so guests always know how much they're seeing. -->
+        <div class="sticky top-0 z-20 -mx-2 px-2 sm:-mx-3 sm:px-3 md:-mx-4 md:px-4 mb-4 bg-cream/95 backdrop-blur-sm pb-2 pt-1">
+          <p class="text-sm font-body text-muted-text" aria-live="polite">
+            <span class="text-dark-text font-bold">{{ filteredListings.length }}</span> {{ filteredListings.length === 1 ? 'space matches' : 'spaces match' }} your filters
+          </p>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           @for (l of filteredListings; track l.id) {
             <div [id]="'listing-' + l.id" class="rounded-2xl relative transition-shadow duration-200 scroll-mt-32"

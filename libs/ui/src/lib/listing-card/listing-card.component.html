@@ -1,7 +1,7 @@
 <a [routerLink]="['/listing']" [queryParams]="{ id: listing.id }"
   class="listing-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline not-italic">
 
-  <div class="relative aspect-[4/3] overflow-hidden">
+  <div class="relative aspect-[16/10] md:aspect-[4/3] overflow-hidden">
     <img [src]="photos[currentImageIndex]" [alt]="listing.title" loading="lazy"
       class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
 
@@ -81,15 +81,18 @@
       </div>
     }
 
-    <!-- price chip + hover-reveal total when nights set -->
+    <!-- price chip — always shows total for selected window when nights > 0
+         (mobile has no hover), with the per-night rate underneath. -->
     <div class="absolute bottom-3 right-3 z-10 flex flex-col items-end gap-1.5">
-      @if (hoverTotal !== null) {
-        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-dark-text/95 backdrop-blur-sm text-white text-[0.65rem] font-body font-bold rounded-lg px-3 py-1.5 shadow-md whitespace-nowrap">
-          ${{ listingPrice }} × {{ nights }} {{ nights === 1 ? 'night' : 'nights' }} =
-          <span class="text-gold">${{ hoverTotal }}</span>
+      @if (hoverTotal !== null && listing.kind !== 'boondocking') {
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl px-3 py-1.5 shadow-md text-right">
+          <div>
+            <span class="text-trinidad font-button font-bold text-sm">${{ hoverTotal }}</span>
+            <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">total · {{ nights }} {{ nights === 1 ? 'night' : 'nights' }}</span>
+          </div>
+          <div class="text-[0.6rem] text-muted-text font-body">${{ listingPrice }} / night</div>
         </div>
-      }
-      @if (listing.kind !== 'boondocking') {
+      } @else if (listing.kind !== 'boondocking') {
         <div class="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-md">
           <span class="text-trinidad font-button font-bold text-sm">${{ listing.price }}</span>
           <span class="text-dark-text text-[0.65rem] font-label uppercase tracking-[0.1em] ml-1">/ night</span>
@@ -121,6 +124,17 @@
         [title]="rvFit.label">
         <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">{{ rvFit.passes ? 'check_circle' : 'cancel' }}</span>
         {{ rvFit.label }}
+      </span>
+    }
+
+    <!-- Guest-favorable cancellation chip — surfaces the trust signal
+         earlier in the funnel. Only renders for easy-goin' + moderate
+         tiers (strict / exclusive would hurt conversion). -->
+    @if (goodCancellationChip) {
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold w-fit bg-jungle-green/10 text-jungle-green"
+        [title]="goodCancellationChip.summary">
+        <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">event_available</span>
+        Free cancel · {{ goodCancellationChip.label }}
       </span>
     }
 

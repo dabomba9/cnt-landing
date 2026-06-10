@@ -28,6 +28,18 @@ export class ListingCardComponent {
     return this.nights > 0 ? this.listing.price * this.nights : null;
   }
 
+  /** Cancellation tier worth surfacing on the card — only the
+   *  guest-favorable tiers (free-cancellation policies). Strict and
+   *  exclusive don't earn a chip; they'd hurt the conversion signal
+   *  instead of helping it. Null for boondocking. */
+  get goodCancellationChip(): { label: string; summary: string } | null {
+    if (this.listing.kind === 'boondocking') return null;
+    const tier = this.detail.cancellationTier;
+    if (tier === 'easy-goin') return { label: "Easy Goin'", summary: 'Free cancellation up to 1 day before check-in' };
+    if (tier === 'moderate')  return { label: 'Moderate',    summary: 'Free cancellation up to 3 days before check-in' };
+    return null;
+  }
+
   /** Numeric price for the template — narrowed so the union doesn't trip up Angular. */
   get listingPrice(): number {
     return this.listing.kind === 'boondocking' ? 0 : this.listing.price;
