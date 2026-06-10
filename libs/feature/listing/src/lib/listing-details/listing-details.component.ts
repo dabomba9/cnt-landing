@@ -441,6 +441,19 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** Reviews sorted by current sort key. Real user reviews are prepended (most recent first). */
+  /** Top two reviews for the social-proof snippet near the top of the
+   *  page. Prefers user-submitted reviews when present (they're newer
+   *  and more relevant); falls back to the seeded pool so a brand-new
+   *  listing still has a snippet to show. Sorted by rating then
+   *  recency so the strongest signal lands first. */
+  get topReviewsForSnippet(): typeof this.detail.reviews {
+    const real = this.userReviews.map(r => this.userReviewAsReview(r));
+    const pool = real.length >= 2 ? real : [...real, ...this.detail.reviews];
+    return [...pool]
+      .sort((a, b) => b.rating - a.rating || b.date.localeCompare(a.date))
+      .slice(0, 2);
+  }
+
   get sortedReviews(): typeof this.detail.reviews {
     const real = this.userReviews
       .slice()
