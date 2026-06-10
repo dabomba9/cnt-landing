@@ -2,16 +2,20 @@ import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLA
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { HeroDatePickerComponent } from './hero-date-picker.component';
+
+/** Local mirror of MatDatepicker's DateRange shape so the eager
+ *  home-hero bundle doesn't have to pull in the Material runtime
+ *  just for the type + constructor of a date pair. */
+interface IDateRange { start: Date | null; end: Date | null; }
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 @Component({
   selector: 'cnt-home-hero',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatDatepickerModule, MatNativeDateModule, MagneticBtnDirective],
+  imports: [CommonModule, FormsModule, RouterLink, MagneticBtnDirective, HeroDatePickerComponent],
   templateUrl: './home-hero.component.html',
   styleUrl: './home-hero.component.scss'
 })
@@ -44,7 +48,7 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
   // Date State
   isDateDropdownOpen = false;
-  selectedDateRange: DateRange<Date> | null = null;
+  selectedDateRange: IDateRange | null = null;
 
   get dateDisplayText(): string {
     if (!this.selectedDateRange || !this.selectedDateRange.start) return 'Add dates';
@@ -102,13 +106,17 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
   }
 
   // Date Methods
+  private makeRange(start: Date | null, end: Date | null): IDateRange {
+    return { start, end };
+  }
+
   onDateSelected(date: Date) {
     if (!this.selectedDateRange || !this.selectedDateRange.start || (this.selectedDateRange.start && this.selectedDateRange.end)) {
-      this.selectedDateRange = new DateRange(date, null);
+      this.selectedDateRange = this.makeRange(date, null);
     } else if (date < this.selectedDateRange.start) {
-      this.selectedDateRange = new DateRange(date, null);
+      this.selectedDateRange = this.makeRange(date, null);
     } else {
-      this.selectedDateRange = new DateRange(this.selectedDateRange.start, date);
+      this.selectedDateRange = this.makeRange(this.selectedDateRange.start, date);
       this.dateCloseTimer = setTimeout(() => {
         this.isDateDropdownOpen = false;
         this.dateCloseTimer = null;
