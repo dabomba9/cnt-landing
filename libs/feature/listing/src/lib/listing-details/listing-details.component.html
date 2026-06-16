@@ -60,7 +60,7 @@
             </button>
             @if (addTripMenuOpen) {
               <div #addTripMenu role="menu" aria-label="Pick a trip"
-                class="absolute right-0 top-full mt-2 z-30 w-72 bg-white rounded-xl border border-dark-text/10 shadow-[0_12px_28px_rgba(0,0,0,0.18)] p-2 space-y-1">
+                class="absolute right-0 top-full mt-2 z-30 w-72 max-w-[calc(100vw-2rem)] bg-white rounded-xl border border-dark-text/10 shadow-[0_12px_28px_rgba(0,0,0,0.18)] p-2 space-y-1">
                 @if (tripPlans.length === 0) {
                   <div class="px-3 py-2 text-xs font-body text-muted-text">No trips yet — start one with this place.</div>
                 }
@@ -541,7 +541,7 @@
                       [ngClass]="seg.tone === 'good' ? 'border-jungle-green/40 bg-jungle-green/5'
                               : seg.tone === 'warn' ? 'border-gold/40 bg-gold/5'
                               : 'border-trinidad/40 bg-trinidad/5'">
-                      <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
+                      <div class="text-[0.65rem] sm:text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold"
                         [ngClass]="seg.tone === 'good' ? 'text-jungle-green'
                                 : seg.tone === 'warn' ? 'text-dark-text'
                                 : 'text-trinidad'">{{ seg.label }}</div>
@@ -586,8 +586,8 @@
                 { label: 'Location',      value: detail.subScores.location },
                 { label: 'Value',         value: detail.subScores.value }
               ]; track item.label) {
-                <div class="flex items-center gap-4">
-                  <span class="font-body text-sm text-dark-text w-32">{{ item.label }}</span>
+                <div class="flex items-center gap-3 sm:gap-4">
+                  <span class="font-body text-sm text-dark-text min-w-[5rem] sm:w-32">{{ item.label }}</span>
                   <div class="flex-1 h-1 bg-dark-text/10 rounded-full overflow-hidden">
                     <div class="h-full rounded-full"
                       [style.width.%]="(item.value / 5) * 100"

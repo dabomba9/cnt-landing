@@ -9,12 +9,12 @@
     @if (photos.length > 1) {
       <button type="button" (click)="prevImage($event)"
         aria-label="Previous photo"
-        class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:scale-110 transition-all duration-200">
         <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_left</span>
       </button>
       <button type="button" (click)="nextImage($event)"
         aria-label="Next photo"
-        class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200">
+        class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:scale-110 transition-all duration-200">
         <span class="material-symbols-outlined text-[18px] text-dark-text">chevron_right</span>
       </button>
 

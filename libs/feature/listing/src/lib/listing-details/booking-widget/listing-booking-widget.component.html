@@ -1,13 +1,13 @@
 <div id="booking-widget" class="bg-white rounded-2xl p-6 border border-dark-text/10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] scroll-mt-32">
   <!-- Price header -->
-  <div class="flex items-baseline justify-between mb-1">
-    <div>
+  <div class="flex items-baseline justify-between gap-2 mb-1">
+    <div class="flex items-baseline flex-wrap gap-x-1 min-w-0">
       @if (booking.canBook) {
         <span class="font-headline text-3xl font-bold text-dark-text">${{ booking.total }}</span>
-        <span class="text-muted-text font-body text-sm ml-1">for {{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }}</span>
+        <span class="text-muted-text font-body text-sm">for {{ booking.nights }} {{ booking.nights === 1 ? 'night' : 'nights' }}</span>
       } @else {
         <span class="font-headline text-3xl font-bold text-dark-text">${{ listing.price }}</span>
-        <span class="text-muted-text font-body text-sm ml-1">/ night</span>
+        <span class="text-muted-text font-body text-sm">/ night</span>
       }
     </div>
     <span class="flex items-center gap-1 text-sm text-dark-text font-bold">
