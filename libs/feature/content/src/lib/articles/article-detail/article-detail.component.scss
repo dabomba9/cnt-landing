@@ -1,25 +1,30 @@
 /* Prose styles for article bodies — bound via [innerHTML] from
- * articles.data.ts. Brand-voice typography (Familjen Grotesk +
- * trinidad accents) on the Webflow rich-text markup, tuned to
- * read closer to the live curbnturf.com editorial treatment:
- * Medium / Substack hybrid, generous whitespace, no ornamentation. */
+ * articles.data.ts. Wrapped in `:host ::ng-deep` because Angular's
+ * Emulated view encapsulation stamps every component selector with
+ * [_ngcontent-X], but `[innerHTML]`-injected nodes don't carry the
+ * attribute — without ::ng-deep the rules never attach.
+ *
+ * Brand-voice typography (Familjen Grotesk + trinidad accents) on
+ * the Webflow rich-text markup, tuned to read closer to the live
+ * curbnturf.com editorial treatment: Medium / Substack hybrid,
+ * generous whitespace, no ornamentation. */
 
-.article-prose {
+:host ::ng-deep .article-prose {
   color: #333333;
   font-family: 'Familjen Grotesk', sans-serif;
   font-size: 1.0625rem;
   line-height: 1.65;
 }
 
-.article-prose p {
-  margin: 0 0 1.125rem;
+:host ::ng-deep .article-prose p {
+  margin: 0 0 1.25rem;
 }
 
-.article-prose p:empty {
+:host ::ng-deep .article-prose p:empty {
   display: none;
 }
 
-.article-prose h2 {
+:host ::ng-deep .article-prose h2 {
   font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 700;
   font-size: clamp(1.625rem, 3.5vw, 1.875rem);
@@ -29,7 +34,7 @@
   letter-spacing: -0.01em;
 }
 
-.article-prose h3 {
+:host ::ng-deep .article-prose h3 {
   font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 600;
   font-size: 1.375rem;
@@ -38,7 +43,7 @@
   margin: 2.25rem 0 0.875rem;
 }
 
-.article-prose h4 {
+:host ::ng-deep .article-prose h4 {
   font-family: 'Familjen Grotesk', sans-serif;
   font-weight: 600;
   font-size: 1.0625rem;
@@ -47,39 +52,43 @@
   margin: 1.75rem 0 0.625rem;
 }
 
-.article-prose a {
+/* Inline links: trinidad orange with a soft underline so they read
+ * as links without shouting. Hover saturates the underline. */
+:host ::ng-deep .article-prose a {
   color: #e3530d;
-  font-weight: 400;
-  text-decoration: none;
-}
-
-.article-prose a:hover,
-.article-prose a:focus-visible {
+  font-weight: 500;
   text-decoration: underline;
+  text-decoration-color: rgba(227, 83, 13, 0.4);
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+  transition: text-decoration-color 150ms ease;
 }
 
-.article-prose ul,
-.article-prose ol {
+:host ::ng-deep .article-prose a:hover,
+:host ::ng-deep .article-prose a:focus-visible {
+  text-decoration-color: #e3530d;
+}
+
+:host ::ng-deep .article-prose ul,
+:host ::ng-deep .article-prose ol {
   margin: 0 0 1.5rem;
   padding-left: 1.5rem;
 }
 
-.article-prose ul li,
-.article-prose ol li {
+:host ::ng-deep .article-prose ul li,
+:host ::ng-deep .article-prose ol li {
   margin: 0 0 0.625rem;
 }
 
-.article-prose ul {
+:host ::ng-deep .article-prose ul {
   list-style: disc;
 }
 
-.article-prose ol {
+:host ::ng-deep .article-prose ol {
   list-style: decimal;
 }
 
-.article-prose blockquote {
+:host ::ng-deep .article-prose blockquote {
   margin: 1.5rem 0;
   padding: 0.25rem 0 0.25rem 1.25rem;
   border-left: 3px solid #e3530d;
@@ -87,27 +96,27 @@
   color: #444444;
 }
 
-.article-prose strong {
+:host ::ng-deep .article-prose strong {
   font-weight: 700;
 }
 
-.article-prose em {
+:host ::ng-deep .article-prose em {
   font-style: italic;
 }
 
-.article-prose .article-figure {
+:host ::ng-deep .article-prose .article-figure {
   margin: 2rem 0;
   text-align: center;
 }
 
-.article-prose .article-figure img {
+:host ::ng-deep .article-prose .article-figure img {
   width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-.article-prose .article-figure figcaption {
+:host ::ng-deep .article-prose .article-figure figcaption {
   margin-top: 0.625rem;
   font-size: 0.875rem;
   color: #666666;
@@ -115,18 +124,18 @@
 }
 
 @media (max-width: 640px) {
-  .article-prose {
+  :host ::ng-deep .article-prose {
     font-size: 1rem;
   }
-  .article-prose h2 {
+  :host ::ng-deep .article-prose h2 {
     font-size: 1.5rem;
     margin: 2.25rem 0 1rem;
   }
-  .article-prose h3 {
+  :host ::ng-deep .article-prose h3 {
     font-size: 1.25rem;
     margin: 1.75rem 0 0.75rem;
   }
-  .article-prose h4 {
+  :host ::ng-deep .article-prose h4 {
     font-size: 1rem;
   }
 }
