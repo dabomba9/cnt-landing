@@ -4,7 +4,7 @@
 
   <!-- ================= Hero ================= -->
   <section class="px-[2%]">
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-28">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
       <div class="articles-hero-content max-w-3xl">
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Field Notes &amp; Stories</span>
         <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-4xl md:text-6xl">
@@ -17,57 +17,70 @@
     </div>
   </section>
 
-  <!-- ================= Coming-soon banner ================= -->
-  <section class="px-[2%] pb-8">
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8">
-      <div class="flex flex-col md:flex-row gap-4 md:items-center md:justify-between p-6 md:p-8 rounded-[1rem] border border-gold/40" style="background: rgba(251, 215, 132, 0.18);">
-        <div class="flex items-start gap-4 flex-1">
-          <span class="material-symbols-outlined shrink-0 mt-0.5" style="color: #b48505;">edit_note</span>
-          <div>
-            <p class="font-bold text-dark-text font-body mb-1">New articles coming soon to this page.</p>
-            <p class="text-sm text-muted-text font-body leading-relaxed">
-              Our editorial archive lives at <a href="https://www.curbnturf.com/article" target="_blank" rel="noopener" class="text-trinidad font-bold hover:underline">curbnturf.com/article</a> for now. Subscribe in the footer to be notified when articles publish here directly.
-            </p>
-          </div>
-        </div>
-        <a href="https://www.curbnturf.com/article" target="_blank" rel="noopener"
-          class="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-dark-text text-white rounded-full font-button uppercase tracking-[0.12em] text-xs font-bold hover:opacity-90 transition-opacity no-underline">
-          Read Current Articles
-          <span class="material-symbols-outlined text-base">open_in_new</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- ================= Search + Tabs ================= -->
   <section class="px-[2%]">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8 py-5">
       <div class="articles-tabs flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
 
-        <div class="relative w-full lg:max-w-md">
-          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl">search</span>
-          <input type="text" [(ngModel)]="searchQuery" placeholder="Search articles…"
+        <label class="relative w-full lg:max-w-md">
+          <span class="sr-only">Search articles</span>
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl" aria-hidden="true">search</span>
+          <input type="search" [(ngModel)]="searchQuery" placeholder="Search articles…"
             class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-4 py-3 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
           @if (searchQuery) {
-            <button type="button" (click)="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text">
+            <button type="button" (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text" aria-label="Clear search">
               <span class="material-symbols-outlined text-lg">close</span>
             </button>
           }
-        </div>
+        </label>
 
-        <div class="flex flex-wrap gap-2">
-          @for (cat of ARTICLE_CATEGORIES; track cat.id) {
-            <button type="button" (click)="selectCategory(cat.id)"
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Filter articles by category">
+          @for (tab of filterTabs; track tab.key) {
+            <button type="button" (click)="selectCategory(tab.key)"
+              [attr.aria-pressed]="selectedCategory === tab.key"
               class="cnt-pill"
-              [ngClass]="selectedCategory === cat.id ? 'cnt-pill-active' : 'cnt-pill-inactive'">
-              <span class="material-symbols-outlined text-base">{{ cat.icon }}</span>
-              <span class="font-button">{{ cat.label }}</span>
+              [ngClass]="selectedCategory === tab.key ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">{{ tab.icon }}</span>
+              <span class="font-button">{{ tab.label }}</span>
+              <span class="text-[0.55rem] opacity-70">({{ tab.count }})</span>
             </button>
           }
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ================= Lead article ================= -->
+  @if (showLead && lead; as l) {
+    <section class="px-[2%] pt-10">
+      <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+        <a [routerLink]="['/article', l.id, l.slug]"
+          class="group block rounded-2xl overflow-hidden bg-white border border-dark-text/10 hover:border-trinidad transition-colors no-underline">
+          <div class="grid grid-cols-1 md:grid-cols-2">
+            <div class="aspect-[16/10] md:aspect-auto overflow-hidden">
+              <img [src]="l.heroImage" [alt]="l.heroAlt" loading="eager" fetchpriority="high" decoding="async"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+            </div>
+            <div class="p-6 md:p-10 flex flex-col gap-3 md:gap-4 justify-center">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-trinidad/10 text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">{{ CATEGORY_META[l.category].icon }}</span>
+                  {{ l.categoryLabel }}
+                </span>
+                <span class="text-xs text-muted-text font-body">{{ formatDate(l.publishedAt) }} · {{ l.readTimeMinutes }} min read</span>
+              </div>
+              <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight leading-tight group-hover:text-trinidad transition-colors">{{ l.title }}</h2>
+              <p class="text-muted-text text-base font-body leading-relaxed line-clamp-3">{{ l.excerpt }}</p>
+              <div class="inline-flex items-center gap-2 text-trinidad font-button uppercase tracking-[0.12em] text-xs font-bold mt-2">
+                Read article
+                <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  }
 
   <!-- ================= Article Grid ================= -->
   <section class="px-[2%] pt-12 pb-20">
@@ -75,54 +88,46 @@
 
       <div class="flex items-center justify-between mb-8">
         <span class="text-muted-text text-sm font-body">
-          @if (filteredArticles.length === 0) { No articles match your filters. }
-          @else { Showing {{ filteredArticles.length }} {{ filteredArticles.length === 1 ? 'article' : 'articles' }} }
+          @if (gridArticles.length === 0) { No articles match your filters. }
+          @else { Showing {{ gridArticles.length }} {{ gridArticles.length === 1 ? 'article' : 'articles' }} }
         </span>
       </div>
 
-      @if (filteredArticles.length === 0) {
+      @if (gridArticles.length === 0) {
         <div class="text-center py-20">
-          <span class="material-symbols-outlined text-5xl text-muted-text">article</span>
+          <span class="material-symbols-outlined text-5xl text-muted-text" aria-hidden="true">article</span>
           <h3 class="font-headline text-xl font-bold mt-4">No matches</h3>
           <p class="text-muted-text text-sm mt-2 font-body">Try a different search term or category.</p>
         </div>
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          @for (article of filteredArticles; track article.id) {
-            <article class="article-card group cursor-pointer flex flex-col bg-white rounded-[1rem] overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300">
+          @for (article of gridArticles; track article.id) {
+            <a [routerLink]="['/article', article.id, article.slug]"
+              class="article-card group flex flex-col bg-white rounded-[1rem] overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline">
               <div class="relative aspect-[16/10] overflow-hidden">
-                <img [src]="article.image" [alt]="article.title" loading="lazy"
+                <img [src]="article.heroImage" [alt]="article.heroAlt" loading="lazy" decoding="async"
                   class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
                 <div class="absolute top-4 left-4 px-3 py-1 bg-cream/95 backdrop-blur-sm rounded-full">
                   <span class="text-trinidad font-label uppercase tracking-[0.1em] text-[0.6rem] font-bold">
-                    {{ ARTICLE_CATEGORIES[ARTICLE_CATEGORIES.length - 1].label }}
+                    {{ article.categoryLabel }}
                   </span>
                 </div>
               </div>
               <div class="p-6 flex flex-col gap-3 flex-1">
                 <div class="flex items-center gap-3 text-muted-text text-xs font-label uppercase tracking-[0.1em]">
-                  <span>{{ formatDate(article.date) }}</span>
+                  <span>{{ formatDate(article.publishedAt) }}</span>
                   <span class="text-dark-text/30">•</span>
-                  <span>{{ article.readTime }}</span>
+                  <span>{{ article.readTimeMinutes }} min read</span>
                 </div>
-                <h3 class="font-headline font-bold text-dark-text text-xl leading-tight group-hover:text-trinidad transition-colors">{{ article.title }}</h3>
+                <h3 class="font-headline font-bold text-dark-text text-xl leading-tight group-hover:text-trinidad transition-colors line-clamp-3">{{ article.title }}</h3>
                 <p class="text-muted-text text-sm font-body leading-relaxed line-clamp-3 flex-1">{{ article.excerpt }}</p>
                 <div class="flex items-center gap-2 text-trinidad font-button uppercase tracking-[0.12em] text-xs font-bold mt-auto pt-2">
                   Read article
-                  <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
                 </div>
               </div>
-            </article>
+            </a>
           }
-        </div>
-
-        <!-- Coming soon notice -->
-        <div class="mt-16 p-8 bg-white/60 border border-dark-text/8 rounded-[1rem] text-center max-w-2xl mx-auto">
-          <span class="material-symbols-outlined text-3xl text-jungle-green/60">edit_note</span>
-          <h3 class="font-headline text-lg font-bold mt-3">More coming soon</h3>
-          <p class="text-muted-text text-sm mt-2 font-body">
-            Our editorial team publishes new field notes weekly. Subscribe in the footer to get them in your inbox.
-          </p>
         </div>
       }
     </div>
