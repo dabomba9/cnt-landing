@@ -156,3 +156,30 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+/* Webflow's table cells ship with off-palette inline colors —
+ * #999 on headers, #da532c on first-column labels, #555 on detail
+ * cells. Realign with the prose palette so tables read as part of
+ * the body, not an island. !important is required to beat inline
+ * styles; scoped to .article-prose so it stays local. */
+:host ::ng-deep .article-prose th {
+  color: #333333 !important;
+}
+
+:host ::ng-deep .article-prose td {
+  color: #333333 !important;
+}
+
+/* First-column cells in the imported tables are the labels — keep
+ * them in trinidad so they line up with the prose's link color
+ * and the table's top-border. Order matters: this rule overrides
+ * the general td rule above. */
+:host ::ng-deep .article-prose td:first-child {
+  color: #e3530d !important;
+}
+
+/* Subtle zebra striping — barely-perceptible tint on even rows so
+ * the eye tracks across multi-column rows without losing place. */
+:host ::ng-deep .article-prose tbody tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.025);
+}
