@@ -14,3 +14,4 @@ export * from './lib/bottom-nav/bottom-nav.component';
 export * from './lib/resume-draft-card/resume-draft-card.component';
 export * from './lib/duplicate-rename-modal/duplicate-rename-modal.component';
 export * from './lib/util/motion.util';
+export * from './lib/cookie-consent/cookie-consent.component';
