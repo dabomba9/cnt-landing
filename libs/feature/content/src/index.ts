@@ -1,6 +1,7 @@
 export * from './lib/articles/articles.component';
 export * from './lib/articles/articles.types';
 export * from './lib/articles/articles.data';
+export * from './lib/articles/article-detail/article-detail.component';
 export * from './lib/faq/faq.component';
 export * from './lib/contact/contact.component';
 export * from './lib/privacy/privacy.component';

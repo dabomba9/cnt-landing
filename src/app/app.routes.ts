@@ -183,6 +183,14 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/content').then(m => m.ArticlesComponent),
   },
   {
+    path: 'article/:id/:slug',
+    loadComponent: () => import('@cnt-workspace/content').then(m => m.ArticleDetailComponent),
+  },
+  {
+    path: 'article/:id',
+    loadComponent: () => import('@cnt-workspace/content').then(m => m.ArticleDetailComponent),
+  },
+  {
     path: 'explore/:state',
     loadComponent: () => import('@cnt-workspace/explore').then(m => m.ExploreStateComponent),
   },

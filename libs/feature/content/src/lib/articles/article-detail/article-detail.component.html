@@ -1,0 +1,109 @@
+<cnt-navbar></cnt-navbar>
+
+<main id="main-content" tabindex="-1" class="pt-24 md:pt-28 pb-24 md:pb-0 min-h-screen bg-cream bg-grid-subtle">
+  @if (article; as a) {
+    <!-- Hero -->
+    <section class="px-[2%] pt-6 md:pt-10">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8">
+        <a routerLink="/articles" class="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors no-underline mb-6">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+          All articles
+        </a>
+
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-trinidad/10 text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">{{ CATEGORY_META[a.category].icon }}</span>
+            {{ a.categoryLabel }}
+          </span>
+          <span class="text-xs text-muted-text font-body">{{ formatDate(a.publishedAt) }} · {{ a.readTimeMinutes }} min read · {{ a.author }}</span>
+        </div>
+
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-3xl md:text-5xl mb-6">{{ a.title }}</h1>
+
+        <div class="rounded-2xl overflow-hidden mb-8 md:mb-12 aspect-[16/10] md:aspect-[2/1]">
+          <img [src]="a.heroImage" [alt]="a.heroAlt" loading="eager" fetchpriority="high" decoding="async"
+            class="w-full h-full object-cover">
+        </div>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <article class="px-[2%]">
+      <div class="max-w-[48rem] mx-auto px-4 md:px-8">
+        <div class="article-prose" [innerHTML]="body"></div>
+      </div>
+    </article>
+
+    <!-- Prev / Next nav -->
+    <nav aria-label="Article navigation" class="px-[2%] mt-12 md:mt-16">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        @if (prev) {
+          <a [routerLink]="['/article', prev.id, prev.slug]"
+            class="group flex items-start gap-3 p-5 rounded-2xl bg-white border border-dark-text/10 hover:border-trinidad transition-colors no-underline">
+            <span class="material-symbols-outlined text-trinidad shrink-0 mt-0.5" aria-hidden="true">arrow_back</span>
+            <div class="min-w-0">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-1">Newer</div>
+              <div class="text-sm md:text-base font-body font-bold text-dark-text group-hover:text-trinidad transition-colors line-clamp-2">{{ prev.title }}</div>
+            </div>
+          </a>
+        } @else {
+          <span class="hidden md:block"></span>
+        }
+        @if (next) {
+          <a [routerLink]="['/article', next.id, next.slug]"
+            class="group flex items-start gap-3 p-5 rounded-2xl bg-white border border-dark-text/10 hover:border-trinidad transition-colors no-underline md:text-right md:justify-end">
+            <div class="min-w-0 order-1 md:order-none">
+              <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-1">Older</div>
+              <div class="text-sm md:text-base font-body font-bold text-dark-text group-hover:text-trinidad transition-colors line-clamp-2">{{ next.title }}</div>
+            </div>
+            <span class="material-symbols-outlined text-trinidad shrink-0 mt-0.5 order-2" aria-hidden="true">arrow_forward</span>
+          </a>
+        }
+      </div>
+    </nav>
+
+    <!-- Related articles -->
+    @if (related.length > 0) {
+      <section class="px-[2%] mt-12 md:mt-16">
+        <div class="max-w-[80rem] mx-auto px-4 md:px-8">
+          <h2 class="font-headline font-bold text-dark-text tracking-tight text-2xl md:text-3xl mb-6">More from {{ a.categoryLabel }}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            @for (r of related; track r.id) {
+              <a [routerLink]="['/article', r.id, r.slug]"
+                class="group rounded-2xl overflow-hidden bg-white border border-dark-text/10 hover:border-trinidad transition-colors no-underline">
+                <div class="aspect-[16/10] overflow-hidden">
+                  <img [src]="r.heroImage" [alt]="r.heroAlt" loading="lazy" decoding="async"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+                </div>
+                <div class="p-4">
+                  <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-1">{{ r.readTimeMinutes }} min read</div>
+                  <div class="text-sm font-body font-bold text-dark-text group-hover:text-trinidad transition-colors line-clamp-3">{{ r.title }}</div>
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+  } @else {
+    <!-- Missing article -->
+    <section class="px-[2%] pt-12">
+      <div class="max-w-2xl mx-auto px-4 md:px-8 text-center py-16">
+        <span class="material-symbols-outlined text-4xl text-muted-text" aria-hidden="true">article</span>
+        <h1 class="font-headline font-bold text-dark-text text-2xl md:text-3xl mt-4">Article not found</h1>
+        <p class="text-muted-text font-body mt-2">That article isn't in our catalog. Browse all articles or head back home.</p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a routerLink="/articles" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity">
+            All articles
+          </a>
+          <a routerLink="/" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-dark-text/15 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
+            Back home
+          </a>
+        </div>
+      </div>
+    </section>
+  }
+</main>
+
+<curbnturf-footer></curbnturf-footer>
