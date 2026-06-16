@@ -14,7 +14,11 @@ import { HostReviewService } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
 import { IThread, MessageAuthor, IMessage, IBooking, STATUS_META, BookingStatus } from '@cnt-workspace/models';
 
-type ListFilter = 'all' | 'unread';
+/** Filter modes for the thread list. Guests get `all` / `unread`;
+ *  hosts get the bucket triplet that turns the inbox into a task
+ *  queue. The default mode flips to `needs-decision` automatically
+ *  when a host has any pending request. */
+type ListFilter = 'all' | 'unread' | 'needs-decision' | 'active' | 'archived';
 
 interface IStreamRow {
   kind: 'divider' | 'message' | 'typing';
@@ -144,6 +148,7 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
   private refreshThreads(): void {
     if (!this.user) return;
     this.threads = this.msg.threadsForUser(this.user.email);
+    this.maybeAutoSelectHostDefault();
     if (this.activeThreadId && this.user) {
       this.msg.markRead(this.activeThreadId, this.user.email);
     }
@@ -151,10 +156,27 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   // ---- Filtered list ----
 
+  /** Classify a thread by its booking status so the host filter rail
+   *  can group it into Needs decision / Active / Archived. Threads
+   *  without a booking (guest-only DMs) fall into Active by default. */
+  private threadBucket(t: IThread): 'needs-decision' | 'active' | 'archived' {
+    const b = this.bookingForThread(t);
+    if (!b) return 'active';
+    if (b.status === 'pending') return 'needs-decision';
+    if (b.status === 'declined' || b.status === 'cancelled') return 'archived';
+    return 'active';
+  }
+
   get filteredThreads(): IThread[] {
     const q = this.searchQuery.trim().toLowerCase();
     return this.threads.filter(t => {
-      if (this.listFilter === 'unread' && this.unreadCount(t) === 0) return false;
+      switch (this.listFilter) {
+        case 'unread':         if (this.unreadCount(t) === 0) return false; break;
+        case 'needs-decision': if (this.threadBucket(t) !== 'needs-decision') return false; break;
+        case 'active':         if (this.threadBucket(t) !== 'active') return false; break;
+        case 'archived':       if (this.threadBucket(t) !== 'archived') return false; break;
+        case 'all':            break;
+      }
       if (!q) return true;
       const name = this.counterpartyName(t).toLowerCase();
       const title = (t.listingTitle || '').toLowerCase();
@@ -166,8 +188,46 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.threads.reduce((sum, t) => sum + (this.unreadCount(t) > 0 ? 1 : 0), 0);
   }
 
-  setFilter(f: ListFilter): void { this.listFilter = f; }
+  /** True when the current user is the host in at least one thread —
+   *  drives the host-only chip rail render. */
+  get isHostInbox(): boolean {
+    return this.threads.some(t => this.authorForCurrentUser(t) === 'host');
+  }
+
+  get needsDecisionCount(): number {
+    return this.threads.filter(t => this.threadBucket(t) === 'needs-decision'
+      && this.authorForCurrentUser(t) === 'host').length;
+  }
+
+  get hostActiveCount(): number {
+    return this.threads.filter(t => this.threadBucket(t) === 'active'
+      && this.authorForCurrentUser(t) === 'host').length;
+  }
+
+  get hostArchivedCount(): number {
+    return this.threads.filter(t => this.threadBucket(t) === 'archived'
+      && this.authorForCurrentUser(t) === 'host').length;
+  }
+
+  /** Flips true on the first manual setFilter() call so the host
+   *  auto-default doesn't override the user's choice later. */
+  private userPickedFilter = false;
+
+  setFilter(f: ListFilter): void {
+    this.userPickedFilter = true;
+    this.listFilter = f;
+  }
   clearSearch(): void { this.searchQuery = ''; }
+
+  /** If the user hasn't already picked a filter and they're a host
+   *  with at least one pending request, default to the Needs decision
+   *  bucket so the task queue lands open. */
+  private maybeAutoSelectHostDefault(): void {
+    if (this.userPickedFilter) return;
+    if (this.isHostInbox && this.needsDecisionCount > 0) {
+      this.listFilter = 'needs-decision';
+    }
+  }
 
   // ---- Active thread ----
 
@@ -178,7 +238,12 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   /** The booking this thread is tied to, when one exists in the booking store. */
   get activeBooking(): IBooking | null {
-    const t = this.activeThread;
+    return this.bookingForThread(this.activeThread);
+  }
+
+  /** Same lookup for an arbitrary thread — drives the host filter
+   *  bucket classifier. */
+  bookingForThread(t: IThread | null): IBooking | null {
     if (!t || !t.bookingId) return null;
     return this.bookingSvc.getById(t.bookingId);
   }

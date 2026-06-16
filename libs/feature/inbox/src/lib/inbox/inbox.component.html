@@ -47,18 +47,52 @@
                   </button>
                 }
               </label>
-              <div class="inline-flex p-0.5 rounded-full bg-cream/60 border border-dark-text/10">
-                <button type="button" (click)="setFilter('all')"
-                  [ngClass]="listFilter === 'all' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
-                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
-                  All <span class="text-[0.55rem] opacity-70">({{ threads.length }})</span>
-                </button>
-                <button type="button" (click)="setFilter('unread')"
-                  [ngClass]="listFilter === 'unread' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
-                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
-                  Unread <span class="text-[0.55rem] opacity-70">({{ totalUnread }})</span>
-                </button>
-              </div>
+              @if (isHostInbox) {
+                <!-- Host-side task-queue chip rail: Needs decision /
+                     Active / Archived / All. Replaces all/unread for
+                     hosts so the inbox feels like a worklist. -->
+                <div class="inline-flex flex-wrap p-0.5 rounded-full bg-cream/60 border border-dark-text/10" role="group" aria-label="Filter threads by status">
+                  <button type="button" (click)="setFilter('needs-decision')"
+                    [attr.aria-pressed]="listFilter === 'needs-decision'"
+                    [ngClass]="listFilter === 'needs-decision' ? 'bg-trinidad text-white' : (needsDecisionCount > 0 ? 'text-trinidad hover:text-trinidad/80' : 'text-muted-text hover:text-dark-text')"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    Needs decision <span class="text-[0.55rem] opacity-80">({{ needsDecisionCount }})</span>
+                  </button>
+                  <button type="button" (click)="setFilter('active')"
+                    [attr.aria-pressed]="listFilter === 'active'"
+                    [ngClass]="listFilter === 'active' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    Active <span class="text-[0.55rem] opacity-70">({{ hostActiveCount }})</span>
+                  </button>
+                  <button type="button" (click)="setFilter('archived')"
+                    [attr.aria-pressed]="listFilter === 'archived'"
+                    [ngClass]="listFilter === 'archived' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    Archived <span class="text-[0.55rem] opacity-70">({{ hostArchivedCount }})</span>
+                  </button>
+                  <button type="button" (click)="setFilter('all')"
+                    [attr.aria-pressed]="listFilter === 'all'"
+                    [ngClass]="listFilter === 'all' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    All <span class="text-[0.55rem] opacity-70">({{ threads.length }})</span>
+                  </button>
+                </div>
+              } @else {
+                <div class="inline-flex p-0.5 rounded-full bg-cream/60 border border-dark-text/10" role="group" aria-label="Filter threads">
+                  <button type="button" (click)="setFilter('all')"
+                    [attr.aria-pressed]="listFilter === 'all'"
+                    [ngClass]="listFilter === 'all' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    All <span class="text-[0.55rem] opacity-70">({{ threads.length }})</span>
+                  </button>
+                  <button type="button" (click)="setFilter('unread')"
+                    [attr.aria-pressed]="listFilter === 'unread'"
+                    [ngClass]="listFilter === 'unread' ? 'bg-dark-text text-white' : 'text-muted-text hover:text-dark-text'"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold transition-colors">
+                    Unread <span class="text-[0.55rem] opacity-70">({{ totalUnread }})</span>
+                  </button>
+                </div>
+              }
             </div>
 
             @if (filteredThreads.length === 0) {
