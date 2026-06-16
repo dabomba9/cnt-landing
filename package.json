@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
+    "postbuild": "node scripts/generate-sitemap.mjs",
     "test": "nx test"
   },
   "private": true,

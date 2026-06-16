@@ -1,30 +1,27 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { buildCollectionSchema } from './article-schema.util';
 import { NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
+import { ArticlePreferencesService, SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { ARTICLES } from './articles.data';
-import { ArticleCategoryKey, CATEGORY_META, IArticle } from './articles.types';
+import { EDITOR_PICK_IDS } from './articles.curation';
+import { ArticleCategoryKey, CATEGORY_INTRO, CATEGORY_META, IArticle, isNewArticle } from './articles.types';
 
 type FilterKey = 'all' | ArticleCategoryKey;
+type SortKey = 'newest' | 'oldest' | 'shortest' | 'longest';
 
-/** Brand-voice section headlines per category — these drive the
- *  sectioned-rail layout on the default index view. The order here
- *  is the rail render order. */
-const SECTION_ORDER: { key: ArticleCategoryKey; label: string }[] = [
-  { key: 'host',           label: 'Stories from CurbNTurf hosts' },
-  { key: 'trip-planning',  label: 'Plan your trip' },
-  { key: 'destinations',   label: 'Where to roam' },
-  { key: 'boondocking',    label: 'Boondocking essentials' },
-  { key: 'camping-tips',   label: 'Field-tested camping tips' },
-  { key: 'gear',           label: 'Gear we actually use' },
-  { key: 'maintenance',    label: 'Keep the rig running' },
-  { key: 'safety',         label: 'Safety on the road' },
-  { key: 'cooking',        label: 'From the camp kitchen' },
-  { key: 'travel-stories', label: 'Road stories' },
+const INITIAL_PAGE_SIZE = 12;
+const PAGE_SIZE = 12;
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'newest',   label: 'Newest' },
+  { key: 'oldest',   label: 'Oldest' },
+  { key: 'shortest', label: 'Quick reads' },
+  { key: 'longest',  label: 'Long reads' },
 ];
 
 @Component({
@@ -36,46 +33,95 @@ const SECTION_ORDER: { key: ArticleCategoryKey; label: string }[] = [
 })
 export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly CATEGORY_META = CATEGORY_META;
-  /** All filter chips: "All" + the 10 canonical category keys, but
-   *  only categories that actually have at least one article are
-   *  rendered (so empty buckets don't clutter the rail). */
+  readonly SORT_OPTIONS = SORT_OPTIONS;
   filterTabs: { key: FilterKey; label: string; icon: string; count: number }[] = [];
 
   selectedCategory: FilterKey = 'all';
   searchQuery = '';
-  /** Active author filter from the `?author=` query param. Empty
-   *  string disables. Lets the article-detail "More articles by …"
-   *  link funnel back here without needing an author profile route. */
   authorFilter = '';
+  sortKey: SortKey = 'newest';
+  visibleGridCount = INITIAL_PAGE_SIZE;
 
-  /** The top 3 most-recent articles render as a featured mosaic
-   *  at the top (1 big + 2 stacked). Picked up at ngOnInit. */
-  featuredArticles: IArticle[] = [];
+  savedView = false;
+  categoryView: { key: ArticleCategoryKey; label: string; icon: string; intro: string } | null = null;
+  savedIds = new Set<number>();
 
   private routeSub: Subscription | null = null;
+  private prefsSub: Subscription | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private seo: SeoService,
     private route: ActivatedRoute,
+    private router: Router,
+    public prefs: ArticlePreferencesService,
   ) {}
 
   ngOnInit(): void {
-    this.seo.update({
-      title: 'Articles & Stories — CurbNTurf | The RV Freedom Experience',
-      description: 'Travel tips, host stories, gear reviews, boondocking guides, and destination roundups for the modern RVer. Brought to you by CurbNTurf.',
-      url: '/articles',
-    });
+    const mode = this.route.snapshot.data?.['mode'];
+    this.savedView = mode === 'saved';
 
-    this.featuredArticles = ARTICLES.slice(0, 3);
+    if (mode === 'category') {
+      const rawKey = (this.route.snapshot.paramMap.get('key') ?? '').toLowerCase();
+      const meta = (CATEGORY_META as Record<string, typeof CATEGORY_META[ArticleCategoryKey] | undefined>)[rawKey];
+      if (!meta) {
+        this.router.navigate(['/articles']);
+        return;
+      }
+      this.categoryView = { key: meta.key, label: meta.label, icon: meta.icon, intro: CATEGORY_INTRO[meta.key] };
+      this.selectedCategory = meta.key;
+    }
+
+    if (this.categoryView) {
+      this.seo.update({
+        title: `${this.categoryView.label} — Room2Roam | CurbNTurf`,
+        description: this.categoryView.intro,
+        url: `/article/category/${this.categoryView.key}`,
+      });
+    } else {
+      this.seo.update({
+        title: this.savedView
+          ? 'Your reading list — CurbNTurf'
+          : 'Articles & Stories — CurbNTurf | The RV Freedom Experience',
+        description: 'Travel tips, host stories, gear reviews, boondocking guides, and destination roundups for the modern RVer. Brought to you by CurbNTurf.',
+        url: this.savedView ? '/articles/saved' : '/articles',
+        ...(this.savedView ? { robots: 'noindex, nofollow' } : {}),
+      });
+    }
+
     this.buildFilterTabs();
+
+    if (this.categoryView) {
+      const cv = this.categoryView;
+      this.seo.setStructuredData(buildCollectionSchema(
+        cv.label,
+        cv.intro,
+        ARTICLES.filter(a => a.category === cv.key),
+        (p) => this.seo.absUrl(p),
+        `/article/category/${cv.key}`,
+      ));
+    }
 
     this.routeSub = this.route.queryParamMap.subscribe(params => {
       this.authorFilter = params.get('author')?.trim() ?? '';
     });
+
+    this.prefsSub = this.prefs.saved$.subscribe(ids => {
+      this.savedIds = new Set(ids);
+    });
   }
 
-  clearAuthorFilter(): void { this.authorFilter = ''; }
+  clearAuthorFilter(): void { this.authorFilter = ''; this.resetPagination(); }
+
+  /** Bookmark click on an article card. preventDefault + stopPropagation
+   *  so the routerLink wrapper doesn't navigate. */
+  onToggleSave(event: MouseEvent, id: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.prefs.toggleSave(id);
+  }
+
+  isNew(article: IArticle): boolean { return isNewArticle(article); }
 
   private buildFilterTabs(): void {
     const tabs: { key: FilterKey; label: string; icon: string; count: number }[] = [
@@ -99,51 +145,113 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  /** Excludes the featured articles from the grid so we don't
-   *  render them twice on the unfiltered default view. */
+  /** The featured article hero on the magazine cover. Newest first.
+   *  Renders only on the default unfiltered, unsearched magazine view —
+   *  saved view + category view + chip-filtered view all skip it. */
+  get featuredArticle(): IArticle | null {
+    if (!this.isMagazineDefault) return null;
+    return ARTICLES[0] ?? null;
+  }
+
+  /** Three editor's picks below the featured hero. Dedups against
+   *  the featured article so cards don't appear twice. */
+  get editorPicks(): IArticle[] {
+    if (!this.isMagazineDefault) return [];
+    const featuredId = this.featuredArticle?.id;
+    return EDITOR_PICK_IDS
+      .filter(id => id !== featuredId)
+      .map(id => ARTICLES.find(a => a.id === id))
+      .filter((a): a is IArticle => !!a)
+      .slice(0, 3);
+  }
+
+  /** The grid of remaining articles. On the magazine default view this
+   *  excludes the featured + editor picks; on filtered / category /
+   *  saved views the gates relax so the grid shows everything that
+   *  matches the active filter. */
   get gridArticles(): IArticle[] {
     const q = this.searchQuery.trim().toLowerCase();
     const author = this.authorFilter.toLowerCase();
-    const featuredIds = this.showFeatured ? new Set(this.featuredArticles.map(a => a.id)) : null;
-    return ARTICLES.filter(a => {
-      if (featuredIds?.has(a.id)) return false;
+    const excludeIds: Set<number> | null = this.isMagazineDefault
+      ? new Set([
+          ...(this.featuredArticle ? [this.featuredArticle.id] : []),
+          ...this.editorPicks.map(a => a.id),
+        ])
+      : null;
+    const filtered = ARTICLES.filter(a => {
+      if (this.savedView && !this.savedIds.has(a.id)) return false;
+      if (excludeIds?.has(a.id)) return false;
       if (this.selectedCategory !== 'all' && a.category !== this.selectedCategory) return false;
       if (author && a.author.toLowerCase() !== author) return false;
       if (!q) return true;
       return a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q);
     });
+    return this.sortArticles(filtered);
   }
 
-  /** True when the featured mosaic should render — only on the
-   *  unfiltered, unsearched default view. */
-  get showFeatured(): boolean {
-    return this.featuredArticles.length > 0 && this.selectedCategory === 'all' && !this.searchQuery.trim() && !this.authorFilter;
+  /** The slice of `gridArticles` actually rendered. Drives the
+   *  load-more pagination — the rest reveal on click. */
+  get visibleGridArticles(): IArticle[] {
+    return this.gridArticles.slice(0, this.visibleGridCount);
   }
 
-  /** True when the sectioned-rail layout should render. Same gate
-   *  as the mosaic — filters / search swap back to the flat grid. */
-  get showSections(): boolean {
-    return this.selectedCategory === 'all' && !this.searchQuery.trim() && !this.authorFilter;
+  /** True when there are more articles to reveal — drives the
+   *  "Load more" button visibility. */
+  get hasMoreGridArticles(): boolean {
+    return this.gridArticles.length > this.visibleGridCount;
   }
 
-  /** Per-category sections for the rail layout. Each section's
-   *  articles exclude the featured set so they don't render twice
-   *  on the default view. Empty categories are skipped. */
-  get sections(): { key: ArticleCategoryKey; label: string; icon: string; articles: IArticle[] }[] {
-    if (!this.showSections) return [];
-    const featuredIds = new Set(this.featuredArticles.map(a => a.id));
-    return SECTION_ORDER
-      .map(s => ({
-        key: s.key,
-        label: s.label,
-        icon: CATEGORY_META[s.key].icon,
-        articles: ARTICLES.filter(a => a.category === s.key && !featuredIds.has(a.id)),
-      }))
-      .filter(s => s.articles.length > 0);
+  loadMore(): void {
+    this.visibleGridCount += PAGE_SIZE;
   }
 
-  selectCategory(cat: FilterKey): void { this.selectedCategory = cat; }
-  clearSearch(): void { this.searchQuery = ''; }
+  /** Reset pagination on any state change that re-shapes the grid.
+   *  Avoids the "I was on page 3 but the order changed" surprise. */
+  private resetPagination(): void { this.visibleGridCount = INITIAL_PAGE_SIZE; }
+
+  setSort(next: SortKey): void {
+    this.sortKey = next;
+    this.resetPagination();
+  }
+
+  private sortArticles(list: IArticle[]): IArticle[] {
+    switch (this.sortKey) {
+      case 'oldest':
+        return [...list].sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
+      case 'shortest':
+        return [...list].sort((a, b) => a.readTimeMinutes - b.readTimeMinutes);
+      case 'longest':
+        return [...list].sort((a, b) => b.readTimeMinutes - a.readTimeMinutes);
+      case 'newest':
+      default:
+        // ARTICLES is already newest-first; preserve order through
+        // any prior filtering.
+        return list;
+    }
+  }
+
+  /** True when /articles is being rendered in its default magazine
+   *  state — no saved/category route, no chip filter, no search, no
+   *  author query. Drives the featured hero + editor's picks gates. */
+  get isMagazineDefault(): boolean {
+    return !this.savedView
+      && !this.categoryView
+      && this.selectedCategory === 'all'
+      && !this.searchQuery.trim()
+      && !this.authorFilter;
+  }
+
+  /** Most-recently-opened article. Drives the "Pick up where you left
+   *  off" strip on the default magazine view. */
+  get continueReading(): IArticle | null {
+    if (!this.isMagazineDefault) return null;
+    const id = this.prefs.mostRecentReadId();
+    if (id == null) return null;
+    return ARTICLES.find(a => a.id === id) ?? null;
+  }
+
+  selectCategory(cat: FilterKey): void { this.selectedCategory = cat; this.resetPagination(); }
+  clearSearch(): void { this.searchQuery = ''; this.resetPagination(); }
 
   /** Filter-chip click handler. Same as setCategory + one extra
    *  affordance: when the tapped chip is partially offscreen in the
@@ -162,5 +270,9 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  ngOnDestroy(): void { this.routeSub?.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.routeSub?.unsubscribe();
+    this.prefsSub?.unsubscribe();
+    this.seo.setStructuredData(null);
+  }
 }

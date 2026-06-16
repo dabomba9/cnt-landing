@@ -57,6 +57,13 @@
                 <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
               </a>
             }
+            <button type="button" (click)="toggleSave()"
+              class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-trinidad/30 text-trinidad text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-trinidad/5 transition-colors"
+              [attr.aria-pressed]="prefs.isSaved(a.id)"
+              [attr.aria-label]="prefs.isSaved(a.id) ? 'Remove from reading list' : 'Save to reading list'">
+              <span class="material-symbols-outlined text-base" [style.font-variation-settings]="prefs.isSaved(a.id) ? &quot;'FILL' 1&quot; : &quot;'FILL' 0&quot;">bookmark</span>
+              {{ prefs.isSaved(a.id) ? 'Saved' : 'Save' }}
+            </button>
           </div>
         </div>
       </section>

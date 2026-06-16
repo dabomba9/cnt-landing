@@ -4,9 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
-import { SeoService } from '@cnt-workspace/data-access';
+import { ArticlePreferencesService, SeoService } from '@cnt-workspace/data-access';
 import { ARTICLES } from '../articles.data';
 import { AUTHORS, CATEGORY_META, IArticle, IAuthor, authorInitials } from '../articles.types';
+import { ARTICLE_IMAGE_HEIGHT, ARTICLE_IMAGE_WIDTH, buildArticleSchema } from '../article-schema.util';
 
 interface ITocEntry {
   id: string;
@@ -47,7 +48,12 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     private router: Router,
     private seo: SeoService,
     private sanitizer: DomSanitizer,
+    public prefs: ArticlePreferencesService,
   ) {}
+
+  toggleSave(): void {
+    if (this.article) this.prefs.toggleSave(this.article.id);
+  }
 
   ngOnInit(): void {
     this.sub = this.route.paramMap.subscribe(params => {
@@ -83,6 +89,7 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       if (this.rafId) window.cancelAnimationFrame(this.rafId);
       this.io?.disconnect();
     }
+    this.seo.setStructuredData(null);
   }
 
   private load(id: number): void {
@@ -119,8 +126,13 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       title: `${a.title} | CurbNTurf`,
       description: a.excerpt,
       url: `/article/${a.id}/${a.slug}`,
-      image: a.heroImage,
+      image: this.seo.absUrl(a.heroImage),
+      imageAlt: a.heroAlt,
+      imageWidth: ARTICLE_IMAGE_WIDTH,
+      imageHeight: ARTICLE_IMAGE_HEIGHT,
+      type: 'article',
     });
+    this.seo.setStructuredData(buildArticleSchema(a, this.authorProfile, (p) => this.seo.absUrl(p)));
 
     this.activeSection = null;
     this.progress = 0;
@@ -128,6 +140,7 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
 
     if (isPlatformBrowser(this.platformId)) {
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+      this.prefs.markRead(a.id, new Date().toISOString());
     }
   }
 

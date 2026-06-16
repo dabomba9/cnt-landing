@@ -19,6 +19,22 @@ export interface ICategoryMeta {
   icon: string;        // Material Symbols name
 }
 
+/** One-line intro copy per category — drives the hero on the
+ *  per-category landing pages and the CollectionPage description.
+ *  Keep these search-engine-friendly: lead with the user intent. */
+export const CATEGORY_INTRO: Record<ArticleCategoryKey, string> = {
+  'boondocking':     'Off-grid camping guides, dispersed-site tactics, and dry-camping playbooks for RVers leaving the campgrounds behind.',
+  'camping-tips':    'Field-tested camping tips from full-timers — setup, weather, comfort, and the little things that make a trip work.',
+  'trip-planning':   'Route planning, itineraries, and trip prep for road-tripping RVers chasing the best stops.',
+  'host':            'Practical guides for landowners hosting RVers — listings, expectations, pricing, seasonal prep, and growth.',
+  'cooking':         'Camp kitchens, one-pot meals, fire cooking, and recipes built for life in 40 square feet.',
+  'destinations':    'Where to go next — destinations, regions, and hidden gems across North America.',
+  'maintenance':     'Maintenance checklists, repairs, and keep-the-rig-running guides for every season.',
+  'gear':            'Gear reviews and packing lists from RVers who actually live in their rigs.',
+  'safety':          'Safety on the road — wildlife, weather, security, mechanical, and what to do when things go sideways.',
+  'travel-stories':  'Road stories, dispatches, and longform from RVers in the wild.',
+};
+
 export const CATEGORY_META: Record<ArticleCategoryKey, ICategoryMeta> = {
   'boondocking':     { key: 'boondocking',     label: 'Boondocking',          icon: 'campaign' },
   'camping-tips':    { key: 'camping-tips',    label: 'Camping Tips',         icon: 'park' },
@@ -78,6 +94,15 @@ export const AUTHORS: Record<string, IAuthor> = {
     bio: 'Founder of CurbNTurf. Writes about life on the road, boondocking, and what it takes to host RVers well.',
   },
 };
+
+/** True when an article was published within the last 14 days.
+ *  Drives the NEW pill on article cards. Pure function (caller
+ *  passes `now` so SSR stays deterministic for tests). */
+export function isNewArticle(article: { publishedAt: string }, nowMs: number = Date.now()): boolean {
+  const t = Date.parse(article.publishedAt + 'T12:00:00');
+  if (Number.isNaN(t)) return false;
+  return t > nowMs - 14 * 86400_000;
+}
 
 /** Fallback initials when an author isn't in AUTHORS. Takes the first
  *  letter of the first and last word. */

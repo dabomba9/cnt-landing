@@ -7,6 +7,12 @@ export interface ISeoConfig {
   description: string;
   url: string;
   image?: string;
+  /** Optional descriptive alt text for the OG / Twitter card image. */
+  imageAlt?: string;
+  /** Intrinsic image dimensions in pixels. Both must be set together
+   *  to render og:image:width/height — partial values are skipped. */
+  imageWidth?: number;
+  imageHeight?: number;
   type?: string;
   /** Robots directive — e.g. 'noindex, nofollow'. Omit for default index/follow behavior. */
   robots?: string;
@@ -73,6 +79,23 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:title', content: config.title });
     this.meta.updateTag({ name: 'twitter:description', content: config.description });
     this.meta.updateTag({ name: 'twitter:image', content: ogImage });
+
+    // Image meta — alt + dimensions. Skip when not provided so we
+    // don't advertise lies about a default-image fallback.
+    if (config.imageAlt) {
+      this.meta.updateTag({ property: 'og:image:alt', content: config.imageAlt });
+      this.meta.updateTag({ name: 'twitter:image:alt', content: config.imageAlt });
+    } else {
+      this.meta.removeTag('property="og:image:alt"');
+      this.meta.removeTag('name="twitter:image:alt"');
+    }
+    if (config.imageWidth && config.imageHeight) {
+      this.meta.updateTag({ property: 'og:image:width', content: String(config.imageWidth) });
+      this.meta.updateTag({ property: 'og:image:height', content: String(config.imageHeight) });
+    } else {
+      this.meta.removeTag('property="og:image:width"');
+      this.meta.removeTag('property="og:image:height"');
+    }
 
     // Robots — set when explicitly requested, clear when not
     if (config.robots) {
