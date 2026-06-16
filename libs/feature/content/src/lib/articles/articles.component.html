@@ -173,6 +173,18 @@
   <section class="px-[2%] pt-12 pb-20">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
 
+      @if (authorFilter) {
+        <div class="mb-6 flex flex-wrap items-center gap-3">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-trinidad/10 text-trinidad text-xs font-body font-bold">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
+            Articles by {{ authorFilter }}
+            <button type="button" (click)="clearAuthorFilter()" class="ml-1 hover:opacity-70" aria-label="Clear author filter">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+            </button>
+          </span>
+        </div>
+      }
+
       <div class="flex items-center justify-between mb-8">
         <span class="text-muted-text text-sm font-body">
           @if (gridArticles.length === 0) { No articles match your filters. }

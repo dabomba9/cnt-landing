@@ -58,3 +58,33 @@ export interface IArticle {
   /** Derived from word count at import time (~220 wpm). */
   readTimeMinutes: number;
 }
+
+export interface IAuthor {
+  /** Display name — must match the article's `author` string field. */
+  name: string;
+  /** Two-letter initials for the avatar circle. */
+  initials: string;
+  /** One-line bio rendered under the name in the byline strip. */
+  bio: string;
+}
+
+/** Known authors with bios + avatar initials. Articles whose `author`
+ *  field doesn't appear here fall back to initials derived from the
+ *  name. All 46 imported articles are by Dustin Reed today. */
+export const AUTHORS: Record<string, IAuthor> = {
+  'Dustin Reed': {
+    name: 'Dustin Reed',
+    initials: 'DR',
+    bio: 'Founder of CurbNTurf. Writes about life on the road, boondocking, and what it takes to host RVers well.',
+  },
+};
+
+/** Fallback initials when an author isn't in AUTHORS. Takes the first
+ *  letter of the first and last word. */
+export function authorInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 0 || parts[0].length === 0) return '?';
+  const first = parts[0][0];
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (first + last).toUpperCase();
+}

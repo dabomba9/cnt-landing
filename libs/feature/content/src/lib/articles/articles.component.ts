@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -42,14 +43,21 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedCategory: FilterKey = 'all';
   searchQuery = '';
+  /** Active author filter from the `?author=` query param. Empty
+   *  string disables. Lets the article-detail "More articles by …"
+   *  link funnel back here without needing an author profile route. */
+  authorFilter = '';
 
   /** The top 3 most-recent articles render as a featured mosaic
    *  at the top (1 big + 2 stacked). Picked up at ngOnInit. */
   featuredArticles: IArticle[] = [];
 
+  private routeSub: Subscription | null = null;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private seo: SeoService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +69,13 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.featuredArticles = ARTICLES.slice(0, 3);
     this.buildFilterTabs();
+
+    this.routeSub = this.route.queryParamMap.subscribe(params => {
+      this.authorFilter = params.get('author')?.trim() ?? '';
+    });
   }
+
+  clearAuthorFilter(): void { this.authorFilter = ''; }
 
   private buildFilterTabs(): void {
     const tabs: { key: FilterKey; label: string; icon: string; count: number }[] = [
@@ -89,10 +103,12 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
    *  render them twice on the unfiltered default view. */
   get gridArticles(): IArticle[] {
     const q = this.searchQuery.trim().toLowerCase();
+    const author = this.authorFilter.toLowerCase();
     const featuredIds = this.showFeatured ? new Set(this.featuredArticles.map(a => a.id)) : null;
     return ARTICLES.filter(a => {
       if (featuredIds?.has(a.id)) return false;
       if (this.selectedCategory !== 'all' && a.category !== this.selectedCategory) return false;
+      if (author && a.author.toLowerCase() !== author) return false;
       if (!q) return true;
       return a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q);
     });
@@ -101,13 +117,13 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
   /** True when the featured mosaic should render — only on the
    *  unfiltered, unsearched default view. */
   get showFeatured(): boolean {
-    return this.featuredArticles.length > 0 && this.selectedCategory === 'all' && !this.searchQuery.trim();
+    return this.featuredArticles.length > 0 && this.selectedCategory === 'all' && !this.searchQuery.trim() && !this.authorFilter;
   }
 
   /** True when the sectioned-rail layout should render. Same gate
    *  as the mosaic — filters / search swap back to the flat grid. */
   get showSections(): boolean {
-    return this.selectedCategory === 'all' && !this.searchQuery.trim();
+    return this.selectedCategory === 'all' && !this.searchQuery.trim() && !this.authorFilter;
   }
 
   /** Per-category sections for the rail layout. Each section's
@@ -146,5 +162,5 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { this.routeSub?.unsubscribe(); }
 }
