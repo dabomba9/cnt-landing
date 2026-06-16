@@ -39,11 +39,11 @@ const HOST_SLOTS: INavSlot[] = [
         style="padding-bottom: env(safe-area-inset-bottom, 0);">
         <ul class="grid grid-cols-5">
           @for (slot of slots; track slot.label) {
-            <li>
+            <li class="min-w-0">
               <a [routerLink]="slot.routerLink" [fragment]="slot.fragment || undefined"
                 routerLinkActive="text-trinidad"
                 [routerLinkActiveOptions]="{ exact: false }"
-                class="relative flex flex-col items-center justify-center gap-0.5 py-2 text-muted-text hover:text-dark-text transition-colors">
+                class="relative flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-muted-text hover:text-dark-text transition-colors min-h-[44px]">
                 <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 0;">{{ slot.icon }}</span>
                 <span class="text-[0.6rem] uppercase tracking-[0.1em] font-button font-bold leading-none">{{ slot.label }}</span>
                 @if (slot.isMessages && unreadCount > 0) {
