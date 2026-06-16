@@ -7,3 +7,4 @@ export * from './lib/cookies/cookies.component';
 export * from './lib/grow/grow.component';
 export * from './lib/host-resources/host-resources.component';
 export * from './lib/not-found/not-found.component';
+export * from './lib/help/help-center.component';

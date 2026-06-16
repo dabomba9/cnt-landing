@@ -151,6 +151,10 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('@cnt-workspace/content').then(m => m.FaqComponent),
   },
   {
+    path: 'help',
+    loadComponent: () => import('@cnt-workspace/content').then(m => m.HelpCenterComponent),
+  },
+  {
     path: 'contact',
     loadComponent: () => import('@cnt-workspace/content').then(m => m.ContactComponent),
   },
