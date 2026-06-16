@@ -27,8 +27,9 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedCategory: FilterKey = 'all';
   searchQuery = '';
 
-  /** Lead article (most recent, full-bleed treatment on the index). */
-  lead: IArticle | null = null;
+  /** The top 3 most-recent articles render as a featured mosaic
+   *  at the top (1 big + 2 stacked). Picked up at ngOnInit. */
+  featuredArticles: IArticle[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -42,7 +43,7 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
       url: '/articles',
     });
 
-    this.lead = ARTICLES.length > 0 ? ARTICLES[0] : null;
+    this.featuredArticles = ARTICLES.slice(0, 3);
     this.buildFilterTabs();
   }
 
@@ -68,23 +69,23 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  /** Excludes the lead article from the grid so we don't render it
-   *  twice when the user hasn't filtered. */
+  /** Excludes the featured articles from the grid so we don't
+   *  render them twice on the unfiltered default view. */
   get gridArticles(): IArticle[] {
     const q = this.searchQuery.trim().toLowerCase();
-    const leadId = !q && this.selectedCategory === 'all' ? this.lead?.id : null;
+    const featuredIds = this.showFeatured ? new Set(this.featuredArticles.map(a => a.id)) : null;
     return ARTICLES.filter(a => {
-      if (leadId != null && a.id === leadId) return false;
+      if (featuredIds?.has(a.id)) return false;
       if (this.selectedCategory !== 'all' && a.category !== this.selectedCategory) return false;
       if (!q) return true;
       return a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q);
     });
   }
 
-  /** True when the lead hero should render — only on the unfiltered,
-   *  unsearched default view. */
-  get showLead(): boolean {
-    return !!this.lead && this.selectedCategory === 'all' && !this.searchQuery.trim();
+  /** True when the featured mosaic should render — only on the
+   *  unfiltered, unsearched default view. */
+  get showFeatured(): boolean {
+    return this.featuredArticles.length > 0 && this.selectedCategory === 'all' && !this.searchQuery.trim();
   }
 
   selectCategory(cat: FilterKey): void { this.selectedCategory = cat; }
