@@ -11,6 +11,7 @@ import { MessageService } from '@cnt-workspace/data-access';
 import { QuickReplyService, IQuickReply } from '@cnt-workspace/data-access';
 import { BookingService } from '@cnt-workspace/data-access';
 import { HostReviewService } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 import { IThread, MessageAuthor, IMessage, IBooking, STATUS_META, BookingStatus } from '@cnt-workspace/models';
 
 type ListFilter = 'all' | 'unread';
@@ -75,6 +76,14 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
   /** Two-tap confirm: holds the id of the chip the host just tapped × on. */
   confirmingDeleteQuickReplyId: string | null = null;
 
+  /** In-thread decline flow state — when the host clicks Decline, an
+   *  inline reason form appears. Empty reason is allowed (BookingService
+   *  treats it as "no note"). */
+  declineFormOpen = false;
+  declineReason = '';
+  /** Set while hostDecide is in flight so the buttons don't double-fire. */
+  decisionPending = false;
+
   constructor(
     private auth: AuthService,
     private msg: MessageService,
@@ -84,6 +93,7 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
     private route: ActivatedRoute,
     private router: Router,
     private seo: SeoService,
+    private toasts: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -325,6 +335,54 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
   showQuickReplies(t: IThread | null): boolean {
     if (!t) return false;
     return this.authorForCurrentUser(t) === 'host';
+  }
+
+  /** True when the active thread is a pending booking the host needs to
+   *  decide on. Drives the loud decision card render above the messages. */
+  get hostNeedsDecision(): boolean {
+    const t = this.activeThread;
+    const b = this.activeBooking;
+    if (!t || !b) return false;
+    if (b.status !== 'pending') return false;
+    return this.authorForCurrentUser(t) === 'host';
+  }
+
+  /** Approve the active booking — service handles the system-message emit
+   *  via reconcileBookings(). Confirmation toast fires from BookingService
+   *  itself; we add an inbox-side toast for the local confirmation. */
+  approveActiveBooking(): void {
+    const b = this.activeBooking;
+    if (!b || this.decisionPending) return;
+    this.decisionPending = true;
+    const result = this.bookingSvc.hostDecide(b.id, 'approved');
+    this.decisionPending = false;
+    this.declineFormOpen = false;
+    this.declineReason = '';
+    if (!result) {
+      this.toasts.error('Could not approve — booking may have been cancelled.');
+    }
+  }
+
+  /** Open the inline decline form (or close it if already open). */
+  toggleDeclineForm(): void {
+    this.declineFormOpen = !this.declineFormOpen;
+    if (!this.declineFormOpen) this.declineReason = '';
+  }
+
+  /** Submit the decline with an optional reason. Empty reason → service
+   *  drops the field and the system message is just "Host declined the
+   *  request." */
+  submitDecline(): void {
+    const b = this.activeBooking;
+    if (!b || this.decisionPending) return;
+    this.decisionPending = true;
+    const result = this.bookingSvc.hostDecide(b.id, 'declined', this.declineReason);
+    this.decisionPending = false;
+    this.declineFormOpen = false;
+    this.declineReason = '';
+    if (!result) {
+      this.toasts.error('Could not decline — booking may have been cancelled.');
+    }
   }
 
   // ============ Per-stay timeline ============

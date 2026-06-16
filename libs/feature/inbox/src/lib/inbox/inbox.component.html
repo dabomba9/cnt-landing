@@ -184,6 +184,57 @@
                 </a>
               }
 
+              <!-- Host decision card — loud, only when the booking is
+                   pending AND the current viewer is the host. Lets the
+                   host approve or decline without leaving the thread. -->
+              @if (hostNeedsDecision && activeBooking; as booking) {
+                <div class="px-4 md:px-6 py-4 bg-gold/10 border-b border-gold/30">
+                  <div class="flex items-start gap-3 mb-3">
+                    <span class="material-symbols-outlined text-gold shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">pending</span>
+                    <div class="flex-1 min-w-0">
+                      <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Booking request</div>
+                      <div class="text-sm font-body text-dark-text mt-0.5">{{ bookingDateRange(booking) }} · {{ booking.guests }} {{ booking.guests === 1 ? 'guest' : 'guests' }} · ${{ booking.total }}</div>
+                      @if (booking.requestMessage) {
+                        <div class="mt-2 text-sm font-body text-muted-text italic leading-relaxed">"{{ booking.requestMessage }}"</div>
+                      }
+                    </div>
+                  </div>
+                  @if (!declineFormOpen) {
+                    <div class="flex flex-wrap items-center gap-2">
+                      <button type="button" (click)="approveActiveBooking()" [disabled]="decisionPending"
+                        [attr.aria-label]="'Approve booking from ' + activeThread!.guestName"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-jungle-green text-white text-xs font-button font-bold uppercase tracking-[0.12em] hover:bg-jungle-green/90 disabled:opacity-60 transition-colors">
+                        <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Approve
+                      </button>
+                      <button type="button" (click)="toggleDeclineForm()" [disabled]="decisionPending"
+                        [attr.aria-label]="'Decline booking from ' + activeThread!.guestName"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-trinidad/30 text-trinidad text-xs font-button font-bold uppercase tracking-[0.12em] hover:bg-trinidad/5 disabled:opacity-60 transition-colors">
+                        <span class="material-symbols-outlined text-base">do_not_disturb_on</span>
+                        Decline
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="flex flex-col gap-2" role="group" aria-label="Decline with optional reason">
+                      <label for="decline-reason" class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Reason (optional — shared with the guest)</label>
+                      <textarea id="decline-reason" [(ngModel)]="declineReason" name="declineReason" rows="2"
+                        placeholder="e.g. Just booked — sorry!"
+                        class="w-full px-3 py-2 rounded-md border border-dark-text/15 bg-white text-sm font-body text-dark-text focus:outline-none focus:border-trinidad resize-none"></textarea>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" (click)="submitDecline()" [disabled]="decisionPending"
+                          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-trinidad text-white text-xs font-button font-bold uppercase tracking-[0.12em] hover:bg-trinidad/90 disabled:opacity-60 transition-colors">
+                          Confirm decline
+                        </button>
+                        <button type="button" (click)="toggleDeclineForm()"
+                          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-muted-text text-xs font-button font-bold uppercase tracking-[0.12em] hover:text-dark-text transition-colors">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
               <!-- Per-stay timeline strip — Requested → Approved → Paid → Stayed → Reviewed.
                    Renders only when the thread is tied to a booking. -->
               @if (activeBooking; as booking) {
