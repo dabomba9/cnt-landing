@@ -7,34 +7,40 @@
 
         <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">404 · Off-trail</span>
 
-        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[0.95]" style="font-size: clamp(3rem, 7vw, 6rem);">
-          You wandered<br>off the trail.
+        <h1 class="font-headline font-bold text-dark-text tracking-tight leading-[0.95]" style="font-size: clamp(2.5rem, 7vw, 6rem);">
+          Wrong exit.<br>Let's get you<br>back on the road.
         </h1>
 
-        <p class="mt-6 text-muted-text text-lg md:text-xl font-body leading-relaxed">
-          That page isn't here — maybe a typo, maybe a stale link. Pick a path back below.
+        <p class="mt-6 text-muted-text text-base md:text-xl font-body leading-relaxed">
+          The page you were looking for isn't here. Here's what most folks come back for:
         </p>
 
-        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a routerLink="/" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">home</span>
-            Back to home
+        <!-- 3-up CTA grid — the three most common destinations.
+             Stacks at small mobile, lays out at sm+. -->
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <a routerLink="/search" class="group flex flex-col items-center gap-2 px-4 py-6 rounded-2xl bg-trinidad text-white hover:opacity-95 transition-opacity">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">explore</span>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold">Find a stay</span>
           </a>
-          <a routerLink="/search" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-dark-text/20 text-dark-text text-xs uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">explore</span>
-            Browse stays
+          <a routerLink="/host" class="group flex flex-col items-center gap-2 px-4 py-6 rounded-2xl bg-jungle-green text-white hover:opacity-95 transition-opacity">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">home_work</span>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold">Become a host</span>
+          </a>
+          <a routerLink="/help" class="group flex flex-col items-center gap-2 px-4 py-6 rounded-2xl bg-white border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad transition-colors">
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">support</span>
+            <span class="text-xs uppercase tracking-[0.12em] font-button font-bold">Visit help</span>
           </a>
         </div>
 
         <!-- Decorative compass-y divider -->
-        <div class="mt-16 flex items-center justify-center gap-3 text-trinidad/40">
+        <div class="mt-12 flex items-center justify-center gap-3 text-trinidad/40">
           <span class="block h-px w-16 bg-current"></span>
           <span class="material-symbols-outlined text-xl" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">explore</span>
           <span class="block h-px w-16 bg-current"></span>
         </div>
 
         <p class="mt-6 text-sm text-muted-text font-body">
-          Need help? <a routerLink="/contact" class="text-trinidad font-bold hover:underline">Drop us a line</a>.
+          Still lost? <a routerLink="/contact" class="text-trinidad font-bold hover:underline">Drop us a line</a> and we'll point you in the right direction.
         </p>
 
       </div>
