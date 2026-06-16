@@ -6,3 +6,27 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Horizontal scroll rail used by the category-sectioned layout.
+   Hides the native scrollbar (the rail self-paginates via touch /
+   wheel snap), keeps a slim padding-bottom so card shadows aren't
+   clipped, and applies a subtle cream-to-transparent edge fade on
+   wider viewports so users see there's more content offscreen. */
+.article-rail {
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* IE / old Edge */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .article-rail {
+    /* Fade the rightmost ~6rem to cream so it's clear the rail
+       continues. Left side stays clean since cards align with the
+       container's left edge. */
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 6rem), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 6rem), transparent 100%);
+  }
+}

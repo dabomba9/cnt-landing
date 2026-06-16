@@ -10,6 +10,22 @@ import { ArticleCategoryKey, CATEGORY_META, IArticle } from './articles.types';
 
 type FilterKey = 'all' | ArticleCategoryKey;
 
+/** Brand-voice section headlines per category — these drive the
+ *  sectioned-rail layout on the default index view. The order here
+ *  is the rail render order. */
+const SECTION_ORDER: { key: ArticleCategoryKey; label: string }[] = [
+  { key: 'host',           label: 'Stories from CurbNTurf hosts' },
+  { key: 'trip-planning',  label: 'Plan your trip' },
+  { key: 'destinations',   label: 'Where to roam' },
+  { key: 'boondocking',    label: 'Boondocking essentials' },
+  { key: 'camping-tips',   label: 'Field-tested camping tips' },
+  { key: 'gear',           label: 'Gear we actually use' },
+  { key: 'maintenance',    label: 'Keep the rig running' },
+  { key: 'safety',         label: 'Safety on the road' },
+  { key: 'cooking',        label: 'From the camp kitchen' },
+  { key: 'travel-stories', label: 'Road stories' },
+];
+
 @Component({
   selector: 'cnt-articles',
   standalone: true,
@@ -86,6 +102,28 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
    *  unfiltered, unsearched default view. */
   get showFeatured(): boolean {
     return this.featuredArticles.length > 0 && this.selectedCategory === 'all' && !this.searchQuery.trim();
+  }
+
+  /** True when the sectioned-rail layout should render. Same gate
+   *  as the mosaic — filters / search swap back to the flat grid. */
+  get showSections(): boolean {
+    return this.selectedCategory === 'all' && !this.searchQuery.trim();
+  }
+
+  /** Per-category sections for the rail layout. Each section's
+   *  articles exclude the featured set so they don't render twice
+   *  on the default view. Empty categories are skipped. */
+  get sections(): { key: ArticleCategoryKey; label: string; icon: string; articles: IArticle[] }[] {
+    if (!this.showSections) return [];
+    const featuredIds = new Set(this.featuredArticles.map(a => a.id));
+    return SECTION_ORDER
+      .map(s => ({
+        key: s.key,
+        label: s.label,
+        icon: CATEGORY_META[s.key].icon,
+        articles: ARTICLES.filter(a => a.category === s.key && !featuredIds.has(a.id)),
+      }))
+      .filter(s => s.articles.length > 0);
   }
 
   selectCategory(cat: FilterKey): void { this.selectedCategory = cat; }
