@@ -230,36 +230,36 @@
             <ul class="flex flex-col gap-2">
               @for (tier of pricingTiers; track tier.id) {
                 @if (inlineTierId === tier.id) {
-                  <li class="flex flex-wrap items-center gap-2 rounded-md border border-jungle-green/40 bg-jungle-green/5 px-3 py-2">
-                    <label class="flex items-center gap-1">
+                  <li class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 rounded-md border border-jungle-green/40 bg-jungle-green/5 px-3 py-2">
+                    <label class="flex items-center gap-1 flex-1 min-w-[8rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Name</span>
                       <input type="text" maxlength="30" [(ngModel)]="inlineTierName" [name]="'editTierName-' + tier.id"
-                        class="px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
+                        class="flex-1 min-w-0 px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
                     </label>
-                    <label class="flex items-center gap-1">
+                    <label class="flex items-center gap-1 flex-1 min-w-[8rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Start</span>
-                      <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
+                      <div class="cnt-date-field inline-flex flex-1 min-w-0 items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
                         <input matInput [matDatepicker]="tierStartPicker" [(ngModel)]="inlineTierStartDate" [name]="'editTierStart-' + tier.id"
-                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-24" />
+                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
                         <mat-datepicker-toggle [for]="tierStartPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
                         <mat-datepicker #tierStartPicker></mat-datepicker>
                       </div>
                     </label>
-                    <label class="flex items-center gap-1">
+                    <label class="flex items-center gap-1 flex-1 min-w-[8rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">End</span>
-                      <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
+                      <div class="cnt-date-field inline-flex flex-1 min-w-0 items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
                         <input matInput [matDatepicker]="tierEndPicker" [(ngModel)]="inlineTierEndDate" [name]="'editTierEnd-' + tier.id"
-                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-24" />
+                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
                         <mat-datepicker-toggle [for]="tierEndPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
                         <mat-datepicker #tierEndPicker></mat-datepicker>
                       </div>
                     </label>
-                    <label class="flex items-center gap-1">
+                    <label class="flex items-center gap-1 min-w-[6rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">$</span>
                       <input type="number" min="1" step="1" [(ngModel)]="inlineTierPrice" [name]="'editTierPrice-' + tier.id"
                         class="w-20 px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
                     </label>
-                    <div class="flex items-center gap-1 ml-auto">
+                    <div class="flex items-center gap-1 sm:ml-auto">
                       <button type="button" (click)="saveInlineTierEdit()"
                         class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
                         Save
@@ -302,31 +302,31 @@
             <ul class="flex flex-col gap-2">
               @for (rule of stayRules; track rule.id) {
                 @if (inlineEditId === rule.id) {
-                  <li class="flex flex-wrap items-center gap-2 rounded-md border border-jungle-green/40 bg-jungle-green/5 px-3 py-2">
-                    <label class="flex items-center gap-1">
+                  <li class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 rounded-md border border-jungle-green/40 bg-jungle-green/5 px-3 py-2">
+                    <label class="flex items-center gap-1 flex-1 min-w-[8rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Start</span>
-                      <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
+                      <div class="cnt-date-field inline-flex flex-1 min-w-0 items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
                         <input matInput [matDatepicker]="ruleStartPicker" [(ngModel)]="inlineEditStartDate" [name]="'editStart-' + rule.id"
-                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-24" />
+                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
                         <mat-datepicker-toggle [for]="ruleStartPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
                         <mat-datepicker #ruleStartPicker></mat-datepicker>
                       </div>
                     </label>
-                    <label class="flex items-center gap-1">
+                    <label class="flex items-center gap-1 flex-1 min-w-[8rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">End</span>
-                      <div class="cnt-date-field inline-flex items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
+                      <div class="cnt-date-field inline-flex flex-1 min-w-0 items-center gap-1 rounded-md bg-white border border-dark-text/15 px-2 py-1">
                         <input matInput [matDatepicker]="ruleEndPicker" [(ngModel)]="inlineEditEndDate" [name]="'editEnd-' + rule.id"
-                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none w-24" />
+                          class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
                         <mat-datepicker-toggle [for]="ruleEndPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
                         <mat-datepicker #ruleEndPicker></mat-datepicker>
                       </div>
                     </label>
-                    <label class="flex items-center gap-1">
+                    <label class="flex items-center gap-1 min-w-[6rem]">
                       <span class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Min</span>
                       <input type="number" min="1" step="1" [(ngModel)]="inlineEditMinNights" [name]="'editMin-' + rule.id"
                         class="w-16 px-2 py-1 rounded-md bg-white border border-dark-text/15 text-xs font-body text-dark-text focus:outline-none focus:border-jungle-green" />
                     </label>
-                    <div class="flex items-center gap-1 ml-auto">
+                    <div class="flex items-center gap-1 sm:ml-auto">
                       <button type="button" (click)="saveInlineEdit()"
                         class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-jungle-green text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95">
                         Save
