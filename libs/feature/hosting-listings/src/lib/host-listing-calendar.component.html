@@ -37,7 +37,7 @@
               Subscribe URL
             </button>
             @if (subscribeOpen) {
-              <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-4">
+              <div class="absolute right-0 top-full mt-2 z-30 w-[22rem] max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-4">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-[0.65rem] uppercase tracking-[0.14em] text-dark-text font-button font-bold">Subscribe URL</span>
                   <button type="button" (click)="toggleSubscribe()" class="text-muted-text text-xs hover:text-dark-text" aria-label="Close">×</button>
@@ -76,13 +76,13 @@
           <div class="flex items-center justify-between gap-3 mb-4">
             <div class="flex items-center gap-2">
               <button type="button" (click)="prevMonth()"
-                class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors"
+                class="w-10 h-10 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors"
                 aria-label="Previous month">
                 <span class="material-symbols-outlined text-xl text-dark-text">chevron_left</span>
               </button>
               <h2 class="font-headline font-bold text-dark-text text-xl md:text-2xl tracking-tight min-w-[10rem] text-center">{{ calendarMonthLabel }}</h2>
               <button type="button" (click)="nextMonth()"
-                class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors"
+                class="w-10 h-10 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors"
                 aria-label="Next month">
                 <span class="material-symbols-outlined text-xl text-dark-text">chevron_right</span>
               </button>
@@ -100,7 +100,7 @@
               @if (pickByDateOpen) {
                 <div role="dialog" aria-modal="true" aria-label="Pick a date range"
                 (keydown.escape)="togglePickByDate()"
-                class="absolute right-0 top-full mt-2 z-30 w-[22rem] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
+                class="absolute right-0 top-full mt-2 z-30 w-[22rem] max-w-[calc(100vw-2rem)] bg-white rounded-md border border-dark-text/10 shadow-[0_18px_38px_rgba(0,0,0,0.16)] p-3">
                   <div class="flex items-center justify-between mb-2 px-1">
                     <span class="text-[0.7rem] uppercase tracking-[0.14em] text-dark-text font-bold">Pick a range</span>
                     <button type="button" (click)="togglePickByDate()" class="text-trinidad text-xs font-bold uppercase tracking-[0.12em] hover:underline" aria-label="Close">Done</button>
@@ -155,7 +155,7 @@
                 [class.ring-trinidad]="cell.selected"
                 [class.cursor-pointer]="canSelect(cell)"
                 [class.cursor-default]="!canSelect(cell)"
-                class="relative min-h-[5rem] md:min-h-[5.5rem] rounded-md p-1.5 flex flex-col items-start text-left transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-trinidad">
+                class="relative min-h-[3.75rem] sm:min-h-[5rem] md:min-h-[5.5rem] rounded-md p-1 sm:p-1.5 flex flex-col items-start text-left transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-trinidad">
                 <div class="flex items-center gap-1 mb-1 w-full">
                   <span
                     [class.font-bold]="cell.isToday"
@@ -452,7 +452,7 @@
 
 <!-- Floating action bar -->
 @if (listing && ownsListing && selectionCount > 0) {
-  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-dark-text/10 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-dark-text/10 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] max-h-[60vh] overflow-y-auto"
     style="padding-bottom: env(safe-area-inset-bottom, 0);">
     <div class="max-w-[72rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-3">
       <!-- Type-in range row — peers with drag-select on the grid -->
@@ -535,7 +535,7 @@
       </button>
 
       <button type="button" (click)="clearSelection()" aria-label="Clear selection"
-        class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
+        class="w-10 h-10 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-full hover:bg-cream/60 transition-colors">
         <span class="material-symbols-outlined text-xl text-muted-text">close</span>
       </button>
       </div>

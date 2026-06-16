@@ -56,7 +56,14 @@ const WINDOW_DAYS = 90;
                 <div class="text-xs font-body font-bold text-dark-text truncate">{{ row.title }}</div>
                 <div class="text-[0.6rem] text-muted-text font-body">{{ row.occupancyPct | number:'1.0-0' }}% · {{ row.bookedCount }} {{ row.bookedCount === 1 ? 'night' : 'nights' }}</div>
               </div>
-              <div class="flex-1 grid gap-px overflow-hidden rounded"
+              <!-- 90-cell heatmap is meaningless at < 640 px (cells
+                   render ~3 px wide). Show a numeric summary instead;
+                   reveal the heatmap at sm: where cells are ≥ 7 px. -->
+              <div class="flex-1 sm:hidden flex items-center justify-end gap-2 text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold">
+                <span class="text-trinidad">{{ row.occupancyPct | number:'1.0-0' }}%</span>
+                <span class="text-muted-text">occupancy</span>
+              </div>
+              <div class="hidden sm:grid flex-1 gap-px overflow-hidden rounded"
                 role="img"
                 [attr.aria-label]="row.title + ': ' + (row.occupancyPct | number:'1.0-0') + ' percent occupancy over next ' + WINDOW_DAYS + ' days'"
                 [style.grid-template-columns]="'repeat(' + WINDOW_DAYS + ', minmax(0, 1fr))'">
