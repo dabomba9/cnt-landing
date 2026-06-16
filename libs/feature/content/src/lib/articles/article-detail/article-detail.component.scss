@@ -139,3 +139,20 @@
     font-size: 1rem;
   }
 }
+
+/* Article tables (9 of 46 bodies). Webflow-baked tables ship with
+ * inline styles — border-top: 3px solid #da532c being the most
+ * visible. Override the off-brand orange to trinidad and add
+ * cell-content wrapping so long strings don't blow out the
+ * column widths at narrow viewports. Inline styles only yield to
+ * !important; scoped to .article-prose so the !important stays
+ * local to article bodies. */
+:host ::ng-deep .article-prose table {
+  border-top-color: #e3530d !important;
+}
+
+:host ::ng-deep .article-prose th,
+:host ::ng-deep .article-prose td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
