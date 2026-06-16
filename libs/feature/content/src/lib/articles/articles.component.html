@@ -34,14 +34,19 @@
           }
         </label>
 
-        <div class="flex flex-wrap gap-2" role="group" aria-label="Filter articles by category">
+        <!-- Filter chip rail.
+             - <lg: horizontal scroll with snap + edge fade so 11 chips
+               live in one row at 320 px instead of wrapping 3 deep.
+             - lg+: returns to flex-wrap so wide viewports stay clean. -->
+        <div class="chip-rail flex lg:flex-wrap gap-2 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none -mx-4 lg:mx-0 px-4 lg:px-0 pb-1 lg:pb-0"
+          role="group" aria-label="Filter articles by category">
           @for (tab of filterTabs; track tab.key) {
-            <button type="button" (click)="selectCategory(tab.key)"
+            <button type="button" (click)="onChipClick($event, tab.key)"
               [attr.aria-pressed]="selectedCategory === tab.key"
-              class="cnt-pill"
+              class="cnt-pill snap-start shrink-0"
               [ngClass]="selectedCategory === tab.key ? 'cnt-pill-active' : 'cnt-pill-inactive'">
               <span class="material-symbols-outlined text-base" aria-hidden="true">{{ tab.icon }}</span>
-              <span class="font-button">{{ tab.label }}</span>
+              <span class="font-button whitespace-nowrap">{{ tab.label }}</span>
               <span class="text-[0.55rem] opacity-70">({{ tab.count }})</span>
             </button>
           }

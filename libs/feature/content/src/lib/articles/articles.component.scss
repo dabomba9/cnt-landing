@@ -30,3 +30,23 @@
             mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 6rem), transparent 100%);
   }
 }
+
+/* Filter chip rail. Same scrollbar-hiding pattern as the article
+   rail, plus a tighter right-edge fade since chips are shorter
+   than article cards. Edge fade kicks in only at the scrollable
+   breakpoints (< lg); lg+ uses flex-wrap so no rail behavior. */
+.chip-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .chip-rail {
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+  }
+}

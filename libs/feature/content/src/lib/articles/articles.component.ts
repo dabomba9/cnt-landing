@@ -129,6 +129,18 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
   selectCategory(cat: FilterKey): void { this.selectedCategory = cat; }
   clearSearch(): void { this.searchQuery = ''; }
 
+  /** Filter-chip click handler. Same as setCategory + one extra
+   *  affordance: when the tapped chip is partially offscreen in the
+   *  mobile scroll rail, slide it into the center so the user sees
+   *  what they just picked. No-op on lg+ where the rail wraps. */
+  onChipClick(event: MouseEvent, cat: FilterKey): void {
+    this.selectCategory(cat);
+    if (!isPlatformBrowser(this.platformId)) return;
+    const btn = event.currentTarget as HTMLElement | null;
+    if (!btn || typeof btn.scrollIntoView !== 'function') return;
+    btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  }
+
   formatDate(iso: string): string {
     const d = new Date(iso + 'T12:00:00');
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
