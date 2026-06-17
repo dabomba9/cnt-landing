@@ -256,6 +256,12 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.toasts.success(`Saved "${entry.name}".`);
   }
 
+  /** P43/B — Empty-state lifeline. Returns up to 3 saved searches
+   *  so the zero-results panel can offer "jump back into one." */
+  get savedSearchesPreview(): ISavedSearch[] {
+    return this.savedSearches.list().slice(0, 3);
+  }
+
   applySavedSearch(saved: ISavedSearch): void {
     this.router.navigate([], {
       relativeTo: this.route,
