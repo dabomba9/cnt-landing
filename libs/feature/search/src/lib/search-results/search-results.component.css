@@ -121,3 +121,27 @@ img.img-loaded {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 34, 34, 0.3);
 }
+
+/* Filter pill rail. Single-row horizontal scroll on mobile, flex-wrap
+ * on md+. The scrollbar is hidden on every platform so the soft edge
+ * fade (mobile only) carries the "more offscreen" affordance instead
+ * of a visible scrollbar. Snap-proximity nudges the next pill into
+ * view on swipe without forcing a hard snap. */
+.cnt-search-pill-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+.cnt-search-pill-rail::-webkit-scrollbar {
+  display: none;
+}
+.cnt-search-pill-rail > * {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 767.98px) {
+  .cnt-search-pill-rail {
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+  }
+}

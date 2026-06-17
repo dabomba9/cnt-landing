@@ -1216,6 +1216,44 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     return name.split(/\s+/).filter(Boolean).map(s => s[0]).join('').slice(0, 2).toUpperCase();
   }
 
+  /** Two-tap confirm + undo for clearing every stop on the active
+   *  trip. Mirrors `confirmingActiveDelete` for the delete-whole-trip
+   *  action — first tap arms the confirm, second tap (within 4 s)
+   *  commits, ToastService offers Undo. */
+  confirmingClearStops = false;
+  private clearStopsConfirmTimer: ReturnType<typeof setTimeout> | null = null;
+
+  requestClearStops(): void {
+    this.confirmingClearStops = true;
+    if (this.clearStopsConfirmTimer) clearTimeout(this.clearStopsConfirmTimer);
+    this.clearStopsConfirmTimer = setTimeout(() => {
+      this.confirmingClearStops = false;
+      this.clearStopsConfirmTimer = null;
+    }, 4000);
+  }
+
+  cancelClearStops(): void {
+    this.confirmingClearStops = false;
+    if (this.clearStopsConfirmTimer) clearTimeout(this.clearStopsConfirmTimer);
+    this.clearStopsConfirmTimer = null;
+  }
+
+  confirmClearStops(): void {
+    if (!this.activePlan) return;
+    const plan = this.activePlan;
+    const previous = plan.stops.slice();
+    if (previous.length === 0) {
+      this.cancelClearStops();
+      return;
+    }
+    this.planner.update(plan.id, { stops: [] });
+    this.cancelClearStops();
+    this.toasts.success(`Cleared ${previous.length} ${previous.length === 1 ? 'stop' : 'stops'}.`, {
+      actionLabel: 'Undo',
+      action: () => this.planner.update(plan.id, { stops: previous }),
+    });
+  }
+
   removeStopFromActive(stopId: string): void {
     if (!this.activePlan) return;
     const plan = this.activePlan;
@@ -1312,6 +1350,12 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   flyToStep(step: { start: { lat: number; lng: number } }): void {
     if (!step?.start) return;
     this.searchMap?.flyTo(step.start.lat, step.start.lng, 14);
+  }
+
+  /** "Fit results" button — re-frames the map over the visible listings
+   *  when the user has panned away. */
+  fitResultsToBounds(): void {
+    this.searchMap?.fitToListings();
   }
 
   /** Per-stop "expanded" state in the drawer — accordion-style. */

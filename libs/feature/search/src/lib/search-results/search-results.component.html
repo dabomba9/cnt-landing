@@ -44,7 +44,7 @@
       </div>
 
       <!-- Filter Pills + Sort — single-row scroll on mobile, wrap on md+. -->
-      <div class="flex md:flex-wrap gap-2 items-center overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin pb-1">
+      <div class="cnt-search-pill-rail flex md:flex-wrap gap-2 items-center overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin pb-1">
 
         <!-- Sort pill + panel -->
         <div class="relative">
@@ -315,6 +315,24 @@
           }
         </div>
 
+        <!-- All filters pill — opens the full sheet from the right.
+             Wires the existing `toggleAllFilters()` drawer; trailing
+             count surfaces `activeFilterCount` when filters are on. -->
+        <button type="button"
+          (click)="toggleAllFilters()"
+          class="cnt-pill"
+          [ngClass]="allFiltersOpen ? 'cnt-pill-active' : 'cnt-pill-inactive'"
+          [attr.aria-expanded]="allFiltersOpen"
+          aria-haspopup="dialog"
+          aria-controls="all-filters-title">
+          <span class="material-symbols-outlined text-base">tune</span>
+          <span class="font-button">
+            All filters@if (activeFilterCount > 0) {
+              <span class="ml-1 opacity-80">({{ activeFilterCount }})</span>
+            }
+          </span>
+        </button>
+
       </div>
     </div>
 
@@ -428,8 +446,9 @@
           (addToTrip)="onMapAddToTrip($event)"
           (poiFavoriteToggle)="onPoiPopupFavoriteToggle($event)"></cnt-search-map>
 
-        <!-- Layers button + panel -->
-        <div class="absolute top-4 right-4 z-[400]">
+        <!-- Layers button + panel. Top-left so it doesn't collide
+             with Leaflet's top-right zoom +/- controls. -->
+        <div class="absolute top-4 left-4 z-[400]">
           <button type="button" (click)="togglePoiLayersPanel()"
             [attr.aria-expanded]="poiLayersOpen"
             class="h-11 pl-3 pr-4 rounded-full bg-white shadow-lg ring-1 ring-black/5 inline-flex items-center gap-2 hover:shadow-xl transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2">
@@ -441,7 +460,7 @@
           </button>
           @if (poiLayersOpen) {
             <div cntFocusTrap (escape)="closePoiLayersPanel()"
-              class="absolute top-12 right-0 w-64 bg-white rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16)] ring-1 ring-black/5 p-4"
+              class="absolute top-12 left-0 w-64 bg-white rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16)] ring-1 ring-black/5 p-4"
               role="dialog" aria-label="Map layers">
               <div class="flex items-center justify-between mb-3">
                 <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-dark-text">Show on map</div>
@@ -507,6 +526,30 @@
           </div>
         }
       </div>
+
+      <!-- ============ In-map control cluster (bottom-right) ============
+           Trip planner toggle + Fit-results button sit inside the map
+           pane next to the locate-me button (which lives inside the
+           <cnt-search-map> template). Z-index matches the layers + locate
+           overlay (--z-map-overlay = 400). -->
+      <button type="button" (click)="togglePlannerDrawer()" aria-label="Open trip planner"
+        [class.bg-trinidad]="plannerDrawerOpen" [class.text-white]="plannerDrawerOpen"
+        [class.bg-white]="!plannerDrawerOpen" [class.text-dark-text]="!plannerDrawerOpen"
+        class="absolute right-20 bottom-6 z-[400] inline-flex items-center gap-2 px-4 py-3 rounded-full border border-dark-text/10 shadow-[0_8px_24px_rgba(0,0,0,0.15)] text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] transition-shadow">
+        <span class="material-symbols-outlined text-base" [class.text-trinidad]="!plannerDrawerOpen">route</span>
+        {{ plannerDrawerOpen ? 'Hide planner' : 'Plan a trip' }}
+        @if (activePlan && activePlan.stops.length > 0 && !plannerDrawerOpen) {
+          <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.55rem]">{{ activePlan.stops.length }}</span>
+        }
+      </button>
+
+      @if (filteredListings.length > 0) {
+        <button type="button" (click)="fitResultsToBounds()"
+          class="absolute right-6 bottom-24 z-[400] w-11 h-11 rounded-full bg-white shadow-lg ring-1 ring-black/5 inline-flex items-center justify-center hover:shadow-xl transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2"
+          title="Fit map to results" aria-label="Fit map to current results">
+          <span class="material-symbols-outlined text-[20px] text-dark-text">crop_free</span>
+        </button>
+      }
     </aside>
 
     <!-- Mobile list/map toggle -->
@@ -648,18 +691,6 @@
 
 <!-- ============ Trip planner integration ============ -->
 
-<!-- Floating "Trip planner" toggle — bottom-right, above the bottom-nav. -->
-<button type="button" (click)="togglePlannerDrawer()" aria-label="Open trip planner"
-  [class.bg-trinidad]="plannerDrawerOpen" [class.text-white]="plannerDrawerOpen"
-  [class.bg-white]="!plannerDrawerOpen" [class.text-dark-text]="!plannerDrawerOpen"
-  class="fixed right-4 bottom-24 md:bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full border border-dark-text/10 shadow-[0_8px_24px_rgba(0,0,0,0.15)] text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] transition-shadow">
-  <span class="material-symbols-outlined text-base" [class.text-trinidad]="!plannerDrawerOpen">route</span>
-  {{ plannerDrawerOpen ? 'Hide planner' : 'Plan a trip' }}
-  @if (activePlan && activePlan.stops.length > 0 && !plannerDrawerOpen) {
-    <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-trinidad text-white text-[0.55rem]">{{ activePlan.stops.length }}</span>
-  }
-</button>
-
 <!-- Slide-out drawer (right side) — compact planner panel that drives the map overlay. -->
 @if (plannerDrawerOpen) {
   <aside class="fixed top-20 md:top-24 right-0 bottom-20 md:bottom-4 w-[360px] max-w-[92vw] z-40 bg-white rounded-l-2xl border border-dark-text/10 shadow-[0_20px_48px_rgba(0,0,0,0.18)] flex flex-col">
@@ -674,6 +705,24 @@
           <h3 class="font-headline font-bold text-dark-text text-base leading-tight">Pick or create a trip</h3>
         }
       </div>
+      @if (activePlan && activePlan.stops.length >= 2) {
+        @if (confirmingClearStops) {
+          <button type="button" (click)="confirmClearStops()" aria-label="Confirm clear all stops"
+            class="px-2 h-8 inline-flex items-center justify-center rounded-full bg-trinidad text-white text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shrink-0">
+            Tap to confirm
+          </button>
+          <button type="button" (click)="cancelClearStops()" aria-label="Cancel clear stops"
+            class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-muted-text transition-colors shrink-0">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        } @else {
+          <button type="button" (click)="requestClearStops()" aria-label="Clear all stops"
+            class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-dark-text hover:text-trinidad transition-colors shrink-0"
+            [attr.aria-pressed]="confirmingClearStops">
+            <span class="material-symbols-outlined text-base">delete_sweep</span>
+          </button>
+        }
+      }
       @if (activePlan && activePlan.stops.length > 0) {
         <button type="button" (click)="shareTrip()" aria-label="Share trip"
           class="w-8 h-8 inline-flex items-center justify-center rounded-full hover:bg-cream/60 text-dark-text hover:text-trinidad transition-colors shrink-0">

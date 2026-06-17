@@ -566,6 +566,19 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.map?.flyTo([lat, lng], zoom, { animate: true, duration: 0.8 });
   }
 
+  /** Re-frame the map to enclose every currently-rendered listing. Drives the
+   *  "Fit results" button so the user can snap back after panning away.
+   *  No-op when there are no listings or the map isn't ready. */
+  fitToListings(): void {
+    if (!this.map || this.listings.length === 0) return;
+    const pts = this.listings
+      .map(l => [l.lat, l.lng] as [number | undefined, number | undefined])
+      .filter((p): p is [number, number] => typeof p[0] === 'number' && typeof p[1] === 'number');
+    if (pts.length === 0) return;
+    const bounds = L.latLngBounds(pts);
+    this.map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 0.8, maxZoom: 12 });
+  }
+
   /** Draws (or removes) the active trip's polyline + start/finish markers as a
    *  dedicated layer ABOVE the listing + POI clusters. Re-runs on plan change. */
   private renderRouteOverlay(): void {
