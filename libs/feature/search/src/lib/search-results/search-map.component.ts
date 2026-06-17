@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META, ITripPlan } from '@cnt-workspace/data-access';
 import {
-  TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM,
+  TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, TILE_STYLES, TileStyleKey,
 } from '@cnt-workspace/ui';
 
 @Component({
@@ -81,10 +81,59 @@ import {
       background: #fafafa !important;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24) !important;
     }
+
+    /* P39/A5 — first-visit gesture hint overlay */
+    .cnt-map-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px 10px 16px;
+      background: rgba(34, 34, 34, 0.92);
+      color: #fff;
+      border-radius: 9999px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      pointer-events: auto;
+      cursor: pointer;
+      animation: cnt-map-hint-in 280ms ease-out;
+    }
+    .cnt-map-hint__icon { font-size: 18px; color: #F1B434; }
+    .cnt-map-hint__text { white-space: nowrap; }
+    .cnt-map-hint__close {
+      width: 24px; height: 24px;
+      border-radius: 9999px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+    }
+    .cnt-map-hint__close .material-symbols-outlined { font-size: 14px; }
+    @keyframes cnt-map-hint-in {
+      0%   { opacity: 0; transform: translate(-50%, calc(-50% + 8px)); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
   `],
   template: `
     <div class="map-wrap">
       <div #mapEl class="map-el"></div>
+
+      <!-- P39/A5 — First-visit gesture hint. Once-only toast-style
+           overlay that auto-dismisses after 4 s or on map interaction. -->
+      @if (mapHintVisible) {
+        <div class="cnt-map-hint" (click)="dismissMapHint()" role="status" aria-label="Map gesture hint">
+          <span class="material-symbols-outlined cnt-map-hint__icon">touch_app</span>
+          <span class="cnt-map-hint__text">Drag to pan · scroll to zoom</span>
+          <button type="button" class="cnt-map-hint__close" (click)="dismissMapHint()" aria-label="Dismiss hint">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      }
 
       <!-- View-mode toggle (Airbnb-style top-right circle, above the
            Leaflet +/− zoom controls). -->
@@ -157,6 +206,13 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   private previewEl: HTMLDivElement | null = null;
   private previewLatLng: L.LatLng | null = null;
   private previewHideTimer: ReturnType<typeof setTimeout> | null = null;
+  /** P39/A1 — current map basemap style. Persisted to localStorage. */
+  private tileLayer: L.TileLayer | null = null;
+  private readonly TILE_STYLE_KEY = 'cnt-map-tile-style';
+  /** P39/A5 — first-visit gesture hint visibility. */
+  mapHintVisible = false;
+  private readonly MAP_HINT_KEY = 'cnt-map-hint-seen';
+  private mapHintTimer: ReturnType<typeof setTimeout> | null = null;
   /** P35/C — tile loading skeleton. Held for at least
    *  MIN_TILE_SKELETON_MS so quick pans don't flicker the overlay. */
   private tileLoadingShownAt = 0;
@@ -196,17 +252,9 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       preferCanvas: true,
     });
 
-    const tileLayer = L.tileLayer(TILE_URL, {
-      attribution: TILE_ATTRIBUTION,
-      maxZoom: 18,
-    });
-    // P35/C — tile loading skeleton. Show the pulsing overlay while
-    // the first batch of tiles is requested; clear when they all land.
-    // The 250 ms minimum hold smooths the flicker as subsequent pans
-    // request small batches.
-    tileLayer.on('loading', () => this.setTileLoading(true));
-    tileLayer.on('load', () => this.setTileLoading(false));
-    tileLayer.addTo(this.map);
+    const initialStyle = this.readTileStyleFromStorage();
+    this.tileLayer = this.buildTileLayer(initialStyle);
+    this.tileLayer.addTo(this.map);
 
     L.control.zoom({ position: 'topright' }).addTo(this.map);
     // P35/B — pixel-to-miles scale bar. Imperial only; matches the
@@ -229,6 +277,12 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
 
     this.map.addLayer(this.cluster);
+
+    // P39/A5 — show the gesture hint on first ever /search visit. Auto-
+    // dismiss after 4s; any map interaction kills it early.
+    this.maybeShowMapHint();
+    this.map.on('movestart', () => this.dismissMapHint());
+    this.map.on('zoomstart', () => this.dismissMapHint());
 
     // Cluster hover preview (P32). Read up to 5 child listings + render
     // a stacked mini list. Click still triggers the default zoom-to-fit
@@ -827,6 +881,69 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       wrap.classList.remove('cnt-map-tiles-loading');
       this.tileLoadingHideTimer = null;
     }, wait);
+  }
+
+  // ----------- P39/A1 — Map tile style switcher -----------
+
+  /** Build a fresh Leaflet TileLayer for the given basemap style and
+   *  attach the loading-skeleton handlers. */
+  private buildTileLayer(key: TileStyleKey): L.TileLayer {
+    const style = TILE_STYLES[key];
+    const layer = L.tileLayer(style.url, {
+      attribution: style.attribution,
+      maxZoom: 18,
+    });
+    layer.on('loading', () => this.setTileLoading(true));
+    layer.on('load', () => this.setTileLoading(false));
+    return layer;
+  }
+
+  /** Hydrate the persisted style preference (browser-only); defaults
+   *  to streets when nothing is saved or the value is unrecognized. */
+  private readTileStyleFromStorage(): TileStyleKey {
+    if (!isPlatformBrowser(this.platformId)) return 'streets';
+    try {
+      const raw = localStorage.getItem(this.TILE_STYLE_KEY);
+      if (raw === 'satellite' || raw === 'terrain') return raw;
+    } catch { /* private mode etc. */ }
+    return 'streets';
+  }
+
+  /** Swap the active basemap. Called by the parent's switcher UI. */
+  setTileStyle(key: TileStyleKey): void {
+    if (!this.map) return;
+    const next = this.buildTileLayer(key);
+    if (this.tileLayer) this.map.removeLayer(this.tileLayer);
+    this.tileLayer = next;
+    next.addTo(this.map);
+    if (isPlatformBrowser(this.platformId)) {
+      try { localStorage.setItem(this.TILE_STYLE_KEY, key); } catch { /* quota */ }
+    }
+  }
+
+  /** Read-only accessor for the parent UI's "currently selected" state. */
+  getTileStyle(): TileStyleKey { return this.readTileStyleFromStorage(); }
+
+  // ----------- P39/A5 — First-visit gesture hint -----------
+
+  private maybeShowMapHint(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      if (localStorage.getItem(this.MAP_HINT_KEY)) return;
+    } catch { return; }
+    this.mapHintVisible = true;
+    this.mapHintTimer = setTimeout(() => this.dismissMapHint(), 4000);
+  }
+
+  dismissMapHint(): void {
+    if (!this.mapHintVisible) return;
+    this.mapHintVisible = false;
+    if (this.mapHintTimer) {
+      clearTimeout(this.mapHintTimer);
+      this.mapHintTimer = null;
+    }
+    if (!isPlatformBrowser(this.platformId)) return;
+    try { localStorage.setItem(this.MAP_HINT_KEY, '1'); } catch { /* quota */ }
   }
 
   private repositionPreview(): void {

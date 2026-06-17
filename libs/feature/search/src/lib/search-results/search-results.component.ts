@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { readFavoriteIds, readFavoriteKeys, addFavorite, removeFavorite, favoriteKey } from '@cnt-workspace/data-access';
 import { PoiModalComponent } from './poi-modal.component';
-import { ListingCardComponent } from '@cnt-workspace/ui';
+import { ListingCardComponent, ListingCardSkeletonComponent } from '@cnt-workspace/ui';
 
 type FilterPill = 'dates' | 'price' | 'rv' | 'amenities' | 'sort' | null;
 
@@ -62,7 +62,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, DragDropModule, CinematicRollDirective, NavbarComponent, ListingCardComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, DragDropModule, CinematicRollDirective, NavbarComponent, ListingCardComponent, ListingCardSkeletonComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })
@@ -467,7 +467,22 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleFavorite(id: number, event: MouseEvent): void {
     event.stopPropagation();
-    this.setFavorite(id, !this.favorites.has(id));
+    const next = !this.favorites.has(id);
+    this.setFavorite(id, next);
+    // P39/B3 — first-time sign-in tip. Shown once per anon session.
+    if (next) this.maybeShowWishlistSignInTip();
+  }
+
+  private readonly WISHLIST_TIP_KEY = 'cnt-wishlist-tip-seen';
+  /** One-shot ToastService nudge inviting the visitor to sign in so
+   *  saves persist across devices. Tracked via localStorage. */
+  private maybeShowWishlistSignInTip(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      if (localStorage.getItem(this.WISHLIST_TIP_KEY)) return;
+      localStorage.setItem(this.WISHLIST_TIP_KEY, '1');
+    } catch { return; }
+    this.toasts.info('Sign in to keep your saves across devices.');
   }
 
   /** Toggle handler for the map popup heart (already optimistically updated in the popup). */
@@ -494,6 +509,10 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!isPlatformBrowser(this.platformId)) return;
     gsap.registerPlugin(ScrollTrigger);
     this.initEntrance();
+    // P39/A1 — pick up the persisted map style so the chooser highlight
+    // matches what the map actually rendered.
+    const persisted = this.searchMap?.getTileStyle();
+    if (persisted) this.currentMapStyle = persisted;
   }
 
   private initEntrance(): void {
@@ -1038,6 +1057,45 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!id) return;
     setActiveRvProfile(this.platformId, id);
     this.activeRv = getActiveRvProfile(this.platformId);
+  }
+
+  /** P39/B1 — deterministic mock booking count per listing id (0–7).
+   *  Returns the same value every render so cards don't flicker.
+   *  When real telemetry lands, swap this for a service call. */
+  bookingsCountFor(id: number): number {
+    return (id * 13 + 5) % 8;
+  }
+
+  /** P39/B2 — deterministic mock verified-host flag per listing id.
+   *  ~50% of listings; swap for `IListingDetail.trustBadges` when
+   *  that lookup is feasible per card. */
+  hostVerifiedFor(id: number): boolean {
+    return (id * 17 + 3) % 2 === 0;
+  }
+
+  /** P39/A4 — listing-card asked the map to fly to its pin. */
+  onViewOnMap(listing: IListing): void {
+    if (this.viewMode === 'map-only') {
+      // Already on map-only view; just fly there.
+    } else if (isPlatformBrowser(this.platformId) && window.innerWidth < 768) {
+      // Mobile: reveal the map pane first.
+      this.showMobileMap = true;
+    }
+    this.searchMap?.flyTo(listing.lat, listing.lng, 12);
+    this.selectedId = listing.id;
+  }
+
+  /** P39/A1 — Map style switcher options + state. */
+  readonly MAP_STYLE_OPTIONS = [
+    { key: 'streets' as const,   label: 'Streets',   icon: 'map' },
+    { key: 'satellite' as const, label: 'Satellite', icon: 'satellite_alt' },
+    { key: 'terrain' as const,   label: 'Terrain',   icon: 'terrain' },
+  ];
+  currentMapStyle: 'streets' | 'satellite' | 'terrain' = 'streets';
+
+  setMapStyle(key: 'streets' | 'satellite' | 'terrain'): void {
+    this.currentMapStyle = key;
+    this.searchMap?.setTileStyle(key);
   }
 
   /** Hide the legend; persisted across visits via localStorage. */

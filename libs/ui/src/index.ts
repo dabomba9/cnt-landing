@@ -1,6 +1,7 @@
 export * from './lib/navbar/navbar.component';
 export * from './lib/footer/footer.component';
 export * from './lib/listing-card/listing-card.component';
+export * from './lib/listing-card-skeleton/listing-card-skeleton.component';
 export * from './lib/stat-tile/stat-tile.component';
 export * from './lib/toast-host/toast-host.component';
 export * from './lib/review-card/review-card.component';

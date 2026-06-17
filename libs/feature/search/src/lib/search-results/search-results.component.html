@@ -502,6 +502,10 @@
             <span class="text-dark-text font-bold">{{ filteredListings.length }}</span> {{ filteredListings.length === 1 ? 'space matches' : 'spaces match' }} your filters
           </p>
         </div>
+        <!-- P39/A2 — deferred render with skeleton placeholder. On a
+             fast device the skeletons flash for 200ms minimum so the
+             layout transition feels deliberate, not poppy. -->
+        @defer (on idle) {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           @for (l of filteredListings; track l.id) {
             <div [id]="'listing-' + l.id" class="rounded-2xl relative transition-shadow duration-200 scroll-mt-32"
@@ -516,10 +520,20 @@
                 [isFavorite]="isFavorite(l.id)"
                 [nights]="searchNights"
                 [rvProfile]="activeRv"
-                (favoriteToggle)="toggleFavorite(l.id, $event)"></cnt-listing-card>
+                [bookings30d]="bookingsCountFor(l.id)"
+                [hostVerified]="hostVerifiedFor(l.id)"
+                (favoriteToggle)="toggleFavorite(l.id, $event)"
+                (viewOnMap)="onViewOnMap(l)"></cnt-listing-card>
             </div>
           }
         </div>
+        } @placeholder (minimum 200ms) {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @for (_ of [0,1,2,3,4,5]; track $index) {
+              <cnt-listing-card-skeleton></cnt-listing-card-skeleton>
+            }
+          </div>
+        }
       }
     </section>
 
@@ -570,6 +584,24 @@
                   class="w-7 h-7 rounded-full inline-flex items-center justify-center hover:bg-cream/60">
                   <span class="material-symbols-outlined text-[16px] text-muted-text">close</span>
                 </button>
+              </div>
+              <!-- P39/A1 — Map style chooser. Three basemap presets,
+                   persisted per visitor. -->
+              <div class="mb-3 pb-3 border-b border-dark-text/10">
+                <div class="text-[0.55rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-2">Map style</div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  @for (s of MAP_STYLE_OPTIONS; track s.key) {
+                    <button type="button" (click)="setMapStyle(s.key)"
+                      [attr.aria-pressed]="currentMapStyle === s.key"
+                      [ngClass]="currentMapStyle === s.key
+                        ? 'border-trinidad bg-trinidad/10 text-trinidad'
+                        : 'border-dark-text/15 hover:border-trinidad text-dark-text'"
+                      class="px-2 py-2 rounded-lg border text-[0.55rem] font-button uppercase tracking-[0.1em] font-bold transition-colors">
+                      <span class="material-symbols-outlined text-base block mx-auto mb-0.5">{{ s.icon }}</span>
+                      {{ s.label }}
+                    </button>
+                  }
+                </div>
               </div>
               @if (legendCollapsed && visiblePoiKinds.size > 0) {
                 <button type="button" (click)="restoreLegend()"

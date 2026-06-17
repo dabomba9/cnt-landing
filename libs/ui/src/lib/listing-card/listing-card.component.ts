@@ -20,8 +20,20 @@ export class ListingCardComponent {
    *  Used by the cross-sell sections on /listing/:id; the search results
    *  + dashboard saved lists don't show it (different routing patterns). */
   @Input() showAddToTrip = false;
+  /** P39/B1 — count of bookings in the last 30 days. Renders a small
+   *  social-proof pill on the card when >= 2. */
+  @Input() bookings30d = 0;
+  /** P39/B2 — surface a "verified host" badge on the card title row
+   *  when true. Independent of the listing's category. */
+  @Input() hostVerified = false;
   @Output() favoriteToggle = new EventEmitter<MouseEvent>();
   @Output() addToTripClick = new EventEmitter<MouseEvent>();
+  /** P39/A4 — click handler for the "View on map" mini-button. */
+  @Output() viewOnMap = new EventEmitter<MouseEvent>();
+
+  /** P39/A3 — transient flag that triggers the heart-burst animation
+   *  for ~350 ms after a favorite toggle. */
+  justFavorited = false;
 
   get hoverTotal(): number | null {
     if (this.listing.kind === 'boondocking') return null;
@@ -122,7 +134,20 @@ export class ListingCardComponent {
   onFavoriteClick(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
+    // P39/A3 — burst animation for the heart when toggling on. Skip
+    // the animation when un-favoriting so the disappearing pulse
+    // doesn't read as a celebration.
+    if (!this.isFavorite) {
+      this.justFavorited = true;
+      setTimeout(() => { this.justFavorited = false; }, 350);
+    }
     this.favoriteToggle.emit(event);
+  }
+
+  onViewOnMapClick(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.viewOnMap.emit(event);
   }
 
   onAddToTripClick(event: MouseEvent): void {

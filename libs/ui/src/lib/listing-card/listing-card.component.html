@@ -63,6 +63,7 @@
       (click)="onFavoriteClick($event)"
       [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
       [attr.aria-pressed]="isFavorite"
+      [class.heart-burst]="justFavorited"
       class="favorite-btn absolute top-3 right-3 z-20 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 flex items-center justify-center hover:scale-110 transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2">
       <span class="material-symbols-outlined text-[20px]"
         [class.text-trinidad]="isFavorite"
@@ -71,6 +72,26 @@
         favorite
       </span>
     </button>
+
+    <!-- P39/A4 — View on map mini-button. Sits just under the heart
+         so both right-edge controls stay aligned. Emits an Output
+         the parent uses to fly the search map to this listing. -->
+    <button type="button"
+      (click)="onViewOnMapClick($event)"
+      aria-label="Show on map"
+      title="Show on map"
+      class="absolute top-16 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-md ring-1 ring-black/5 flex items-center justify-center hover:scale-110 hover:text-trinidad transition-transform text-dark-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2">
+      <span class="material-symbols-outlined text-[18px]">location_on</span>
+    </button>
+
+    <!-- P39/B1 — Recently booked social-proof pill. Shows only when
+         the listing has booked >= 2 times in the last 30 days. -->
+    @if (bookings30d >= 2) {
+      <div class="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-dark-text/85 text-white shadow-md">
+        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+        <span class="text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold">Booked {{ bookings30d }}× this month</span>
+      </div>
+    }
 
     <!-- merchandising badge (New / Best Value / Guest Favorite) — at most one per card -->
     @if (merchBadge) {
@@ -103,7 +124,12 @@
 
   <div class="p-4 flex flex-col gap-3 flex-1">
     <div>
-      <h3 class="font-headline font-bold text-dark-text text-lg leading-tight line-clamp-2 min-h-[3rem]">{{ listing.title }}</h3>
+      <h3 class="font-headline font-bold text-dark-text text-lg leading-tight line-clamp-2 min-h-[3rem]">
+        @if (hostVerified) {
+          <span class="material-symbols-outlined text-trinidad text-[18px] align-middle mr-1" style="font-variation-settings: 'FILL' 1;" title="Verified host" aria-label="Verified host">verified</span>
+        }
+        {{ listing.title }}
+      </h3>
       <div class="flex items-center gap-2 mt-1">
         <span class="text-muted-text text-xs font-label uppercase tracking-[0.1em]">{{ listing.location }}</span>
         @if (listing.kind !== 'boondocking') {
