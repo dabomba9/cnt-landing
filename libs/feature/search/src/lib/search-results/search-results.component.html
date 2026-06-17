@@ -186,6 +186,27 @@
               <button type="button" (click)="clearRvSetup()" class="text-xs uppercase tracking-[0.12em] font-button font-bold text-trinidad hover:underline">Clear</button>
             </div>
 
+            @if (rvProfiles.length > 0) {
+              <div class="mt-5 p-3 rounded-xl bg-cream/60 border border-dark-text/10">
+                <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-2">Apply a saved rig</div>
+                <div class="flex items-center gap-2">
+                  <select [(ngModel)]="selectedSavedRigId"
+                    aria-label="Choose a saved rig"
+                    class="flex-1 min-w-0 bg-white border border-dark-text/15 rounded-full px-3 py-2 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+                    @for (p of rvProfiles; track p.id) {
+                      <option [ngValue]="p.id">{{ p.name }}{{ p.type ? ' · ' + rvTypeLabel(p.type) : '' }}</option>
+                    }
+                  </select>
+                  <button type="button" (click)="applySavedRigToFilters()"
+                    [disabled]="!selectedSavedRigId"
+                    class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity disabled:opacity-40">
+                    Apply
+                  </button>
+                </div>
+                <p class="text-[0.65rem] text-muted-text font-body mt-2">Applies dimensions from your saved profile. Clear or edit below.</p>
+              </div>
+            }
+
             <div class="mt-6">
               <div class="text-center text-xs font-label uppercase tracking-[0.14em] font-bold text-dark-text mb-4">Select RV Type</div>
               <div class="grid grid-cols-4 gap-3">

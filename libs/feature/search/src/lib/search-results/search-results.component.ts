@@ -304,9 +304,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       description: 'Browse hundreds of unique private RV spots across the US. Filter by state, amenities, and hookups. Book directly with hosts — no membership fees.',
       url: '/search',
     });
-    this.hydrateMyRv();
     this.rvProfiles = listMyRvProfiles(this.platformId);
     this.activeRv = getActiveRvProfile(this.platformId);
+    // Pre-select the active rig in the RV pill's "Apply a saved rig"
+    // picker. Nothing happens until the visitor clicks Apply.
+    this.selectedSavedRigId = this.activeRv?.id ?? null;
     // ?plan=:id — pre-select this trip as active. Must happen before the
     // plans$ subscription fires so the first emission picks it up.
     const requestedPlanId = this.route.snapshot.queryParamMap.get('plan');
@@ -926,6 +928,13 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       rvt: f.rvTents > 0 ? String(f.rvTents) : null,
       guests: f.guests > 0 ? String(f.guests) : null,
       ib: f.instantBookOnly ? '1' : null,
+      // Date range + wishlist ids round-trip through the URL too. Without
+      // these, clearAllFilters() left stale ?startDate / ?endDate / ?ids
+      // in the URL and the queryParams subscription re-hydrated them on
+      // the next change-detection tick — the "filter caching" bug.
+      startDate: this.selectedDateRange?.start ? this.toIso(this.selectedDateRange.start) : null,
+      endDate:   this.selectedDateRange?.end   ? this.toIso(this.selectedDateRange.end)   : null,
+      ids: this.pinnedIds && this.pinnedIds.size > 0 ? [...this.pinnedIds].join(',') : null,
     };
     this.router.navigate([], {
       relativeTo: this.route,
@@ -943,12 +952,23 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.activeRv = getActiveRvProfile(this.platformId);
   }
 
-  private hydrateMyRv(): void {
-    const rv = readMyRv(this.platformId);
-    if (rv.type)   this.filters.rvType = rv.type;
-    if (rv.length) this.filters.rvLength = String(rv.length);
-    if (rv.height) this.filters.rvHeight = String(rv.height);
-    if (rv.width)  this.filters.rvWidth  = String(rv.width);
+  /** UI buffer for the "Apply a saved rig" picker inside the RV pill.
+   *  Holds the selected rig id but does NOT touch the filter until
+   *  the visitor clicks Apply. */
+  selectedSavedRigId: string | null = null;
+
+  /** Copy the selected saved rig's dimensions into the live filter
+   *  and push to URL. Explicit user opt-in — the prior
+   *  silent-hydrate-on-load behavior is gone (P34). */
+  applySavedRigToFilters(): void {
+    if (!this.selectedSavedRigId) return;
+    const rig = this.rvProfiles.find(p => p.id === this.selectedSavedRigId);
+    if (!rig) return;
+    this.filters.rvType   = rig.type ?? null;
+    this.filters.rvLength = rig.length != null ? String(rig.length) : '';
+    this.filters.rvHeight = rig.height != null ? String(rig.height) : '';
+    this.filters.rvWidth  = rig.width  != null ? String(rig.width)  : '';
+    this.syncToUrl();
   }
 
   clearDates(): void {

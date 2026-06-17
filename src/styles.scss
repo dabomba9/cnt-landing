@@ -248,6 +248,113 @@ a:focus {
 }
 .cnt-cluster:hover { transform: scale(1.08); }
 
+/* Marker + cluster hover preview overlay (P32). Single shared DOM
+ * node inside .map-wrap. Positioned by JS via map.latLngToContainerPoint.
+ * pointer-events: none so the underlying marker keeps firing mouseout
+ * cleanly when the cursor crosses the overlay. */
+.cnt-map-preview {
+  position: absolute;
+  z-index: 600;
+  transform: translate(-50%, -100%);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+  padding: 10px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 140ms ease, transform 140ms ease;
+  will-change: opacity, transform;
+}
+.cnt-map-preview.is-hiding {
+  opacity: 0;
+  transform: translate(-50%, calc(-100% + 6px));
+}
+.cnt-map-preview--marker {
+  width: 14rem;
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  gap: 10px;
+}
+.cnt-map-preview__img {
+  width: 4.25rem;
+  height: 4.25rem;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.04);
+}
+.cnt-map-preview__body { min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.cnt-map-preview__title {
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #222;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cnt-map-preview__loc { font-size: 0.7rem; color: #666; line-height: 1.2; }
+.cnt-map-preview__price { font-size: 0.85rem; font-weight: 700; color: #e3530d; margin-top: 2px; }
+.cnt-map-preview__per { font-weight: 400; color: #666; font-size: 0.7rem; margin-left: 2px; }
+
+.cnt-map-preview--cluster {
+  width: 18rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cnt-map-preview__header {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #e3530d;
+  padding: 2px 4px 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 2px;
+}
+.cnt-map-preview__row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 8px;
+}
+.cnt-map-preview__row-img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: cover;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+}
+.cnt-map-preview__row-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cnt-map-preview__row-price {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e3530d;
+  white-space: nowrap;
+}
+.cnt-map-preview__more {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  text-align: center;
+  padding: 4px 0 2px;
+  font-weight: 700;
+}
+
 /* POI cluster — outlined to read as utilities, not stays. Color set via --poi by JS. */
 .cnt-poi-cluster-wrap { background: transparent !important; border: none !important; }
 .cnt-poi-cluster {

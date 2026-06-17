@@ -125,6 +125,11 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   private map: L.Map | null = null;
   private cluster: any = null;
   private markers = new Map<number, L.Marker>();
+  /** Shared hover-preview overlay element (P32). One DOM node serves
+   *  both single-marker and cluster previews — content swaps per mode. */
+  private previewEl: HTMLDivElement | null = null;
+  private previewLatLng: L.LatLng | null = null;
+  private previewHideTimer: ReturnType<typeof setTimeout> | null = null;
   /** Separate cluster instance for POIs so utility pins don't mix with stay pins in the same bubbles. */
   private poiCluster: any = null;
   private poiMarkers = new Map<string, L.Marker>();
@@ -181,13 +186,44 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
 
     this.map.addLayer(this.cluster);
+
+    // Cluster hover preview (P32). Read up to 5 child listings + render
+    // a stacked mini list. Click still triggers the default zoom-to-fit
+    // because we don't preventDefault.
+    this.cluster.on('clustermouseover', (e: any) => {
+      const children: L.Marker[] = e.layer.getAllChildMarkers();
+      const ids = children.map(m => (m as any).__listingId as number).filter(id => typeof id === 'number');
+      const listings = ids.map(id => this.listings.find(l => l.id === id)).filter((l): l is IListing => !!l);
+      if (listings.length === 0) return;
+      this.showPreview('cluster', e.layer.getLatLng(), listings.slice(0, 5), listings.length);
+    });
+    this.cluster.on('clustermouseout', () => this.queuePreviewHide());
+
     this.renderMarkers();
     this.renderPois();
+
+    // Build the shared preview overlay element. pointer-events: none so
+    // it never steals the cursor — the marker keeps emitting mouseout
+    // when the cursor moves onto the preview.
+    this.previewEl = document.createElement('div');
+    this.previewEl.className = 'cnt-map-preview is-hiding';
+    this.mapEl.nativeElement.appendChild(this.previewEl);
+
+    // Hide the preview during pan/zoom; the overlay can't track moves
+    // smoothly without driving Leaflet wild. moveend re-anchors it if a
+    // preview was active.
+    this.map.on('movestart', () => {
+      if (this.previewEl) this.previewEl.classList.add('is-hiding');
+    });
+    this.map.on('move', () => this.repositionPreview());
 
     // Emit bounds whenever the map idles after pan/zoom (debounced by Leaflet's moveend).
     this.map.on('moveend', () => this.emitBounds());
     // Notify parent when the user dismisses a popup so it can clear selectedId.
     this.map.on('popupclose', () => this.popupClosed.emit());
+    // Hide the hover preview as soon as a popup opens — the popup
+    // takes over the focus role.
+    this.map.on('popupopen', () => this.hidePreviewImmediate());
 
     // Event delegation for popup-internal buttons (heart on listings + "View details" on POI popups).
     this.map.getContainer().addEventListener('click', (e: Event) => {
@@ -670,6 +706,7 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       }
 
       const marker = L.marker([listing.lat, listing.lng], { icon });
+      (marker as any).__listingId = listing.id;
       marker.bindPopup(this.buildPopupHtml(listing), {
         closeButton: false,
         maxWidth: 280,
@@ -679,13 +716,97 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
         autoPanPadding: [40, 40],
         keepInView: true,
       });
-      marker.on('mouseover', () => this.markerHover.emit(listing.id));
-      marker.on('mouseout', () => this.markerHover.emit(null));
+      marker.on('mouseover', () => {
+        this.markerHover.emit(listing.id);
+        this.showPreview('marker', marker.getLatLng(), [listing], 1);
+      });
+      marker.on('mouseout', () => {
+        this.markerHover.emit(null);
+        this.queuePreviewHide();
+      });
+      marker.on('mousedown', () => this.hidePreviewImmediate());
       marker.on('click', () => this.markerClick.emit(listing.id));
 
       this.cluster.addLayer(marker);
       this.markers.set(listing.id, marker);
     }
+  }
+
+  // ---------------- Hover preview (P32) ----------------
+
+  private showPreview(mode: 'marker' | 'cluster', latlng: L.LatLng, listings: IListing[], totalCount: number): void {
+    if (!this.previewEl || !this.map) return;
+    if (this.previewHideTimer) {
+      clearTimeout(this.previewHideTimer);
+      this.previewHideTimer = null;
+    }
+    this.previewLatLng = latlng;
+    this.previewEl.innerHTML = this.buildPreviewHtml(mode, listings, totalCount);
+    this.previewEl.classList.toggle('cnt-map-preview--marker', mode === 'marker');
+    this.previewEl.classList.toggle('cnt-map-preview--cluster', mode === 'cluster');
+    this.previewEl.classList.remove('is-hiding');
+    this.repositionPreview();
+  }
+
+  private queuePreviewHide(): void {
+    if (this.previewHideTimer) clearTimeout(this.previewHideTimer);
+    this.previewHideTimer = setTimeout(() => {
+      this.hidePreviewImmediate();
+    }, 80);
+  }
+
+  private hidePreviewImmediate(): void {
+    if (this.previewHideTimer) {
+      clearTimeout(this.previewHideTimer);
+      this.previewHideTimer = null;
+    }
+    if (this.previewEl) this.previewEl.classList.add('is-hiding');
+    this.previewLatLng = null;
+  }
+
+  private repositionPreview(): void {
+    if (!this.previewEl || !this.map || !this.previewLatLng) return;
+    const point = this.map.latLngToContainerPoint(this.previewLatLng);
+    // Anchor: above the marker, centered horizontally. CSS handles the
+    // translate(-50%, -100%) so the overlay stays visually above the pin.
+    this.previewEl.style.left = `${point.x}px`;
+    this.previewEl.style.top = `${point.y - 18}px`;
+  }
+
+  private buildPreviewHtml(mode: 'marker' | 'cluster', listings: IListing[], totalCount: number): string {
+    if (mode === 'marker') {
+      const l = listings[0];
+      const priceLine = l.kind === 'boondocking'
+        ? `<span class="cnt-map-preview__price">${this.escapeHtml(l.agency || 'Boondocking')}</span>`
+        : `<span class="cnt-map-preview__price">$${l.price}<span class="cnt-map-preview__per"> / night</span></span>`;
+      return `
+        <img class="cnt-map-preview__img" src="${this.escapeHtml(l.image)}" alt="" loading="lazy">
+        <div class="cnt-map-preview__body">
+          <div class="cnt-map-preview__title">${this.escapeHtml(l.title)}</div>
+          <div class="cnt-map-preview__loc">${this.escapeHtml(l.location)}</div>
+          ${priceLine}
+        </div>`;
+    }
+    // cluster
+    const rows = listings.map(l => {
+      const price = l.kind === 'boondocking'
+        ? `<span class="cnt-map-preview__row-price">Public</span>`
+        : `<span class="cnt-map-preview__row-price">$${l.price}</span>`;
+      return `
+        <div class="cnt-map-preview__row">
+          <img class="cnt-map-preview__row-img" src="${this.escapeHtml(l.image)}" alt="" loading="lazy">
+          <span class="cnt-map-preview__row-title">${this.escapeHtml(l.title)}</span>
+          ${price}
+        </div>`;
+    }).join('');
+    const remaining = totalCount - listings.length;
+    const more = remaining > 0
+      ? `<div class="cnt-map-preview__more">+${remaining} more — click to expand</div>`
+      : '';
+    return `
+      <div class="cnt-map-preview__header">${totalCount} stays in this area</div>
+      ${rows}
+      ${more}`;
   }
 
   private updateHoverHighlight(): void {
