@@ -43,6 +43,20 @@
         }
       </div>
 
+      <!-- P38/D — Free-text search input above the chip rail. -->
+      <label class="relative block w-full md:max-w-md mb-3">
+        <span class="sr-only">Search by name, host, or place</span>
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl" aria-hidden="true">search</span>
+        <input type="search" [(ngModel)]="freeText" (ngModelChange)="onFreeTextChange()"
+          placeholder="Search by name, host, or place…"
+          class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-10 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+        @if (freeText) {
+          <button type="button" (click)="clearFreeText()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text" aria-label="Clear search">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        }
+      </label>
+
       <!-- Filter Pills + Sort — single-row scroll on mobile, wrap on md+. -->
       <div class="cnt-search-pill-rail flex md:flex-wrap gap-2 items-center overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin pb-1">
 
@@ -93,22 +107,27 @@
           }
         </div>
 
-        <!-- Quick toggle: Instant Book -->
+        <!-- Quick toggle: Instant Book — disabled when filtering to
+             Boondocking (free public land doesn't book on the platform). -->
         <button type="button"
           (click)="toggleInstantBookFilter()"
           [attr.aria-pressed]="filters.instantBookOnly"
+          [attr.aria-disabled]="filtersDisabledForBoondocking ? 'true' : null"
+          [title]="filtersDisabledForBoondocking ? 'Not applicable to boondocking results' : null"
           class="cnt-pill"
-          [ngClass]="filters.instantBookOnly ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+          [ngClass]="filtersDisabledForBoondocking ? 'cnt-pill-inactive cnt-pill-disabled' : (filters.instantBookOnly ? 'cnt-pill-active' : 'cnt-pill-inactive')">
           <span class="material-symbols-outlined text-base" [style.font-variation-settings]="filters.instantBookOnly ? '\'FILL\' 1' : null">bolt</span>
           <span class="font-button">Instant Book</span>
         </button>
 
-        <!-- Dates pill + panel -->
+        <!-- Dates pill + panel — disabled for Boondocking too. -->
         <div class="relative">
           <button type="button"
             (click)="togglePill('dates')"
+            [attr.aria-disabled]="filtersDisabledForBoondocking ? 'true' : null"
+            [title]="filtersDisabledForBoondocking ? 'Not applicable to boondocking results' : null"
             class="cnt-pill"
-            [ngClass]="(openPill === 'dates' || activePillSummary.dates) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            [ngClass]="filtersDisabledForBoondocking ? 'cnt-pill-inactive cnt-pill-disabled' : ((openPill === 'dates' || activePillSummary.dates) ? 'cnt-pill-active' : 'cnt-pill-inactive')">
             <span class="material-symbols-outlined text-base">calendar_today</span>
             {{ activePillSummary.dates || 'Dates' }}
           </button>
@@ -128,12 +147,14 @@
           }
         </div>
 
-        <!-- Price pill + panel -->
+        <!-- Price pill + panel — disabled for Boondocking. -->
         <div class="relative">
           <button type="button"
             (click)="togglePill('price')"
+            [attr.aria-disabled]="filtersDisabledForBoondocking ? 'true' : null"
+            [title]="filtersDisabledForBoondocking ? 'Not applicable to boondocking results' : null"
             class="cnt-pill"
-            [ngClass]="(openPill === 'price' || activePillSummary.price) ? 'cnt-pill-active' : 'cnt-pill-inactive'">
+            [ngClass]="filtersDisabledForBoondocking ? 'cnt-pill-inactive cnt-pill-disabled' : ((openPill === 'price' || activePillSummary.price) ? 'cnt-pill-active' : 'cnt-pill-inactive')">
             <span class="material-symbols-outlined text-base">payments</span>
             {{ activePillSummary.price || 'Price' }}
           </button>
@@ -353,6 +374,66 @@
             }
           </span>
         </button>
+
+        <!-- P38/E — Saved searches pill. Opens a small dropdown with
+             a Save form + saved list. -->
+        <div class="relative">
+          <button type="button"
+            (click)="toggleSavedSearchesPanel()"
+            class="cnt-pill"
+            [ngClass]="savedSearchesOpen ? 'cnt-pill-active' : 'cnt-pill-inactive'"
+            [attr.aria-expanded]="savedSearchesOpen">
+            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+            <span class="font-button">Saved@if ((savedSearches.searches$ | async)?.length; as n) {<span class="ml-1 opacity-80">({{ n }})</span>}</span>
+          </button>
+          @if (savedSearchesOpen) {
+            <div role="dialog" aria-label="Saved searches" cntFocusTrap (escape)="closeSavedSearchesPanel()"
+              class="filter-panel filter-panel--anchor-right" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-between pb-4 border-b border-dark-text/10">
+                <span class="font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold text-dark-text">Saved searches</span>
+                <button type="button" (click)="closeSavedSearchesPanel()" aria-label="Close"
+                  class="w-7 h-7 rounded-full inline-flex items-center justify-center hover:bg-cream/60">
+                  <span class="material-symbols-outlined text-[16px] text-muted-text">close</span>
+                </button>
+              </div>
+              <div class="mt-4">
+                <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-dark-text mb-2">Save current search</div>
+                <div class="flex items-center gap-2">
+                  <input type="text" [(ngModel)]="savedSearchName"
+                    placeholder="Name this search"
+                    class="flex-1 min-w-0 bg-white border border-dark-text/15 rounded-full px-3 py-2 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+                  <button type="button" (click)="saveCurrentSearch()"
+                    class="shrink-0 inline-flex items-center px-4 py-2 rounded-full bg-trinidad text-white text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity">
+                    Save
+                  </button>
+                </div>
+              </div>
+              @if (savedSearches.searches$ | async; as list) {
+                @if (list.length > 0) {
+                  <div class="mt-5 pt-4 border-t border-dark-text/10">
+                    <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text mb-2">Your searches</div>
+                    <ul class="space-y-1.5 max-h-[14rem] overflow-y-auto">
+                      @for (s of list; track s.id) {
+                        <li>
+                          <button type="button" (click)="applySavedSearch(s)"
+                            class="w-full group flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-cream/60 transition-colors text-left">
+                            <span class="material-symbols-outlined text-base text-trinidad shrink-0" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+                            <span class="flex-1 min-w-0 truncate text-sm font-body font-bold text-dark-text">{{ s.name }}</span>
+                            <button type="button" (click)="removeSavedSearch(s.id, $event)"
+                              class="shrink-0 w-7 h-7 rounded-full inline-flex items-center justify-center text-muted-text hover:bg-trinidad/10 hover:text-trinidad opacity-0 group-hover:opacity-100 transition-opacity"
+                              aria-label="Delete saved search">
+                              <span class="material-symbols-outlined text-[14px]">delete</span>
+                            </button>
+                          </button>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
 
       </div>
     </div>

@@ -8,7 +8,7 @@ import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { SearchMapComponent } from './search-map.component';
-import { SeoService } from '@cnt-workspace/data-access';
+import { SeoService, SavedSearchesService, ISavedSearch } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -206,6 +206,73 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   setKindFilter(kind: 'all' | ListingKind): void { this.kindFilter = kind; this.clearMapBoundsFilter(); }
 
+  /** P38/A — Price, Instant Book, and Dates filters don't apply when
+   *  the visitor narrows to public-land boondocking results. The
+   *  filter pills go disabled (visually + functionally) in that mode. */
+  get filtersDisabledForBoondocking(): boolean {
+    return this.kindFilter === 'boondocking';
+  }
+
+  /** P38/D — Free-text search across listing title, location, and host
+   *  name. Debounced via setTimeout below; synced to URL via syncToUrl. */
+  freeText = '';
+  private freeTextDebounce: ReturnType<typeof setTimeout> | null = null;
+  onFreeTextChange(): void {
+    if (this.freeTextDebounce) clearTimeout(this.freeTextDebounce);
+    this.freeTextDebounce = setTimeout(() => {
+      this.syncToUrl();
+      this.freeTextDebounce = null;
+    }, 200);
+  }
+  clearFreeText(): void {
+    this.freeText = '';
+    this.syncToUrl();
+  }
+
+  /** P38/E — saved-searches panel state. */
+  savedSearchesOpen = false;
+  savedSearchName = '';
+
+  toggleSavedSearchesPanel(): void {
+    this.savedSearchesOpen = !this.savedSearchesOpen;
+  }
+  closeSavedSearchesPanel(): void {
+    this.savedSearchesOpen = false;
+  }
+
+  /** Snapshot the current URL query params + save as a named bookmark. */
+  saveCurrentSearch(): void {
+    const params = this.route.snapshot.queryParams;
+    const snapshot: Record<string, string> = {};
+    for (const [k, v] of Object.entries(params)) {
+      if (typeof v === 'string' && v.length > 0) snapshot[k] = v;
+    }
+    if (Object.keys(snapshot).length === 0) {
+      this.toasts.info('Apply some filters first, then save the search.');
+      return;
+    }
+    const entry = this.savedSearches.add(this.savedSearchName, snapshot);
+    this.savedSearchName = '';
+    this.toasts.success(`Saved "${entry.name}".`);
+  }
+
+  applySavedSearch(saved: ISavedSearch): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: saved.query,
+      // Replace the existing URL params with the snapshot — no merge.
+      queryParamsHandling: '',
+      replaceUrl: true,
+    });
+    this.closeSavedSearchesPanel();
+    this.toasts.success(`Applied "${saved.name}".`);
+  }
+
+  removeSavedSearch(id: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.savedSearches.remove(id);
+  }
+
   // Filter constants exposed to template
   AMENITY_GROUP = AMENITY_GROUP;
   AMENITY_LABELS = AMENITY_LABELS;
@@ -267,6 +334,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     private routing: RoutingService,
     private bookingSvc: BookingService,
     private availability: ListingAvailabilityService,
+    public savedSearches: SavedSearchesService,
   ) {}
 
   /** Local-time ISO YYYY-MM-DD key — matches HostAvailabilityService. */
@@ -453,6 +521,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
    * so those filters skip it (caller still respects kindFilter). */
   private passesNonViewportFilters(l: IListing): boolean {
     if (this.pinnedIds && !this.pinnedIds.has(l.id)) return false;
+    // P38/D — free-text search: title, location, host name (case-insensitive).
+    const q = this.freeText.trim().toLowerCase();
+    if (q.length > 0) {
+      const hostName = (l as { hostName?: string }).hostName?.toLowerCase() ?? '';
+      const inTitle = l.title.toLowerCase().includes(q);
+      const inLoc = l.location.toLowerCase().includes(q);
+      const inHost = hostName.includes(q);
+      if (!inTitle && !inLoc && !inHost) return false;
+    }
     const lk: ListingKind = l.kind || 'private';
     if (this.kindFilter !== 'all' && lk !== this.kindFilter) return false;
     if (l.kind === 'boondocking') {
@@ -700,6 +777,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.amenities = new Set();
     this.selectedDateRange = null;
     this.sortBy = 'recommended';
+    this.freeText = '';
     this.clearMapBoundsFilter();
     this.syncToUrl();
   }
@@ -896,6 +974,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     const q = this.route.snapshot.queryParamMap;
     const sort = q.get('sort');
     if (sort && SORT_OPTIONS.some(o => o.id === sort)) this.sortBy = sort as SortOption;
+    const freeText = q.get('q');
+    if (freeText) this.freeText = freeText;
     const min = parseInt(q.get('min') || '', 10);
     if (Number.isFinite(min)) this.filters.minPrice = min;
     const max = parseInt(q.get('max') || '', 10);
@@ -941,6 +1021,8 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       startDate: this.selectedDateRange?.start ? this.toIso(this.selectedDateRange.start) : null,
       endDate:   this.selectedDateRange?.end   ? this.toIso(this.selectedDateRange.end)   : null,
       ids: this.pinnedIds && this.pinnedIds.size > 0 ? [...this.pinnedIds].join(',') : null,
+      // P38/D — free-text search; round-trips so a filtered URL is shareable.
+      q: this.freeText.trim().length > 0 ? this.freeText.trim() : null,
     };
     this.router.navigate([], {
       relativeTo: this.route,

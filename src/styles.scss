@@ -167,6 +167,13 @@ a:focus {
   .cnt-pill-active {
     @apply bg-jungle-green text-white border-jungle-green;
   }
+  /* P38/A — filter pill disabled state. Used when a filter doesn't
+   * apply to the active kind chip (e.g. Price / Instant Book / Dates
+   * on boondocking). Pointer-events off so the click never fires. */
+  .cnt-pill-disabled {
+    @apply opacity-40 cursor-not-allowed;
+    pointer-events: none;
+  }
 }
 
 /* ===== CurbNTurf custom map markers ===== */
@@ -191,8 +198,11 @@ a:focus {
 .cnt-price-marker:hover, .cnt-price-marker.is-hovered {
   background: #e3530d;
   color: #fff;
-  transform: scale(1.18);
-  box-shadow: 0 8px 20px rgba(227, 83, 13, 0.4);
+  transform: scale(1.18) translateY(-2px);
+  box-shadow:
+    0 0 0 3px rgba(227, 83, 13, 0.28),
+    0 0 0 6px rgba(227, 83, 13, 0.14),
+    0 14px 28px rgba(0, 0, 0, 0.22);
   z-index: var(--z-marker-hover);
 }
 
@@ -223,8 +233,11 @@ a:focus {
 }
 .cnt-boondocking-marker:hover, .cnt-boondocking-marker.is-hovered {
   background: #1f4933;
-  transform: scale(1.18);
-  box-shadow: 0 8px 20px rgba(41, 93, 66, 0.45);
+  transform: scale(1.18) translateY(-2px);
+  box-shadow:
+    0 0 0 3px rgba(227, 83, 13, 0.28),
+    0 0 0 6px rgba(227, 83, 13, 0.14),
+    0 14px 28px rgba(0, 0, 0, 0.22);
   z-index: var(--z-marker-hover);
 }
 
@@ -1374,19 +1387,27 @@ body.cnt-modal-open .cnt-navbar {
     font-size: 22px !important;
   }
 
-  /* Brand colors */
+  /* Brand colors — exact trinidad / jungle-green tokens (P38/C) */
   .mat-calendar-body-selected {
-    background-color: #E24A00 !important;
+    background-color: #e3530d !important;
     color: white !important;
   }
   .mat-calendar-body-in-range::before {
-    background-color: rgba(226, 74, 0, 0.15) !important;
+    background-color: rgba(227, 83, 13, 0.15) !important;
   }
   .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
-    background-color: rgba(226, 74, 0, 0.1) !important;
+    background-color: rgba(227, 83, 13, 0.12) !important;
   }
   .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
-    border-color: #E24A00 !important;
+    border-color: #295d42 !important;
+  }
+  /* Disabled / out-of-range cells stay muted */
+  .mat-calendar-body-disabled > .mat-calendar-body-cell-content {
+    color: rgba(34, 34, 34, 0.3) !important;
+  }
+  /* Period (year/month) button arrow */
+  .mat-calendar-arrow {
+    fill: #e3530d !important;
   }
 }
 

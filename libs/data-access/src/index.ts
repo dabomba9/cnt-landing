@@ -8,6 +8,7 @@ export * from './lib/toast/toast.service';
 export * from './lib/seo/seo.service';
 export * from './lib/consent/cookie-consent.service';
 export * from './lib/article-preferences/article-preferences.service';
+export * from './lib/saved-searches/saved-searches.service';
 export * from './lib/listings/mock-listings.data';
 export * from './lib/listings/mock-boondocking.data';
 export * from './lib/listings/draft-listing.types';
