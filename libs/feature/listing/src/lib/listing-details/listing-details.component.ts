@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -510,7 +510,56 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     private bookingSvc: BookingService,
     private toasts: ToastService,
     private availability: ListingAvailabilityService,
+    private location: Location,
   ) {}
+
+  // ============================================================================
+  // P43/C — Back-to-search affordance
+  // ============================================================================
+
+  /** Strip label resolved once at ngOnInit from document.referrer.
+   *  Defaults to "Back to search" (the primary funnel) when the
+   *  visitor arrived from elsewhere or via direct link. */
+  backLabel = 'Back to search';
+
+  /** True when document.referrer is same-origin. Used by onBack()
+   *  to decide between history.back() and routing to /search — we
+   *  never want to pop history back to an external page. */
+  private hasSameOriginReferrer = false;
+
+  private resolveBackLabel(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const ref = document.referrer;
+    if (!ref) return;
+    let refPath = '';
+    try {
+      const refUrl = new URL(ref);
+      if (refUrl.origin !== window.location.origin) return;
+      this.hasSameOriginReferrer = true;
+      refPath = refUrl.pathname;
+    } catch {
+      return;
+    }
+    if (refPath.includes('/search')) this.backLabel = 'Back to search results';
+    else if (refPath.includes('/explore')) this.backLabel = 'Back to explore';
+    else if (refPath.includes('/trip-planner') || refPath.includes('/trips')) this.backLabel = 'Back to trip planner';
+    else if (refPath.includes('/article')) this.backLabel = 'Back to article';
+    else if (refPath.includes('/wishlist')) this.backLabel = 'Back to wishlist';
+    // else keep default
+  }
+
+  /** P43/C — Back button click. Prefers history.back() so the
+   *  router's withInMemoryScrolling restores prior scroll
+   *  (shipped in P43/A); falls back to /search for direct
+   *  landings or external referrers. */
+  onBack(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (window.history.length > 1 && this.hasSameOriginReferrer) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/search']);
+    }
+  }
 
   /** Lowest effective nightly across the next 90 days — drives the
    *  "from $X / night" headline so seasonal tiers and per-day overrides
@@ -528,6 +577,10 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   private currentListingId = -1;
 
   ngOnInit(): void {
+    // P43/C — resolve back-strip label once from document.referrer
+    // before any nav side-effects fire.
+    this.resolveBackLabel();
+
     // Subscribe once: any service mutation pushes URL state
     this.bookingChangedSub = this.booking.changed.subscribe(() => this.syncBookingToUrl());
 

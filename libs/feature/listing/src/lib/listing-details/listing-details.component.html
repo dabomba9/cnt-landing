@@ -2,6 +2,19 @@
 
 <main class="pt-24 md:pt-28 pb-24 md:pb-0 min-h-screen bg-cream bg-grid-subtle">
 
+  <!-- P43/C — back-to-search strip. Smart label resolved from
+       document.referrer; click invokes onBack which prefers
+       location.back() so P43/A scroll-restoration triggers. -->
+  <div class="px-[2%]">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 pt-2 md:pt-4">
+      <button type="button" (click)="onBack()"
+        class="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.12em] font-button font-bold text-muted-text hover:text-trinidad transition-colors group">
+        <span class="material-symbols-outlined text-base transition-transform group-hover:-translate-x-0.5" aria-hidden="true">arrow_back</span>
+        {{ backLabel }}
+      </button>
+    </div>
+  </div>
+
   <!-- ================= Title row (Airbnb-style: simple title + actions) ================= -->
   <section class="px-[2%] pt-8">
     <div class="max-w-[90rem] mx-auto px-4 md:px-8">
