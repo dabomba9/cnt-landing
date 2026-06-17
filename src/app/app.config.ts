@@ -1,5 +1,5 @@
 import { ApplicationConfig, APP_INITIALIZER } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -28,7 +28,17 @@ Amplify.configure({
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(appRoutes),
+    // P43/A — restore scroll position on back/forward nav
+    // (e.g. /search → listing detail → back lands the visitor
+    // on the same card they clicked). anchorScrolling enables
+    // `#fragment` deep links used by /articles TOC + share bar.
+    provideRouter(
+      appRoutes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled',
+      }),
+    ),
     provideHttpClient(),
     provideAnimationsAsync(),
     provideIonicAngular({}),
