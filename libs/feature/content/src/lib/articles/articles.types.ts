@@ -19,6 +19,30 @@ export interface ICategoryMeta {
   icon: string;        // Material Symbols name
 }
 
+export interface ICategoryCta {
+  copy: string;
+  href: string;
+  cta: string;
+  icon: string;
+}
+
+/** Per-category end-of-article CTA that bridges editorial → funnel.
+ *  Renders inside the white reading panel, just before the related-
+ *  articles rail. Returns null for categories that are purely
+ *  editorial (no meaningful conversion path). */
+export const CATEGORY_CTA: Record<ArticleCategoryKey, ICategoryCta | null> = {
+  'boondocking':     { copy: 'Find boondocking stays near you',         href: '/search', cta: 'Find a stay',     icon: 'forest' },
+  'host':            { copy: 'Have land? Earn from CurbNTurf hosting',  href: '/host',   cta: 'Become a host',   icon: 'home_work' },
+  'trip-planning':   { copy: 'Plan your next route on CurbNTurf',       href: '/search', cta: 'Plan a trip',     icon: 'route' },
+  'destinations':    { copy: 'Find stays at your next destination',     href: '/search', cta: 'Browse stays',    icon: 'pin_drop' },
+  'camping-tips':    { copy: 'Find your next campsite on CurbNTurf',    href: '/search', cta: 'Browse stays',    icon: 'park' },
+  'gear':            { copy: 'Book a private stay to try your gear',    href: '/search', cta: 'Browse stays',    icon: 'backpack' },
+  'maintenance':     { copy: 'Plan a quiet stop on the road',           href: '/search', cta: 'Browse stays',    icon: 'build' },
+  'safety':          { copy: 'Find verified hosts on CurbNTurf',        href: '/search', cta: 'Browse stays',    icon: 'health_and_safety' },
+  'cooking':         null,
+  'travel-stories':  null,
+};
+
 /** One-line intro copy per category — drives the hero on the
  *  per-category landing pages and the CollectionPage description.
  *  Keep these search-engine-friendly: lead with the user intent. */

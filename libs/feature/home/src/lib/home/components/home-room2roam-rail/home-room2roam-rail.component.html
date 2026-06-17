@@ -1,0 +1,67 @@
+@if (featured; as feat) {
+  <section class="full-bleed bg-jungle-green text-white pb-28 md:pb-44">
+    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-8 md:mb-12">
+      <div class="flex items-center gap-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" class="w-12 h-12 md:w-14 md:h-14 text-[#F1B434] shrink-0" fill="currentColor" aria-hidden="true">
+          <path d="M62.64,62.44c-.08.03-.14.06-.19.08-8.04,3.48-17.09,5.67-25.87,3.35-2.73-.72-5.35-2.11-6.94-4.3-4.69-6.45,3.95-12.89,7.96-17.39,2.21-2.48,3.99-5.61,3.45-8.79-.24-1.39-.96-2.75-2.2-3.54-1.27-.8-2.94-.92-4.41-.53s-2.77,1.23-3.88,2.22c-2.62,2.33-4.32,5.44-5.36,8.67-1.51,4.66-2.03,9.61-1.98,14.47.01,1.59.5,15.33.9,15.33,0,0,47.88,0,47.88,0l-9.36-9.56Z"/>
+          <path d="M4.81,52.16c1.18-7.91,2.78-15.57,6.87-22.57.61-1.03,1.24-2.05,1.92-3.05,2.63-3.89,5.91-7.41,9.89-10.1,11.49-7.74,31.62-8.28,36.02,7.37,1.71,6.07.97,12.74-2.55,17.86-1.82,2.64-4.11,4.89-6.64,6.93-1.09.88-2.28,1.65-3.5,2.37-.34.2-3.38,1.63-2.65,1.97.9.43,3.81-.73,4.73-1.02,1.7-.54,3.33-1.26,4.87-2.13,3.07-1.73,5.75-4.04,7.93-6.7,4.4-5.36,6.85-12.18,6.58-18.94-.31-7.47-4.25-14.65-10.73-19.07C52.59,1.71,46.56,0,40.43,0H0v72h3.57c-.11-6.82.78-16.82,1.23-19.84Z"/>
+        </svg>
+        <div class="min-w-0">
+          <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block">Room2Roam</span>
+          <h2 class="font-headline font-bold text-white tracking-tight text-2xl md:text-4xl leading-none">Stories from the road</h2>
+        </div>
+      </div>
+      <a routerLink="/articles" class="shrink-0 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.12em] font-button font-bold text-white hover:text-trinidad transition-colors no-underline">
+        All articles
+        <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 lg:gap-8">
+      <a [routerLink]="['/article', feat.id, feat.slug]"
+        class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-white/5 hover:border-trinidad/40 hover:shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition-all duration-300 no-underline">
+        <div class="relative aspect-[16/10] overflow-hidden">
+          <img [src]="feat.heroImage" [alt]="feat.heroAlt" loading="lazy" decoding="async"
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+          <div class="absolute top-4 left-4 px-3 py-1 bg-cream/95 backdrop-blur-sm rounded-full">
+            <span class="text-trinidad font-label uppercase tracking-[0.1em] text-[0.6rem] font-bold">{{ feat.categoryLabel }}</span>
+          </div>
+        </div>
+        <div class="p-6 md:p-8 flex flex-col gap-3 flex-1">
+          <div class="flex items-center gap-3 text-muted-text text-xs font-label uppercase tracking-[0.1em]">
+            <span>{{ feat.readTimeMinutes }} min read</span>
+          </div>
+          <h3 class="font-headline font-bold text-dark-text text-2xl md:text-3xl leading-tight group-hover:text-trinidad transition-colors line-clamp-3">{{ feat.title }}</h3>
+          <p class="text-muted-text text-sm md:text-base font-body leading-relaxed line-clamp-3 flex-1">{{ feat.excerpt }}</p>
+          <div class="flex items-center gap-2 text-trinidad font-button uppercase tracking-[0.12em] text-xs font-bold mt-auto pt-2">
+            Read article
+            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Right column: 3 picks. On lg+ they stretch to fill the
+           featured card's height via a 3-row grid; each card is its
+           own row and the inner image grows to fill the row. -->
+      <div class="flex flex-col gap-4 lg:grid lg:grid-rows-3 lg:gap-6 lg:h-full">
+        @for (pick of picks; track pick.id) {
+          <a [routerLink]="['/article', pick.id, pick.slug]"
+            class="group min-h-0 grid grid-cols-[8rem_minmax(0,1fr)] sm:grid-cols-[10rem_minmax(0,1fr)] lg:grid-cols-[14rem_minmax(0,1fr)] bg-white rounded-2xl border border-white/5 hover:border-trinidad/40 hover:shadow-[0_14px_32px_rgba(0,0,0,0.18)] transition-all duration-300 no-underline overflow-hidden">
+            <div class="relative overflow-hidden bg-dark-text/5">
+              <img [src]="pick.heroImage" [alt]="pick.heroAlt" loading="lazy" decoding="async"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+            </div>
+            <div class="min-w-0 p-4 lg:p-5 flex flex-col justify-center gap-1.5">
+              <span class="text-trinidad font-label uppercase tracking-[0.1em] text-[0.55rem] font-bold">{{ pick.categoryLabel }}</span>
+              <h3 class="font-headline font-bold text-dark-text text-base lg:text-lg leading-snug group-hover:text-trinidad transition-colors line-clamp-2">{{ pick.title }}</h3>
+              <p class="hidden lg:block text-muted-text text-xs font-body leading-relaxed line-clamp-2">{{ pick.excerpt }}</p>
+              <span class="text-xs text-muted-text font-body">{{ pick.readTimeMinutes }} min read</span>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+    </div>
+  </section>
+}

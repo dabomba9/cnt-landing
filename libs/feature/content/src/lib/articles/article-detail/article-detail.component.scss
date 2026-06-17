@@ -51,6 +51,77 @@
   margin: 0 0 1.25rem;
 }
 
+/* Drop cap on the first paragraph of every article. Pure CSS so it
+ * renders identically on SSR + client. Skip when the first block is
+ * the Key Takeaways callout (P22/B inserts an <aside> that pushes
+ * the first <p> to second position automatically, so this rule still
+ * targets the right element). */
+:host ::ng-deep .article-prose > p:first-of-type::first-letter {
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 4.5rem;
+  line-height: 0.9;
+  float: left;
+  padding: 0.35rem 0.625rem 0 0;
+  color: #1a1a1a;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .article-prose > p:first-of-type::first-letter {
+    font-size: 3.25rem;
+    padding: 0.25rem 0.5rem 0 0;
+  }
+}
+
+/* Key Takeaways callout. processBody() wraps the imported
+ * <p><strong>Key Takeaways</strong></p><ul>…</ul> pair in an
+ * <aside class="key-takeaways">. SCSS turns the aside into a styled
+ * callout box with a trinidad accent rule and an eyebrow heading
+ * rendered via ::before so the original <p><strong>… title stays
+ * hidden. */
+:host ::ng-deep .article-prose .key-takeaways {
+  position: relative;
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  background-color: rgba(227, 83, 13, 0.04);
+  border: 1px solid rgba(227, 83, 13, 0.18);
+  border-left: 4px solid #e3530d;
+  border-radius: 0.875rem;
+
+  &::before {
+    content: 'Key takeaways';
+    display: block;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e3530d;
+    margin-bottom: 0.75rem;
+  }
+
+  /* The original heading paragraph is now redundant — hide it. */
+  > p:first-child {
+    display: none;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style: disc;
+
+    li {
+      margin-bottom: 0.5rem;
+      color: #333333;
+
+      strong {
+        color: #1a1a1a;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
 :host ::ng-deep .article-prose p:empty {
   display: none;
 }
@@ -214,4 +285,63 @@
  * the eye tracks across multi-column rows without losing place. */
 :host ::ng-deep .article-prose tbody tr:nth-child(even) td {
   background-color: rgba(0, 0, 0, 0.025);
+}
+
+/* Print stylesheet. The global `.cnt-print-hide` utility from
+ * src/styles.scss already hides chrome elements we've tagged in the
+ * template (navbar, share rail, share strip, related, newsletter,
+ * footer, etc.). These detail-page rules strip the residual reading-
+ * panel chrome (white card bg, border, rounded corners) so the body
+ * reads as a single clean sheet on paper.
+ *
+ * Global rules already in effect (src/styles.scss):
+ *   body { background: #fff; color: #000; }
+ *   @page { margin: 0.5in 0.6in; }
+ *   h1, h2, h3 { page-break-after: avoid; } */
+@media print {
+  :host main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Strip the white-card chrome — already on paper. */
+  :host article > div > div > div {
+    background: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Hero image stays but loses rounded corners + shrinks. */
+  :host section .rounded-2xl {
+    border-radius: 0 !important;
+  }
+  :host img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Article prose: black text, no link color, underlined links so
+   * the reference is still readable on paper. */
+  :host ::ng-deep .article-prose,
+  :host ::ng-deep .article-prose * {
+    color: #000 !important;
+    background: transparent !important;
+  }
+  :host ::ng-deep .article-prose a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  :host ::ng-deep .article-prose h2,
+  :host ::ng-deep .article-prose h3 {
+    page-break-after: avoid;
+  }
+
+  :host ::ng-deep .article-prose figure,
+  :host ::ng-deep .article-prose blockquote,
+  :host ::ng-deep .article-prose table {
+    page-break-inside: avoid;
+  }
 }

@@ -1,0 +1,59 @@
+@if (variant === 'wide') {
+  <div class="bg-cream-2 bg-trinidad/[0.04] border border-trinidad/15 rounded-[2rem] px-6 sm:px-10 md:px-14 py-12 md:py-16">
+    <div class="max-w-2xl mx-auto text-center">
+      <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-3 block">Field notes — direct to your inbox</span>
+      <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-3xl md:text-4xl mb-4">
+        Roadworthy stories, twice a month.
+      </h2>
+      <p class="text-muted-text text-base md:text-lg font-body leading-relaxed mb-8 max-w-xl mx-auto">
+        Trip planning, host dispatches, and the gear we keep coming back to. No spam — unsubscribe whenever.
+      </p>
+      <form (ngSubmit)="submit()" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" novalidate>
+        <label class="sr-only" for="newsletter-email-wide">Email address</label>
+        <input id="newsletter-email-wide" type="email" name="email" [(ngModel)]="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [disabled]="submitting"
+          required
+          class="flex-1 bg-white border border-dark-text/15 rounded-full px-5 py-3 text-sm font-body focus:outline-none focus:border-trinidad transition-colors disabled:opacity-60">
+        <button type="submit" [disabled]="submitting"
+          class="shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity disabled:opacity-60">
+          @if (submitting) {
+            <span class="material-symbols-outlined text-base animate-spin" aria-hidden="true">progress_activity</span>
+            Subscribing
+          } @else {
+            Subscribe
+            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+} @else {
+  <div class="bg-trinidad/[0.04] border border-trinidad/15 rounded-2xl px-5 md:px-7 py-6 md:py-7">
+    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+      <div class="md:flex-1 min-w-0">
+        <span class="text-trinidad font-label uppercase tracking-[0.12em] text-[0.6rem] font-bold block mb-1">Field notes</span>
+        <h3 class="font-headline font-bold text-dark-text text-base md:text-lg leading-snug">Get the next dispatch in your inbox.</h3>
+      </div>
+      <form (ngSubmit)="submit()" class="flex gap-2 md:flex-1 md:max-w-md" novalidate>
+        <label class="sr-only" for="newsletter-email-compact">Email address</label>
+        <input id="newsletter-email-compact" type="email" name="email" [(ngModel)]="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [disabled]="submitting"
+          required
+          class="flex-1 min-w-0 bg-white border border-dark-text/15 rounded-full px-4 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad transition-colors disabled:opacity-60">
+        <button type="submit" [disabled]="submitting"
+          class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 transition-opacity disabled:opacity-60"
+          aria-label="Subscribe">
+          @if (submitting) {
+            <span class="material-symbols-outlined text-base animate-spin" aria-hidden="true">progress_activity</span>
+          } @else {
+            Subscribe
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+}

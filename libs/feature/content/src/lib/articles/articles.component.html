@@ -325,6 +325,15 @@
     </div>
   </section>
 
+  <!-- ================= Newsletter signup ================= -->
+  @if (!savedView) {
+    <section class="px-[2%] pb-12">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8">
+        <cnt-newsletter-signup variant="wide"></cnt-newsletter-signup>
+      </div>
+    </section>
+  }
+
   <!-- ================= Browse by topic ================= -->
   @if (!savedView) {
     <section class="px-[2%] pb-16">

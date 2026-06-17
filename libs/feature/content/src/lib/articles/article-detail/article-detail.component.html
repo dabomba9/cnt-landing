@@ -1,7 +1,7 @@
-<cnt-navbar></cnt-navbar>
+<cnt-navbar class="cnt-print-hide"></cnt-navbar>
 
 @if (article) {
-  <div class="reading-progress" role="progressbar" aria-label="Reading progress"
+  <div class="reading-progress cnt-print-hide" role="progressbar" aria-label="Reading progress"
        [attr.aria-valuenow]="(progress * 100) | number:'1.0-0'"
        aria-valuemin="0" aria-valuemax="100"
        [class.is-active]="progress > 0.001 && progress < 0.999">
@@ -9,7 +9,7 @@
   </div>
 }
 
-<main id="main-content" tabindex="-1" class="pt-24 md:pt-28 pb-24 md:pb-0 min-h-screen bg-cream bg-grid-subtle">
+<main id="main-content" tabindex="-1" class="pt-24 md:pt-28 pb-44 md:pb-0 min-h-screen bg-cream bg-grid-subtle">
   @if (article; as a) {
     <!-- Hero -->
     <section class="px-[2%] pt-6 md:pt-10">
@@ -74,10 +74,33 @@
          editorial treatment. Sticky TOC sidebar on lg+; mobile gets
          a collapsible dropdown above the body. -->
     <article class="px-[2%]">
-      <div class="max-w-[80rem] mx-auto px-4 md:px-8 lg:grid lg:grid-cols-[minmax(0,48rem)_minmax(0,16rem)] lg:gap-10 lg:justify-center">
-        <div class="lg:order-1">
+      <div class="max-w-[84rem] mx-auto px-4 md:px-8 lg:grid lg:grid-cols-[minmax(0,3.5rem)_minmax(0,48rem)_minmax(0,16rem)] lg:gap-6 xl:gap-10 lg:justify-center">
+        <!-- Share rail (lg+): sticky vertical column with Twitter,
+             LinkedIn, copy link. -->
+        <aside class="cnt-print-hide hidden lg:block lg:order-1" aria-label="Share this article">
+          <div class="share-rail sticky top-28 flex flex-col items-center gap-3">
+            <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text writing-mode-vertical mb-1">Share</span>
+            <button type="button" (click)="shareTwitter()"
+              class="w-10 h-10 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad hover:bg-trinidad/5 transition-colors flex items-center justify-center"
+              aria-label="Share on Twitter / X">
+              <span class="font-headline font-bold text-base leading-none" aria-hidden="true">𝕏</span>
+            </button>
+            <button type="button" (click)="shareLinkedIn()"
+              class="w-10 h-10 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad hover:bg-trinidad/5 transition-colors flex items-center justify-center"
+              aria-label="Share on LinkedIn">
+              <span class="font-headline font-bold text-xs tracking-tighter leading-none" aria-hidden="true">in</span>
+            </button>
+            <button type="button" (click)="copyLink()"
+              class="w-10 h-10 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad hover:bg-trinidad/5 transition-colors flex items-center justify-center"
+              [attr.aria-label]="justCopied ? 'Link copied' : 'Copy article link'">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">{{ justCopied ? 'check' : 'link' }}</span>
+            </button>
+          </div>
+        </aside>
+
+        <div class="lg:order-2">
           @if (tocEntries.length >= 3) {
-            <details class="lg:hidden mb-4 rounded-xl bg-white border border-dark-text/10 px-4 py-3">
+            <details class="cnt-print-hide lg:hidden mb-4 rounded-xl bg-white border border-dark-text/10 px-4 py-3">
               <summary class="font-body font-bold text-dark-text text-sm cursor-pointer list-none flex items-center justify-between gap-2">
                 <span class="inline-flex items-center gap-2">
                   <span class="material-symbols-outlined text-base text-trinidad" aria-hidden="true">list</span>
@@ -102,10 +125,43 @@
           }
 
           <div class="bg-white rounded-2xl border border-dark-text/8 px-6 md:px-10 py-8 md:py-12">
-            <div #bodyEl class="article-prose" [innerHTML]="body"></div>
+            <div #bodyEl class="article-prose" [innerHTML]="body" (click)="onBodyClick($event)"></div>
+
+            @if (categoryCta; as cta) {
+              <a [routerLink]="cta.href"
+                class="cnt-print-hide mt-10 group flex items-center gap-4 p-5 md:p-6 rounded-2xl bg-trinidad text-white hover:opacity-95 transition-opacity no-underline">
+                <span class="shrink-0 w-12 h-12 rounded-full bg-white/15 inline-flex items-center justify-center">
+                  <span class="material-symbols-outlined text-2xl" aria-hidden="true">{{ cta.icon }}</span>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold opacity-80 mb-1">From the editorial team</div>
+                  <div class="font-headline font-bold text-base md:text-lg leading-snug">{{ cta.copy }}</div>
+                </div>
+                <span class="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-4 py-2 rounded-full bg-white text-trinidad text-xs uppercase tracking-[0.12em] font-button font-bold group-hover:translate-x-1 transition-transform">
+                  {{ cta.cta }}
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+                </span>
+                <span class="material-symbols-outlined text-2xl shrink-0 sm:hidden group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
+              </a>
+            }
+
+            @if (archiveArticle; as ar) {
+              <a [routerLink]="['/article', ar.id, ar.slug]"
+                class="cnt-print-hide mt-8 group flex items-center gap-4 p-5 rounded-2xl bg-jungle-green/5 border-l-4 border-jungle-green/40 border border-jungle-green/15 hover:border-jungle-green/40 transition-colors no-underline">
+                <span class="shrink-0 w-10 h-10 rounded-full bg-jungle-green/10 inline-flex items-center justify-center">
+                  <span class="material-symbols-outlined text-jungle-green text-xl" aria-hidden="true">inventory_2</span>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-jungle-green mb-1">From the archive</div>
+                  <div class="font-body font-bold text-dark-text text-sm md:text-base leading-snug line-clamp-2 group-hover:text-trinidad transition-colors">{{ ar.title }}</div>
+                  <div class="text-xs text-muted-text font-body mt-1">An older read from the same beat — still relevant.</div>
+                </div>
+                <span class="material-symbols-outlined text-jungle-green shrink-0 hidden sm:inline-block group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
+              </a>
+            }
 
             @if (authorProfile; as ap) {
-              <div class="mt-12 pt-6 border-t border-dark-text/10 flex items-start gap-4">
+              <div class="cnt-print-hide mt-12 pt-6 border-t border-dark-text/10 flex items-start gap-4">
                 <div class="shrink-0 w-12 h-12 rounded-full bg-trinidad/10 text-trinidad flex items-center justify-center font-body font-bold text-base" aria-hidden="true">
                   {{ ap.initials }}
                 </div>
@@ -126,10 +182,31 @@
               </div>
             }
           </div>
+
+          @if (readNextArticle; as rn) {
+            <a [routerLink]="['/article', rn.id, rn.slug]"
+              class="cnt-print-hide mt-8 group block bg-white rounded-2xl border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] transition-all overflow-hidden no-underline">
+              <div class="grid grid-cols-1 sm:grid-cols-[12rem_minmax(0,1fr)]">
+                <div class="relative aspect-[16/10] sm:aspect-auto sm:min-h-full overflow-hidden bg-dark-text/5">
+                  <img [src]="rn.heroImage" [alt]="rn.heroAlt" loading="lazy" decoding="async"
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
+                </div>
+                <div class="p-5 md:p-6 flex flex-col gap-2">
+                  <span class="text-trinidad font-label uppercase tracking-[0.12em] text-[0.6rem] font-bold">Read this next</span>
+                  <h3 class="font-headline font-bold text-dark-text text-lg md:text-xl leading-snug group-hover:text-trinidad transition-colors line-clamp-2">{{ rn.title }}</h3>
+                  <p class="text-muted-text text-sm font-body leading-relaxed line-clamp-2">{{ rn.excerpt }}</p>
+                  <div class="flex items-center gap-2 text-trinidad font-button uppercase tracking-[0.12em] text-xs font-bold mt-auto pt-2">
+                    Read article
+                    <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          }
         </div>
 
         @if (tocEntries.length >= 3) {
-          <aside class="hidden lg:block lg:order-2">
+          <aside class="cnt-print-hide hidden lg:block lg:order-3">
             <div class="sticky top-28">
               <div class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text mb-3">On this page</div>
               <ul class="space-y-2 border-l border-dark-text/10">
@@ -152,8 +229,35 @@
       </div>
     </article>
 
+    <!-- Mobile share strip: fixed at the bottom, just above the
+         navbar's mobile bottom nav. Hidden on lg+ where the vertical
+         share rail handles it. -->
+    <div class="share-strip cnt-print-hide lg:hidden fixed left-0 right-0 bottom-20 z-40 px-4 py-3 bg-cream/95 backdrop-blur-sm border-t border-dark-text/10"
+      aria-label="Share this article">
+      <div class="max-w-2xl mx-auto flex items-center justify-around gap-2">
+        <button type="button" (click)="shareTwitter()"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad transition-colors text-sm font-body font-bold"
+          aria-label="Share on Twitter / X">
+          <span class="font-headline text-base leading-none" aria-hidden="true">𝕏</span>
+          <span class="hidden sm:inline">Tweet</span>
+        </button>
+        <button type="button" (click)="shareLinkedIn()"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad transition-colors text-sm font-body font-bold"
+          aria-label="Share on LinkedIn">
+          <span class="font-headline text-xs tracking-tighter leading-none" aria-hidden="true">in</span>
+          <span class="hidden sm:inline">LinkedIn</span>
+        </button>
+        <button type="button" (click)="copyLink()"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad transition-colors text-sm font-body font-bold"
+          [attr.aria-label]="justCopied ? 'Link copied' : 'Copy article link'">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">{{ justCopied ? 'check' : 'link' }}</span>
+          <span class="hidden sm:inline">{{ justCopied ? 'Copied' : 'Copy' }}</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Prev / Next nav -->
-    <nav aria-label="Article navigation" class="px-[2%] mt-12 md:mt-16">
+    <nav aria-label="Article navigation" class="cnt-print-hide px-[2%] mt-12 md:mt-16">
       <div class="max-w-[80rem] mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         @if (prev) {
           <a [routerLink]="['/article', prev.id, prev.slug]"
@@ -182,7 +286,7 @@
 
     <!-- Related articles -->
     @if (related.length > 0) {
-      <section class="px-[2%] mt-12 md:mt-16">
+      <section class="cnt-print-hide px-[2%] mt-12 md:mt-16">
         <div class="max-w-[80rem] mx-auto px-4 md:px-8">
           <h2 class="font-headline font-bold text-dark-text tracking-tight text-2xl md:text-3xl mb-6">More from {{ a.categoryLabel }}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -204,6 +308,13 @@
       </section>
     }
 
+    <!-- Newsletter signup (compact) -->
+    <section class="cnt-print-hide px-[2%] mt-12 md:mt-16">
+      <div class="max-w-[48rem] mx-auto px-4">
+        <cnt-newsletter-signup variant="compact"></cnt-newsletter-signup>
+      </div>
+    </section>
+
   } @else {
     <!-- Missing article -->
     <section class="px-[2%] pt-12">
@@ -224,4 +335,4 @@
   }
 </main>
 
-<curbnturf-footer></curbnturf-footer>
+<curbnturf-footer class="cnt-print-hide"></curbnturf-footer>

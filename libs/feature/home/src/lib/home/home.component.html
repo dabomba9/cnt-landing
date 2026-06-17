@@ -51,6 +51,35 @@
     <div class="container-body !bg-transparent !pb-0">
     <!-- Hero Section -->
     <cnt-home-hero></cnt-home-hero>
+
+    <!-- ================= Trust strip (P26/C) =================
+         Slim social-proof row directly below the hero — pulls the
+         trust signal that was buried at 60% scroll into the first
+         fold. Hidden at <sm to keep mobile clean. -->
+    <section class="hidden sm:block relative z-30 bg-cream/95 border-y border-dark-text/10 py-3 full-bleed">
+      <div class="max-w-[80rem] mx-auto px-4 md:px-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm font-body text-dark-text/80">
+        <span class="inline-flex items-center gap-2">
+          <span class="text-trinidad font-bold tracking-wider" aria-hidden="true">★★★★★</span>
+          <span><span class="font-bold">4.8</span> host rating</span>
+        </span>
+        <span class="text-dark-text/30" aria-hidden="true">·</span>
+        <span class="inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">trending_up</span>
+          <span><span class="font-bold">1,000+</span> stays booked</span>
+        </span>
+        <span class="text-dark-text/30" aria-hidden="true">·</span>
+        <span class="inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">verified</span>
+          <span>Verified hosts only</span>
+        </span>
+        <span class="text-dark-text/30" aria-hidden="true">·</span>
+        <span class="inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">payments</span>
+          <span>No membership fees</span>
+        </span>
+      </div>
+    </section>
+
     <!-- ================= Network Text Section ================= -->
     <section class="network-animated-section bg-jungle-green text-white py-32 md:py-64 relative z-20 flex flex-col items-center justify-center min-h-[90vh] overflow-hidden full-bleed">
       <!-- GSAP Text element -->
@@ -499,8 +528,6 @@
 
     <!-- ================= Stitch Redesign Sections ================= -->
 
-
-
 <!-- ================= Community Masonry Grid ================= -->
 <cnt-home-masonry></cnt-home-masonry>
 
@@ -929,6 +956,17 @@
       </div>
     </div>
 
+
+    <!-- ================= Room2Roam editorial rail (P26/A — repositioned P27/B) =================
+         Surfaces /articles editorial onto the home flow: 1 featured
+         article + 3 editor's picks. Deferred so the catalog (which
+         carries every article's body HTML) is not pulled into the
+         home eager bundle — it loads when the visitor scrolls down. -->
+    @defer (on viewport; prefetch on idle) {
+      <cnt-home-room2roam-rail></cnt-home-room2roam-rail>
+    } @placeholder (minimum 200ms) {
+      <div class="min-h-[40rem]" aria-hidden="true"></div>
+    }
 
     <!-- ================= FAQ Section ================= -->
     <cnt-home-faq></cnt-home-faq>

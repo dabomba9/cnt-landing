@@ -13,6 +13,7 @@ import { HomeMasonryComponent } from './components/home-masonry/home-masonry.com
 import { HomeHeroComponent } from './components/home-hero/home-hero.component';
 import { TripPreviewMapComponent } from './components/trip-preview-map/trip-preview-map.component';
 import { NetworkMapComponent } from './components/network-map/network-map.component';
+import { HomeRoom2roamRailComponent } from './components/home-room2roam-rail/home-room2roam-rail.component';
 import { SeoService } from '@cnt-workspace/data-access';
 
 import { gsap } from 'gsap';
@@ -21,7 +22,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent, HomeRoom2roamRailComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -97,8 +98,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initTrustColorShift();
       this.initAppDownloadSection();
       this.initCtaSection();
+
+      // Debounced ScrollTrigger refresh on resize. The home page has
+      // ~14 pinned/scrubbed ScrollTriggers; without an explicit
+      // refresh on viewport changes, they hold the stale measurements
+      // taken at first paint and the pinned sections drift when the
+      // user rotates a tablet or resizes a desktop window.
+      let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+      this.resizeHandler = () => {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 200);
+      };
+      window.addEventListener('resize', this.resizeHandler, { passive: true });
     });
   }
+
+  private resizeHandler?: () => void;
 
   // -----------------------------
 
@@ -546,5 +561,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
+    if (this.resizeHandler && isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
   }
 }

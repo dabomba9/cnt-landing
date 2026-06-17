@@ -1,0 +1,12 @@
+/* Component-private animation for the loading spinner on the
+ * subscribe button. The `animate-spin` Tailwind utility ships
+ * keyframes globally — duplicate locally just in case the page
+ * doesn't include the global utility (Tailwind purges aggressively
+ * for SSR). */
+@keyframes ns-spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: ns-spin 1s linear infinite;
+}

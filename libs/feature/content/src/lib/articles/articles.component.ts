@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { buildCollectionSchema } from './article-schema.util';
 import { NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective } from '@cnt-workspace/ui';
 import { ArticlePreferencesService, SeoService } from '@cnt-workspace/data-access';
+import { NewsletterSignupComponent } from '../newsletter-signup/newsletter-signup.component';
 import { gsap } from 'gsap';
 import { ARTICLES } from './articles.data';
 import { EDITOR_PICK_IDS } from './articles.curation';
@@ -27,7 +28,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 @Component({
   selector: 'cnt-articles',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective, NewsletterSignupComponent],
   templateUrl: './articles.component.html',
   styleUrl: './articles.component.scss',
 })

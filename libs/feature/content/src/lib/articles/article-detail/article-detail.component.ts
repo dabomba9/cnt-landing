@@ -4,9 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
-import { ArticlePreferencesService, SeoService } from '@cnt-workspace/data-access';
+import { ArticlePreferencesService, SeoService, ToastService } from '@cnt-workspace/data-access';
 import { ARTICLES } from '../articles.data';
-import { AUTHORS, CATEGORY_META, IArticle, IAuthor, authorInitials } from '../articles.types';
+import { AUTHORS, CATEGORY_CTA, CATEGORY_META, IArticle, IAuthor, ICategoryCta, authorInitials } from '../articles.types';
+import { NewsletterSignupComponent } from '../../newsletter-signup/newsletter-signup.component';
 import { ARTICLE_IMAGE_HEIGHT, ARTICLE_IMAGE_WIDTH, buildArticleSchema } from '../article-schema.util';
 
 interface ITocEntry {
@@ -17,7 +18,7 @@ interface ITocEntry {
 @Component({
   selector: 'cnt-article-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, NewsletterSignupComponent],
   templateUrl: './article-detail.component.html',
   styleUrls: ['./article-detail.component.scss'],
 })
@@ -27,12 +28,19 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   prev: IArticle | null = null;
   next: IArticle | null = null;
   related: IArticle[] = [];
+  /** The oldest article in the same category, excluding the current
+   *  one. Drives the "From the archive" callout at the foot of the
+   *  reading panel. */
+  archiveArticle: IArticle | null = null;
   readonly CATEGORY_META = CATEGORY_META;
 
   tocEntries: ITocEntry[] = [];
   activeSection: string | null = null;
   authorProfile: IAuthor | null = null;
   progress = 0;
+  /** True for ~1.5s after a successful copy-link — flips the share
+   *  bar's copy icon to a check. */
+  justCopied = false;
 
   @ViewChild('bodyEl') bodyEl?: ElementRef<HTMLElement>;
 
@@ -49,10 +57,43 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     private seo: SeoService,
     private sanitizer: DomSanitizer,
     public prefs: ArticlePreferencesService,
+    private toasts: ToastService,
   ) {}
 
   toggleSave(): void {
     if (this.article) this.prefs.toggleSave(this.article.id);
+  }
+
+  /** Absolute URL for the article — used by all three share buttons. */
+  private get shareUrl(): string {
+    if (!this.article) return '';
+    return this.seo.absUrl(`/article/${this.article.id}/${this.article.slug}`);
+  }
+
+  shareTwitter(): void {
+    if (!this.article || !isPlatformBrowser(this.platformId)) return;
+    const text = encodeURIComponent(this.article.title);
+    const url = encodeURIComponent(this.shareUrl);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
+  }
+
+  shareLinkedIn(): void {
+    if (!this.article || !isPlatformBrowser(this.platformId)) return;
+    const url = encodeURIComponent(this.shareUrl);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,noreferrer');
+  }
+
+  copyLink(): void {
+    if (!this.article || !isPlatformBrowser(this.platformId)) return;
+    const url = this.shareUrl;
+    navigator.clipboard?.writeText(url).then(
+      () => {
+        this.toasts.success('Link copied to clipboard.');
+        this.justCopied = true;
+        window.setTimeout(() => { this.justCopied = false; }, 1500);
+      },
+      () => this.toasts.info('Copy failed — select and copy manually.'),
+    );
   }
 
   ngOnInit(): void {
@@ -99,6 +140,7 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       this.body = '';
       this.prev = this.next = null;
       this.related = [];
+      this.archiveArticle = null;
       this.tocEntries = [];
       this.authorProfile = null;
       return;
@@ -121,6 +163,11 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     this.related = ARTICLES
       .filter(x => x.id !== a.id && x.category === a.category)
       .slice(0, 3);
+
+    // From the archive: oldest sibling in the same category, if any.
+    this.archiveArticle = ARTICLES
+      .filter(x => x.id !== a.id && x.category === a.category)
+      .sort((x, y) => x.publishedAt.localeCompare(y.publishedAt))[0] ?? null;
 
     this.seo.update({
       title: `${a.title} | CurbNTurf`,
@@ -165,7 +212,7 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       used.add(candidate);
       return candidate;
     };
-    const html = raw.replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi, (match, attrs: string | undefined, inner: string) => {
+    let html = raw.replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi, (match, attrs: string | undefined, inner: string) => {
       const label = inner.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
       if (!label) return match;
       const id = slug(label);
@@ -173,7 +220,59 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       const cleanedAttrs = (attrs ?? '').replace(/\sid="[^"]*"/i, '');
       return `<h2${cleanedAttrs} id="${id}">${inner}</h2>`;
     });
+
+    // Detect Webflow-baked "Key Takeaways" intro blocks — the imported
+    // bodies ship them as <p><strong>Key Takeaways</strong></p><ul>…</ul>.
+    // Wrap the pair in an <aside class="key-takeaways"> so the SCSS
+    // can promote the block into a styled callout box. Only the first
+    // occurrence per body is wrapped (the pattern is an intro idiom).
+    html = html.replace(
+      /<p>\s*<strong>\s*Key\s*Takeaways\s*<\/strong>\s*<\/p>\s*<ul[\s\S]*?<\/ul>/i,
+      (m) => `<aside class="key-takeaways">${m}</aside>`,
+    );
+
+    // Rewrite curbnturf.com URLs. Article links become relative paths
+    // looked up against the local catalog so they SPA-navigate via
+    // onBodyClick(). Known top-level routes (/, /host, /search, etc.)
+    // collapse to the bare path. Unknown paths
+    // (/rv-camping, /article-documents/*.pdf, /sign-up, etc.) stay
+    // absolute and gain target="_blank" so they open in a new tab.
+    html = this.rewriteCurbnturfUrls(html);
+
     return { html, toc };
+  }
+
+  /** Convert article-body anchors that point at curbnturf.com to
+   *  in-app routes where possible. Pure string transform; safe in SSR. */
+  private rewriteCurbnturfUrls(html: string): string {
+    const INTERNAL_PATHS = new Set(['/', '/host', '/search', '/articles', '/faq', '/contact', '/terms']);
+
+    return html.replace(
+      /<a([^>]*)href="https?:\/\/(?:www\.)?curbnturf\.com([^"]*)"([^>]*)>/gi,
+      (match, before: string, rawPath: string, after: string) => {
+        const path = rawPath || '/';
+        // Article links — look up the local slug by id so the URL is
+        // canonical even if the live-site slug drifted.
+        const articleMatch = /^\/article\/(\d+)(?:\/|$)/.exec(path);
+        if (articleMatch) {
+          const id = parseInt(articleMatch[1], 10);
+          const local = ARTICLES.find(a => a.id === id);
+          const href = local ? `/article/${id}/${local.slug}` : `/article/${id}`;
+          return `<a${before}href="${href}"${after}>`;
+        }
+        // Bare top-level routes that exist locally.
+        if (INTERNAL_PATHS.has(path)) {
+          return `<a${before}href="${path}"${after}>`;
+        }
+        // Unknown paths (PDFs, marketing pages we don't host yet) —
+        // keep the absolute URL but force a new tab.
+        const combinedAttrs = `${before}${after}`;
+        const hasTarget = /\starget=/.test(combinedAttrs);
+        const hasRel = /\srel=/.test(combinedAttrs);
+        const extra = `${hasTarget ? '' : ' target="_blank"'}${hasRel ? '' : ' rel="noopener noreferrer"'}`;
+        return `<a${before}href="https://www.curbnturf.com${path}"${after}${extra}>`;
+      },
+    );
   }
 
   private updateProgress(): void {
@@ -206,6 +305,26 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     }
   }
 
+  /** Delegated click handler on the body container. Lets the Angular
+   *  router handle relative links (rewritten by processBody) so a
+   *  click stays an SPA navigation instead of a full page reload.
+   *  External / new-tab / modifier-key clicks fall through to the
+   *  browser. */
+  onBodyClick(event: MouseEvent): void {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (event.button !== undefined && event.button !== 0) return;
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+    const anchor = target.closest('a') as HTMLAnchorElement | null;
+    if (!anchor) return;
+    if (anchor.target && anchor.target !== '_self') return;
+    const href = anchor.getAttribute('href') ?? '';
+    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) return;
+    if (!isPlatformBrowser(this.platformId)) return;
+    event.preventDefault();
+    this.router.navigateByUrl(href);
+  }
+
   scrollToSection(event: Event, id: string): void {
     event.preventDefault();
     if (!isPlatformBrowser(this.platformId)) return;
@@ -218,6 +337,28 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
 
   get authorQuery(): { author: string } | null {
     return this.authorProfile ? { author: this.authorProfile.name } : null;
+  }
+
+  /** Per-category end-of-body conversion card — null for editorial-
+   *  only categories where no funnel link makes sense. */
+  get categoryCta(): ICategoryCta | null {
+    return this.article ? CATEGORY_CTA[this.article.category] : null;
+  }
+
+  /** "Read this next" single-card pick. Heuristic v1: the second-most-
+   *  recent article in the same category (skipping the current article
+   *  and the archive pick). Falls back to the next-most-recent article
+   *  overall if the category is thin. Null when nothing fits. */
+  get readNextArticle(): IArticle | null {
+    if (!this.article) return null;
+    const currentId = this.article.id;
+    const archiveId = this.archiveArticle?.id;
+    const sameCategory = ARTICLES.filter(x =>
+      x.id !== currentId && x.id !== archiveId && x.category === this.article!.category,
+    );
+    if (sameCategory.length > 0) return sameCategory[0];
+    const anyOther = ARTICLES.find(x => x.id !== currentId && x.id !== archiveId);
+    return anyOther ?? null;
   }
 
   formatDate(iso: string): string {
