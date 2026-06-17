@@ -1020,6 +1020,24 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     const rvt = parseInt(q.get('rvt') || '', 10); if (Number.isFinite(rvt) && rvt > 0) this.filters.rvTents = rvt;
     const g = parseInt(q.get('guests') || '', 10); if (Number.isFinite(g) && g > 0) this.filters.guests = g;
     if (q.get('ib') === '1') this.filters.instantBookOnly = true;
+
+    // P43/D — accept home-hero long-form param names as fallbacks
+    // when the short forms above are absent. The hero sends rigType
+    // as the user-facing label (e.g. "Class A"), not the slug id, so
+    // we look up by label first and id second.
+    const rigType = q.get('rigType');
+    if (!this.filters.rvType && rigType) {
+      const match = RV_TYPES.find(t => t.id === rigType)
+                 ?? RV_TYPES.find(t => t.label === rigType);
+      if (match) this.filters.rvType = match.id;
+    }
+    const rigLength = q.get('rigLength');
+    if (!this.filters.rvLength && rigLength) {
+      const n = parseInt(rigLength, 10);
+      if (Number.isFinite(n) && n > 0) this.filters.rvLength = String(n);
+    }
+    const dest = q.get('dest');
+    if (!this.freeText && dest) this.freeText = dest;
   }
 
   /** Push the current filter state to query params; replaceUrl so we don't pollute history. */
