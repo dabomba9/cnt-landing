@@ -446,7 +446,7 @@
     <aside class="search-map-pane w-full relative bg-cream"
       [class.hidden-mobile]="!showMobileMap">
 
-      <div class="sticky top-28 h-[calc(100vh-7rem)] min-h-[500px] overflow-hidden">
+      <div class="sticky top-28 h-[calc(100vh-13rem)] md:h-[calc(100vh-12rem)] min-h-[500px] overflow-hidden">
         <cnt-search-map
           [listings]="pinListings"
           [hoveredId]="hoveredId"
@@ -490,6 +490,13 @@
                   <span class="material-symbols-outlined text-[16px] text-muted-text">close</span>
                 </button>
               </div>
+              @if (legendCollapsed && visiblePoiKinds.size > 0) {
+                <button type="button" (click)="restoreLegend()"
+                  class="w-full mb-3 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-cream/80 hover:bg-cream text-xs font-button uppercase tracking-[0.12em] font-bold text-trinidad transition-colors">
+                  <span class="material-symbols-outlined text-base">visibility</span>
+                  Show legend
+                </button>
+              }
               <div class="space-y-1.5">
                 @for (k of poiKindsAll; track k) {
                   <button type="button" (click)="togglePoiKind(k)"
@@ -530,19 +537,27 @@
           }
         </div>
 
-        <!-- Map legend — decodes the POI pin colors at a glance -->
-        @if (visiblePoiKinds.size > 0) {
-          <div class="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg ring-1 ring-black/5 px-3 py-2 max-w-[14rem]"
+        <!-- Map legend — decodes the POI pin colors at a glance.
+             Bumped to bottom-10 so the Leaflet scale bar (P35/B) sits
+             cleanly below it at the map's bottom edge. -->
+        @if (visiblePoiKinds.size > 0 && !legendCollapsed) {
+          <div class="absolute bottom-10 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg ring-1 ring-black/5 pl-3 pr-1 py-2 max-w-[14rem]"
             aria-label="Map legend">
-            <div class="flex flex-wrap gap-x-3 gap-y-1.5">
-              @for (k of poiKindsAll; track k) {
-                @if (visiblePoiKinds.has(k)) {
-                  <div class="inline-flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0" [style.background]="POI_KIND_META[k].color"></span>
-                    <span class="text-[0.65rem] font-body text-dark-text">{{ POI_KIND_META[k].label }}</span>
-                  </div>
+            <div class="flex items-start gap-2">
+              <div class="flex flex-wrap gap-x-3 gap-y-1.5 flex-1">
+                @for (k of poiKindsAll; track k) {
+                  @if (visiblePoiKinds.has(k)) {
+                    <div class="inline-flex items-center gap-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full shrink-0" [style.background]="POI_KIND_META[k].color"></span>
+                      <span class="text-[0.65rem] font-body text-dark-text">{{ POI_KIND_META[k].label }}</span>
+                    </div>
+                  }
                 }
-              }
+              </div>
+              <button type="button" (click)="dismissLegend()" aria-label="Hide legend"
+                class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center text-muted-text hover:bg-cream/60 hover:text-dark-text transition-colors">
+                <span class="material-symbols-outlined text-[14px]">close</span>
+              </button>
             </div>
           </div>
         }

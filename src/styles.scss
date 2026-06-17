@@ -248,6 +248,59 @@ a:focus {
 }
 .cnt-cluster:hover { transform: scale(1.08); }
 
+/* P35/B — Leaflet scale-bar styling matched to the in-map UI chrome
+ * (white, rounded, soft shadow). Leaflet defaults are functional but
+ * boxy; soften so it reads as a sibling of the layers / locate-me
+ * controls. */
+.leaflet-control-scale {
+  margin: 0 0 16px 16px !important;
+}
+.leaflet-control-scale-line {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-top: none !important;
+  border-radius: 6px !important;
+  color: #222 !important;
+  font-family: 'Familjen Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.04em !important;
+  padding: 1px 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* P35/C — tile loading skeleton. A soft pulsing overlay sits above
+ * the map element (which Leaflet starts blank) while the tiles fetch.
+ * The .cnt-map-tiles-loading class is toggled on .map-wrap by the
+ * component; the ::before pseudo-element does all the heavy lifting
+ * so we don't add another DOM node. */
+.map-wrap.cnt-map-tiles-loading::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 350;
+  background: linear-gradient(
+    115deg,
+    rgba(247, 245, 236, 0.95) 0%,
+    rgba(247, 245, 236, 0.7) 35%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(247, 245, 236, 0.7) 65%,
+    rgba(247, 245, 236, 0.95) 100%
+  );
+  background-size: 200% 100%;
+  animation: cnt-map-tile-pulse 1.6s linear infinite;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+.map-wrap:not(.cnt-map-tiles-loading)::before {
+  opacity: 0;
+}
+@keyframes cnt-map-tile-pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Marker + cluster hover preview overlay (P32). Single shared DOM
  * node inside .map-wrap. Positioned by JS via map.latLngToContainerPoint.
  * pointer-events: none so the underlying marker keeps firing mouseout

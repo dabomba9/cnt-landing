@@ -19,55 +19,82 @@ import {
     .map-wrap { position: relative; width: 100%; height: 100%; min-height: 500px; background: #dde7e1; }
     .map-el { position: absolute; inset: 0; }
 
-    /* View-mode toggle pill — single button that swaps Map only / Split view. */
-    .cnt-view-toggle-pill {
+    /* View-mode toggle button (P37) — Airbnb-style circular white
+     * button at the top-right of the map, stacked above the Leaflet
+     * +/− zoom controls. Matches the reference screenshot's chrome:
+     * 44px circle, white bg, subtle border + shadow. Hidden on mobile;
+     * the existing mobile list/map toggle covers that breakpoint. */
+    .cnt-view-toggle-btn {
       position: absolute;
       top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
+      right: 16px;
       z-index: 1000;
+      width: 44px;
+      height: 44px;
+      border-radius: 9999px;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      background: #ffffff;
-      color: #222222;
-      border: 1px solid rgba(34, 34, 34, 0.08);
-      border-radius: 999px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      font-family: 'Asap Condensed', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 700;
+      justify-content: center;
       cursor: pointer;
-      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      transition: box-shadow 160ms ease, transform 160ms ease;
     }
-    .cnt-view-toggle-pill:hover {
-      transform: translateX(-50%) translateY(-1px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-      background: #fff;
+    .cnt-view-toggle-btn:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+      transform: scale(1.04);
     }
-    .cnt-view-toggle-pill .material-symbols-outlined { font-size: 16px; color: #e3530d; }
+    .cnt-view-toggle-btn .material-symbols-outlined { font-size: 20px; color: #222222; }
 
     @media (max-width: 767px) {
-      .cnt-view-toggle-pill { display: none; }
+      .cnt-view-toggle-btn { display: none; }
+    }
+
+    /* P37 — Restyle Leaflet's +/− zoom controls (top-right) to match
+     * the new circular white chrome. Bump them down 56px so they sit
+     * cleanly below the view-mode toggle. */
+    :host ::ng-deep .leaflet-top.leaflet-right { top: 56px; }
+    :host ::ng-deep .leaflet-control-zoom {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    :host ::ng-deep .leaflet-control-zoom-in,
+    :host ::ng-deep .leaflet-control-zoom-out {
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 34px !important;
+      background: #ffffff !important;
+      color: #222222 !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      border-radius: 9999px !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+      font-weight: 700 !important;
+      font-family: 'Familjen Grotesk', sans-serif !important;
+    }
+    :host ::ng-deep .leaflet-control-zoom-in:hover,
+    :host ::ng-deep .leaflet-control-zoom-out:hover {
+      background: #fafafa !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24) !important;
     }
   `],
   template: `
     <div class="map-wrap">
       <div #mapEl class="map-el"></div>
 
-      <!-- View-mode toggle (single conditional pill). -->
+      <!-- View-mode toggle (Airbnb-style top-right circle, above the
+           Leaflet +/− zoom controls). -->
       @if (viewMode === 'split') {
-        <button type="button" class="cnt-view-toggle-pill" (click)="viewModeChange.emit('map-only')">
+        <button type="button" class="cnt-view-toggle-btn" (click)="viewModeChange.emit('map-only')" aria-label="Expand map">
           <span class="material-symbols-outlined">open_in_full</span>
-          Map only
         </button>
       } @else {
-        <button type="button" class="cnt-view-toggle-pill" (click)="viewModeChange.emit('split')">
-          <span class="material-symbols-outlined">view_sidebar</span>
-          Split view
+        <button type="button" class="cnt-view-toggle-btn" (click)="viewModeChange.emit('split')" aria-label="Restore split view">
+          <span class="material-symbols-outlined">close_fullscreen</span>
         </button>
       }
 
@@ -130,6 +157,11 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   private previewEl: HTMLDivElement | null = null;
   private previewLatLng: L.LatLng | null = null;
   private previewHideTimer: ReturnType<typeof setTimeout> | null = null;
+  /** P35/C — tile loading skeleton. Held for at least
+   *  MIN_TILE_SKELETON_MS so quick pans don't flicker the overlay. */
+  private tileLoadingShownAt = 0;
+  private tileLoadingHideTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly MIN_TILE_SKELETON_MS = 250;
   /** Separate cluster instance for POIs so utility pins don't mix with stay pins in the same bubbles. */
   private poiCluster: any = null;
   private poiMarkers = new Map<string, L.Marker>();
@@ -164,12 +196,23 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
       preferCanvas: true,
     });
 
-    L.tileLayer(TILE_URL, {
+    const tileLayer = L.tileLayer(TILE_URL, {
       attribution: TILE_ATTRIBUTION,
       maxZoom: 18,
-    }).addTo(this.map);
+    });
+    // P35/C — tile loading skeleton. Show the pulsing overlay while
+    // the first batch of tiles is requested; clear when they all land.
+    // The 250 ms minimum hold smooths the flicker as subsequent pans
+    // request small batches.
+    tileLayer.on('loading', () => this.setTileLoading(true));
+    tileLayer.on('load', () => this.setTileLoading(false));
+    tileLayer.addTo(this.map);
 
     L.control.zoom({ position: 'topright' }).addTo(this.map);
+    // P35/B — pixel-to-miles scale bar. Imperial only; matches the
+    // RV/camper audience. Position bottomleft; the legend (P35/A) was
+    // bumped to bottom-10 so the scale sits cleanly below.
+    L.control.scale({ position: 'bottomleft', imperial: true, metric: false, maxWidth: 120 }).addTo(this.map);
 
     this.cluster = (L as any).markerClusterGroup({
       showCoverageOnHover: false,
@@ -762,6 +805,28 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     if (this.previewEl) this.previewEl.classList.add('is-hiding');
     this.previewLatLng = null;
+  }
+
+  /** Toggle the tile skeleton class on the map wrapper. */
+  private setTileLoading(loading: boolean): void {
+    const wrap = this.mapEl?.nativeElement?.parentElement; // .map-wrap
+    if (!wrap) return;
+    if (loading) {
+      if (this.tileLoadingHideTimer) {
+        clearTimeout(this.tileLoadingHideTimer);
+        this.tileLoadingHideTimer = null;
+      }
+      wrap.classList.add('cnt-map-tiles-loading');
+      this.tileLoadingShownAt = Date.now();
+      return;
+    }
+    const elapsed = Date.now() - this.tileLoadingShownAt;
+    const wait = Math.max(0, this.MIN_TILE_SKELETON_MS - elapsed);
+    if (this.tileLoadingHideTimer) clearTimeout(this.tileLoadingHideTimer);
+    this.tileLoadingHideTimer = setTimeout(() => {
+      wrap.classList.remove('cnt-map-tiles-loading');
+      this.tileLoadingHideTimer = null;
+    }, wait);
   }
 
   private repositionPreview(): void {

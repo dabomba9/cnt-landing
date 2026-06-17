@@ -219,6 +219,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   showMobileMap = false;
   viewMode: 'split' | 'map-only' = 'split';
   private readonly VIEW_MODE_KEY = 'cnt-search-view-mode';
+  private readonly LEGEND_COLLAPSED_KEY = 'cnt-poi-legend-collapsed';
+  /** P35/A — visitor dismissed the POI legend; the "Show legend"
+   *  link inside the layers panel restores it. Hydrated from
+   *  localStorage on ngOnInit. */
+  legendCollapsed = false;
   private readonly MOBILE_MAP_KEY = 'cnt-search-mobile-map';
 
   // Sort
@@ -373,6 +378,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
       if (viewParam === 'map') this.viewMode = 'map-only';
       else if (viewParam === 'list' || viewParam === 'split') this.viewMode = 'split';
       this.showMobileMap = localStorage.getItem(this.MOBILE_MAP_KEY) === '1';
+      this.legendCollapsed = localStorage.getItem(this.LEGEND_COLLAPSED_KEY) === '1';
     }
   }
 
@@ -950,6 +956,20 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!id) return;
     setActiveRvProfile(this.platformId, id);
     this.activeRv = getActiveRvProfile(this.platformId);
+  }
+
+  /** Hide the legend; persisted across visits via localStorage. */
+  dismissLegend(): void {
+    this.legendCollapsed = true;
+    if (!isPlatformBrowser(this.platformId)) return;
+    try { localStorage.setItem(this.LEGEND_COLLAPSED_KEY, '1'); } catch { /* quota */ }
+  }
+
+  /** Restore the legend after dismissal; called from the layers panel. */
+  restoreLegend(): void {
+    this.legendCollapsed = false;
+    if (!isPlatformBrowser(this.platformId)) return;
+    try { localStorage.removeItem(this.LEGEND_COLLAPSED_KEY); } catch { /* quota */ }
   }
 
   /** UI buffer for the "Apply a saved rig" picker inside the RV pill.
