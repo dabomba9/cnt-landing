@@ -74,8 +74,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   listings: IListing[] = ALL_LISTINGS;
   hoveredId: number | null = null;
   selectedId: number | null = null;
-  /** Map viewport bounds; when set, listings are filtered to those within view. */
+  /** Committed map viewport bounds — when set, listings are filtered
+   *  to those within view. Updated only when the visitor explicitly
+   *  clicks the "Search this area" pill, never live on pan/zoom. */
   mapBounds: { north: number; south: number; east: number; west: number } | null = null;
+  /** Live viewport bounds, updated on every Leaflet moveend. Drives
+   *  the visibility of the "Search this area" pill but does not feed
+   *  the filter. */
+  currentMapBounds: { north: number; south: number; east: number; west: number } | null = null;
   favorites = new Set<number>();
   CATEGORY_META = CATEGORY_META;
 
@@ -198,7 +204,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     } catch { /* ignore */ }
   }
 
-  setKindFilter(kind: 'all' | ListingKind): void { this.kindFilter = kind; }
+  setKindFilter(kind: 'all' | ListingKind): void { this.kindFilter = kind; this.clearMapBoundsFilter(); }
 
   // Filter constants exposed to template
   AMENITY_GROUP = AMENITY_GROUP;
@@ -686,6 +692,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.filters.amenities = new Set();
     this.selectedDateRange = null;
     this.sortBy = 'recommended';
+    this.clearMapBoundsFilter();
     this.syncToUrl();
   }
 
@@ -701,6 +708,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   clearSort(): void {
     this.sortBy = 'recommended';
+    this.clearMapBoundsFilter();
     this.syncToUrl();
   }
 
@@ -988,9 +996,45 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.selectedId = null;
   }
 
-  /** Map bounds changed — re-filter the list. */
+  /** Map bounds changed — track live viewport only. Filtering happens
+   *  when the visitor clicks the "Search this area" pill via
+   *  `commitMapBounds()`. */
   onMapBoundsChange(bounds: { north: number; south: number; east: number; west: number }): void {
-    this.mapBounds = bounds;
+    this.currentMapBounds = bounds;
+  }
+
+  /** True when the live viewport has moved meaningfully off the
+   *  committed bounds (or no bounds are committed yet but the visitor
+   *  has interacted with the map). Drives the pill's visibility. */
+  get hasPannedAwayFromResults(): boolean {
+    if (!this.currentMapBounds) return false;
+    if (!this.mapBounds) return true;
+    const c = this.currentMapBounds;
+    const b = this.mapBounds;
+    const latSpan = Math.max(0.001, b.north - b.south);
+    const lngSpan = Math.max(0.001, Math.abs(b.east - b.west));
+    const epsilonLat = latSpan * 0.05;
+    const epsilonLng = lngSpan * 0.05;
+    return (
+      Math.abs(c.north - b.north) > epsilonLat ||
+      Math.abs(c.south - b.south) > epsilonLat ||
+      Math.abs(c.east - b.east) > epsilonLng ||
+      Math.abs(c.west - b.west) > epsilonLng
+    );
+  }
+
+  /** "Search this area" pill click — commit the live viewport as the
+   *  active bounds filter. */
+  commitMapBounds(): void {
+    if (!this.currentMapBounds) return;
+    this.mapBounds = { ...this.currentMapBounds };
+  }
+
+  /** Drop the bounds filter so the list shows every match again.
+   *  Called from filter-chip / sort / search changes and from
+   *  "Fit results". */
+  clearMapBoundsFilter(): void {
+    this.mapBounds = null;
   }
 
   onImageLoad(event: Event): void {
@@ -1352,9 +1396,11 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.searchMap?.flyTo(step.start.lat, step.start.lng, 14);
   }
 
-  /** "Fit results" button — re-frames the map over the visible listings
-   *  when the user has panned away. */
+  /** "Fit results" button — clears the bounds filter so the full match
+   *  list shows again, then re-frames the map over all visible
+   *  listings. */
   fitResultsToBounds(): void {
+    this.clearMapBoundsFilter();
     this.searchMap?.fitToListings();
   }
 

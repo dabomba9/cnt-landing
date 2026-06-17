@@ -527,6 +527,20 @@
         }
       </div>
 
+      <!-- ============ "Search this area" pill (top-center) ============
+           Visible only when the visitor has panned/zoomed away from
+           the committed bounds. Click commits the live viewport as
+           the new bounds filter. Stacks above the view-mode pill
+           (z-1000) at z-1100. -->
+      @if (hasPannedAwayFromResults) {
+        <button type="button" (click)="commitMapBounds()"
+          class="absolute top-4 left-1/2 -translate-x-1/2 z-[1100] inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-dark-text shadow-[0_12px_28px_rgba(0,0,0,0.18)] ring-1 ring-black/5 text-xs uppercase tracking-[0.12em] font-button font-bold hover:bg-cream/60 hover:shadow-[0_16px_32px_rgba(0,0,0,0.22)] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2"
+          aria-label="Search this area">
+          <span class="material-symbols-outlined text-base text-trinidad">refresh</span>
+          Search this area
+        </button>
+      }
+
       <!-- ============ In-map control cluster (bottom-right) ============
            Trip planner toggle + Fit-results button sit inside the map
            pane next to the locate-me button (which lives inside the
