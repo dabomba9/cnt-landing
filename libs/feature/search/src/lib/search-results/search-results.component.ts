@@ -1060,6 +1060,77 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   // ============================================================================
+  // P41/F3 — Trip name double-click rename
+  // ============================================================================
+
+  /** True while the visitor is actively renaming the trip; flips the
+   *  drawer header from a button label into an input. */
+  renamingTrip = false;
+  private renameBefore = '';
+
+  startRenameTrip(): void {
+    if (!this.activePlan) return;
+    this.renameBefore = this.activePlan.name;
+    this.renamingTrip = true;
+    // Auto-focus the input after Angular renders it.
+    setTimeout(() => {
+      const el = document.querySelector('input[name="planNameDrawer"]') as HTMLInputElement | null;
+      el?.focus();
+      el?.select();
+    }, 0);
+  }
+
+  commitRenameTrip(): void {
+    this.renamingTrip = false;
+    if (!this.activePlan) return;
+    this.commitPlanField('name', this.activePlan.name);
+  }
+
+  cancelRenameTrip(): void {
+    if (this.activePlan) this.activePlan.name = this.renameBefore;
+    this.renamingTrip = false;
+  }
+
+  // ============================================================================
+  // P41/F2 — Inline stop-nights editing
+  // ============================================================================
+
+  /** Returns the night count between a stop's check-in and check-out
+   *  dates, or 0 when either is missing. */
+  stopNights(stop: { checkInDate?: string; checkOutDate?: string }): number {
+    if (!stop.checkInDate || !stop.checkOutDate) return 0;
+    const a = new Date(stop.checkInDate + 'T12:00:00').getTime();
+    const b = new Date(stop.checkOutDate + 'T12:00:00').getTime();
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return 0;
+    return Math.max(0, Math.round((b - a) / 86400_000));
+  }
+
+  /** Adjust a stop's nights by `delta` (anchored on checkInDate). */
+  stepStopNights(stopId: string, delta: number): void {
+    if (!this.activePlan) return;
+    const stop = this.activePlan.stops.find(s => s.id === stopId);
+    if (!stop || !stop.checkInDate) return;
+    const current = this.stopNights(stop) || 1;
+    const next = Math.max(1, Math.min(30, current + delta));
+    if (next === current) return;
+    const checkIn = new Date(stop.checkInDate + 'T12:00:00');
+    const checkOut = new Date(checkIn.getTime() + next * 86400_000);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const checkOutISO = `${checkOut.getFullYear()}-${pad(checkOut.getMonth() + 1)}-${pad(checkOut.getDate())}`;
+    this.planner.updateStop(this.activePlan.id, stopId, { checkOutDate: checkOutISO });
+  }
+
+  // ============================================================================
+  // P41/F4 — Trip print view
+  // ============================================================================
+
+  printTrip(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.activePlan) return;
+    window.print();
+  }
+
+  // ============================================================================
   // P40 — Mobile swipe-up bottom sheet
   // ============================================================================
 

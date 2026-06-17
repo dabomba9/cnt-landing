@@ -185,6 +185,112 @@ img.img-loaded {
   background: rgba(34, 34, 34, 0.3);
 }
 
+/* P41/F1 — Trip stop drag handle. Subtle grab affordance so visitors
+ * realize the row is reorderable. CDK's preview + placeholder classes
+ * style the in-flight drag automatically. */
+.cnt-stop-handle {
+  touch-action: none;
+}
+.cdk-drag-preview {
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 8px;
+  opacity: 0.95;
+}
+.cdk-drag-placeholder {
+  opacity: 0.35;
+  background: rgba(34, 34, 34, 0.04);
+}
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 220ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* P41/F4 — Trip print view. When the visitor invokes window.print()
+ * via the drawer's Print button, hide every chrome surface and reveal
+ * just the .trip-print-view section. */
+@media print {
+  cnt-navbar,
+  .search-topbar,
+  .search-mobile-sheet,
+  .search-map-pane,
+  aside[class*="fixed"],
+  cnt-poi-modal {
+    display: none !important;
+  }
+  body { background: #fff !important; color: #000 !important; }
+  .trip-print-view {
+    display: block !important;
+    color: #000;
+    font-family: 'Familjen Grotesk', sans-serif;
+    max-width: 7in;
+    margin: 0 auto;
+    padding: 0.5in;
+  }
+  .cnt-print-header h1 {
+    font-size: 22pt;
+    margin: 0 0 4pt;
+  }
+  .cnt-print-dates {
+    font-size: 10pt;
+    color: #555;
+    margin-bottom: 16pt;
+  }
+  .cnt-print-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8pt;
+    align-items: center;
+    font-size: 10pt;
+    color: #333;
+    padding: 6pt 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 14pt;
+  }
+  .cnt-print-stops {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cnt-print-stop {
+    padding: 10pt 0;
+    border-bottom: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+  .cnt-print-stop__num {
+    color: #e3530d;
+    font-weight: 700;
+    margin-right: 4pt;
+  }
+  .cnt-print-stop__title {
+    font-size: 13pt;
+    font-weight: 700;
+  }
+  .cnt-print-stop__address {
+    font-size: 10pt;
+    color: #555;
+    margin-top: 2pt;
+  }
+  .cnt-print-stop__dates {
+    font-size: 10pt;
+    color: #333;
+    margin-top: 4pt;
+  }
+  .cnt-print-stop__notes {
+    font-size: 9pt;
+    color: #555;
+    margin-top: 4pt;
+    font-style: italic;
+  }
+  .cnt-print-footer {
+    margin-top: 16pt;
+    padding-top: 8pt;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    font-size: 9pt;
+    color: #888;
+  }
+}
+
 /* Filter pill rail. Single-row horizontal scroll on mobile, flex-wrap
  * on md+. The scrollbar is hidden on every platform so the soft edge
  * fade (mobile only) carries the "more offscreen" affordance instead
