@@ -1059,6 +1059,113 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.activeRv = getActiveRvProfile(this.platformId);
   }
 
+  // ============================================================================
+  // P40 — Mobile swipe-up bottom sheet
+  // ============================================================================
+
+  /** Active detent for the mobile list sheet. Initial 'half'. */
+  sheetDetent: 'peek' | 'half' | 'full' = 'half';
+  /** Live translateY (px) during an active drag — bypasses the snapped
+   *  detent transform until pointerup. */
+  sheetDragY: number | null = null;
+  sheetDragging = false;
+  private sheetStartY = 0;
+  private sheetStartTranslate = 0;
+  private sheetPrevY = 0;
+  private sheetPrevTime = 0;
+  private sheetVelocity = 0;
+  private sheetRaf = 0;
+
+  /** Detent offset in px from the bottom of the viewport. Smaller =
+   *  sheet covers more of the screen. */
+  private detentOffset(detent: 'peek' | 'half' | 'full'): number {
+    if (!isPlatformBrowser(this.platformId)) return 0;
+    const vh = window.innerHeight;
+    switch (detent) {
+      case 'peek': return vh - 132; // ~132px visible (handle + count line)
+      case 'half': return vh * 0.5;
+      case 'full': return Math.max(96, vh * 0.08); // ~8% top inset
+    }
+  }
+
+  /** Current visual translateY for the sheet — either live drag or
+   *  snapped detent value. Used as an inline transform binding. */
+  get sheetTransform(): string {
+    const y = this.sheetDragY ?? this.detentOffset(this.sheetDetent);
+    return `translate3d(0, ${y}px, 0)`;
+  }
+
+  onSheetPointerDown(event: PointerEvent): void {
+    if (event.button !== undefined && event.button !== 0) return;
+    const target = event.target as HTMLElement;
+    target.setPointerCapture(event.pointerId);
+    this.sheetDragging = true;
+    this.sheetStartY = event.clientY;
+    this.sheetPrevY = event.clientY;
+    this.sheetPrevTime = event.timeStamp;
+    this.sheetStartTranslate = this.detentOffset(this.sheetDetent);
+    this.sheetDragY = this.sheetStartTranslate;
+    event.preventDefault();
+  }
+
+  onSheetPointerMove(event: PointerEvent): void {
+    if (!this.sheetDragging) return;
+    const dy = event.clientY - this.sheetStartY;
+    const nextY = Math.max(
+      this.detentOffset('full'),
+      Math.min(this.detentOffset('peek'), this.sheetStartTranslate + dy),
+    );
+    // Velocity tracker — measured at every pointermove for snap math.
+    const dt = Math.max(1, event.timeStamp - this.sheetPrevTime);
+    this.sheetVelocity = (event.clientY - this.sheetPrevY) / dt; // px/ms
+    this.sheetPrevY = event.clientY;
+    this.sheetPrevTime = event.timeStamp;
+    if (this.sheetRaf) cancelAnimationFrame(this.sheetRaf);
+    this.sheetRaf = requestAnimationFrame(() => { this.sheetDragY = nextY; });
+  }
+
+  onSheetPointerUp(event: PointerEvent): void {
+    if (!this.sheetDragging) return;
+    const target = event.target as HTMLElement;
+    target.releasePointerCapture(event.pointerId);
+    this.sheetDragging = false;
+    if (this.sheetRaf) { cancelAnimationFrame(this.sheetRaf); this.sheetRaf = 0; }
+    const y = this.sheetDragY ?? this.sheetStartTranslate;
+    this.sheetDetent = this.snapDetent(y, this.sheetVelocity);
+    this.sheetDragY = null;
+  }
+
+  /** Pick the detent to snap to based on raw Y AND velocity. A fast
+   *  flick in either direction jumps to the next detent in that
+   *  direction; a slow gesture snaps to the nearest detent by Y. */
+  private snapDetent(y: number, velocity: number): 'peek' | 'half' | 'full' {
+    const order: ('full' | 'half' | 'peek')[] = ['full', 'half', 'peek'];
+    const fastThreshold = 0.5; // px/ms
+    if (Math.abs(velocity) > fastThreshold) {
+      const current = order.indexOf(this.sheetDetent);
+      if (velocity < 0) {
+        // Flicking up → smaller index (more visible)
+        return order[Math.max(0, current - 1)];
+      }
+      return order[Math.min(order.length - 1, current + 1)];
+    }
+    // Slow gesture: nearest by Y
+    let best: 'peek' | 'half' | 'full' = 'half';
+    let bestDelta = Infinity;
+    for (const d of order) {
+      const delta = Math.abs(this.detentOffset(d) - y);
+      if (delta < bestDelta) { bestDelta = delta; best = d; }
+    }
+    return best;
+  }
+
+  /** Tap the handle to advance the detent: peek → half → full → peek. */
+  cycleSheetDetent(): void {
+    const order: ('peek' | 'half' | 'full')[] = ['peek', 'half', 'full'];
+    const i = order.indexOf(this.sheetDetent);
+    this.sheetDetent = order[(i + 1) % order.length];
+  }
+
   /** P39/B1 — deterministic mock booking count per listing id (0–7).
    *  Returns the same value every render so cards don't flicker.
    *  When real telemetry lands, swap this for a service call. */

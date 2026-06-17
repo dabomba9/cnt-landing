@@ -470,9 +470,28 @@
   <div class="search-split max-w-[90rem] mx-auto min-h-[calc(100vh-13rem)] md:min-h-[calc(100vh-12rem)]"
     [class.map-only]="viewMode === 'map-only'">
 
-    <!-- Listings Panel -->
-    <section class="search-list w-full overflow-y-auto px-2 sm:px-3 md:px-4 py-8 custom-scrollbar"
-      [class.hidden-mobile]="showMobileMap">
+    <!-- Listings Panel — on mobile this is wrapped by a draggable
+         bottom sheet (P40). The sheet wrapper itself is a no-op at
+         md+ (display: contents) so the desktop split layout is
+         unaffected. -->
+    <div class="search-mobile-sheet" [class.detent-peek]="sheetDetent === 'peek' && !sheetDragging"
+      [class.detent-half]="sheetDetent === 'half' && !sheetDragging"
+      [class.detent-full]="sheetDetent === 'full' && !sheetDragging"
+      [class.is-dragging]="sheetDragging"
+      [style.transform]="sheetTransform">
+
+      <!-- Sheet handle bar — drag target. Hidden at md+. -->
+      <div class="sheet-handle md:hidden"
+        (pointerdown)="onSheetPointerDown($event)"
+        (pointermove)="onSheetPointerMove($event)"
+        (pointerup)="onSheetPointerUp($event)"
+        (pointercancel)="onSheetPointerUp($event)"
+        (click)="cycleSheetDetent()"
+        role="button" aria-label="Drag to resize results sheet">
+        <div class="sheet-handle__bar"></div>
+      </div>
+
+    <section class="search-list w-full overflow-y-auto px-2 sm:px-3 md:px-4 py-8 custom-scrollbar">
       @if (filteredListings.length === 0) {
         <div class="text-center py-20 max-w-md mx-auto">
           <span class="material-symbols-outlined text-5xl text-muted-text" aria-hidden="true">search_off</span>
@@ -536,10 +555,11 @@
         }
       }
     </section>
+    </div><!-- /.search-mobile-sheet -->
 
-    <!-- Map Panel — interactive map coming soon. Static design for now. -->
-    <aside class="search-map-pane w-full relative bg-cream"
-      [class.hidden-mobile]="!showMobileMap">
+    <!-- Map Panel — interactive map. Always visible on mobile (the
+         results sheet overlays it); split with the list on desktop. -->
+    <aside class="search-map-pane w-full relative bg-cream">
 
       <div class="sticky top-28 h-[calc(100vh-13rem)] md:h-[calc(100vh-12rem)] min-h-[500px] overflow-hidden">
         <cnt-search-map
@@ -715,12 +735,9 @@
       }
     </aside>
 
-    <!-- Mobile list/map toggle -->
-    <button type="button" (click)="toggleMobileMap()"
-      class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-dark-text text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 font-button uppercase tracking-[0.12em] text-xs font-bold">
-      <span class="material-symbols-outlined text-base">{{ showMobileMap ? 'list' : 'map' }}</span>
-      {{ showMobileMap ? 'Show List' : 'Show Map' }}
-    </button>
+    <!-- Mobile list/map toggle removed in P40 — replaced by the
+         swipe-up bottom sheet that wraps the listings panel. -->
+
   </div>
   </div>
 
