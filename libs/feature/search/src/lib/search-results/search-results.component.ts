@@ -8,7 +8,7 @@ import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { SearchMapComponent } from './search-map.component';
-import { SeoService, SavedSearchesService, ISavedSearch } from '@cnt-workspace/data-access';
+import { SeoService, SavedSearchesService, ISavedSearch, readRecentlyViewed } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -1057,6 +1057,41 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!id) return;
     setActiveRvProfile(this.platformId, id);
     this.activeRv = getActiveRvProfile(this.platformId);
+  }
+
+  // ============================================================================
+  // P42 — Highest-visible-delta bundle
+  // ============================================================================
+
+  /** P42/A — Copy the current /search URL (with all filter query
+   *  params) to the clipboard. Lets visitors share filtered searches
+   *  without screenshots. */
+  copySearchUrl(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const url = window.location.href;
+    navigator.clipboard?.writeText(url).then(
+      () => this.toasts.success('Search link copied to clipboard.'),
+      () => this.toasts.info('Copy failed — select the URL manually.'),
+    );
+  }
+
+  /** P42/C — Recently viewed listings to surface above the result grid.
+   *  Resolves the localStorage id list to IListings, drops any that
+   *  are already in the current filtered grid, slices to 5. Hidden
+   *  on first visit (when no recents exist yet). */
+  get recentlyViewedListings(): IListing[] {
+    if (!isPlatformBrowser(this.platformId)) return [];
+    const ids = readRecentlyViewed(this.platformId);
+    if (ids.length === 0) return [];
+    const inGrid = new Set(this.filteredListings.map(l => l.id));
+    const out: IListing[] = [];
+    for (const id of ids) {
+      if (inGrid.has(id)) continue;
+      const l = this.listings.find(x => x.id === id);
+      if (l) out.push(l);
+      if (out.length >= 5) break;
+    }
+    return out;
   }
 
   // ============================================================================

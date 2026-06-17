@@ -314,3 +314,19 @@ img.img-loaded {
             mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
   }
 }
+
+/* P42/C — Recently viewed rail. Same hidden-scrollbar pattern as the
+ * pill rail, with a mobile edge fade hinting at offscreen items. */
+.cnt-recent-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cnt-recent-rail::-webkit-scrollbar {
+  display: none;
+}
+@media (max-width: 767.98px) {
+  .cnt-recent-rail {
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
+  }
+}

@@ -43,19 +43,28 @@
         }
       </div>
 
-      <!-- P38/D — Free-text search input above the chip rail. -->
-      <label class="relative block w-full md:max-w-md mb-3">
-        <span class="sr-only">Search by name, host, or place</span>
-        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl" aria-hidden="true">search</span>
-        <input type="search" [(ngModel)]="freeText" (ngModelChange)="onFreeTextChange()"
-          placeholder="Search by name, host, or place…"
-          class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-10 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
-        @if (freeText) {
-          <button type="button" (click)="clearFreeText()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text" aria-label="Clear search">
-            <span class="material-symbols-outlined text-lg">close</span>
-          </button>
-        }
-      </label>
+      <!-- P38/D — Free-text search input above the chip rail.
+           P42/A — Share copy-link button sits beside it. -->
+      <div class="flex items-center gap-2 w-full md:max-w-md mb-3">
+        <label class="relative block flex-1 min-w-0">
+          <span class="sr-only">Search by name, host, or place</span>
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-text text-xl" aria-hidden="true">search</span>
+          <input type="search" [(ngModel)]="freeText" (ngModelChange)="onFreeTextChange()"
+            placeholder="Search by name, host, or place…"
+            class="w-full bg-white border border-dark-text/15 rounded-full pl-11 pr-10 py-2.5 text-sm font-body focus:outline-none focus:border-trinidad transition-colors">
+          @if (freeText) {
+            <button type="button" (click)="clearFreeText()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-text hover:text-dark-text" aria-label="Clear search">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          }
+        </label>
+        <button type="button" (click)="copySearchUrl()"
+          class="shrink-0 w-10 h-10 inline-flex items-center justify-center rounded-full bg-white border border-dark-text/15 text-dark-text hover:border-trinidad hover:text-trinidad transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-trinidad focus-visible:outline-offset-2"
+          aria-label="Copy this search to clipboard"
+          title="Copy this search to clipboard">
+          <span class="material-symbols-outlined text-lg">link</span>
+        </button>
+      </div>
 
       <!-- Filter Pills + Sort — single-row scroll on mobile, wrap on md+. -->
       <div class="cnt-search-pill-rail flex md:flex-wrap gap-2 items-center overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin pb-1">
@@ -86,6 +95,10 @@
                     <span class="material-symbols-outlined text-lg" [class.text-trinidad]="sortBy === opt.id">{{ opt.icon }}</span>
                     <span class="flex-1 font-button">{{ opt.label }}</span>
                     @if (sortBy === opt.id) {
+                      <!-- P42/B — count hint on the active sort option. -->
+                      <span class="text-[0.6rem] font-button uppercase tracking-[0.1em] text-trinidad/70 normal-case">
+                        {{ filteredListings.length }} result{{ filteredListings.length === 1 ? '' : 's' }}
+                      </span>
                       <span class="material-symbols-outlined text-base text-trinidad">check</span>
                     }
                   </button>
@@ -521,6 +534,30 @@
             <span class="text-dark-text font-bold">{{ filteredListings.length }}</span> {{ filteredListings.length === 1 ? 'space matches' : 'spaces match' }} your filters
           </p>
         </div>
+        <!-- P42/C — Recently viewed rail. Surfaces previously-clicked
+             listings (from listing-detail localStorage writes) that
+             aren't already in the current filtered grid. -->
+        @if (recentlyViewedListings.length > 0) {
+          <section class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Recently viewed</span>
+            </div>
+            <div class="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2 cnt-recent-rail">
+              @for (l of recentlyViewedListings; track l.id) {
+                <a [routerLink]="['/listing', l.id]"
+                  class="shrink-0 w-44 group rounded-2xl overflow-hidden bg-white border border-dark-text/10 hover:border-trinidad/40 transition-colors no-underline">
+                  <div class="aspect-[16/10] overflow-hidden bg-dark-text/5">
+                    <img [src]="l.image" [alt]="l.title" loading="lazy"
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                  </div>
+                  <div class="p-3">
+                    <div class="text-xs font-body font-bold text-dark-text line-clamp-2 leading-tight">{{ l.title }}</div>
+                  </div>
+                </a>
+              }
+            </div>
+          </section>
+        }
         <!-- P39/A2 — deferred render with skeleton placeholder. On a
              fast device the skeletons flash for 200ms minimum so the
              layout transition feels deliberate, not poppy. -->
