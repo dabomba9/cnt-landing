@@ -197,8 +197,15 @@
               </label>
             </div>
             <p class="text-xs text-muted-text mt-3 font-body">Listings range from ${{ PRICE_RANGE.min }} to ${{ PRICE_RANGE.max }} / night.</p>
+            @if (priceRangeInvalid) {
+              <!-- P45/A — explain why Done is disabled instead of silently snapping. -->
+              <p class="text-xs text-red-700 mt-2 font-body" role="alert">
+                Min must be less than or equal to Max.
+              </p>
+            }
             <div class="flex justify-end gap-3 mt-6">
-              <button type="button" (click)="closePill()" class="px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90">Done</button>
+              <button type="button" (click)="closePill()" [disabled]="priceRangeInvalid"
+                class="px-6 py-2.5 rounded-full bg-trinidad text-white text-xs uppercase tracking-[0.12em] font-button font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:opacity-50">Done</button>
             </div>
           </div>
           }

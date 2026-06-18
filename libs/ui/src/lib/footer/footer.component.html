@@ -62,10 +62,13 @@
             <p class="font-headline text-sm md:text-base text-white py-2 max-w-xl">Get camping inspiration, travel tips, and exclusive offers delivered to your inbox.</p>
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-2">
               <label class="sr-only" for="footer-newsletter-email">Email address</label>
+              <!-- P45/C — input is disabled to mirror the Subscribe button. Placeholder
+                   carries the "coming soon" status in-band so it's unambiguous. -->
               <input
                 id="footer-newsletter-email"
-                class="flex-1 bg-white/10 border border-white/30 rounded px-4 py-3 text-white placeholder:text-white/50 font-headline text-base focus:outline-none focus:border-white/60"
-                maxlength="256" name="Email" placeholder="Enter your email" type="email" required>
+                class="flex-1 bg-white/5 border border-white/20 rounded px-4 py-3 text-white/60 placeholder:text-white/40 font-headline text-base focus:outline-none cursor-not-allowed"
+                maxlength="256" name="Email" placeholder="Coming soon — launching with the app"
+                type="email" disabled aria-disabled="true">
               <div class="shrink-0 magnetic-btn group cursor-not-allowed inline-block">
                 <button type="button" title="Newsletter signup coming soon" aria-disabled="true" class="bg-transparent border-0 p-0 flex items-stretch gap-0 group-hover:gap-2 transition-all duration-300 no-underline cursor-not-allowed w-full sm:w-auto">
                   <div class="bg-white text-dark-text rounded-l-[4px] px-6 py-3 font-button font-normal not-italic text-xs tracking-widest uppercase flex items-center justify-center shadow-2xl flex-1 sm:flex-none">

@@ -1410,6 +1410,14 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onPriceChange(): void { this.syncToUrl(); }
 
+  /** P45/A — true when the visitor has typed an inverted range
+   *  (min > max). Drives an inline error + disables the Done CTA
+   *  so the state isn't silently accepted. */
+  get priceRangeInvalid(): boolean {
+    const { minPrice, maxPrice } = this.filters;
+    return Number.isFinite(minPrice) && Number.isFinite(maxPrice) && minPrice > maxPrice;
+  }
+
   step(field: 'rvVehicles' | 'rvTents', delta: number): void {
     this.filters[field] = Math.max(0, this.filters[field] + delta);
     this.syncToUrl();

@@ -61,6 +61,12 @@ export class ListingCardComponent {
   CATEGORY_META = CATEGORY_META;
   AMENITY_LABELS = AMENITY_LABELS;
 
+  /** P45/B — labels for amenities not shown in the +3 truncation,
+   *  surfaced as a `title` tooltip on the "+N more" chip. */
+  get remainingAmenityLabels(): string {
+    return this.listing.amenities.slice(3).map(a => AMENITY_LABELS[a]).join(', ');
+  }
+
   /** Full listing detail, memoized per listing — drives both the photo
    * carousel and the per-rig fit pill from a single getListingDetail call. */
   private _detail: IListingDetail | null = null;

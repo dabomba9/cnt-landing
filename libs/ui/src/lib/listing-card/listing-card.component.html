@@ -172,7 +172,15 @@
         </span>
       }
       @if (listing.amenities.length > 3) {
-        <span class="px-2.5 py-1 bg-dark-text/10 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md">+{{ listing.amenities.length - 3 }}</span>
+        <!-- P45/B — clickable: routes to /listing#amenities, tooltip lists the rest. -->
+        <a [routerLink]="['/listing']"
+          [queryParams]="{ id: listing.id }"
+          fragment="amenities"
+          (click)="$event.stopPropagation()"
+          [title]="remainingAmenityLabels"
+          class="px-2.5 py-1 bg-dark-text/10 hover:bg-dark-text/20 text-dark-text text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md no-underline transition-colors">
+          +{{ listing.amenities.length - 3 }}
+        </a>
       }
       @if (addOnCount > 0) {
         <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-trinidad/10 text-trinidad text-[0.6rem] font-label uppercase tracking-[0.1em] font-bold rounded-md"
