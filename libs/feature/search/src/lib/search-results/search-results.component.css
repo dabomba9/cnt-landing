@@ -333,6 +333,21 @@ img.img-loaded {
   }
 }
 
+/* P44/C — Shimmer behind each recently-viewed thumb. Image fades in
+ * over it on load so visitors never see a blank tile. */
+.cnt-recent-shimmer {
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 75%);
+  background-size: 200% 100%;
+  animation: cnt-recent-shimmer-pulse 1.4s linear infinite;
+}
+@keyframes cnt-recent-shimmer-pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* P42/C — Recently viewed rail. Same hidden-scrollbar pattern as the
  * pill rail, with a mobile edge fade hinting at offscreen items. */
 .cnt-recent-rail {

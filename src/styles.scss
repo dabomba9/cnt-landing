@@ -1473,6 +1473,15 @@ body.cnt-modal-open .cnt-navbar {
   .cnt-print-only { display: none !important; }
 }
 
+/* P44/A — Keyboard focus ring on /search filter pills + the
+   active "Clear N" button. :focus-visible only fires for
+   keyboard focus, so mouse-clicks stay clean. */
+.cnt-search-pill-rail button:focus-visible {
+  outline: 2px solid #e3530d;
+  outline-offset: 2px;
+  border-radius: 9999px;
+}
+
 @media print {
   .cnt-print-hide { display: none !important; }
   body { background: #fff !important; color: #000 !important; }

@@ -578,9 +578,10 @@
               @for (l of recentlyViewedListings; track l.id) {
                 <a [routerLink]="['/listing', l.id]"
                   class="shrink-0 w-44 group rounded-2xl overflow-hidden bg-white border border-dark-text/10 hover:border-trinidad/40 transition-colors no-underline">
-                  <div class="aspect-[16/10] overflow-hidden bg-dark-text/5">
+                  <div class="aspect-[16/10] overflow-hidden cnt-recent-shimmer">
                     <img [src]="l.image" [alt]="l.title" loading="lazy"
-                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                      class="w-full h-full object-cover opacity-0 transition-opacity duration-300 group-hover:scale-105"
+                      (load)="$any($event.target).style.opacity = 1">
                   </div>
                   <div class="p-3">
                     <div class="text-xs font-body font-bold text-dark-text line-clamp-2 leading-tight">{{ l.title }}</div>
@@ -610,7 +611,9 @@
                 [rvProfile]="activeRv"
                 [bookings30d]="bookingsCountFor(l.id)"
                 [hostVerified]="hostVerifiedFor(l.id)"
+                [showAddToTrip]="true"
                 (favoriteToggle)="toggleFavorite(l.id, $event)"
+                (addToTripClick)="onMapAddToTrip({ kind: 'listing', id: l.id })"
                 (viewOnMap)="onViewOnMap(l)"></cnt-listing-card>
             </div>
           }

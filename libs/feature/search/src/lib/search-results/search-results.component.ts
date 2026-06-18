@@ -141,12 +141,15 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   onPoiFavoriteToggle(poi: IPoi): void {
     const key = favoriteKey('poi', poi.id);
-    if (this.poiFavoriteKeys.has(key)) {
+    const wasFav = this.poiFavoriteKeys.has(key);
+    if (wasFav) {
       removeFavorite(this.platformId, { kind: 'poi', id: poi.id });
       this.poiFavoriteKeys.delete(key);
+      this.toasts.info(`Removed "${poi.name}" from saves.`);
     } else {
       addFavorite(this.platformId, { kind: 'poi', id: poi.id });
       this.poiFavoriteKeys.add(key);
+      this.toasts.success(`Saved "${poi.name}".`);
     }
     this.poiFavoriteKeys = new Set(this.poiFavoriteKeys);
   }
