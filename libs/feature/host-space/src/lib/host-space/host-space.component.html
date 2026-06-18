@@ -370,6 +370,21 @@
                   ${{ monthlyEarnings.toLocaleString() }}<span class="text-lg font-body font-normal text-muted-text ml-1">/ mo</span>
                 </div>
                 <p class="font-body text-jungle-green text-sm font-medium mt-1">${{ annualEarnings.toLocaleString() }} per year</p>
+                <!-- P46 — share + export so the estimate doesn't dead-end. -->
+                <div class="flex items-center gap-1 mt-3">
+                  <button type="button" (click)="copyEarningsEstimate()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold text-muted-text hover:text-trinidad hover:bg-trinidad/5 transition-colors"
+                    title="Copy estimate to clipboard">
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">content_copy</span>
+                    Copy
+                  </button>
+                  <button type="button" (click)="emailEarningsEstimate()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.65rem] font-button uppercase tracking-[0.1em] font-bold text-muted-text hover:text-trinidad hover:bg-trinidad/5 transition-colors"
+                    title="Email this estimate to yourself">
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">mail</span>
+                    Email me
+                  </button>
+                </div>
               </div>
               <a routerLink="/hosting/new" class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block no-underline">
                 <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">

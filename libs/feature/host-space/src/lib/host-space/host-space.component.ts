@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HomeLocationsComponent } from '@cnt-workspace/ui';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '@cnt-workspace/ui';
-import { SeoService, HostListingDraftService } from '@cnt-workspace/data-access';
+import { SeoService, HostListingDraftService, ToastService } from '@cnt-workspace/data-access';
 import { FooterComponent } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
@@ -53,8 +53,45 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
     private seo: SeoService,
     private sanitizer: DomSanitizer,
     private drafts: HostListingDraftService,
+    private toasts: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  // ============================================================================
+  // P46 — Earnings calculator share + export
+  // ============================================================================
+
+  /** P46 — single source of truth for both the clipboard copy
+   *  and the mailto body. Re-renders on every change-detection
+   *  because the sliders mutate primitive state; cheap to compute. */
+  get earningsSummary(): string {
+    const tier = this.activeTier[0].toUpperCase() + this.activeTier.slice(1);
+    return [
+      'CurbNTurf — Hosting Earnings Estimate',
+      '',
+      `Tier: ${tier}`,
+      `${this.nightsPerWeek} night${this.nightsPerWeek === 1 ? '' : 's'}/wk · $${this.nightlyRate}/night · ${this.numberOfSites} site${this.numberOfSites === 1 ? '' : 's'}`,
+      '',
+      `≈ $${this.monthlyEarnings.toLocaleString()}/mo · $${this.annualEarnings.toLocaleString()}/year`,
+      '',
+      'https://curbnturf.com/host',
+    ].join('\n');
+  }
+
+  copyEarningsEstimate(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    navigator.clipboard?.writeText(this.earningsSummary).then(
+      () => this.toasts.success('Estimate copied to clipboard.'),
+      () => this.toasts.info('Copy failed — select the text manually.'),
+    );
+  }
+
+  emailEarningsEstimate(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const subject = encodeURIComponent('My CurbNTurf hosting estimate');
+    const body = encodeURIComponent(this.earningsSummary);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }
 
   /** True when the visitor has an in-progress wizard draft they can resume. */
   get hasDraft(): boolean { return !!this.drafts.current; }
