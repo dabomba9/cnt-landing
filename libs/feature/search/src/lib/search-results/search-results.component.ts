@@ -491,6 +491,31 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.toasts.info('Sign in to keep your saves across devices.');
   }
 
+  // ============================================================================
+  // P43/E — Mobile sheet pull-cue (first visit only)
+  // ============================================================================
+
+  /** Drives the .cue-active class on .sheet-handle__bar. Set briefly
+   *  by maybeShowSheetHandleCue() on first mobile visit. */
+  showSheetHandleCue = false;
+  private readonly SHEET_CUE_KEY = 'cnt-search-sheet-handle-cue-seen';
+
+  /** Pulse the bottom-sheet handle on first mobile visit so its
+   *  draggability is discoverable. One-shot; subsequent visits skip
+   *  via localStorage. Reduced-motion users see no animation (CSS
+   *  no-ops) but still consume the token so a future toggle change
+   *  doesn't surprise them. */
+  private maybeShowSheetHandleCue(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (window.innerWidth >= 768) return;
+    try {
+      if (localStorage.getItem(this.SHEET_CUE_KEY)) return;
+      localStorage.setItem(this.SHEET_CUE_KEY, '1');
+    } catch { return; }
+    this.showSheetHandleCue = true;
+    setTimeout(() => { this.showSheetHandleCue = false; }, 2400);
+  }
+
   /** Toggle handler for the map popup heart (already optimistically updated in the popup). */
   onMapFavoriteToggle(payload: { id: number; next: boolean }): void {
     this.setFavorite(payload.id, payload.next);
@@ -519,6 +544,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     // matches what the map actually rendered.
     const persisted = this.searchMap?.getTileStyle();
     if (persisted) this.currentMapStyle = persisted;
+    this.maybeShowSheetHandleCue();
   }
 
   private initEntrance(): void {

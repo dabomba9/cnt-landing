@@ -501,7 +501,7 @@
         (pointercancel)="onSheetPointerUp($event)"
         (click)="cycleSheetDetent()"
         role="button" aria-label="Drag to resize results sheet">
-        <div class="sheet-handle__bar"></div>
+        <div class="sheet-handle__bar" [class.cue-active]="showSheetHandleCue"></div>
       </div>
 
     <section class="search-list w-full overflow-y-auto px-2 sm:px-3 md:px-4 py-8 custom-scrollbar">

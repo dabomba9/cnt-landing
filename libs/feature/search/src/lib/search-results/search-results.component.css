@@ -91,6 +91,24 @@ img.img-loaded {
     border-radius: 9999px;
     background: rgba(34, 34, 34, 0.25);
   }
+
+  /* P43/E — one-shot pull-cue on first mobile visit. The .cue-active
+   * class is toggled by the component for ~2.4s on first paint so a
+   * visitor sees the handle bounce + tint, hinting that the sheet is
+   * draggable. Three 0.8s cycles match the timeout. */
+  .sheet-handle__bar.cue-active {
+    animation: cnt-sheet-handle-cue 0.8s cubic-bezier(0.32, 0.72, 0, 1) 0s 3;
+    transform-origin: center;
+  }
+  @keyframes cnt-sheet-handle-cue {
+    0%   { transform: translateY(0)    scaleX(1);    background: rgba(34, 34, 34, 0.25); }
+    35%  { transform: translateY(-6px) scaleX(1.18); background: rgba(227, 83, 13, 0.55); }
+    70%  { transform: translateY(0)    scaleX(1);    background: rgba(34, 34, 34, 0.25); }
+    100% { transform: translateY(0)    scaleX(1);    background: rgba(34, 34, 34, 0.25); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sheet-handle__bar.cue-active { animation: none; }
+  }
   /* The list inside scrolls independently of the sheet drag. */
   .search-mobile-sheet .search-list {
     flex: 1 1 auto;
