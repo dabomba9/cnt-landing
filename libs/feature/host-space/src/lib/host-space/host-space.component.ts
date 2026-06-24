@@ -6,7 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { SeoService, HostListingDraftService, ToastService } from '@cnt-workspace/data-access';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { MagneticBtnDirective } from '@cnt-workspace/ui';
+import { MagneticBtnDirective, prefersReducedMotion } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -33,6 +33,70 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   activeAddonId = 'meals';
+
+  // ============================================================================
+  // P50 — Host testimonial carousel
+  // ============================================================================
+
+  readonly testimonials = [
+    {
+      quote: "Hosting on CurbNTurf turned our unused back acreage into real income. Setup took less than 10 minutes and the guests have been wonderful. It's the easiest money we've ever made.",
+      name: 'Sarah & Tom Mitchell',
+      location: 'Napa Valley Vineyard, California',
+      initials: 'SM',
+    },
+    {
+      quote: "We had two unused pasture corners that brought in zero. After three months on CurbNTurf they cover the property tax. Guests show up respectful, leave the place spotless, and most send a thank-you note.",
+      name: 'Marcus Reed',
+      location: 'Cattle Ranch, Wyoming',
+      initials: 'MR',
+    },
+    {
+      quote: "Living on the coast we wanted to share the view without dealing with a vacation rental. Driveway hosting was perfect — quiet, low maintenance, real travelers who appreciate the spot.",
+      name: 'Jenna Park',
+      location: 'Coastal Homestead, Oregon',
+      initials: 'JP',
+    },
+    {
+      quote: "We added a single overnight pad next to the taproom. Guests grab a flight after they park and we get a built-in audience that already loves what we do. Win for everyone.",
+      name: 'Carlos Vega',
+      location: 'Hill Country Brewery, Texas',
+      initials: 'CV',
+    },
+    {
+      quote: "My kids meet families from all over the country in their own front yard. The income is great but watching them give farm tours might be my favorite part. Hands down our best decision this year.",
+      name: 'Dawn & Eli Watson',
+      location: 'Family Farm, North Carolina',
+      initials: 'DW',
+    },
+  ];
+
+  activeTestimonialIdx = 0;
+  private testimonialTimer: ReturnType<typeof setInterval> | null = null;
+  private testimonialPaused = false;
+
+  private startTestimonialRotation(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (prefersReducedMotion()) return;
+    this.testimonialTimer = setInterval(() => {
+      if (!this.testimonialPaused) this.nextTestimonial();
+    }, 7000);
+  }
+
+  nextTestimonial(): void {
+    this.activeTestimonialIdx = (this.activeTestimonialIdx + 1) % this.testimonials.length;
+  }
+
+  prevTestimonial(): void {
+    this.activeTestimonialIdx = (this.activeTestimonialIdx - 1 + this.testimonials.length) % this.testimonials.length;
+  }
+
+  setTestimonialIdx(i: number): void {
+    this.activeTestimonialIdx = i;
+  }
+
+  pauseTestimonialRotation(): void { this.testimonialPaused = true; }
+  resumeTestimonialRotation(): void { this.testimonialPaused = false; }
 
   get activeAddon() {
     return this.addonCategories.find(c => c.id === this.activeAddonId)!;
@@ -177,6 +241,7 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
       gsap.registerPlugin(ScrollTrigger);
       this.initHeroEntrance();
       this.initScrollAnimations();
+      this.startTestimonialRotation();
     }
   }
 
@@ -248,5 +313,6 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollTriggers.forEach(st => st.kill());
+    if (this.testimonialTimer) clearInterval(this.testimonialTimer);
   }
 }

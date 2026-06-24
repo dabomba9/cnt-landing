@@ -548,22 +548,62 @@
       <div class="border-t border-white/10"></div>
     </div>
 
-    <!-- Testimonial -->
+    <!-- Testimonial — P50 carousel. 5 hand-written entries, gold star
+         row, prev/next + dot controls, auto-rotate (7s) that pauses on
+         hover and respects prefers-reduced-motion. -->
     <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 py-20 md:py-32">
-      <div class="host-testimonial max-w-3xl mx-auto text-center">
+      <div class="host-testimonial max-w-3xl mx-auto text-center"
+        (mouseenter)="pauseTestimonialRotation()"
+        (mouseleave)="resumeTestimonialRotation()">
         <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">Host Stories</span>
-        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-10">What our hosts are saying.</h2>
-        <blockquote class="font-headline font-bold text-white/70 text-xl md:text-2xl leading-relaxed mb-10 tracking-tight">
-          "Hosting on CurbNTurf turned our unused back acreage into real income. Setup took less than 10 minutes and the guests have been wonderful. It's the easiest money we've ever made."
-        </blockquote>
-        <div class="flex items-center justify-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-            <span class="material-symbols-outlined text-white/70 text-xl">person</span>
+        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-8">What our hosts are saying.</h2>
+
+        <!-- 5-star row -->
+        <div class="flex items-center justify-center gap-1 mb-6" aria-hidden="true">
+          @for (_ of [1,2,3,4,5]; track $index) {
+            <span class="material-symbols-outlined text-[#F1B434] text-xl" style="font-variation-settings: 'FILL' 1;">star</span>
+          }
+        </div>
+
+        <!-- Active testimonial. aria-live so screen readers announce the
+             new quote when the carousel advances. -->
+        <div class="transition-opacity duration-500" aria-live="polite" aria-atomic="true">
+          <blockquote class="font-headline font-bold text-white/80 text-xl md:text-2xl leading-relaxed mb-8 tracking-tight">
+            "{{ testimonials[activeTestimonialIdx].quote }}"
+          </blockquote>
+          <div class="flex items-center justify-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-[#F1B434]/15 border border-[#F1B434]/40 flex items-center justify-center font-headline font-bold text-[#F1B434]">
+              {{ testimonials[activeTestimonialIdx].initials }}
+            </div>
+            <div class="text-left">
+              <p class="font-headline font-bold text-white">{{ testimonials[activeTestimonialIdx].name }}</p>
+              <p class="font-label text-white/50 text-xs uppercase tracking-widest">{{ testimonials[activeTestimonialIdx].location }}</p>
+            </div>
           </div>
-          <div class="text-left">
-            <p class="font-headline font-bold text-white">Sarah &amp; Tom Mitchell</p>
-            <p class="font-label text-white/50 text-xs uppercase tracking-widest">Napa Valley Vineyard, California</p>
+        </div>
+
+        <!-- Carousel controls — prev arrow, dot row, next arrow. -->
+        <div class="flex items-center justify-center gap-3 mt-10">
+          <button type="button" (click)="prevTestimonial()"
+            class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white inline-flex items-center justify-center transition-colors"
+            aria-label="Previous testimonial">
+            <span class="material-symbols-outlined text-base">chevron_left</span>
+          </button>
+          <div class="flex items-center gap-2" role="tablist" aria-label="Choose testimonial">
+            @for (t of testimonials; track $index) {
+              <button type="button"
+                (click)="setTestimonialIdx($index)"
+                [attr.aria-selected]="activeTestimonialIdx === $index"
+                [ngClass]="activeTestimonialIdx === $index ? 'bg-white w-6' : 'bg-white/30 hover:bg-white/50 w-1.5'"
+                class="h-1.5 rounded-full transition-all"
+                [attr.aria-label]="'Show testimonial ' + ($index + 1)"></button>
+            }
           </div>
+          <button type="button" (click)="nextTestimonial()"
+            class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white inline-flex items-center justify-center transition-colors"
+            aria-label="Next testimonial">
+            <span class="material-symbols-outlined text-base">chevron_right</span>
+          </button>
         </div>
       </div>
     </div>
