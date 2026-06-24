@@ -48,6 +48,14 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
                 <span class="material-symbols-outlined text-sm">print</span>
                 Print
               </button>
+              <!-- P47 — re-share affordance so the recipient doesn't have to
+                   Save → open editor → Share to forward this trip. -->
+              <button type="button" (click)="copyShareLink()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dark-text/15 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:border-trinidad hover:text-trinidad transition-colors shrink-0"
+                title="Copy this trip link">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">link</span>
+                Copy link
+              </button>
               <button type="button" (click)="importTrip()"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-trinidad text-white text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:opacity-95 shrink-0">
                 <span class="material-symbols-outlined text-sm">bookmark_add</span>
@@ -280,6 +288,18 @@ export class TripShareViewerComponent implements OnInit, OnDestroy {
   printTrip(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     window.print();
+  }
+
+  /** P47 — re-share the loaded /trip/share URL directly. The viewer
+   *  already lives at the canonical shareable URL, so we copy
+   *  window.location.href verbatim — no payload re-encode needed. */
+  copyShareLink(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const url = window.location.href;
+    navigator.clipboard?.writeText(url).then(
+      () => this.toasts.success('Share link copied to clipboard.'),
+      () => this.toasts.info('Copy failed — select the URL manually.'),
+    );
   }
 
   importTrip(): void {
