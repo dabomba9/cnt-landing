@@ -164,10 +164,16 @@ interface ISearchHit {
                 </div>
 
                 <!-- Action button -->
+                <!-- P48 — spinner + dynamic label while geolocation is in flight. -->
                 <button type="button" (click)="useMyLocation()" [disabled]="locating"
-                  class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50 transition-colors">
-                  <span class="material-symbols-outlined text-base">my_location</span>
-                  Use My Location
+                  class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white border border-dark-text/15 text-dark-text text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:border-jungle-green hover:text-jungle-green disabled:opacity-50 disabled:cursor-wait transition-colors">
+                  @if (locating) {
+                    <span class="material-symbols-outlined text-base animate-spin" aria-hidden="true">progress_activity</span>
+                    Getting your location…
+                  } @else {
+                    <span class="material-symbols-outlined text-base" aria-hidden="true">my_location</span>
+                    Use My Location
+                  }
                 </button>
 
                 <!-- Stops list -->
@@ -381,7 +387,11 @@ interface ISearchHit {
                       <span class="material-symbols-outlined text-base text-trinidad">directions</span>
                       <span class="flex-1 text-sm font-body font-bold text-dark-text">Driving directions</span>
                       @if (routeLoading) {
-                        <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">Loading…</span>
+                        <!-- P48 — spinner next to the existing copy so the fetch reads as in-flight, not stuck. -->
+                        <span class="inline-flex items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">
+                          <span class="material-symbols-outlined text-sm animate-spin" aria-hidden="true">progress_activity</span>
+                          Loading…
+                        </span>
                       } @else if (activeRoute) {
                         <span class="text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold text-muted-text">{{ formatMiles(activeRoute.totalMiles) }} · {{ formatMins(activeRoute.totalMinutes) }}</span>
                       }
