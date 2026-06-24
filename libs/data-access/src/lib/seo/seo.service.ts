@@ -19,7 +19,9 @@ export interface ISeoConfig {
 }
 
 const BASE_URL = 'https://www.curbnturf.com';
-const DEFAULT_IMAGE = `${BASE_URL}/assets/images/og-default.jpg`;
+// P49/A — repointed from og-default.jpg (404 on disk) to an asset that
+// actually ships. Replace with a designed 1200×630 share card later.
+const DEFAULT_IMAGE = `${BASE_URL}/assets/images/community_category.webp`;
 const JSONLD_ID = 'cnt-jsonld';
 
 @Injectable({ providedIn: 'root' })

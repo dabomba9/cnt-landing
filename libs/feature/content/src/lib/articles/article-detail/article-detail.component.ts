@@ -179,7 +179,22 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       imageHeight: ARTICLE_IMAGE_HEIGHT,
       type: 'article',
     });
-    this.seo.setStructuredData(buildArticleSchema(a, this.authorProfile, (p) => this.seo.absUrl(p)));
+    // P49/C — emit Article + BreadcrumbList as an array so Google sees
+    // both. setStructuredData JSON.stringifies, which handles arrays per
+    // schema.org's @graph-equivalent convention.
+    this.seo.setStructuredData([
+      buildArticleSchema(a, this.authorProfile, (p) => this.seo.absUrl(p)),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: this.seo.absUrl('/') },
+          { '@type': 'ListItem', position: 2, name: 'Articles', item: this.seo.absUrl('/articles') },
+          { '@type': 'ListItem', position: 3, name: a.categoryLabel, item: this.seo.absUrl(`/article/category/${a.category}`) },
+          { '@type': 'ListItem', position: 4, name: a.title, item: this.seo.absUrl(`/article/${a.id}/${a.slug}`) },
+        ],
+      },
+    ] as unknown as object);
 
     this.activeSection = null;
     this.progress = 0;

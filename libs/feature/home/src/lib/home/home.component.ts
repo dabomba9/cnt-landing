@@ -73,6 +73,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       description: 'Find unique private RV spots on farms, vineyards, and ranches across the US. Book directly with hosts. No membership fees. The RV Freedom Experience.',
       url: '/',
     });
+    // P49/C — WebSite + SearchAction so Google can render a sitelinks
+    // search box for the brand. The urlTemplate points at /search?q=
+    // which the SearchResultsComponent already hydrates into freeText.
+    this.seo.setStructuredData({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'CurbNTurf',
+      url: 'https://www.curbnturf.com',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: 'https://www.curbnturf.com/search?q={search_term_string}',
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    });
   }
 
   ngAfterViewInit(): void {
