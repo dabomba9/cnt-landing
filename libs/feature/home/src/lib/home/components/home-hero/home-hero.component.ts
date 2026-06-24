@@ -31,6 +31,10 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
   searchRoadtripDestination = '';
   
   videoPlaying = true;
+  // P52/A — gates the hero video <source> elements. False on mobile
+  // and under reduced-motion; true on desktop where we then hydrate
+  // after requestIdleCallback so LCP frame settles first.
+  loadHeroVideo = false;
   readonly today = new Date();
 
   // Rig State 
@@ -182,8 +186,24 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    // Force native video playback internally bypassing restrictive browser DOM policies
-    this.heroVideoRef?.nativeElement?.play().catch(() => {});
+    // P52/A — defer the video off the LCP critical path. Skip on
+    // mobile entirely (most browsers won't autoplay over cellular
+    // anyway) and skip under reduced-motion. Desktop hydrates after
+    // requestIdleCallback so the poster paints first.
+    const isMobile = window.innerWidth < 768;
+    this.loadHeroVideo = !isMobile && !prefersReducedMotion();
+    if (this.loadHeroVideo) {
+      const hydrate = () => {
+        const el = this.heroVideoRef?.nativeElement;
+        if (!el) return;
+        el.load();
+        el.play().catch(() => {});
+      };
+      // requestIdleCallback isn't in Safari; fall back to setTimeout.
+      const ric = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;
+      if (typeof ric === 'function') ric(hydrate);
+      else setTimeout(hydrate, 1500);
+    }
     // Reduced-motion users skip the hero text fly-in + the
     // scroll-driven sticky expand entirely. The hero text just
     // appears in place; the sticky pill stays its initial size.
