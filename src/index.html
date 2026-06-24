@@ -56,8 +56,17 @@
     <meta name="twitter:image" content="https://www.curbnturf.com/assets/images/community_category.webp">
     <meta name="twitter:image:alt" content="CurbNTurf — private land for RV stays">
 
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- P51/A — Material Symbols loaded non-blocking. preload+as=style
+         gets the bytes off the critical render path; the onload swap
+         promotes it to an active stylesheet once fetched. NoScript
+         fallback keeps icons usable without JS. -->
+    <link rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          as="style"
+          onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"/>
+    </noscript>
   </head>
   <body>
     <cnt-workspace-root></cnt-workspace-root>

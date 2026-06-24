@@ -2,7 +2,9 @@
   class="listing-card group cursor-pointer flex flex-col bg-white rounded-2xl overflow-hidden border border-dark-text/8 hover:border-trinidad/40 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline not-italic">
 
   <div class="relative aspect-[16/10] md:aspect-[4/3] overflow-hidden">
-    <img [src]="photos[currentImageIndex]" [alt]="listing.title" loading="lazy"
+    <img [src]="photos[currentImageIndex]" [alt]="listing.title"
+      width="1600" height="1000"
+      loading="lazy" decoding="async"
       class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]">
 
     <!-- carousel chevrons (hover-reveal, only if >1 photo) -->

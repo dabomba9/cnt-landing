@@ -30,7 +30,9 @@
         <h1 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-3xl md:text-5xl mb-6">{{ a.title }}</h1>
 
         <div class="rounded-2xl overflow-hidden mb-8 md:mb-12 aspect-[16/10] md:aspect-[2/1]">
-          <img [src]="a.heroImage" [alt]="a.heroAlt" loading="eager" fetchpriority="high" decoding="async"
+          <img [src]="a.heroImage" [alt]="a.heroAlt"
+            width="1270" height="840"
+            loading="eager" fetchpriority="high" decoding="async"
             class="w-full h-full object-cover">
         </div>
       </div>
