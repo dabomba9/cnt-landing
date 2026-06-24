@@ -662,7 +662,18 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   private buildListingJsonLd(heroImage: string): object {
     const photos = this.detail.photos.map(p => this.seo.absUrl(p));
     const isBoondock = this.listing.kind === 'boondocking';
-    return {
+    // P53/A — BreadcrumbList beside Campground so Google can render a
+    // crumb trail in SERP. Same array-emission pattern as P49 on /article.
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: this.seo.absUrl('/') },
+        { '@type': 'ListItem', position: 2, name: 'Search', item: this.seo.absUrl('/search') },
+        { '@type': 'ListItem', position: 3, name: this.listing.title, item: this.seo.absUrl(`/listing?id=${this.listing.id}`) },
+      ],
+    };
+    const campground = {
       '@context': 'https://schema.org',
       '@type': 'Campground',
       name: this.listing.title,
@@ -707,6 +718,7 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         value: true,
       })),
     };
+    return [campground, breadcrumb] as unknown as object;
   }
 
   ngAfterViewInit(): void {

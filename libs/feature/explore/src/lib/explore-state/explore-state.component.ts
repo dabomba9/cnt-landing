@@ -168,7 +168,10 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
       type: 'website',
     });
 
-    this.seo.setStructuredData({
+    // P53/B — emit TouristDestination + BreadcrumbList as an array so
+    // SERPs can render a crumb trail. Same array-emission pattern as
+    // P49 (/article) and P53/A (/listing).
+    const destination = {
       '@context': 'https://schema.org',
       '@type': 'TouristDestination',
       name: `${content.name} — RV Stays`,
@@ -189,6 +192,16 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
             },
           }
         : {}),
-    });
+    };
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: this.seo.absUrl('/') },
+        { '@type': 'ListItem', position: 2, name: 'Explore', item: this.seo.absUrl('/') },
+        { '@type': 'ListItem', position: 3, name: content.name, item: this.seo.absUrl(`/explore/${content.slug}`) },
+      ],
+    };
+    this.seo.setStructuredData([destination, breadcrumb] as unknown as object);
   }
 }
