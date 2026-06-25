@@ -13,9 +13,11 @@
     <link rel="preload" href="/fonts/FamiljenGrotesk-Italic-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
 
     <!-- Preload the home-hero LCP poster so it's ready when the
-         video element resolves it as a background-image. -->
+         video element resolves it as a background-image. P54/A —
+         self-hosted via Vercel CDN so it picks up long-lived cache
+         headers (was Webflow CDN with no TTL). -->
     <link rel="preload" as="image"
-      href="https://cdn.prod.website-files.com/5fbe83fe8b482568c9db3c4f/662c82d2c197518b9c6f47d4_watermarked_preview%20(1)-poster-00001.jpg"
+      href="/assets/images/hero-poster.jpg"
       fetchpriority="high">
     <!-- P52/B — Asap + Familjen Google Fonts CSS off the critical path,
          same preload+as=style swap pattern used for Material Symbols.
