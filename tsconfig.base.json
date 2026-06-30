@@ -31,6 +31,9 @@
       "@cnt-workspace/hosting-listings": [
         "libs/feature/hosting-listings/src/index.ts"
       ],
+      "@cnt-workspace/hosting-new-listing": [
+        "libs/feature/hosting-new-listing/src/index.ts"
+      ],
       "@cnt-workspace/inbox": ["libs/feature/inbox/src/index.ts"],
       "@cnt-workspace/listing": ["libs/feature/listing/src/index.ts"],
       "@cnt-workspace/models": ["libs/shared/models/src/index.ts"],
@@ -39,8 +42,7 @@
       "@cnt-workspace/trip-planner": ["libs/feature/trip-planner/src/index.ts"],
       "@cnt-workspace/trips": ["libs/feature/trips/src/index.ts"],
       "@cnt-workspace/ui": ["libs/ui/src/index.ts"],
-      "@cnt-workspace/wishlists": ["libs/feature/wishlists/src/index.ts"],
-      "@cnt-workspace/hosting-new-listing": ["libs/feature/hosting-new-listing/src/index.ts"]
+      "@cnt-workspace/wishlists": ["libs/feature/wishlists/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

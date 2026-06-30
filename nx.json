@@ -73,5 +73,6 @@
       "unitTestRunner": "jest"
     }
   },
-  "defaultProject": "cnt-workspace"
+  "defaultProject": "cnt-workspace",
+  "useInferencePlugins": false
 }
