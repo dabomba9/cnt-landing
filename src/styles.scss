@@ -1489,3 +1489,18 @@ body.cnt-modal-open .cnt-navbar {
   h1, h2, h3 { page-break-after: avoid; }
   .cnt-print-leg, .cnt-print-stop { page-break-inside: avoid; }
 }
+
+/* P62 — Trip planner stop card entry animation. Fires once
+ * when a cdkDrag stop element first mounts (Add to trip,
+ * Use my location, etc.). CDK preserves DOM during reorder
+ * so existing rows don't re-animate. */
+.cnt-stop-row {
+  animation: cnt-stop-enter 0.32s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+@keyframes cnt-stop-enter {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cnt-stop-row { animation: none; }
+}

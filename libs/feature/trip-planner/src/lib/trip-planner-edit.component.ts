@@ -191,7 +191,11 @@ interface ISearchHit {
                         @else if (isLongLeg(leg.minutes)) { <span class="normal-case tracking-normal font-body font-normal">· long drive — add a rest stop?</span> }
                       </div>
                     }
-                    <div cdkDrag class="rounded-lg border border-dark-text/10 bg-cream/30">
+                    <!-- P62 — cnt-stop-row triggers a 320ms fade-in + slide-up
+                         on first mount (Add to trip, Use my location). CDK
+                         preserves DOM during drag-reorder so existing rows
+                         don't re-animate. Reduced-motion gated in styles.scss. -->
+                    <div cdkDrag class="cnt-stop-row rounded-lg border border-dark-text/10 bg-cream/30">
                       <div class="flex items-center gap-2 p-2">
                       <span class="material-symbols-outlined text-base text-muted-text cursor-grab shrink-0" cdkDragHandle>drag_indicator</span>
                       <span class="w-7 h-7 rounded-full inline-flex items-center justify-center text-white text-[11px] font-headline font-bold shrink-0" [ngStyle]="{ background: stopMarkerColor(i, last) }">
