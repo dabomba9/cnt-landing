@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -47,7 +47,26 @@ export class ListingBookingWidgetComponent {
     if (id) this.rvProfileSelect.emit(id);
   }
 
-  constructor(public booking: BookingStateService) {}
+  constructor(public booking: BookingStateService, @Inject(PLATFORM_ID) private platformId: object) {}
+
+  /** P63/F3 — Material v20's <mat-calendar> auto-focuses its active
+   *  day cell on mount, and v20's focus behavior includes
+   *  scrollIntoView. Wrapping toggleCalendar() to preserve scrollY
+   *  prevents the page from jumping when the visitor expands the
+   *  Trip dates section. */
+  onTripDatesToggle(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.booking.toggleCalendar();
+      return;
+    }
+    const scrollY = window.scrollY;
+    this.booking.toggleCalendar();
+    requestAnimationFrame(() => {
+      if (Math.abs(window.scrollY - scrollY) > 4) {
+        window.scrollTo({ top: scrollY, behavior: 'instant' as ScrollBehavior });
+      }
+    });
+  }
 
   /** Typed-input pair above the inline mat-calendar. Each setter forwards
    *  to BookingStateService.onDateSelected — same click-1/click-2/range-reset

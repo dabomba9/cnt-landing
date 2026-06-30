@@ -38,8 +38,10 @@
 
   <!-- Date + Guest grouped block -->
   <div class="border border-dark-text/10 rounded-2xl overflow-hidden">
-    <!-- P58/A — focus-visible ring so keyboard users see where they are. -->
-    <button type="button" (click)="booking.toggleCalendar()"
+    <!-- P58/A — focus-visible ring so keyboard users see where they are.
+         P63/F3 — onTripDatesToggle wraps booking.toggleCalendar() to
+         preserve scrollY (Material v20 mat-calendar auto-focus scrolls). -->
+    <button type="button" (click)="onTripDatesToggle()"
       [attr.aria-expanded]="booking.showCalendar"
       class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-cream/60 transition-colors border-b border-dark-text/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-jungle-green/50 focus-visible:ring-offset-1">
       <div>
@@ -74,11 +76,17 @@
       <!-- Typed-input peers to the inline calendar (D1) — same
            write-path as taps: each forwards through onDateSelected. -->
       <div class="flex items-center gap-2 mt-3 mb-2">
+        <!-- P63/F2 — Material v20 cdk-overlay positioning broke the
+             dropdown calendar (rendered at top of page instead of
+             anchored to input). The inline <mat-calendar> below
+             handles all date selection anyway; removed the toggle +
+             dropdown pair. Inputs still accept typed dates via
+             matDatepicker + matDatepickerFilter, paired with hidden
+             <mat-datepicker> refs that are never opened. -->
         <div class="cnt-date-field inline-flex flex-1 items-center gap-1 rounded-md bg-cream/40 border border-dark-text/15 px-2 py-1">
           <input matInput [matDatepicker]="widgetStartPicker" [min]="booking.today" [matDatepickerFilter]="booking.dateFilter"
             [(ngModel)]="pickerStart" name="widgetStart" placeholder="Check-in"
             class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
-          <mat-datepicker-toggle [for]="widgetStartPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
           <mat-datepicker #widgetStartPicker></mat-datepicker>
         </div>
         <span class="text-muted-text text-xs">→</span>
@@ -86,7 +94,6 @@
           <input matInput [matDatepicker]="widgetEndPicker" [min]="booking.today" [matDatepickerFilter]="booking.dateFilter"
             [(ngModel)]="pickerEnd" name="widgetEnd" placeholder="Check-out"
             class="bg-transparent text-xs font-body text-dark-text focus:outline-none flex-1 min-w-0" />
-          <mat-datepicker-toggle [for]="widgetEndPicker" class="cnt-date-toggle"></mat-datepicker-toggle>
           <mat-datepicker #widgetEndPicker></mat-datepicker>
         </div>
       </div>
