@@ -420,18 +420,26 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
     return this.startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  /** Field-level validation. */
+  /** Field-level validation. P58/D — toast on transition from valid →
+   *  invalid only, so it fires once per error event without nagging on
+   *  every blur. The inline `fieldErrors` text remains the primary
+   *  feedback; the toast adds tone parity with /search. */
   validateEmail(): void {
     this.emailTouched = true;
+    const wasInvalid = !!this.fieldErrors.email;
     const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.contactEmail.trim());
     this.fieldErrors.email = ok ? undefined : 'Enter a valid email address.';
+    if (!ok && !wasInvalid) this.toasts.info('Email isn\'t in the right shape.');
   }
 
   validatePhone(): void {
     this.phoneTouched = true;
     if (!this.contactPhone.trim()) { this.fieldErrors.phone = undefined; return; }
+    const wasInvalid = !!this.fieldErrors.phone;
     const digits = this.contactPhone.replace(/\D/g, '');
-    this.fieldErrors.phone = digits.length >= 10 ? undefined : 'Phone number looks too short.';
+    const ok = digits.length >= 10;
+    this.fieldErrors.phone = ok ? undefined : 'Phone number looks too short.';
+    if (!ok && !wasInvalid) this.toasts.info('Phone number needs 10 digits.');
   }
 
   /** Auto-format phone: (555) 123-4567 */

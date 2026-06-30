@@ -337,8 +337,12 @@
             </div>
 
             @if (error) {
-              <div class="rounded-xl bg-trinidad/5 border border-trinidad/30 p-4 text-trinidad text-sm font-body inline-flex items-center gap-2" role="alert">
-                <span class="material-symbols-outlined text-base">error</span>
+              <!-- P58/B — aria-live assertive so screen readers announce
+                   async errors immediately; icon hidden since the copy
+                   already starts with "Error:"-grade context. -->
+              <div class="rounded-xl bg-trinidad/5 border border-trinidad/30 p-4 text-trinidad text-sm font-body inline-flex items-center gap-2"
+                   role="alert" aria-live="assertive">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">error</span>
                 {{ error }}
               </div>
             }

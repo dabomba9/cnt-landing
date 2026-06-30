@@ -38,8 +38,10 @@
 
   <!-- Date + Guest grouped block -->
   <div class="border border-dark-text/10 rounded-2xl overflow-hidden">
+    <!-- P58/A — focus-visible ring so keyboard users see where they are. -->
     <button type="button" (click)="booking.toggleCalendar()"
-      class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-cream/60 transition-colors border-b border-dark-text/10">
+      [attr.aria-expanded]="booking.showCalendar"
+      class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-cream/60 transition-colors border-b border-dark-text/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-jungle-green/50 focus-visible:ring-offset-1">
       <div>
         <div class="text-[0.65rem] font-label uppercase tracking-[0.12em] font-bold text-muted-text">Trip dates</div>
         <div class="text-sm font-body" [class.text-dark-text]="booking.selectedDateRange?.start" [class.text-muted-text]="!booking.selectedDateRange?.start" [class.font-bold]="booking.selectedDateRange?.start">{{ booking.dateDisplay }}</div>
@@ -162,8 +164,12 @@
   <!-- Add-ons (collapsible) -->
   @if (detail.addOns.length > 0) {
     <div class="mt-5 pt-5 border-t border-dark-text/10">
+      <!-- P58/A+C — focus-visible ring + aria-pressed for screen readers. -->
       <button type="button" (click)="booking.toggleAddOnsPanel()"
-        class="w-full flex items-center justify-between gap-4 text-left">
+        [attr.aria-pressed]="booking.showAddOns"
+        [attr.aria-expanded]="booking.showAddOns"
+        aria-controls="booking-add-ons-panel"
+        class="w-full flex items-center justify-between gap-4 text-left rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-jungle-green/50 focus-visible:ring-offset-2">
         <div class="min-w-0">
           <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.65rem] font-bold block mb-1">Add-ons</span>
           <span class="text-[0.7rem] font-body text-muted-text">
@@ -173,7 +179,7 @@
         <span class="material-symbols-outlined text-xl text-trinidad transition-transform duration-300 shrink-0" [class.rotate-45]="booking.showAddOns" aria-hidden="true">add</span>
       </button>
       @if (booking.showAddOns) {
-        <div class="mt-3 space-y-2">
+        <div id="booking-add-ons-panel" class="mt-3 space-y-2">
           @for (a of detail.addOns; track a.id) {
             <div>
               <button type="button" (click)="booking.toggleAddOn(a.id)"
