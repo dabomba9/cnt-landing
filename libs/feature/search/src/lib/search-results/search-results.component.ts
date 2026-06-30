@@ -519,6 +519,31 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     setTimeout(() => { this.showSheetHandleCue = false; }, 2400);
   }
 
+  // ============================================================================
+  // P56 — Trip planner discoverability pulse (first /search visit)
+  // ============================================================================
+
+  /** Drives the .cue-active class on the "Plan a trip" pill. Set
+   *  briefly by maybeShowPlannerCue() on first /search visit so
+   *  visitors notice the trip-planning feature. */
+  showPlannerCue = false;
+  private readonly PLANNER_CUE_KEY = 'cnt-search-planner-cue-seen';
+
+  /** Pulse the "Plan a trip" pill once on first /search visit so the
+   *  trip-planning capability is discoverable. Fires at all viewports
+   *  (the gap exists on desktop too — the pill is small relative to
+   *  the map). Staggered 1s after the sheet-handle cue so the two
+   *  animations don't compete on a brand-new mobile visit. */
+  private maybeShowPlannerCue(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      if (localStorage.getItem(this.PLANNER_CUE_KEY)) return;
+      localStorage.setItem(this.PLANNER_CUE_KEY, '1');
+    } catch { return; }
+    setTimeout(() => { this.showPlannerCue = true; }, 1000);
+    setTimeout(() => { this.showPlannerCue = false; }, 3600);
+  }
+
   /** Toggle handler for the map popup heart (already optimistically updated in the popup). */
   onMapFavoriteToggle(payload: { id: number; next: boolean }): void {
     this.setFavorite(payload.id, payload.next);
@@ -548,6 +573,7 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
     const persisted = this.searchMap?.getTileStyle();
     if (persisted) this.currentMapStyle = persisted;
     this.maybeShowSheetHandleCue();
+    this.maybeShowPlannerCue();
   }
 
   private initEntrance(): void {

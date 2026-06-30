@@ -794,9 +794,12 @@
            pane next to the locate-me button (which lives inside the
            <cnt-search-map> template). Z-index matches the layers + locate
            overlay (--z-map-overlay = 400). -->
+      <!-- P56 — cue-active is a one-shot first-visit pulse so the
+           "Plan a trip" capability is discoverable. -->
       <button type="button" (click)="togglePlannerDrawer()" aria-label="Open trip planner"
         [class.bg-trinidad]="plannerDrawerOpen" [class.text-white]="plannerDrawerOpen"
         [class.bg-white]="!plannerDrawerOpen" [class.text-dark-text]="!plannerDrawerOpen"
+        [class.cue-active]="showPlannerCue"
         class="absolute right-20 bottom-6 z-[400] inline-flex items-center gap-2 px-4 py-3 rounded-full border border-dark-text/10 shadow-[0_8px_24px_rgba(0,0,0,0.15)] text-[0.65rem] uppercase tracking-[0.12em] font-button font-bold hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] transition-shadow">
         <span class="material-symbols-outlined text-base" [class.text-trinidad]="!plannerDrawerOpen">route</span>
         {{ plannerDrawerOpen ? 'Hide planner' : 'Plan a trip' }}

@@ -363,3 +363,20 @@ img.img-loaded {
             mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 1.5rem), transparent 100%);
   }
 }
+
+/* P56 — one-shot discovery pulse on the "Plan a trip" floating pill
+ * on first /search visit. Three 0.8s cycles match the JS timeout.
+ * Class binding sits only on this button so the selector is safe. */
+button.cue-active {
+  animation: cnt-planner-cue 0.8s cubic-bezier(0.32, 0.72, 0, 1) 0s 3;
+  z-index: 401;
+}
+@keyframes cnt-planner-cue {
+  0%   { transform: scale(1);    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+  35%  { transform: scale(1.08); box-shadow: 0 8px 24px rgba(227, 83, 13, 0.55), 0 0 0 8px rgba(227, 83, 13, 0.12); }
+  70%  { transform: scale(1);    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+  100% { transform: scale(1);    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  button.cue-active { animation: none; }
+}
