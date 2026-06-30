@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLA
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MagneticBtnDirective, prefersReducedMotion } from '@cnt-workspace/ui';
+import { prefersReducedMotion } from '@cnt-workspace/ui';
 import { HeroDatePickerComponent } from './hero-date-picker.component';
 
 /** Local mirror of MatDatepicker's DateRange shape so the eager
@@ -15,7 +15,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home-hero',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MagneticBtnDirective, HeroDatePickerComponent],
+  imports: [CommonModule, FormsModule, RouterLink, HeroDatePickerComponent],
   templateUrl: './home-hero.component.html',
   styleUrl: './home-hero.component.scss'
 })

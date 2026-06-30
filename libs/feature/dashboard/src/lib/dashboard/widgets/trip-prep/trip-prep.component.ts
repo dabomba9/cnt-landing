@@ -1,6 +1,6 @@
 import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { IBooking } from '@cnt-workspace/models';
 import { IPublicUser } from '@cnt-workspace/data-access';
 import { IMyRv, hasMyRvPhotos, downloadBookingIcs } from '@cnt-workspace/data-access';
@@ -20,7 +20,7 @@ interface IPrepItem {
 @Component({
   selector: 'cnt-trip-prep',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   template: `
     @if (booking) {
       <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">

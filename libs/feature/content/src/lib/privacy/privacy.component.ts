@@ -3,7 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -11,7 +10,7 @@ import { gsap } from 'gsap';
 @Component({
   selector: 'cnt-privacy',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './privacy.component.html',
   styleUrl: './privacy.component.scss',
 })

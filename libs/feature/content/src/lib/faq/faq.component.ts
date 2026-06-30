@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -88,7 +87,7 @@ const FAQS: IFaqItem[] = [
 @Component({
   selector: 'cnt-faq',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
 })

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -14,7 +13,7 @@ type ContactReason = 'general' | 'guest-support' | 'host-support' | 'press-media
 @Component({
   selector: 'cnt-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })

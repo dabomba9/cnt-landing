@@ -3,7 +3,6 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -22,7 +21,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, CinematicRollDirective, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent, HomeRoom2roamRailComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent, HomeRoom2roamRailComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 import { SearchMapComponent } from './search-map.component';
@@ -62,7 +61,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 @Component({
   selector: 'cnt-workspace-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, DragDropModule, CinematicRollDirective, NavbarComponent, ListingCardComponent, ListingCardSkeletonComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
+  imports: [CommonModule, FormsModule, MatDatepickerModule, MatNativeDateModule, RouterLink, DragDropModule, NavbarComponent, ListingCardComponent, ListingCardSkeletonComponent, SearchMapComponent, FocusTrapDirective, PoiModalComponent],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.css',
 })

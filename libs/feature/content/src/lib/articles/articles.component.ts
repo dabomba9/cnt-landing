@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { buildCollectionSchema } from './article-schema.util';
-import { NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective } from '@cnt-workspace/ui';
+import { NavbarComponent, FooterComponent, MagneticBtnDirective } from '@cnt-workspace/ui';
 import { ArticlePreferencesService, SeoService } from '@cnt-workspace/data-access';
 import { NewsletterSignupComponent } from '../newsletter-signup/newsletter-signup.component';
 import { gsap } from 'gsap';
@@ -28,7 +28,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 @Component({
   selector: 'cnt-articles',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective, NewsletterSignupComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective, NewsletterSignupComponent],
   templateUrl: './articles.component.html',
   styleUrl: './articles.component.scss',
 })

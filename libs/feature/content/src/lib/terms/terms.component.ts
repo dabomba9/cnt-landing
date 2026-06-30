@@ -3,7 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
 import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
@@ -38,7 +37,7 @@ export const TERMS_SECTIONS: ITermsSection[] = [
 @Component({
   selector: 'cnt-terms',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective],
+  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.scss',
 })

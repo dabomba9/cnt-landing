@@ -5,8 +5,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
-import { CinematicRollDirective } from '@cnt-workspace/ui';
-import { MagneticBtnDirective } from '@cnt-workspace/ui';
 import { SeoService } from '@cnt-workspace/data-access';
 import {
   MOCK_LISTINGS, IListing, IReview, CATEGORY_META, AMENITY_LABELS, AMENITY_ICONS,
@@ -38,7 +36,7 @@ import { MiniMapComponent } from '@cnt-workspace/booking';
   standalone: true,
   imports: [
     CommonModule, FormsModule, RouterLink,
-    NavbarComponent, FooterComponent, CinematicRollDirective, MagneticBtnDirective,
+    NavbarComponent, FooterComponent,
     ListingPhotoLightboxComponent, ListingBookingWidgetComponent, ListingMobileBookingBarComponent,
     ListingCardComponent, ReviewCardComponent, AccordionCardComponent, RvPhotosModalComponent,
     MiniMapComponent, AddonLightboxComponent,
