@@ -234,6 +234,24 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
       description: 'Share your land and earn real money. Join thousands of hosts earning an average of $1,200/month on CurbNTurf. List in under 10 minutes.',
       url: '/host',
     });
+    // P55/A — LocalBusiness JSON-LD for Google rich results on the
+    // host-onboarding page. Same array-emission pattern set in P49/P53.
+    // No street address (CurbNTurf is a platform marketplace, not a
+    // physical location); areaServed substitutes for Google's purposes.
+    this.seo.setStructuredData({
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: 'CurbNTurf',
+      url: 'https://www.curbnturf.com/host',
+      description: 'CurbNTurf connects private landowners with RV travelers seeking unique places to stay. Hosts earn real income from unused acreage with no membership fees and full control over bookings.',
+      priceRange: 'Free to list',
+      areaServed: { '@type': 'Country', name: 'United States' },
+      potentialAction: {
+        '@type': 'JoinAction',
+        target: 'https://www.curbnturf.com/hosting/new',
+        name: 'Start hosting',
+      },
+    });
   }
 
   ngAfterViewInit(): void {
