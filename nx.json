@@ -128,5 +128,39 @@
     }
   },
   "defaultProject": "cnt-workspace",
-  "useInferencePlugins": false
+  "useInferencePlugins": false,
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      },
+      "include": [
+        "e2e/**/*",
+        "libs/data-access/**/*",
+        "libs/feature/account/**/*",
+        "libs/feature/auth/**/*",
+        "libs/feature/booking/**/*",
+        "libs/feature/content/**/*",
+        "libs/feature/dashboard/**/*",
+        "libs/feature/explore/**/*",
+        "libs/feature/home/**/*",
+        "libs/feature/host-dashboard/**/*",
+        "libs/feature/host-space/**/*",
+        "libs/feature/hosting-listings/**/*",
+        "libs/feature/hosting-new-listing/**/*",
+        "libs/feature/inbox/**/*",
+        "libs/feature/listing/**/*",
+        "libs/feature/refer/**/*",
+        "libs/feature/search/**/*",
+        "libs/feature/trip-planner/**/*",
+        "libs/feature/trips/**/*",
+        "libs/feature/wishlists/**/*",
+        "libs/helpers/**/*",
+        "libs/shared/models/**/*",
+        "libs/ui/**/*",
+        "*"
+      ]
+    }
+  ]
 }

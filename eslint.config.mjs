@@ -40,7 +40,7 @@ export default [
           'error',
           {
             type: 'attribute',
-            prefix: 'cntWorkspace',
+            prefix: 'cnt',
             style: 'camelCase',
           },
         ],
@@ -48,7 +48,7 @@ export default [
           'error',
           {
             type: 'element',
-            prefix: 'cnt-workspace',
+            prefix: 'cnt',
             style: 'kebab-case',
           },
         ],

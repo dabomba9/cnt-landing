@@ -3,11 +3,20 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/feature/trip-planner/src",
   "prefix": "cnt-workspace",
-  "tags": ["type:feature", "scope:trip-planner"],
   "projectType": "library",
+  "tags": ["type:feature", "scope:trip-planner"],
   "targets": {
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.js",
+        "{workspaceRoot}/eslint.config.mjs",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }
