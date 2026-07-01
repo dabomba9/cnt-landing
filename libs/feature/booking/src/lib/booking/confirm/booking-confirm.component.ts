@@ -15,7 +15,6 @@ import { IBooking, IBookingAddOn, STATUS_META } from '@cnt-workspace/models';
 import { AuthService } from '@cnt-workspace/data-access';
 import { MOCK_LISTINGS, getListingDetail, IAddOn } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
-import { computeServiceFee, computeFeedbackIncentive, FEEDBACK_INCENTIVE_PER_NIGHT } from '@cnt-workspace/data-access';
 import { gsap } from 'gsap';
 
 @Component({

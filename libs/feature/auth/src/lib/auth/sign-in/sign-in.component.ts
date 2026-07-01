@@ -57,7 +57,7 @@ export class SignInComponent implements OnInit {
     try {
       await this.auth.signInWithProvider(provider);
       // Redirect happens; this line rarely runs.
-    } catch (e) {
+    } catch {
       this.error = `Could not start ${provider} sign-in. Try again or use email.`;
     }
   }

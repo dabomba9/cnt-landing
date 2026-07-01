@@ -168,13 +168,6 @@ const IMG = {
   boondocking: 'assets/images/host_opportunity.webp',
 };
 
-/** Amenity bundles for boondocking — typically no hookups, just terrain + permit info. */
-const A_BOON = {
-  blm:   ['back-in','pets','campfires','tents-allowed','vehicles-allowed'] as Amenity[],
-  usfs:  ['back-in','pets','campfires','tents-allowed','potable-water','toilet'] as Amenity[],
-  nps:   ['back-in','pets','tents-allowed','toilet'] as Amenity[],
-};
-
 const A = {
   vineyard: ['back-in','electricity','potable-water','wifi','picnic-table','toilet','pets','trash'] as Amenity[],
   farm:     ['back-in','electricity','potable-water','pets','campfires','trash','tents-allowed'] as Amenity[],

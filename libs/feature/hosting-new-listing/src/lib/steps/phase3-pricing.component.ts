@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IDraftListing, CancellationTier, CANCELLATION_TIER_META,
-  computeServiceFee, computeFeedbackIncentive, computeHostTakeHome,
+  computeServiceFee, computeHostTakeHome,
   SERVICE_FEE_RATE, MINIMUM_FEE_PER_NIGHT, FEEDBACK_INCENTIVE_PER_NIGHT,
   MIN_VIABLE_LISTING_PRICE,
 } from '@cnt-workspace/data-access';

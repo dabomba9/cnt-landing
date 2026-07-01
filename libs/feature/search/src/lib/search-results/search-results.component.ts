@@ -11,11 +11,11 @@ import { SeoService, SavedSearchesService, ISavedSearch, readRecentlyViewed } fr
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  IListing, ALL_LISTINGS, Category, CATEGORY_META,
+  IListing, ALL_LISTINGS, CATEGORY_META,
   Amenity, AMENITY_LABELS, AMENITY_GROUP, RV_TYPES, RvType, PRICE_RANGE,
   ListingKind, IPoi, PoiKind, POI_KIND_META, MOCK_POIS, poisInBounds,
 } from '@cnt-workspace/data-access';
-import { readMyRv, IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
+import { IMyRvProfile, listMyRvProfiles, getActiveRvProfile, setActiveRvProfile,
   TripPlannerService, ITripPlan, ITripStop, totalTripMiles, haversineMiles, ToastService,
   autoTripName, rvTypeLabel, RoutingService, IRoute,
   suggestionsAlongRoute, pointToRouteMiles, BookingService, bookingForStop,

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastService, IToast } from '@cnt-workspace/data-access';
+import { ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-toast-host',

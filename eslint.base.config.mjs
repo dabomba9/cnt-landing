@@ -41,6 +41,15 @@ export default [
       files: ['**/*.ts', '**/*.tsx', '**/*.cts', '**/*.mts'],
       rules: {
         ...config.rules,
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_',
+            destructuredArrayIgnorePattern: '^_',
+          },
+        ],
       },
     })),
   ...compat

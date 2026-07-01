@@ -8,7 +8,6 @@ import {
   IPrivateListing, getMyListings, getHostBookings, HostListingMetaService,
   HostListingDraftService, IDraftListing,
 } from '@cnt-workspace/data-access';
-import { IBooking } from '@cnt-workspace/models';
 
 interface IRowModel {
   listing: IPrivateListing;

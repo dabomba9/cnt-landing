@@ -2,9 +2,9 @@ import { Component, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, Input, O
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META, ITripPlan } from '@cnt-workspace/data-access';
+import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, ITripPlan } from '@cnt-workspace/data-access';
 import {
-  TILE_URL, TILE_ATTRIBUTION, MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, TILE_STYLES, TileStyleKey,
+  MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, TILE_STYLES, TileStyleKey,
 } from '@cnt-workspace/ui';
 
 @Component({

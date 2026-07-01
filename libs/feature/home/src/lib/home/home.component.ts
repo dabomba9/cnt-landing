@@ -542,8 +542,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           1.2 // Starts at 1.2, which is slightly after the 1s card transition completes
         );
 
-        const overlapWrap = document.querySelector('.content-overlap-wrap') as HTMLElement;
-
         const scrollPinSt = ScrollTrigger.create({
           trigger: scrollSection,
           pin: true,

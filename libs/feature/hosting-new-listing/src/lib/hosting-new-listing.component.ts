@@ -23,15 +23,6 @@ import { Phase3AddonsComponent } from './steps/phase3-addons.component';
 import { Phase3ReviewComponent } from './steps/phase3-review.component';
 import { PhaseHubComponent } from './phase-hub/phase-hub.component';
 
-/**
- * Step descriptor for the wizard. `phase` 0 means the phase-hub landing screen
- * (one per phase). Real steps start at `step` 0 within a phase.
- */
-interface IStepDescriptor {
-  phase: 1 | 2 | 3;
-  step: number;          // -1 for the phase hub, 0+ for actual steps
-  label: string;         // short label for the progress bar
-}
 
 /** Steps within each phase, in order. The shell renders them by index. */
 const PHASE1_STEPS = ['Property type', 'Address', 'Site basics', 'Amenities', 'Vehicles'];
