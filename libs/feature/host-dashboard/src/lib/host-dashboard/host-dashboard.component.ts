@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, HostListener, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -38,6 +38,16 @@ const CANCEL_PRESETS  = ['Property unavailable', 'Maintenance', 'Booked elsewher
   templateUrl: './host-dashboard.component.html',
 })
 export class HostDashboardComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private bookings = inject(BookingService);
+  private drafts = inject(HostListingDraftService);
+  private hostReviews = inject(HostReviewService);
+
   user: IPublicUser | null = null;
   listings: IPrivateListing[] = [];
   stats: IHostStats = { earningsThisMonth: 0, earningsYearToDate: 0, upcomingNights: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 };
@@ -87,18 +97,6 @@ export class HostDashboardComponent implements OnInit, OnDestroy {
   readonly guestSubScoreLabels = GUEST_SUBSCORE_LABELS;
   readonly minHostReviewChars = MIN_REVIEW_CHARS_FOR_CREDIT;
   readonly revealWindowDays = REVEAL_WINDOW_DAYS;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private bookings: BookingService,
-    private drafts: HostListingDraftService,
-    private hostReviews: HostReviewService,
-  ) {}
 
   /** Per-step completion of any in-progress wizard draft (null when none). */
   get draftCompletion() { return this.drafts.completion; }

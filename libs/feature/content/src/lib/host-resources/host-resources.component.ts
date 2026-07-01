@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -23,6 +23,9 @@ interface IResourceCard {
   styleUrl: './host-resources.component.scss',
 })
 export class HostResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+
   resources: IResourceCard[] = [
     {
       title: 'Become a host',
@@ -53,11 +56,6 @@ export class HostResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
       accent: 'jungle-green',
     },
   ];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

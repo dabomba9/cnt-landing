@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -12,7 +12,8 @@ import { SeoService } from '@cnt-workspace/data-access';
   templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent implements OnInit {
-  constructor(private seo: SeoService) {}
+  private seo = inject(SeoService);
+
 
   ngOnInit(): void {
     this.seo.update({

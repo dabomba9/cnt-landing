@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -42,6 +42,8 @@ import { CookieConsentService } from '@cnt-workspace/data-access';
   `,
 })
 export class CookieConsentComponent implements OnInit, OnDestroy {
+  private consent = inject(CookieConsentService);
+
   visible = false;
   /** Bottom offset so the banner doesn't sit on top of the mobile
    *  bottom-nav. Bottom-nav is 64 px tall + safe area; we add 64 px
@@ -50,8 +52,6 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
 
   private sub: Subscription | null = null;
   private resizeHandler: (() => void) | null = null;
-
-  constructor(private consent: CookieConsentService) {}
 
   ngOnInit(): void {
     this.sub = this.consent.hasDecided$.subscribe(decided => {

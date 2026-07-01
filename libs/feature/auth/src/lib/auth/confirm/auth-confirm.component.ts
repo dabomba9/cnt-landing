@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -56,19 +56,17 @@ import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-acces
   `,
 })
 export class AuthConfirmComponent implements OnInit {
+  private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private toasts = inject(ToastService);
+  private seo = inject(SeoService);
+
   email = '';
   code = '';
   submitting = false;
   resending = false;
   error: string | null = null;
-
-  constructor(
-    private auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private toasts: ToastService,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({ title: 'Verify your email — CurbNTurf', description: 'Confirm your email to finish signing up.', url: '/auth/confirm', robots: 'noindex, nofollow' });

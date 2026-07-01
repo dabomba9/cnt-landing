@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
@@ -47,16 +47,14 @@ import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-acces
   `,
 })
 export class AuthRedirectComponent implements OnInit {
+  private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private toasts = inject(ToastService);
+  private seo = inject(SeoService);
+
   state: 'loading' | 'success' | 'error' = 'loading';
   errorMessage = '';
-
-  constructor(
-    private auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private toasts: ToastService,
-    private seo: SeoService,
-  ) {}
 
   async ngOnInit(): Promise<void> {
     this.seo.update({ title: 'Confirming your email — CurbNTurf', description: '', url: '/auth/redirect', robots: 'noindex, nofollow' });

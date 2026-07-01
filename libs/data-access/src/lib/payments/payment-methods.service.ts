@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -20,10 +20,12 @@ const DEFAULT_METHODS: IPaymentMethod[] = [
 
 @Injectable({ providedIn: 'root' })
 export class PaymentMethodsService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _methods$ = new BehaviorSubject<IPaymentMethod[]>([]);
   readonly methods$: Observable<IPaymentMethod[]> = this._methods$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._methods$.next(this.read());
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
@@ -145,6 +145,11 @@ interface IDayBreakdown {
   `,
 })
 export class AvailabilityCalendarComponent implements OnDestroy {
+  private hostAvail = inject(HostAvailabilityService);
+  private bookings = inject(BookingService);
+  private router = inject(Router);
+  private toasts = inject(ToastService);
+
   @Input() set listings(value: IListing[]) {
     this._listings = value || [];
     this.compute();
@@ -156,12 +161,7 @@ export class AvailabilityCalendarComponent implements OnDestroy {
   private bookedByListing: Record<number, Set<string>> = {};
   private sub: Subscription | null = null;
 
-  constructor(
-    private hostAvail: HostAvailabilityService,
-    private bookings: BookingService,
-    private router: Router,
-    private toasts: ToastService,
-  ) {
+  constructor() {
     this.sub = combineLatest([this.bookings.bookings$, this.hostAvail.all$]).subscribe(([all]) => {
       this.rebuildBookedMap(all);
       this.compute();

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 
@@ -82,10 +82,12 @@ function newId(): string {
 
 @Injectable({ providedIn: 'root' })
 export class HostAvailabilityService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _all$ = new BehaviorSubject<Record<number, IHostAvailability>>({});
   readonly all$: Observable<Record<number, IHostAvailability>> = this._all$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._all$.next(this.read());
   }
 

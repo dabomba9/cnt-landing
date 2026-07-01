@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService, IToast } from '@cnt-workspace/data-access';
 
@@ -46,5 +46,5 @@ import { ToastService, IToast } from '@cnt-workspace/data-access';
   `],
 })
 export class ToastHostComponent {
-  constructor(public toasts: ToastService) {}
+  toasts = inject(ToastService);
 }

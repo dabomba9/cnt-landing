@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 
@@ -20,13 +20,15 @@ const EMPTY: IArticlePreferences = { savedArticleIds: [], readArticleIds: [], la
  *  empty state so the server-render is stable. */
 @Injectable({ providedIn: 'root' })
 export class ArticlePreferencesService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _state$ = new BehaviorSubject<IArticlePreferences>(EMPTY);
 
   readonly saved$: Observable<number[]> = this._state$.pipe(map(s => s.savedArticleIds));
   readonly read$: Observable<number[]> = this._state$.pipe(map(s => s.readArticleIds));
   readonly state$: Observable<IArticlePreferences> = this._state$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._state$.next(this.read());
   }
 

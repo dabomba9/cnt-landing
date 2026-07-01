@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { AuthService, INotifPrefs, DEFAULT_NOTIF_PREFS, ToastService } from '@cnt-workspace/data-access';
@@ -41,11 +41,12 @@ const TOGGLES: IToggle[] = [
   `,
 })
 export class NotificationsSectionComponent implements OnInit {
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+
   readonly toggles = TOGGLES;
   prefs: INotifPrefs = { ...DEFAULT_NOTIF_PREFS };
   private debounce: ReturnType<typeof setTimeout> | null = null;
-
-  constructor(private auth: AuthService, private toasts: ToastService) {}
 
   ngOnInit(): void {
     this.prefs = { ...DEFAULT_NOTIF_PREFS, ...(this.auth.currentUser?.notifPrefs || {}) };

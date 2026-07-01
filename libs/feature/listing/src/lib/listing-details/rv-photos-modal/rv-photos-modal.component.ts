@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, AfterViewInit, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, AfterViewInit, ElementRef, ViewChild, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { IMyRv, emptyMyRv } from '@cnt-workspace/data-access';
 import { ToastService } from '@cnt-workspace/data-access';
@@ -15,6 +15,9 @@ type Step = 1 | 2;
   styleUrls: ['./rv-photos-modal.component.scss'],
 })
 export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private toasts = inject(ToastService);
+
   @Input() open = false;
   /** Current MyRv state — modal seeds itself from this and emits the next state on success. */
   @Input() myRv: IMyRv | null = null;
@@ -34,11 +37,6 @@ export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestr
   submitting = false;
   showLossGuard = false;
   showSuccess = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private toasts: ToastService,
-  ) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

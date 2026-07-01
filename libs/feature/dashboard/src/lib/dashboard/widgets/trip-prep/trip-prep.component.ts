@@ -1,4 +1,4 @@
-import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { IBooking } from '@cnt-workspace/models';
@@ -71,6 +71,9 @@ interface IPrepItem {
   `,
 })
 export class TripPrepComponent {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private router = inject(Router);
+
   @Input() set booking(value: IBooking | null) {
     this._booking = value;
     this.computeFlags();
@@ -91,11 +94,6 @@ export class TripPrepComponent {
   private _myRv: IMyRv | null = null;
 
   items: IPrepItem[] = [];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router,
-  ) {}
 
   get doneCount(): number { return this.items.filter(i => i.done).length; }
   get percent(): number { return this.items.length === 0 ? 0 : Math.round((this.doneCount / this.items.length) * 100); }

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MagneticBtnDirective, prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
@@ -13,10 +13,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home-faq.component.scss'
 })
 export class HomeFaqComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+
   openFaqIndex: number | null = null;
   private scrollTriggers: ScrollTrigger[] = [];
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

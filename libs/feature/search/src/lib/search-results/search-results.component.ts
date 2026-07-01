@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -66,6 +66,17 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
   styleUrl: './search-results.component.css',
 })
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+  private planner = inject(TripPlannerService);
+  private toasts = inject(ToastService);
+  private routing = inject(RoutingService);
+  private bookingSvc = inject(BookingService);
+  private availability = inject(ListingAvailabilityService);
+  savedSearches = inject(SavedSearchesService);
+
   searchParams: ISearchQueryParams = {};
   private scrollTriggers: ScrollTrigger[] = [];
 
@@ -331,19 +342,6 @@ export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedDateRange: DateRange<Date> | null = null;
 
   PRICE_RANGE = PRICE_RANGE;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-    private planner: TripPlannerService,
-    private toasts: ToastService,
-    private routing: RoutingService,
-    private bookingSvc: BookingService,
-    private availability: ListingAvailabilityService,
-    public savedSearches: SavedSearchesService,
-  ) {}
 
   /** Local-time ISO YYYY-MM-DD key — matches HostAvailabilityService. */
   private toIso(d: Date): string { return isoKey(d); }

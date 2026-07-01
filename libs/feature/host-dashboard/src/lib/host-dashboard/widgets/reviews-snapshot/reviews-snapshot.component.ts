@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -73,6 +73,9 @@ interface IRecentReview {
   `,
 })
 export class ReviewsSnapshotComponent implements OnInit, OnDestroy {
+  private reviewSvc = inject(ReviewService);
+  private toasts = inject(ToastService);
+
   @Input() set listings(value: IPrivateListing[]) {
     this._listings = value || [];
     this.compute();
@@ -88,8 +91,6 @@ export class ReviewsSnapshotComponent implements OnInit, OnDestroy {
   /** Inline respond editor state — shared across cards (one at a time). */
   respondingBookingId: string | null = null;
   responseDraft = '';
-
-  constructor(private reviewSvc: ReviewService, private toasts: ToastService) {}
 
   ngOnInit(): void {
     this.sub = this.reviewSvc.reviews$.subscribe(all => {

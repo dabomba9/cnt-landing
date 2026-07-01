@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, combineLatest, map } from 'rxjs';
 import { HostAvailabilityService } from '../host/host-availability.service';
 import { BookingService } from '../booking/booking.service';
@@ -37,10 +37,9 @@ function bookedByListing(bookings: IBooking[]): Record<number, Set<string>> {
  *  rather than synced at write time. */
 @Injectable({ providedIn: 'root' })
 export class ListingAvailabilityService {
-  constructor(
-    private hostAvailability: HostAvailabilityService,
-    private bookings: BookingService,
-  ) {}
+  private hostAvailability = inject(HostAvailabilityService);
+  private bookings = inject(BookingService);
+
 
   /** Live merged unavailable-date set for one listing.
    *  Re-emits whenever either source changes. */

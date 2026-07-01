@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IBooking, IBookingAddOn } from '@cnt-workspace/models';
@@ -26,14 +26,14 @@ export interface ICreditEntry {
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private toasts = inject(ToastService);
+
   private readonly _bookings$ = new BehaviorSubject<IBooking[]>([]);
   readonly bookings$: Observable<IBooking[]> = this._bookings$.asObservable();
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private toasts: ToastService,
-  ) {
+  constructor() {
     const initial = this.read();
     this._bookings$.next(initial);
     this.recheckPending();

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -139,6 +139,9 @@ import {
   `,
 })
 export class ResumeDraftCardComponent implements OnInit, OnDestroy {
+  private drafts = inject(HostListingDraftService);
+  private platformId = inject(PLATFORM_ID);
+
   /** Set this to render the card in "shelved" mode — Resume + Discard action
    *  row, jungle-green palette, draft data sourced from the input rather than
    *  the active in-flight draft. Leave unset for the default active mode. */
@@ -170,11 +173,6 @@ export class ResumeDraftCardComponent implements OnInit, OnDestroy {
   draft: IDraftListing | null = null;
   completion: { stepsDone: number; stepsTotal: number; pct: number; phasesDone: [boolean, boolean, boolean] } | null = null;
   private sub?: Subscription;
-
-  constructor(
-    private drafts: HostListingDraftService,
-    @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
 
   ngOnInit(): void {
     if (this.shelvedDraft) {

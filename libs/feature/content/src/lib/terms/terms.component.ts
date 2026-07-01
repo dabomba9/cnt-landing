@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -42,16 +42,14 @@ export const TERMS_SECTIONS: ITermsSection[] = [
   styleUrl: './terms.component.scss',
 })
 export class TermsComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+
   TERMS_CATEGORIES = TERMS_CATEGORIES;
   TERMS_SECTIONS = TERMS_SECTIONS;
   selectedCategory: TermsCategory = 'all';
   openIds = new Set<number>();
   lastUpdated = 'May 2024';
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

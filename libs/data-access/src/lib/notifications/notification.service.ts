@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { IBooking } from '@cnt-workspace/models';
@@ -38,6 +38,12 @@ const THIRTY_DAYS = 30 * 86_400_000;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private bookings = inject(BookingService);
+  private messages = inject(MessageService);
+  private reviews = inject(ReviewService);
+
   private readonly _readIds$ = new BehaviorSubject<Set<string>>(new Set());
 
   /** Live, derived feed for the current user + view. Sorted newest first. */
@@ -45,13 +51,7 @@ export class NotificationService {
   /** Count of unread notifications. */
   readonly unreadCount$: Observable<number>;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private bookings: BookingService,
-    private messages: MessageService,
-    private reviews: ReviewService,
-  ) {
+  constructor() {
     this._readIds$.next(this.readPersisted());
 
     this.notifications$ = combineLatest([

@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Inject, OnDestroy, Output, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, OnDestroy, Output, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 /**
@@ -19,6 +19,9 @@ import { isPlatformBrowser } from '@angular/common';
   standalone: true,
 })
 export class FocusTrapDirective implements AfterViewInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   @Output() escape = new EventEmitter<void>();
 
   /** The element that had focus before the trap engaged — restored on destroy. */
@@ -32,11 +35,6 @@ export class FocusTrapDirective implements AfterViewInit, OnDestroy {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"]):not([disabled])',
   ].join(', ');
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private host: ElementRef<HTMLElement>,
-  ) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

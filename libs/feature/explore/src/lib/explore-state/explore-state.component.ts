@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -37,6 +37,11 @@ interface ICategoryPill {
   templateUrl: './explore-state.component.html',
 })
 export class ExploreStateComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private platformId = inject<Object>(PLATFORM_ID);
+
   private favoriteSet = new Set<number>();
   private routeSub?: Subscription;
 
@@ -53,13 +58,6 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
 
   CATEGORY_META = CATEGORY_META;
   SLUG_TO_NAME = SLUG_TO_NAME;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {}
 
   ngOnInit(): void {
     this.hydrateFavorites();

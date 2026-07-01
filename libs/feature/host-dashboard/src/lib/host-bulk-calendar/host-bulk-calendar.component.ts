@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -54,6 +54,16 @@ interface IDayCell {
   templateUrl: './host-bulk-calendar.component.html',
 })
 export class HostBulkCalendarComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private auth = inject(AuthService);
+  private bookingSvc = inject(BookingService);
+  private availability = inject(HostAvailabilityService);
+  private drafts = inject(HostListingDraftService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   listings: IPrivateListing[] = [];
   bookings: IBooking[] = [];
 
@@ -94,18 +104,6 @@ export class HostBulkCalendarComponent implements OnInit, OnDestroy {
   pickerEndDate: Date | null = null;
 
   private subs: Subscription[] = [];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private router: Router,
-    private route: ActivatedRoute,
-    private auth: AuthService,
-    private bookingSvc: BookingService,
-    private availability: HostAvailabilityService,
-    private drafts: HostListingDraftService,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

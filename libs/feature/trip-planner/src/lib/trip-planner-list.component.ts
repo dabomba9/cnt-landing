@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -126,6 +126,11 @@ import { SeoService, TripPlannerService, ITripPlan, ToastService, autoTripName }
   `,
 })
 export class TripPlannerListComponent implements OnInit, OnDestroy {
+  private planner = inject(TripPlannerService);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   plans: ITripPlan[] = [];
   confirmingDeleteId: string | null = null;
   /** Ids ticked via the per-card checkbox — drives the bulk-delete toolbar. */
@@ -133,13 +138,6 @@ export class TripPlannerListComponent implements OnInit, OnDestroy {
   /** Two-tap confirm gate on the bulk-delete action. */
   confirmingBulkDelete = false;
   private sub: Subscription | null = null;
-
-  constructor(
-    private planner: TripPlannerService,
-    private router: Router,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ViewChildren, QueryList, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ViewChildren, QueryList, PLATFORM_ID, AfterViewInit, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, IdType } from '@cnt-workspace/data-access';
@@ -23,6 +23,10 @@ type Step = 1 | 2 | 3 | 4; // 4 = success micro-pause
   styleUrls: ['./id-verify-modal.component.scss'],
 })
 export class IdVerifyModalComponent implements OnChanges, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+
   @Input() open = false;
   @Output() closed = new EventEmitter<void>();
   @Output() verified = new EventEmitter<void>();
@@ -48,12 +52,6 @@ export class IdVerifyModalComponent implements OnChanges, AfterViewInit, OnDestr
     { id: 'passport',        label: 'Passport',         icon: 'travel_explore', hint: 'US or international passports accepted.' },
     { id: 'state-id',        label: 'State ID',         icon: 'contact_page',   hint: 'Non-driver identity card.' },
   ];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private auth: AuthService,
-    private toasts: ToastService,
-  ) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

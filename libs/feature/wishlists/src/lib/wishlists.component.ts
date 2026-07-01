@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, HostListener, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -25,6 +25,10 @@ interface ICategoryCount { category: Category; label: string; count: number; }
   templateUrl: './wishlists.component.html',
 })
 export class WishlistsComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   /** Raw favorites with timestamps — newest first by util contract. */
   favorites: IFavorite[] = [];
   favoriteIds = new Set<number>();
@@ -42,12 +46,6 @@ export class WishlistsComponent implements OnInit {
 
   CATEGORY_META = CATEGORY_META;
   readonly allCategories: Category[] = ['vineyard', 'farm', 'brewery', 'attraction', 'offgrid'];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

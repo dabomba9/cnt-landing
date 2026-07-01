@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import {
@@ -98,6 +98,10 @@ import { IBooking } from '@cnt-workspace/models';
   `,
 })
 export class ReputationSectionComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+  private bookingSvc = inject(BookingService);
+  private hostReviews = inject(HostReviewService);
+
   user: IPublicUser | null = null;
   private allReviews: IHostReview[] = [];
   private allBookings: IBooking[] = [];
@@ -106,12 +110,6 @@ export class ReputationSectionComponent implements OnInit, OnDestroy {
   readonly stars = [1, 2, 3, 4, 5];
   readonly subScoreLabels = GUEST_SUBSCORE_LABELS;
   readonly starState = starState;
-
-  constructor(
-    private auth: AuthService,
-    private bookingSvc: BookingService,
-    private hostReviews: HostReviewService,
-  ) {}
 
   ngOnInit(): void {
     this.user = this.auth.currentUser;

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IBooking } from '@cnt-workspace/models';
@@ -72,10 +72,12 @@ function newId(): string {
 
 @Injectable({ providedIn: 'root' })
 export class HostReviewService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _reviews$ = new BehaviorSubject<IHostReview[]>([]);
   readonly reviews$: Observable<IHostReview[]> = this._reviews$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._reviews$.next(this.read());
   }
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IDraftListing, ILandownerContact, LandType, ToastService } from '@cnt-workspace/data-access';
@@ -191,6 +191,9 @@ const EMPTY_LANDOWNER: ILandownerContact = {
   `,
 })
 export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
+  private toasts = inject(ToastService);
+  private platformId = inject(PLATFORM_ID);
+
   @ViewChild('mapEl', { static: false }) mapEl?: ElementRef<HTMLDivElement>;
 
   @Input() set draft(value: IDraftListing | null) {
@@ -224,11 +227,6 @@ export class Phase1AddressComponent implements AfterViewInit, OnDestroy {
   // Loaded lazily so SSR + non-browser environments don't choke on Leaflet imports.
   private map: import('leaflet').Map | null = null;
   private marker: import('leaflet').Marker | null = null;
-
-  constructor(
-    private toasts: ToastService,
-    @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
 
   async ngAfterViewInit(): Promise<void> {
     if (!isPlatformBrowser(this.platformId) || !this.mapEl) return;

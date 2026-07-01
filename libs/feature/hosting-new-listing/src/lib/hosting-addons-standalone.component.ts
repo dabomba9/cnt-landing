@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -65,16 +65,14 @@ import { Phase3AddonsComponent } from './steps/phase3-addons.component';
   `,
 })
 export class HostingAddonsStandaloneComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private drafts = inject(HostListingDraftService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   draft: IDraftListing | null = null;
   private subs: Subscription[] = [];
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private drafts: HostListingDraftService,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.subs.push(this.route.paramMap.subscribe(p => {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Input, Output, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -28,6 +28,9 @@ import { AddonLightboxComponent } from '../addon-lightbox/addon-lightbox.compone
   templateUrl: './listing-booking-widget.component.html',
 })
 export class ListingBookingWidgetComponent {
+  booking = inject(BookingStateService);
+  private platformId = inject(PLATFORM_ID);
+
   @Input({ required: true }) listing!: IPrivateListing;
   @Input({ required: true }) detail!: IListingDetail;
   @Input({ required: true }) cancellationMeta!: Record<CancellationTier, { label: string; summary: string; color: string }>;
@@ -46,8 +49,6 @@ export class ListingBookingWidgetComponent {
     const id = (event.target as HTMLSelectElement).value;
     if (id) this.rvProfileSelect.emit(id);
   }
-
-  constructor(public booking: BookingStateService, @Inject(PLATFORM_ID) private platformId: object) {}
 
   /** P63/F3 — Material v20's <mat-calendar> auto-focuses its active
    *  day cell on mount, and v20's focus behavior includes

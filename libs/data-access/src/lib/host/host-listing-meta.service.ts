@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -13,10 +13,12 @@ const EMPTY_META: IHostListingMeta = { paused: false, archived: false };
 
 @Injectable({ providedIn: 'root' })
 export class HostListingMetaService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _meta$ = new BehaviorSubject<Record<number, IHostListingMeta>>({});
   readonly meta$: Observable<Record<number, IHostListingMeta>> = this._meta$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._meta$.next(this.read());
   }
 

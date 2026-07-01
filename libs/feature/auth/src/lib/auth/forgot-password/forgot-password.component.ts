@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -50,11 +50,14 @@ import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-acces
   `,
 })
 export class ForgotPasswordComponent implements OnInit {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private toasts = inject(ToastService);
+  private seo = inject(SeoService);
+
   email = '';
   submitting = false;
   error: string | null = null;
-
-  constructor(private auth: AuthService, private router: Router, private toasts: ToastService, private seo: SeoService) {}
 
   ngOnInit(): void {
     this.seo.update({ title: 'Forgot password — CurbNTurf', description: 'Reset your CurbNTurf password.', url: '/auth/forgot-password', robots: 'noindex, nofollow' });

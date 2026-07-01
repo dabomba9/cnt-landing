@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -82,14 +82,15 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
   `,
 })
 export class PaymentsSectionComponent implements OnInit, OnDestroy {
+  private payments = inject(PaymentMethodsService);
+  private toasts = inject(ToastService);
+
   methods: IPaymentMethod[] = [];
   addOpen = false;
   newBrand: IPaymentMethod['brand'] = 'visa';
   newLast4 = '';
   newMakeDefault = false;
   private sub: Subscription | null = null;
-
-  constructor(private payments: PaymentMethodsService, private toasts: ToastService) {}
 
   ngOnInit(): void { this.sub = this.payments.methods$.subscribe(m => (this.methods = m)); }
   ngOnDestroy(): void { this.sub?.unsubscribe(); }

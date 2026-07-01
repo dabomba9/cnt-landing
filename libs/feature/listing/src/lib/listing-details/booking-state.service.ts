@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy, inject } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
 import { Subscription } from 'rxjs';
 import { IAddOn, CancellationTier, IPrivateListing, IListingDetail, ListingAvailabilityService } from '@cnt-workspace/data-access';
@@ -16,6 +16,8 @@ import { isoKey, parseIsoLocal } from '@cnt-workspace/data-access';
  */
 @Injectable()
 export class BookingStateService implements OnDestroy {
+  private availability = inject(ListingAvailabilityService);
+
   /** Merged host-blocks + booked-nights set, kept live via the
    *  ListingAvailabilityService subscription. Seeded from the listing's
    *  mock unavailableDates on setListing so initial render is correct
@@ -48,8 +50,6 @@ export class BookingStateService implements OnDestroy {
 
   /** Fired after every mutating method so the parent can sync URL params. */
   readonly changed = new EventEmitter<void>();
-
-  constructor(private availability: ListingAvailabilityService) {}
 
   /** Bind per-listing data. Resets transient errors but preserves user-entered booking state. */
   setListing(listing: IPrivateListing, detail: IListingDetail): void {

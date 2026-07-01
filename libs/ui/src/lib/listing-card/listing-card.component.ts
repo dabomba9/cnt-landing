@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IListing, IListingDetail, IMyRvProfile, getListingDetail, addOnCountForListing, rvTypeLabel, ReviewService, CATEGORY_META, AMENITY_LABELS, NEW_LISTING_IDS, BEST_VALUE_IDS } from '@cnt-workspace/data-access';
@@ -10,6 +10,8 @@ import { IListing, IListingDetail, IMyRvProfile, getListingDetail, addOnCountFor
   templateUrl: './listing-card.component.html',
 })
 export class ListingCardComponent {
+  private reviews = inject(ReviewService);
+
   @Input({ required: true }) listing!: IListing;
   @Input() isFavorite = false;
   /** Optional. When > 0, the price chip reveals a "$price × N nights = $total" bubble on hover. */
@@ -114,8 +116,6 @@ export class ListingCardComponent {
     }
     return null;
   }
-
-  constructor(private reviews: ReviewService) {}
 
   /** Aggregated rating + count combining the seeded baseline with any
    * user-submitted reviews. Boondocking listings have no rating; callers

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ViewChild, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ViewChild, PLATFORM_ID, ChangeDetectorRef, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
@@ -60,6 +60,9 @@ import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
   `],
 })
 export class MiniMapComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
+
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
   @Input() lat: number | null = null;
   @Input() lng: number | null = null;
@@ -68,11 +71,6 @@ export class MiniMapComponent implements AfterViewInit, OnDestroy {
   private map: L.Map | null = null;
   initError = '';
   tilesLoaded = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

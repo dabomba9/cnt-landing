@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 
 import {
   IDraftListing, AuthService, ToastService, downscalePhoto,
@@ -57,6 +57,9 @@ import {
   `,
 })
 export class Phase2ProfilePhotoComponent {
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+
   @Input() set draft(value: IDraftListing | null) {
     this.photo = value?.profilePhoto || this.auth.currentUser?.photoUrl || '';
   }
@@ -64,8 +67,6 @@ export class Phase2ProfilePhotoComponent {
 
   photo = '';
   uploading = false;
-
-  constructor(private auth: AuthService, private toasts: ToastService) {}
 
   async onPicked(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;

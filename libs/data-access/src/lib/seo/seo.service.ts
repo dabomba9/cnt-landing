@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -26,11 +26,10 @@ const JSONLD_ID = 'cnt-jsonld';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
-  constructor(
-    private title: Title,
-    private meta: Meta,
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {}
+  private title = inject(Title);
+  private meta = inject(Meta);
+  private platformId = inject<Object>(PLATFORM_ID);
+
 
   /** Build absolute URLs from project-relative paths, leaving full URLs untouched. */
   absUrl(path: string): string {

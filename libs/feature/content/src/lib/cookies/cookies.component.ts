@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -15,15 +15,13 @@ import { gsap } from 'gsap';
   styleUrl: './cookies.component.scss',
 })
 export class CookiesComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+
   lastUpdated = 'April 29, 2026';
   totalSections = 6;
   // First two sections open by default — gives the page immediate context
   openIds = new Set<number>([1, 2]);
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

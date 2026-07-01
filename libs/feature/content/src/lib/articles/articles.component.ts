@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -33,6 +33,12 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   styleUrl: './articles.component.scss',
 })
 export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  prefs = inject(ArticlePreferencesService);
+
   readonly CATEGORY_META = CATEGORY_META;
   readonly SORT_OPTIONS = SORT_OPTIONS;
   filterTabs: { key: FilterKey; label: string; icon: string; count: number }[] = [];
@@ -49,14 +55,6 @@ export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routeSub: Subscription | null = null;
   private prefsSub: Subscription | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-    private route: ActivatedRoute,
-    private router: Router,
-    public prefs: ArticlePreferencesService,
-  ) {}
 
   ngOnInit(): void {
     const mode = this.route.snapshot.data?.['mode'];

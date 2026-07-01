@@ -1,7 +1,4 @@
-import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject,
-  Input, OnChanges, OnDestroy, Output, PLATFORM_ID, SimpleChanges, ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, PLATFORM_ID, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
@@ -57,6 +54,9 @@ const KIND_STYLE: Record<TripStopKind | 'start' | 'end', { color: string; icon: 
   `],
 })
 export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
+
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
 
   @Input() plan: ITripPlan | null = null;
@@ -82,8 +82,6 @@ export class TripPlannerMapComponent implements AfterViewInit, OnChanges, OnDest
   private backgroundLayer: L.LayerGroup | null = null;
   private bgZoomHandler: (() => void) | null = null;
   initError = '';
-
-  constructor(@Inject(PLATFORM_ID) private platformId: object, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

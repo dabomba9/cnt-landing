@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, OnInit, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, HostListener, OnInit, Renderer2, inject } from '@angular/core';
 import { gsap } from 'gsap';
 
 @Directive({
@@ -6,13 +6,16 @@ import { gsap } from 'gsap';
   standalone: true
 })
 export class CinematicRollDirective implements OnInit {
+  private elementRef = inject(ElementRef);
+  private renderer = inject(Renderer2);
+
   private el: HTMLElement;
   private innerWrap!: HTMLElement;
   private front!: HTMLElement;
   private back!: HTMLElement;
   private underline!: HTMLElement;
   
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {
+  constructor() {
     this.el = this.elementRef.nativeElement;
   }
 

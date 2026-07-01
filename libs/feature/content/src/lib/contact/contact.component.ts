@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -18,6 +18,9 @@ type ContactReason = 'general' | 'guest-support' | 'host-support' | 'press-media
   styleUrl: './contact.component.scss',
 })
 export class ContactComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+
   form = {
     name: '',
     email: '',
@@ -37,11 +40,6 @@ export class ContactComponent implements OnInit, AfterViewInit, OnDestroy {
 
   submitted = false;
   submitting = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

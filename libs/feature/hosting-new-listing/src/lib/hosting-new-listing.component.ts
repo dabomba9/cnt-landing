@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -57,6 +57,12 @@ const PHASE3_STEPS_EDIT = ['Bookings', 'House rules', 'Pricing', 'Add-ons', 'Rev
   styleUrl: './hosting-new-listing.component.scss',
 })
 export class HostingNewListingComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private drafts = inject(HostListingDraftService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   draft: IDraftListing | null = null;
 
   /** True when the wizard was opened from /hosting/listings/:id/edit. */
@@ -116,14 +122,6 @@ export class HostingNewListingComponent implements OnInit, OnDestroy {
   readonly PHASE_SHORT_LABELS = ['Basics', 'Showcase', 'Finish up'];
 
   private subs: Subscription[] = [];
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private drafts: HostListingDraftService,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     // Detect edit mode from the route's :id param. When present, load the

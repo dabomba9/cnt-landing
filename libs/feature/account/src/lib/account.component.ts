@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -39,19 +39,17 @@ const NAV_ITEMS: INavItem[] = [
   styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+
   user: IPublicUser | null = null;
   active: Section = 'personal';
   readonly navItems = NAV_ITEMS;
   /** Captured from `?returnTo=...` — passed down so a section can redirect after completion (e.g., rig). */
   returnTo: string | null = null;
   private subs: Subscription[] = [];
-
-  constructor(
-    private auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

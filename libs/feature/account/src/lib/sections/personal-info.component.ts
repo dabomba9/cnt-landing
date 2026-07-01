@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, IPublicUser, ToastService } from '@cnt-workspace/data-access';
@@ -64,17 +64,15 @@ import { AuthService, IPublicUser, ToastService } from '@cnt-workspace/data-acce
   `,
 })
 export class PersonalInfoSectionComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+
   firstName = '';
   lastName = '';
   phone = '';
   photoUrl: string | undefined = undefined;
   private original: { firstName: string; lastName: string; phone: string; photoUrl: string | undefined } = { firstName: '', lastName: '', phone: '', photoUrl: undefined };
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.hydrate(this.auth.currentUser);

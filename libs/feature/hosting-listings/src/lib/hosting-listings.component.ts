@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
@@ -25,19 +25,17 @@ interface IRowModel {
   templateUrl: './hosting-listings.component.html',
 })
 export class HostingListingsComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+  private bookings = inject(BookingService);
+  private meta = inject(HostListingMetaService);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private drafts = inject(HostListingDraftService);
+
   rows: IRowModel[] = [];
   showArchived = false;
   private subs: Subscription[] = [];
-
-  constructor(
-    private auth: AuthService,
-    private bookings: BookingService,
-    private meta: HostListingMetaService,
-    private router: Router,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private drafts: HostListingDraftService,
-  ) {}
 
   /** Delete confirmation modal state. */
   deleteTarget: IRowModel | null = null;

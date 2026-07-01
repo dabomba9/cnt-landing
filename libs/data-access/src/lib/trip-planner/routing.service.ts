@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, shareReplay, tap } from 'rxjs';
 import type { ITripStop } from './trip-planner.service';
 
@@ -72,14 +72,14 @@ interface IOsrmResponse {
 
 @Injectable({ providedIn: 'root' })
 export class RoutingService {
+  private http = inject(HttpClient);
+
   /** Cache of in-flight + completed routes keyed by ordered-coords. shareReplay
    * means a second subscriber gets the cached emission instead of a refetch. */
   private cache = new Map<string, Observable<IRoute | null>>();
   /** Loading-state stream consumers can subscribe to drive map shimmers. */
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
   readonly loading$: Observable<boolean> = this._loading$.asObservable();
-
-  constructor(private http: HttpClient) {}
 
   /**
    * Fetch (and cache) the road-following route through every stop in order.

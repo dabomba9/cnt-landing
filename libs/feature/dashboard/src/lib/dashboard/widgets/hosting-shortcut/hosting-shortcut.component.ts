@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { AuthService } from '@cnt-workspace/data-access';
@@ -44,9 +44,10 @@ import { AuthService } from '@cnt-workspace/data-access';
   `,
 })
 export class HostingShortcutComponent {
-  @Input() ownedCount = 0;
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private auth: AuthService, private router: Router) {}
+  @Input() ownedCount = 0;
 
   private goAsHost(path: string): void {
     this.auth.setView('host');

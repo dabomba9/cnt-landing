@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -44,6 +44,14 @@ interface IDayCell {
   templateUrl: './host-listing-calendar.component.html',
 })
 export class HostListingCalendarComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private bookingSvc = inject(BookingService);
+  private availabilitySvc = inject(HostAvailabilityService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   listing: IPrivateListing | null = null;
   ownsListing = true;
   availability: IHostAvailability = { blocked: [], prices: {} };
@@ -100,16 +108,6 @@ export class HostListingCalendarComponent implements OnInit, OnDestroy {
   inlineTierPrice: number | null = null;
 
   private subs: Subscription[] = [];
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private auth: AuthService,
-    private bookingSvc: BookingService,
-    private availabilitySvc: HostAvailabilityService,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     const id = parseInt(this.route.snapshot.paramMap.get('id') || '', 10);

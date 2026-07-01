@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -184,16 +184,14 @@ const HELP_TOPICS: IHelpTopic[] = [
   `,
 })
 export class HelpCenterComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private seo = inject(SeoService);
+
   readonly topics = HELP_TOPICS;
   query = '';
   /** Filtered set — updated on every query change so the template
    *  doesn't recompute on every change-detection tick. */
   visibleTopics = HELP_TOPICS;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private seo: SeoService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

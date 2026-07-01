@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, ElementRef, ViewChild, AfterViewChecked, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -23,6 +23,14 @@ interface ITocEntry {
   styleUrls: ['./article-detail.component.scss'],
 })
 export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+  private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private sanitizer = inject(DomSanitizer);
+  prefs = inject(ArticlePreferencesService);
+  private toasts = inject(ToastService);
+
   article: IArticle | null = null;
   body: SafeHtml = '';
   prev: IArticle | null = null;
@@ -49,16 +57,6 @@ export class ArticleDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   private rafId = 0;
   private io?: IntersectionObserver;
   private needsObserverRebind = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-    private sanitizer: DomSanitizer,
-    public prefs: ArticlePreferencesService,
-    private toasts: ToastService,
-  ) {}
 
   toggleSave(): void {
     if (this.article) this.prefs.toggleSave(this.article.id);

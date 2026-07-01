@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -71,13 +71,15 @@ import { AuthService, ToastService } from '@cnt-workspace/data-access';
   `,
 })
 export class LoginSecuritySectionComponent {
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+  private router = inject(Router);
+
   current = '';
   next = '';
   confirm = '';
   error: string | null = null;
   signingOut = false;
-
-  constructor(private auth: AuthService, private toasts: ToastService, private router: Router) {}
 
   async signOut(): Promise<void> {
     if (this.signingOut) return;

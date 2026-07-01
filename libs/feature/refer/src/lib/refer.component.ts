@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
@@ -19,16 +19,14 @@ interface IReferral {
   templateUrl: './refer.component.html',
 })
 export class ReferComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   user: IPublicUser | null = null;
   referrals: IReferral[] = [];
   inviteEmail = '';
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import type { IBooking } from '@cnt-workspace/models';
@@ -370,10 +370,12 @@ function migratePlan(raw: ITripPlan & LegacyShape): ITripPlan {
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _plans$ = new BehaviorSubject<ITripPlan[]>([]);
   readonly plans$: Observable<ITripPlan[]> = this._plans$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     const migrated = this.read();
     this._plans$.next(migrated);
     // Persist the migrated shape back so future reads skip the work.

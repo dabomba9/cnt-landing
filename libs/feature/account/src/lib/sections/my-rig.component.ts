@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -274,6 +274,9 @@ import {
   `,
 })
 export class MyRigSectionComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private toasts = inject(ToastService);
+
   /** If set, the parent will redirect here once the rig is complete and saved. */
   @Input() redirectAfterSave: string | null = null;
   /** Fires when a save completes with a fully complete rig — parent can use this to bounce back. */
@@ -296,8 +299,6 @@ export class MyRigSectionComponent implements OnInit {
     { key: 'height', label: 'Height' },
     { key: 'width',  label: 'Width' },
   ];
-
-  constructor(@Inject(PLATFORM_ID) private platformId: object, private toasts: ToastService) {}
 
   ngOnInit(): void {
     this.refresh();

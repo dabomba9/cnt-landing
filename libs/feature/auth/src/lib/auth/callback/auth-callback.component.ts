@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, ToastService } from '@cnt-workspace/data-access';
@@ -17,12 +17,11 @@ import { AuthService, ToastService } from '@cnt-workspace/data-access';
   `,
 })
 export class AuthCallbackComponent implements OnInit {
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toasts: ToastService,
-  ) {}
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toasts = inject(ToastService);
+
 
   async ngOnInit(): Promise<void> {
     // Amplify's Hub fires 'signedIn' once it processes the auth code in the URL.

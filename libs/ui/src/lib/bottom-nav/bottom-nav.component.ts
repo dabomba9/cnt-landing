@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -60,13 +60,14 @@ const HOST_SLOTS: INavSlot[] = [
   `,
 })
 export class BottomNavComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+  private msg = inject(MessageService);
+
   user: IPublicUser | null = null;
   view: AppView = 'guest';
   unreadCount = 0;
   private subs: Subscription[] = [];
   private unreadSub: Subscription | null = null;
-
-  constructor(private auth: AuthService, private msg: MessageService) {}
 
   ngOnInit(): void {
     this.subs.push(this.auth.currentUser$.subscribe(u => {

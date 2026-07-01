@@ -1,6 +1,4 @@
-import {
-  Directive, ElementRef, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, NgZone,
-} from '@angular/core';
+import { Directive, ElementRef, AfterViewInit, OnDestroy, PLATFORM_ID, NgZone, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
 import { prefersReducedMotion } from '../util/motion.util';
@@ -20,14 +18,12 @@ import { prefersReducedMotion } from '../util/motion.util';
   standalone: true,
 })
 export class MagneticBtnDirective implements AfterViewInit, OnDestroy {
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private zone = inject(NgZone);
+  private platformId = inject<Object>(PLATFORM_ID);
+
   private mousemoveHandler?: (e: MouseEvent) => void;
   private mouseleaveHandler?: () => void;
-
-  constructor(
-    private el: ElementRef<HTMLElement>,
-    private zone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

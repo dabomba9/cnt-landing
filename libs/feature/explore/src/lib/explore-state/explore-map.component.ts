@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnDestroy, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
@@ -60,6 +60,10 @@ import { IListing, CATEGORY_META } from '@cnt-workspace/data-access';
   `],
 })
 export class ExploreMapComponent implements AfterViewInit, OnChanges, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
   @Input() listings: IListing[] = [];
 
@@ -67,12 +71,6 @@ export class ExploreMapComponent implements AfterViewInit, OnChanges, OnDestroy 
   tilesLoaded = false;
   private map: L.Map | null = null;
   private pins: L.Marker[] = [];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-  ) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

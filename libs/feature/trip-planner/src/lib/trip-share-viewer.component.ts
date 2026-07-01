@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -170,22 +170,20 @@ import { TripPlannerMapComponent } from './trip-planner-map.component';
   `,
 })
 export class TripShareViewerComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private planner = inject(TripPlannerService);
+  private routing = inject(RoutingService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef);
+
   plan: ITripPlan | null = null;
   activeRoute: IRoute | null = null;
   private routeSub: Subscription | null = null;
   private paramSub: Subscription | null = null;
   private payload: ITripShareV1 | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private route: ActivatedRoute,
-    private router: Router,
-    private planner: TripPlannerService,
-    private routing: RoutingService,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   ngOnInit(): void {
     this.paramSub = this.route.queryParamMap.subscribe(qp => {

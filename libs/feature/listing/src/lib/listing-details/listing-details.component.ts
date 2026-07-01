@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, HostListener, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -46,6 +46,20 @@ import { MiniMapComponent } from '@cnt-workspace/booking';
   styleUrl: './listing-details.component.scss',
 })
 export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+  booking = inject<BookingStateService>(BookingStateService);
+  private auth = inject(AuthService);
+  private reviewSvc = inject(ReviewService);
+  private hostReviewSvc = inject(HostReviewService);
+  private planner = inject(TripPlannerService);
+  private bookingSvc = inject(BookingService);
+  private toasts = inject(ToastService);
+  private availability = inject(ListingAvailabilityService);
+  private location = inject(Location);
+
   listing!: IListing;
   detail!: IListingDetail;
   CATEGORY_META = CATEGORY_META;
@@ -494,22 +508,6 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   /** User reviews for this listing — keeps live via reviews$ subscription. */
   userReviews: IUserReview[] = [];
   private reviewsSub: Subscription | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-    @Inject(BookingStateService) public booking: BookingStateService,
-    private auth: AuthService,
-    private reviewSvc: ReviewService,
-    private hostReviewSvc: HostReviewService,
-    private planner: TripPlannerService,
-    private bookingSvc: BookingService,
-    private toasts: ToastService,
-    private availability: ListingAvailabilityService,
-    private location: Location,
-  ) {}
 
   // ============================================================================
   // P43/C — Back-to-search affordance

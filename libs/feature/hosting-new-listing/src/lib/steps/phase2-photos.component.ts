@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -104,6 +104,8 @@ const LOW_RES_THRESHOLD = 1000;
   `,
 })
 export class Phase2PhotosComponent {
+  private toasts = inject(ToastService);
+
   @Input() set draft(value: IDraftListing | null) {
     this.photos = [...(value?.photos ?? [])];
     // Keep captions index-aligned with photos even if the stored array is short.
@@ -119,8 +121,6 @@ export class Phase2PhotosComponent {
   uploading = false;
   readonly MIN = 3;
   readonly MAX = 10;
-
-  constructor(private toasts: ToastService) {}
 
   async onPicked(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;

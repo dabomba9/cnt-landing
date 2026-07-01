@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit, PLATFORM_ID, HostListener, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
@@ -26,6 +26,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+  private sanitizer = inject(DomSanitizer);
+
 
   isNavbarVisible = true;
   private lastScrollY = 0;
@@ -38,12 +42,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    *  embedded iframe is blocked (corporate networks, tracking
    *  prevention, etc). */
   readonly brandVideoFallbackUrl = 'https://www.youtube.com/watch?v=vuisyx-U944';
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-    private sanitizer: DomSanitizer
-  ) {}
 
   openVideo(): void {
     this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.brandVideoEmbed);

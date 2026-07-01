@@ -1,4 +1,4 @@
-import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IBooking, STATUS_META } from '@cnt-workspace/models';
@@ -93,10 +93,10 @@ import { downloadBookingIcs } from '@cnt-workspace/data-access';
   `,
 })
 export class UpcomingTripCardComponent {
+  private platformId = inject<Object>(PLATFORM_ID);
+
   @Input() booking: IBooking | null = null;
   STATUS_META = STATUS_META;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   get hostInitials(): string {
     if (!this.booking) return '';

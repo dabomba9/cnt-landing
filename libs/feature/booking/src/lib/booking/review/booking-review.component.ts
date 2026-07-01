@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -29,6 +29,16 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-review.component.scss'],
 })
 export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit {
+  private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private booking = inject(BookingService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private payments = inject(PaymentMethodsService);
+  private availability = inject(ListingAvailabilityService);
+
   listing: IPrivateListing | null = null;
   detail: IListingDetail | null = null;
   user: IPublicUser | null = null;
@@ -88,18 +98,6 @@ export class BookingReviewComponent implements OnInit, OnDestroy, AfterViewInit 
   fieldErrors: { email?: string; phone?: string } = {};
   emailTouched = false;
   phoneTouched = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private route: ActivatedRoute,
-    private router: Router,
-    private auth: AuthService,
-    private booking: BookingService,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private payments: PaymentMethodsService,
-    private availability: ListingAvailabilityService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

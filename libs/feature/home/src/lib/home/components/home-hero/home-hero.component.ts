@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef, PLATFORM_ID, HostListener, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home-hero.component.scss'
 })
 export class HomeHeroComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private router = inject(Router);
+
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
   private heroUpdate: (() => void) | null = null;
@@ -61,8 +64,6 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
     const endStr = this.selectedDateRange.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     return `${startStr} - ${endStr}`;
   }
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router) {}
 
   executeSearch(event?: Event): void {
     if (event) event.stopPropagation();

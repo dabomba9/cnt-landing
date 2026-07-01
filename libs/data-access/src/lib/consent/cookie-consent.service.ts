@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 
@@ -16,6 +16,8 @@ const STORAGE_KEY = 'cnt-cookie-consent';
  *  banner doesn't re-appear on every page load. */
 @Injectable({ providedIn: 'root' })
 export class CookieConsentService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _choice$ = new BehaviorSubject<ConsentChoice>(null);
 
   readonly hasDecided$: Observable<boolean> = this._choice$.pipe(
@@ -25,7 +27,7 @@ export class CookieConsentService {
     map(c => c === true),
   );
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._choice$.next(this.read());
   }
 

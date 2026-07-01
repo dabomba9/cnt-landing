@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -53,6 +53,15 @@ const MAX_LANES = 3;
   templateUrl: './trips.component.html',
 })
 export class TripsComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private bookingSvc = inject(BookingService);
+  private reviewSvc = inject(ReviewService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   bookings: IBooking[] = [];
   filter: TripFilter = 'upcoming';
   STATUS_META = STATUS_META;
@@ -89,17 +98,6 @@ export class TripsComponent implements OnInit, OnDestroy {
 
   private userEmail = '';
   private subs: Subscription[] = [];
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private bookingSvc: BookingService,
-    private reviewSvc: ReviewService,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

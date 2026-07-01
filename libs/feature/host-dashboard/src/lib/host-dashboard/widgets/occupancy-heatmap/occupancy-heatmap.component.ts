@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription, combineLatest } from 'rxjs';
 import {
@@ -87,16 +87,16 @@ const WINDOW_DAYS = 90;
   `,
 })
 export class OccupancyHeatmapComponent implements OnChanges, OnDestroy {
+  private hostAvail = inject(HostAvailabilityService);
+  private bookings = inject(BookingService);
+
   @Input() listings: IPrivateListing[] = [];
 
   readonly WINDOW_DAYS = WINDOW_DAYS;
   rows: IRow[] = [];
   private sub: Subscription | null = null;
 
-  constructor(
-    private hostAvail: HostAvailabilityService,
-    private bookings: BookingService,
-  ) {
+  constructor() {
     this.sub = combineLatest([this.bookings.bookings$, this.hostAvail.all$])
       .subscribe(([all]) => this.recompute(all));
   }

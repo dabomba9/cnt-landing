@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -33,15 +33,15 @@ function makeLibraryId(): string {
  */
 @Injectable({ providedIn: 'root' })
 export class AddonLibraryService {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+
   private readonly _library$ = new BehaviorSubject<IAddOnLibraryItem[]>([]);
   readonly library$: Observable<IAddOnLibraryItem[]> = this._library$.asObservable();
 
   private storageKey = GUEST_KEY;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-  ) {
+  constructor() {
     this.refreshKey();
     this.auth.currentUser$.subscribe(() => this.refreshKey());
     this._library$.next(this.read());

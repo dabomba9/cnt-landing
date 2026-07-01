@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -18,10 +18,12 @@ const STORAGE_KEY = 'cnt-saved-searches';
  *  storage pattern. */
 @Injectable({ providedIn: 'root' })
 export class SavedSearchesService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _searches$ = new BehaviorSubject<ISavedSearch[]>([]);
   readonly searches$: Observable<ISavedSearch[]> = this._searches$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._searches$.next(this.read());
   }
 

@@ -1,7 +1,4 @@
-import {
-  AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy,
-  PLATFORM_ID, ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
@@ -51,14 +48,14 @@ const MARKER_STYLE = {
   `],
 })
 export class TripPreviewMapComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+
   @ViewChild('host', { static: true }) hostEl!: ElementRef<HTMLElement>;
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLElement>;
 
   private map: L.Map | null = null;
   private observer: IntersectionObserver | null = null;
   private mounted = false;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   async ngAfterViewInit(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;

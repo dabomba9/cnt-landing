@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -12,20 +12,18 @@ import { AuthService, SeoService, ToastService, FederatedProvider } from '@cnt-w
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   email = '';
   password = '';
   error: string | null = null;
   submitting = false;
   returnTo: string | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

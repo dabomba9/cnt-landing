@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -279,6 +279,8 @@ function makeId(): string {
   `,
 })
 export class Phase3AddonsComponent implements OnInit, OnDestroy {
+  private libraryService = inject(AddonLibraryService);
+
   @Input() set draft(value: IDraftListing | null) {
     const incoming = value?.addOns ?? [];
     this.rows = incoming.map(a => ({ ...a }));
@@ -293,8 +295,6 @@ export class Phase3AddonsComponent implements OnInit, OnDestroy {
   readonly starterTemplates = STARTER_TEMPLATES;
   readonly defaultIcon = DEFAULT_ICON;
   private librarySub: Subscription | null = null;
-
-  constructor(private libraryService: AddonLibraryService) {}
 
   ngOnInit(): void {
     this.librarySub = this.libraryService.library$.subscribe(lib => { this.library = lib; });

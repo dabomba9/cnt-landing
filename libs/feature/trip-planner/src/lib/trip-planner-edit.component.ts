@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -517,6 +517,18 @@ interface ISearchHit {
   `,
 })
 export class TripPlannerEditComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private planner = inject(TripPlannerService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private routing = inject(RoutingService);
+  private cdr = inject(ChangeDetectorRef);
+  private bookingSvc = inject(BookingService);
+  private availability = inject(ListingAvailabilityService);
+  private hostAvailability = inject(HostAvailabilityService);
+
   @ViewChild('panel', { static: false }) panel?: ElementRef<HTMLElement>;
   @ViewChild(TripPlannerMapComponent) private tripMap?: TripPlannerMapComponent;
 
@@ -545,20 +557,6 @@ export class TripPlannerEditComponent implements OnInit, OnDestroy {
 
   private sub: Subscription | null = null;
   private planId: string | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private route: ActivatedRoute,
-    private router: Router,
-    private planner: TripPlannerService,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private routing: RoutingService,
-    private cdr: ChangeDetectorRef,
-    private bookingSvc: BookingService,
-    private availability: ListingAvailabilityService,
-    private hostAvailability: HostAvailabilityService,
-  ) {}
 
   /** stopId → reason the stop has a problem with its picked dates.
    *  Drives the header chip and expanded banner. Recomputed whenever

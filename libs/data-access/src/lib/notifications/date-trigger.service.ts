@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Subscription, combineLatest } from 'rxjs';
 import { IBooking } from '@cnt-workspace/models';
@@ -28,16 +28,16 @@ type Stage = 'checkin-soon' | 'checkout-day' | 'review-expiry';
  *  ledger; clearing the key (or signing out and back in) resets it. */
 @Injectable({ providedIn: 'root' })
 export class DateTriggerService implements OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private bookings = inject(BookingService);
+  private toasts = inject(ToastService);
+
   private sub: Subscription | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
   private fired: Set<string> = new Set();
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private bookings: BookingService,
-    private toasts: ToastService,
-  ) {
+  constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
     this.fired = this.readFired();
 

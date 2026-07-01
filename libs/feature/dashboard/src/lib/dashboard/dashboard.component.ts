@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -50,6 +50,14 @@ import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private bookingSvc = inject(BookingService);
+  private reviewSvc = inject(ReviewService);
+  private seo = inject(SeoService);
+  private router = inject(Router);
+  private planner = inject(TripPlannerService);
+
   user: IPublicUser | null = null;
   bookings: IBooking[] = [];
   /** Owned-listings count — gates the Hosting shortcut card. Zero for
@@ -64,16 +72,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private bookingsSub: Subscription | null = null;
   private reviewsSub: Subscription | null = null;
   private tripPlansSub: Subscription | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private auth: AuthService,
-    private bookingSvc: BookingService,
-    private reviewSvc: ReviewService,
-    private seo: SeoService,
-    private router: Router,
-    private planner: TripPlannerService,
-  ) {}
 
   /** Flip to host view and head to the host dashboard — mirrors the host
    * dashboard's "Switch to traveling" control. */

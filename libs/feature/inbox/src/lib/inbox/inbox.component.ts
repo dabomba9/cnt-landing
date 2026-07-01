@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, AfterViewChecked, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -48,6 +48,16 @@ interface ISystemPillMeta {
   styleUrls: ['./inbox.component.scss'],
 })
 export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
+  private auth = inject(AuthService);
+  private msg = inject(MessageService);
+  private bookingSvc = inject(BookingService);
+  private hostReviews = inject(HostReviewService);
+  private quickRepliesSvc = inject(QuickReplyService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+
   user: IPublicUser | null = null;
   threads: IThread[] = [];
   activeThreadId: string | null = null;
@@ -87,18 +97,6 @@ export class InboxComponent implements OnInit, OnDestroy, AfterViewChecked {
   declineReason = '';
   /** Set while hostDecide is in flight so the buttons don't double-fire. */
   decisionPending = false;
-
-  constructor(
-    private auth: AuthService,
-    private msg: MessageService,
-    private bookingSvc: BookingService,
-    private hostReviews: HostReviewService,
-    private quickRepliesSvc: QuickReplyService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private seo: SeoService,
-    private toasts: ToastService,
-  ) {}
 
   ngOnInit(): void {
     this.seo.update({

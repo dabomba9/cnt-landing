@@ -1,7 +1,4 @@
-import {
-  AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy,
-  PLATFORM_ID, ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
@@ -34,14 +31,14 @@ import { ALL_LISTINGS } from '@cnt-workspace/data-access';
   `],
 })
 export class NetworkMapComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+
   @ViewChild('host', { static: true }) hostEl!: ElementRef<HTMLElement>;
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLElement>;
 
   private map: L.Map | null = null;
   private observer: IntersectionObserver | null = null;
   private mounted = false;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

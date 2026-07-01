@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, HostListener, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HomeLocationsComponent } from '@cnt-workspace/ui';
@@ -18,6 +18,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './host-space.component.css',
 })
 export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
+  private seo = inject(SeoService);
+  private sanitizer = inject(DomSanitizer);
+  private drafts = inject(HostListingDraftService);
+  private toasts = inject(ToastService);
+  private platformId = inject<Object>(PLATFORM_ID);
+
   nightsPerWeek = 3;
   nightlyRate = 50;
   numberOfSites = 1;
@@ -112,14 +118,6 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   videoUrl!: SafeResourceUrl;
   private readonly youtubeEmbedBase = 'https://www.youtube.com/embed/T7CZGDXC9Ag?autoplay=1&mute=1&rel=0';
   private scrollTriggers: ScrollTrigger[] = [];
-
-  constructor(
-    private seo: SeoService,
-    private sanitizer: DomSanitizer,
-    private drafts: HostListingDraftService,
-    private toasts: ToastService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
 
   // ============================================================================
   // P46 — Earnings calculator share + export

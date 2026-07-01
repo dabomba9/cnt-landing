@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -16,20 +16,13 @@ import { HostListingDraftService } from '@cnt-workspace/data-access';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+
   title = 'cnt-workspace';
 
   private cursorCleanup: (() => void) | null = null;
   private routerSub: Subscription | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private router: Router,
-    // Injected solely to force construction at app bootstrap. Its constructor
-    // hydrates user-published listings from `cnt-published-snapshots` into
-    // MOCK_LISTINGS — without this, landing directly on /search or /listing
-    // skips hydration because those routes don't inject the service.
-    _drafts: HostListingDraftService,
-  ) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

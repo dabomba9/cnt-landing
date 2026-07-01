@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, PLATFORM_ID, ElementRef, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
@@ -26,6 +26,15 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-confirm.component.scss'],
 })
 export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private bookingSvc = inject(BookingService);
+  private auth = inject(AuthService);
+  private seo = inject(SeoService);
+  private toasts = inject(ToastService);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   booking: IBooking | null = null;
   STATUS_META = STATUS_META;
   guestVerified = false;
@@ -48,17 +57,6 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
   decisionCountdownLabel = '';
   private bookingsSub: Subscription | null = null;
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private route: ActivatedRoute,
-    private router: Router,
-    private bookingSvc: BookingService,
-    private auth: AuthService,
-    private seo: SeoService,
-    private toasts: ToastService,
-    private host: ElementRef<HTMLElement>,
-  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') || '';

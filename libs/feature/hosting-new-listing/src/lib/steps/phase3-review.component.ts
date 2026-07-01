@@ -1,4 +1,4 @@
-import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
+import { Component, Input, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -173,6 +173,11 @@ import {
   `,
 })
 export class Phase3ReviewComponent {
+  private drafts = inject(HostListingDraftService);
+  private toasts = inject(ToastService);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+
   @Input() draft: IDraftListing | null = null;
 
   publishing = false;
@@ -180,13 +185,6 @@ export class Phase3ReviewComponent {
   readonly descriptorMeta = PROPERTY_DESCRIPTOR_META;
   readonly amenityLabels = AMENITY_LABELS;
   readonly vehicleMeta = RV_TYPES;
-
-  constructor(
-    private drafts: HostListingDraftService,
-    private toasts: ToastService,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
 
   /** Title used in the review fact-strip "Type" cell — prefers the primary type
    * (new model). Honors custom labels when primaryType === 'custom'. Falls back

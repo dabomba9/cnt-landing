@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -35,6 +35,11 @@ export { IPublishedSnapshot, readPublishedSnapshot } from './published-snapshot.
  */
 @Injectable({ providedIn: 'root' })
 export class HostListingDraftService {
+  private platformId = inject(PLATFORM_ID);
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+  private meta = inject(HostListingMetaService);
+
   private readonly _draft$ = new BehaviorSubject<IDraftListing | null>(null);
   readonly draft$: Observable<IDraftListing | null> = this._draft$.asObservable();
 
@@ -54,12 +59,7 @@ export class HostListingDraftService {
    *  need to read once (e.g., compute a copy title) without subscribing. */
   get activeDraft(): IDraftListing | null { return this._draft$.value; }
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private auth: AuthService,
-    private toasts: ToastService,
-    private meta: HostListingMetaService,
-  ) {
+  constructor() {
     this._draft$.next(this.read());
     this._shelvedDrafts$.next(this.readShelved());
     this.hydratePublishedListings();

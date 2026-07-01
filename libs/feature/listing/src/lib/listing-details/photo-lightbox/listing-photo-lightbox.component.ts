@@ -1,7 +1,4 @@
-import {
-  Component, EventEmitter, HostListener, Inject, Input, OnChanges, Output,
-  PLATFORM_ID, SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 
@@ -17,6 +14,8 @@ import { FocusTrapDirective } from '@cnt-workspace/ui';
   templateUrl: './listing-photo-lightbox.component.html',
 })
 export class ListingPhotoLightboxComponent implements OnChanges {
+  private platformId = inject<Object>(PLATFORM_ID);
+
   @Input() photos: string[] = [];
   /** Optional per-photo captions, index-aligned with `photos`. */
   @Input() captions: string[] = [];
@@ -35,8 +34,6 @@ export class ListingPhotoLightboxComponent implements OnChanges {
   private lastFocusedTrigger: HTMLElement | null = null;
   private touchStartX = 0;
   private touchStartY = 0;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['open']) return;

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -73,13 +73,15 @@ export type CodeResult = { ok: true } | { ok: false; error: string };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _currentUser$ = new BehaviorSubject<IPublicUser | null>(null);
   readonly currentUser$: Observable<IPublicUser | null> = this._currentUser$.asObservable();
 
   private readonly _currentView$ = new BehaviorSubject<AppView>('guest');
   readonly currentView$: Observable<AppView> = this._currentView$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     if (isPlatformBrowser(this.platformId)) {
       this.hydrateView();
       // Restore session if a Cognito user is already signed in (page refresh).

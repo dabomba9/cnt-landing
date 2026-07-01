@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -92,16 +92,14 @@ const FAQS: IFaqItem[] = [
   styleUrls: ['./faq.component.scss'],
 })
 export class FaqComponent implements OnInit, AfterViewInit {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private seo = inject(SeoService);
+  private router = inject(Router);
+
   FAQ_CATEGORIES = FAQ_CATEGORIES;
   selectedCategory: FaqCategory | 'all' = 'all';
   searchQuery = '';
   openIds = new Set<number>();
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService,
-    private router: Router,
-  ) {}
 
   /** Intercept clicks inside answer HTML so internal href="/foo" routes via Angular Router instead of full reload. External links pass through. */
   handleAnswerClick(event: MouseEvent): void {

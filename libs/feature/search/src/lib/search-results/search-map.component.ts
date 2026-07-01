@@ -1,7 +1,4 @@
-import {
-  Component, AfterViewInit, OnDestroy, OnChanges, SimpleChanges,
-  Input, Output, EventEmitter, ElementRef, ViewChild, Inject, PLATFORM_ID,
-} from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, Input, Output, EventEmitter, ElementRef, ViewChild, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -168,6 +165,8 @@ import {
   `,
 })
 export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
+  private platformId = inject<Object>(PLATFORM_ID);
+
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
   @Input() listings: IListing[] = [];
   @Input() hoveredId: number | null = null;
@@ -227,8 +226,6 @@ export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   private geoErrorTimer: ReturnType<typeof setTimeout> | null = null;
   geoError = '';
   initError = '';
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

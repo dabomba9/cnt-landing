@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { IdVerifyModalComponent } from '@cnt-workspace/auth';
@@ -45,11 +45,11 @@ import { AuthService, IPublicUser } from '@cnt-workspace/data-access';
   `,
 })
 export class IdentitySectionComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+
   user: IPublicUser | null = null;
   modalOpen = false;
   private sub: Subscription | null = null;
-
-  constructor(private auth: AuthService) {}
 
   ngOnInit(): void { this.sub = this.auth.currentUser$.subscribe(u => (this.user = u)); }
   ngOnDestroy(): void { this.sub?.unsubscribe(); }

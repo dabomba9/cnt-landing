@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { IMessage, MessageAuthor, IThread, IBooking, BookingStatus } from '@cnt-workspace/models';
@@ -43,18 +43,18 @@ function newId(prefix: string): string {
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private bookings = inject(BookingService);
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+
   private readonly _threads$ = new BehaviorSubject<IThread[]>([]);
   readonly threads$: Observable<IThread[]> = this._threads$.asObservable();
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
   private lastSeenStatus = new Map<string, BookingStatus>();
   private lastSeenModifiedAt = new Map<string, string | undefined>();
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private bookings: BookingService,
-    private auth: AuthService,
-    private toasts: ToastService,
-  ) {
+  constructor() {
     this._threads$.next(this.read());
     this.replayPendingReplies();
     // Listen to bookings to seed/update threads.

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,9 +12,9 @@ import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
   styleUrl: './home-masonry.component.scss'
 })
 export class HomeMasonryComponent implements AfterViewInit, OnDestroy {
-  private scrollTriggers: ScrollTrigger[] = [];
+  private platformId = inject<Object>(PLATFORM_ID);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  private scrollTriggers: ScrollTrigger[] = [];
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

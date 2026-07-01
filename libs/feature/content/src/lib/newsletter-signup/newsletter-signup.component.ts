@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '@cnt-workspace/data-access';
@@ -21,12 +21,12 @@ import { ToastService } from '@cnt-workspace/data-access';
   styleUrl: './newsletter-signup.component.scss',
 })
 export class NewsletterSignupComponent {
+  private toasts = inject(ToastService);
+
   @Input() variant: 'wide' | 'compact' = 'wide';
 
   email = '';
   submitting = false;
-
-  constructor(private toasts: ToastService) {}
 
   submit(): void {
     if (this.submitting) return;

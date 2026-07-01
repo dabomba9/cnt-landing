@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -61,6 +61,8 @@ function newId(): string {
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
+  private platformId = inject(PLATFORM_ID);
+
   private readonly _reviews$ = new BehaviorSubject<IUserReview[]>([]);
   readonly reviews$: Observable<IUserReview[]> = this._reviews$.asObservable();
 
@@ -70,7 +72,7 @@ export class ReviewService {
   private readonly _helpful$ = new BehaviorSubject<Record<string, string[]>>({});
   readonly helpful$: Observable<Record<string, string[]>> = this._helpful$.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor() {
     this._reviews$.next(this.read());
     this._helpful$.next(this.readHelpful());
   }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -18,6 +18,13 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  private platformId = inject<Object>(PLATFORM_ID);
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private toasts = inject(ToastService);
+  private msg = inject(MessageService);
+  private notifSvc = inject(NotificationService);
+
   isNavbarVisible = true;
   mobileNavOpen = false;
   userMenuOpen = false;
@@ -45,15 +52,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('userMenuWrapper') userMenuWrapper?: ElementRef<HTMLDivElement>;
   @ViewChild('notificationsWrapper') notificationsWrapper?: ElementRef<HTMLDivElement>;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router,
-    private auth: AuthService,
-    private toasts: ToastService,
-    private msg: MessageService,
-    private notifSvc: NotificationService,
-  ) {}
 
   ngOnInit(): void {
     this.isHome = this.router.url === '/' || this.router.url.startsWith('/?');
