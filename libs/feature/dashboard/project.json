@@ -3,8 +3,8 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/feature/dashboard/src",
   "prefix": "cnt-workspace",
-  "tags": ["type:feature", "scope:dashboard"],
   "projectType": "library",
+  "tags": ["type:feature", "scope:dashboard"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

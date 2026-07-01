@@ -3,6 +3,8 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "e2e/src",
+  "tags": [],
+  "implicitDependencies": ["cnt-workspace"],
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
@@ -23,7 +25,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["cnt-workspace"]
+  }
 }

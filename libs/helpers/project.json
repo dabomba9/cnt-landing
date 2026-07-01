@@ -3,8 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/helpers/src",
   "prefix": "cnt-workspace",
-  "tags": ["type:helpers", "scope:shared"],
   "projectType": "library",
+  "tags": ["type:helpers", "scope:shared"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

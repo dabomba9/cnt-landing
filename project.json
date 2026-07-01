@@ -1,6 +1,7 @@
 {
   "name": "cnt-workspace",
   "$schema": "node_modules/nx/schemas/project-schema.json",
+  "includedScripts": [],
   "projectType": "application",
   "prefix": "cnt-workspace",
   "sourceRoot": "./src",
@@ -9,6 +10,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/cnt-workspace",
         "index": "./src/index.html",
@@ -59,11 +61,11 @@
           "sourceMap": true,
           "namedChunks": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
         "production": {
           "buildTarget": "cnt-workspace:build:production"
@@ -71,8 +73,7 @@
         "development": {
           "buildTarget": "cnt-workspace:build:development"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
