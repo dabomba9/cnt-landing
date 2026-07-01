@@ -60,7 +60,7 @@ import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
   `],
 })
 export class MiniMapComponent implements AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;

@@ -26,7 +26,7 @@ import { gsap } from 'gsap';
   styleUrls: ['./booking-confirm.component.scss'],
 })
 export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private bookingSvc = inject(BookingService);
@@ -220,7 +220,7 @@ export class BookingConfirmComponent implements OnInit, AfterViewInit, OnDestroy
     const text = `Booked ${this.booking.listingTitle} on CurbNTurf — ${this.datesLabel}`;
     const nav = navigator as Navigator & { share?: (data: ShareData) => Promise<void> };
     if (nav.share) {
-      nav.share({ title: 'My CurbNTurf trip', text, url }).catch(() => {});
+      nav.share({ title: 'My CurbNTurf trip', text, url }).catch(() => { /* noop */ });
     } else {
       navigator.clipboard?.writeText(url).then(() => this.toasts.success('Trip link copied to clipboard'));
     }

@@ -20,7 +20,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home-hero.component.scss'
 })
 export class HomeHeroComponent implements AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private router = inject(Router);
 
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
@@ -198,7 +198,7 @@ export class HomeHeroComponent implements AfterViewInit, OnDestroy {
         const el = this.heroVideoRef?.nativeElement;
         if (!el) return;
         el.load();
-        el.play().catch(() => {});
+        el.play().catch(() => { /* noop */ });
       };
       // requestIdleCallback isn't in Safari; fall back to setTimeout.
       const ric = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;

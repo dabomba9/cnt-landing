@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -14,8 +14,8 @@ import { gsap } from 'gsap';
   templateUrl: './cookies.component.html',
   styleUrl: './cookies.component.scss',
 })
-export class CookiesComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+export class CookiesComponent implements OnInit, AfterViewInit {
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
 
   lastUpdated = 'April 29, 2026';
@@ -54,5 +54,4 @@ export class CookiesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openIds = new Set();
   }
 
-  ngOnDestroy(): void {}
 }

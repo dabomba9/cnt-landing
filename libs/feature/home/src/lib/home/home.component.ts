@@ -26,7 +26,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
   private sanitizer = inject(DomSanitizer);
 

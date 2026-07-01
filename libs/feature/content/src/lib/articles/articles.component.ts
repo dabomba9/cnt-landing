@@ -33,7 +33,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   styleUrl: './articles.component.scss',
 })
 export class ArticlesComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);

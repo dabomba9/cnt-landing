@@ -15,7 +15,7 @@ type Step = 1 | 2;
   styleUrls: ['./rv-photos-modal.component.scss'],
 })
 export class RvPhotosModalComponent implements OnChanges, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private toasts = inject(ToastService);
 
   @Input() open = false;

@@ -68,7 +68,7 @@ export const SORT_OPTIONS: { id: SortOption; label: string; icon: string }[] = [
 export class SearchResultsComponent implements OnInit, AfterViewInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
   private planner = inject(TripPlannerService);
   private toasts = inject(ToastService);

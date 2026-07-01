@@ -14,7 +14,7 @@ import { FocusTrapDirective } from '@cnt-workspace/ui';
   templateUrl: './listing-photo-lightbox.component.html',
 })
 export class ListingPhotoLightboxComponent implements OnChanges {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   @Input() photos: string[] = [];
   /** Optional per-photo captions, index-aligned with `photos`. */

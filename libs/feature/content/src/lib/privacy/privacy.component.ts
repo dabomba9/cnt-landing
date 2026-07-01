@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -14,8 +14,8 @@ import { gsap } from 'gsap';
   templateUrl: './privacy.component.html',
   styleUrl: './privacy.component.scss',
 })
-export class PrivacyComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+export class PrivacyComponent implements OnInit, AfterViewInit {
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
 
   lastUpdated = 'May 2019';
@@ -54,5 +54,4 @@ export class PrivacyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openIds = new Set();
   }
 
-  ngOnDestroy(): void {}
 }

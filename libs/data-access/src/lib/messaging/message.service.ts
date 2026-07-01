@@ -43,7 +43,7 @@ function newId(prefix: string): string {
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private bookings = inject(BookingService);
   private auth = inject(AuthService);
   private toasts = inject(ToastService);

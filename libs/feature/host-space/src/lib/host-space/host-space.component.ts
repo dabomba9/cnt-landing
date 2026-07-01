@@ -22,7 +22,7 @@ export class HostSpaceComponent implements OnInit, AfterViewInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private drafts = inject(HostListingDraftService);
   private toasts = inject(ToastService);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   nightsPerWeek = 3;
   nightlyRate = 50;

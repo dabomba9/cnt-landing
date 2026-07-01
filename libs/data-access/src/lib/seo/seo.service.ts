@@ -28,7 +28,7 @@ const JSONLD_ID = 'cnt-jsonld';
 export class SeoService {
   private title = inject(Title);
   private meta = inject(Meta);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
 
   /** Build absolute URLs from project-relative paths, leaving full URLs untouched. */

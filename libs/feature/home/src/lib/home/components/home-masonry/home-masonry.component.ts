@@ -12,7 +12,7 @@ import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
   styleUrl: './home-masonry.component.scss'
 })
 export class HomeMasonryComponent implements AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   private scrollTriggers: ScrollTrigger[] = [];
 

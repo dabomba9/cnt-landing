@@ -23,7 +23,7 @@ type Step = 1 | 2 | 3 | 4; // 4 = success micro-pause
   styleUrls: ['./id-verify-modal.component.scss'],
 })
 export class IdVerifyModalComponent implements OnChanges, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private auth = inject(AuthService);
   private toasts = inject(ToastService);
 

@@ -165,7 +165,7 @@ import {
   `,
 })
 export class SearchMapComponent implements AfterViewInit, OnDestroy, OnChanges {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   @ViewChild('mapEl', { static: true }) mapEl!: ElementRef<HTMLDivElement>;
   @Input() listings: IListing[] = [];

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -41,8 +41,8 @@ export const TERMS_SECTIONS: ITermsSection[] = [
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.scss',
 })
-export class TermsComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+export class TermsComponent implements OnInit, AfterViewInit {
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
 
   TERMS_CATEGORIES = TERMS_CATEGORIES;
@@ -92,5 +92,4 @@ export class TermsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openIds = new Set();
   }
 
-  ngOnDestroy(): void {}
 }

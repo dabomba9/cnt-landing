@@ -50,7 +50,7 @@ import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private auth = inject(AuthService);
   private bookingSvc = inject(BookingService);
   private reviewSvc = inject(ReviewService);

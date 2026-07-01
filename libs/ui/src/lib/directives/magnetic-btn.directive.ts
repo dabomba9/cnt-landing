@@ -20,7 +20,7 @@ import { prefersReducedMotion } from '../util/motion.util';
 export class MagneticBtnDirective implements AfterViewInit, OnDestroy {
   private el = inject<ElementRef<HTMLElement>>(ElementRef);
   private zone = inject(NgZone);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   private mousemoveHandler?: (e: MouseEvent) => void;
   private mouseleaveHandler?: () => void;

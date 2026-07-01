@@ -40,7 +40,7 @@ export class ExploreStateComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private seo = inject(SeoService);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   private favoriteSet = new Set<number>();
   private routeSub?: Subscription;

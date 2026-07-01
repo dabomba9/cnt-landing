@@ -92,7 +92,7 @@ const FAQS: IFaqItem[] = [
   styleUrls: ['./faq.component.scss'],
 })
 export class FaqComponent implements OnInit, AfterViewInit {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
   private router = inject(Router);
 

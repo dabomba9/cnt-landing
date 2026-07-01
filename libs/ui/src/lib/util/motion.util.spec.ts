@@ -22,8 +22,8 @@ describe('motion.util (P7/C helpers)', () => {
     it('returns true when matchMedia(reduce) matches', () => {
       withWindowProp('matchMedia', ((q: string) => ({
         matches: q.includes('reduce'),
-        media: q, addEventListener: () => {}, removeEventListener: () => {},
-        addListener: () => {}, removeListener: () => {},
+        media: q, addEventListener: () => { /* noop */ }, removeEventListener: () => { /* noop */ },
+        addListener: () => { /* noop */ }, removeListener: () => { /* noop */ },
         onchange: null, dispatchEvent: () => false,
       })) as unknown as Window['matchMedia'], () => {
         expect(prefersReducedMotion()).toBe(true);
@@ -33,8 +33,8 @@ describe('motion.util (P7/C helpers)', () => {
     it('returns false when matchMedia does not match', () => {
       withWindowProp('matchMedia', ((q: string) => ({
         matches: false,
-        media: q, addEventListener: () => {}, removeEventListener: () => {},
-        addListener: () => {}, removeListener: () => {},
+        media: q, addEventListener: () => { /* noop */ }, removeEventListener: () => { /* noop */ },
+        addListener: () => { /* noop */ }, removeListener: () => { /* noop */ },
         onchange: null, dispatchEvent: () => false,
       })) as unknown as Window['matchMedia'], () => {
         expect(prefersReducedMotion()).toBe(false);

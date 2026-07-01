@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private router = inject(Router);
   private auth = inject(AuthService);
   private toasts = inject(ToastService);

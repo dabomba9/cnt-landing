@@ -13,7 +13,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
   styleUrl: './home-faq.component.scss'
 })
 export class HomeFaqComponent implements AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   openFaqIndex: number | null = null;
   private scrollTriggers: ScrollTrigger[] = [];

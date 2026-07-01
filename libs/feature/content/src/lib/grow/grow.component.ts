@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -14,8 +14,8 @@ import { gsap } from 'gsap';
   templateUrl: './grow.component.html',
   styleUrl: './grow.component.scss',
 })
-export class GrowComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+export class GrowComponent implements OnInit, AfterViewInit {
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
 
   steps = [
@@ -47,5 +47,4 @@ export class GrowComponent implements OnInit, AfterViewInit, OnDestroy {
     gsap.from('.grow-scenario', { y: 32, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.1, delay: 0.7 });
   }
 
-  ngOnDestroy(): void {}
 }

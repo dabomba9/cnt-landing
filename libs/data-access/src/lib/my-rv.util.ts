@@ -112,7 +112,7 @@ function normalizeProfile(p: Partial<IMyRvProfile>): IMyRvProfile {
  * if it's absent but the legacy single-RV key exists, migrates it once into a
  * one-profile state (leaving the legacy key as a rollback safety net).
  */
-export function readMyRvProfiles(platformId: Object): IMyRvProfilesState {
+export function readMyRvProfiles(platformId: object): IMyRvProfilesState {
   if (!isPlatformBrowser(platformId)) return { profiles: [], activeId: null };
 
   try {
@@ -147,7 +147,7 @@ export function readMyRvProfiles(platformId: Object): IMyRvProfilesState {
   return { profiles: [], activeId: null };
 }
 
-export function writeMyRvProfiles(platformId: Object, state: IMyRvProfilesState): void {
+export function writeMyRvProfiles(platformId: object, state: IMyRvProfilesState): void {
   if (!isPlatformBrowser(platformId)) return;
   if (state.profiles.length === 0) {
     localStorage.removeItem(MY_RV_PROFILES_KEY);
@@ -175,21 +175,21 @@ export function writeMyRvProfiles(platformId: Object, state: IMyRvProfilesState)
   }
 }
 
-export function listMyRvProfiles(platformId: Object): IMyRvProfile[] {
+export function listMyRvProfiles(platformId: object): IMyRvProfile[] {
   return readMyRvProfiles(platformId).profiles;
 }
 
-export function getActiveRvProfileId(platformId: Object): string | null {
+export function getActiveRvProfileId(platformId: object): string | null {
   return readMyRvProfiles(platformId).activeId;
 }
 
-export function getActiveRvProfile(platformId: Object): IMyRvProfile | null {
+export function getActiveRvProfile(platformId: object): IMyRvProfile | null {
   const state = readMyRvProfiles(platformId);
   return state.profiles.find(p => p.id === state.activeId) ?? null;
 }
 
 /** Appends a fresh, blank profile. Becomes active if it's the first one. */
-export function addMyRvProfile(platformId: Object, name = 'My RV'): IMyRvProfile {
+export function addMyRvProfile(platformId: object, name = 'My RV'): IMyRvProfile {
   const state = readMyRvProfiles(platformId);
   const profile = emptyMyRvProfile(name);
   state.profiles.push(profile);
@@ -199,7 +199,7 @@ export function addMyRvProfile(platformId: Object, name = 'My RV'): IMyRvProfile
 }
 
 /** Merges field changes into one profile by id. Name falls back to 'My RV' when blank. */
-export function updateMyRvProfile(platformId: Object, id: string, patch: Partial<IMyRv> & { name?: string }): void {
+export function updateMyRvProfile(platformId: object, id: string, patch: Partial<IMyRv> & { name?: string }): void {
   const state = readMyRvProfiles(platformId);
   const idx = state.profiles.findIndex(p => p.id === id);
   if (idx === -1) return;
@@ -210,7 +210,7 @@ export function updateMyRvProfile(platformId: Object, id: string, patch: Partial
 }
 
 /** Removes a profile; reassigns active to the first remaining one when needed. */
-export function deleteMyRvProfile(platformId: Object, id: string): void {
+export function deleteMyRvProfile(platformId: object, id: string): void {
   const state = readMyRvProfiles(platformId);
   const profiles = state.profiles.filter(p => p.id !== id);
   let activeId = state.activeId;
@@ -220,7 +220,7 @@ export function deleteMyRvProfile(platformId: Object, id: string): void {
   writeMyRvProfiles(platformId, { profiles, activeId });
 }
 
-export function setActiveRvProfile(platformId: Object, id: string): void {
+export function setActiveRvProfile(platformId: object, id: string): void {
   const state = readMyRvProfiles(platformId);
   if (!state.profiles.some(p => p.id === id)) return;
   writeMyRvProfiles(platformId, { ...state, activeId: id });
@@ -230,7 +230,7 @@ export function setActiveRvProfile(platformId: Object, id: string): void {
  * Reads the ACTIVE profile as a plain IMyRv. Back-compat shim: every existing
  * consumer that called readMyRv() keeps working — it now sees the active rig.
  */
-export function readMyRv(platformId: Object): IMyRv {
+export function readMyRv(platformId: object): IMyRv {
   const active = getActiveRvProfile(platformId);
   // normalizeRv copies only the 10 IMyRv fields — drops id/name cleanly.
   return active ? normalizeRv(active) : emptyMyRv();
@@ -242,7 +242,7 @@ export function readMyRv(platformId: Object): IMyRv {
  * first-time callers (e.g. the booking widget photo-attach) still "just work".
  * Clearing every field no longer deletes the profile — deletion is explicit.
  */
-export function writeMyRv(platformId: Object, rv: IMyRv): void {
+export function writeMyRv(platformId: object, rv: IMyRv): void {
   if (!isPlatformBrowser(platformId)) return;
   const state = readMyRvProfiles(platformId);
   const activeId = state.activeId;

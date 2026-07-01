@@ -71,7 +71,7 @@ interface IPrepItem {
   `,
 })
 export class TripPrepComponent {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private router = inject(Router);
 
   @Input() set booking(value: IBooking | null) {

@@ -93,7 +93,7 @@ import { downloadBookingIcs } from '@cnt-workspace/data-access';
   `,
 })
 export class UpcomingTripCardComponent {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
 
   @Input() booking: IBooking | null = null;
   STATUS_META = STATUS_META;

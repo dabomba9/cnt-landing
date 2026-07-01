@@ -26,7 +26,7 @@ export interface ICreditEntry {
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private toasts = inject(ToastService);
 
   private readonly _bookings$ = new BehaviorSubject<IBooking[]>([]);

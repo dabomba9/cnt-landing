@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -22,8 +22,8 @@ interface IResourceCard {
   templateUrl: './host-resources.component.html',
   styleUrl: './host-resources.component.scss',
 })
-export class HostResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
-  private platformId = inject<Object>(PLATFORM_ID);
+export class HostResourcesComponent implements OnInit, AfterViewInit {
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
 
   resources: IResourceCard[] = [
@@ -71,5 +71,4 @@ export class HostResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     gsap.from('.hr-card', { y: 32, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.1, delay: 0.3 });
   }
 
-  ngOnDestroy(): void {}
 }

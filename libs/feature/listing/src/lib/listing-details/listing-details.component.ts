@@ -48,7 +48,7 @@ import { MiniMapComponent } from '@cnt-workspace/booking';
 export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private platformId = inject<Object>(PLATFORM_ID);
+  private platformId = inject<object>(PLATFORM_ID);
   private seo = inject(SeoService);
   booking = inject<BookingStateService>(BookingStateService);
   private auth = inject(AuthService);
@@ -845,9 +845,9 @@ export class ListingDetailsComponent implements OnInit, AfterViewInit, OnDestroy
         title: this.listing.title,
         text: `${this.listing.title} — ${this.listing.location}`,
         url,
-      }).catch(() => {});
+      }).catch(() => { /* noop */ });
     } else {
-      navigator.clipboard?.writeText(url).then(() => {/* could toast */}).catch(() => {});
+      navigator.clipboard?.writeText(url).then(() => {/* could toast */}).catch(() => { /* noop */ });
     }
   }
 
