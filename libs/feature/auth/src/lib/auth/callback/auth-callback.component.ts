@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, ToastService } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-auth-callback',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <main class="min-h-screen flex items-center justify-center bg-cream">
       <div class="text-center">

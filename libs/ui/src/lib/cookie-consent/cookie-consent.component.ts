@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CookieConsentService } from '@cnt-workspace/data-access';
@@ -12,7 +12,7 @@ import { CookieConsentService } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-cookie-consent',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     @if (visible) {
       <aside role="region" aria-label="Cookie consent"

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
@@ -30,12 +30,23 @@ import { isMyRvSet, readFavorites } from '@cnt-workspace/data-access';
   selector: 'cnt-dashboard',
   standalone: true,
   imports: [
-    CommonModule, RouterLink, NavbarComponent, FooterComponent, ListingCardComponent,
-    DashboardGreetingComponent, StatTileComponent, UpcomingTripCardComponent,
-    SavedStaysWidgetComponent, MyRvSummaryWidgetComponent, ActivityFeedComponent,
-    QuickActionsComponent, TripPrepComponent, ReviewsWidgetComponent, SpendingSummaryComponent,
-    HostingShortcutComponent, FocusTrapDirective,
-  ],
+    RouterLink,
+    NavbarComponent,
+    FooterComponent,
+    ListingCardComponent,
+    DashboardGreetingComponent,
+    StatTileComponent,
+    UpcomingTripCardComponent,
+    SavedStaysWidgetComponent,
+    MyRvSummaryWidgetComponent,
+    ActivityFeedComponent,
+    QuickActionsComponent,
+    TripPrepComponent,
+    ReviewsWidgetComponent,
+    SpendingSummaryComponent,
+    HostingShortcutComponent,
+    FocusTrapDirective
+],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {

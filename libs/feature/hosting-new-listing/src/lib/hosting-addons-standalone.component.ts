@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
@@ -23,7 +23,7 @@ import { Phase3AddonsComponent } from './steps/phase3-addons.component';
 @Component({
   selector: 'cnt-hosting-addons-standalone',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, Phase3AddonsComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent, Phase3AddonsComponent],
   template: `
     <cnt-navbar></cnt-navbar>
     <main class="pt-24 md:pt-28 min-h-screen bg-cream">

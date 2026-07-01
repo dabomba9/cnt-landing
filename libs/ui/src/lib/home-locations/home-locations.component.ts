@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { CinematicRollDirective } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-home-locations',
   standalone: true,
-  imports: [CommonModule, RouterLink, CinematicRollDirective],
+  imports: [RouterLink, CinematicRollDirective],
   templateUrl: './home-locations.component.html',
   styleUrl: './home-locations.component.scss'
 })

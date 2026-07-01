@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
 import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-access';
@@ -7,7 +7,7 @@ import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-acces
 @Component({
   selector: 'cnt-auth-redirect',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent],
   template: `
     <cnt-navbar></cnt-navbar>
     <main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">

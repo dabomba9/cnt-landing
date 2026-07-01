@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy,
   PLATFORM_ID, ViewChild,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 import { ALL_LISTINGS } from '@cnt-workspace/data-access';
@@ -17,7 +17,7 @@ import { ALL_LISTINGS } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-home-network-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div #host class="nm-wrap">

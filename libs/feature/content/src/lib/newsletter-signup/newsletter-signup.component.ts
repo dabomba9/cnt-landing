@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '@cnt-workspace/data-access';
 
@@ -16,7 +16,7 @@ import { ToastService } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-newsletter-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './newsletter-signup.component.html',
   styleUrl: './newsletter-signup.component.scss',
 })

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 /** P39/A2 — placeholder listing-card with shimmering grey blocks.
  *  Rendered as a `@defer` placeholder so the list pane has structure
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'cnt-listing-card-skeleton',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="card-skeleton">
       <div class="card-skeleton__image"></div>

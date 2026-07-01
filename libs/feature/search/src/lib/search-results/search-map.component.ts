@@ -2,7 +2,7 @@ import {
   Component, AfterViewInit, OnDestroy, OnChanges, SimpleChanges,
   Input, Output, EventEmitter, ElementRef, ViewChild, Inject, PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { IListing, IBoondockingListing, CATEGORY_META, IPoi, PoiKind, POI_KIND_META, POI_KIND_PHOTO, AGENCY_META, ITripPlan } from '@cnt-workspace/data-access';
@@ -13,7 +13,7 @@ import {
 @Component({
   selector: 'cnt-search-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   styles: [`
     :host { display: block; width: 100%; height: 100%; }
     .map-wrap { position: relative; width: 100%; height: 100%; min-height: 500px; background: #dde7e1; }

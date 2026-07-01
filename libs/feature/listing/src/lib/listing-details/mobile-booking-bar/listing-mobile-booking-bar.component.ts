@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IPrivateListing } from '@cnt-workspace/data-access';
 import { BookingStateService } from '../booking-state.service';
 
@@ -12,7 +12,7 @@ import { BookingStateService } from '../booking-state.service';
 @Component({
   selector: 'cnt-listing-mobile-booking-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './listing-mobile-booking-bar.component.html',
 })
 export class ListingMobileBookingBarComponent {

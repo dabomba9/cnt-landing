@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { IPublicUser } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
@@ -7,7 +7,7 @@ import { IBooking } from '@cnt-workspace/models';
 @Component({
   selector: 'cnt-dashboard-greeting',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="relative rounded-3xl border border-dark-text/8 px-6 md:px-10 py-8 md:py-10 overflow-hidden"
       style="background: radial-gradient(ellipse at 95% 0%, rgba(251, 215, 132, 0.35) 0%, transparent 55%), radial-gradient(ellipse at 5% 100%, rgba(41, 93, 66, 0.18) 0%, transparent 50%), linear-gradient(135deg, #ffffff 0%, #f7f5ec 100%);">

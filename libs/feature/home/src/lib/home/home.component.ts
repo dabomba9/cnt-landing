@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '@cnt-workspace/ui';
@@ -21,7 +21,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent, HomeRoom2roamRailComponent],
+  imports: [RouterLink, FooterComponent, MagneticBtnDirective, HomeLocationsComponent, HomeFaqComponent, HomeMasonryComponent, HomeHeroComponent, NavbarComponent, TripPreviewMapComponent, NetworkMapComponent, HomeRoom2roamRailComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

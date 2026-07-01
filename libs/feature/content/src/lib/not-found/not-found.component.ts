@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
@@ -8,7 +8,7 @@ import { SeoService } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-not-found',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent implements OnInit {

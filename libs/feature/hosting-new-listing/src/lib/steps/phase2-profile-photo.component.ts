@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   IDraftListing, AuthService, ToastService, downscalePhoto,
 } from '@cnt-workspace/data-access';
@@ -11,7 +11,7 @@ import {
 @Component({
   selector: 'cnt-phase2-profile-photo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="text-center">
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">

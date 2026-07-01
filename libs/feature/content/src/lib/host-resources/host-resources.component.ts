@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
@@ -18,7 +18,7 @@ interface IResourceCard {
 @Component({
   selector: 'cnt-host-resources',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
+  imports: [RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './host-resources.component.html',
   styleUrl: './host-resources.component.scss',
 })

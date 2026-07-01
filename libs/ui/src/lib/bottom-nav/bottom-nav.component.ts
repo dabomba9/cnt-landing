@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService, AppView, IPublicUser, MessageService } from '@cnt-workspace/data-access';
@@ -32,7 +32,7 @@ const HOST_SLOTS: INavSlot[] = [
 @Component({
   selector: 'cnt-bottom-nav',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   template: `
     @if (user) {
       <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-dark-text/8 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]"

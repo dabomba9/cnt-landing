@@ -1,7 +1,7 @@
 import {
   AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { FocusTrapDirective } from '../directives/focus-trap.directive';
 
@@ -16,7 +16,7 @@ import { FocusTrapDirective } from '../directives/focus-trap.directive';
 @Component({
   selector: 'cnt-duplicate-rename-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, FocusTrapDirective],
+  imports: [FormsModule, FocusTrapDirective],
   template: `
     <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId">
       <div class="absolute inset-0 bg-dark-text/60 backdrop-blur-sm" (click)="cancel()"></div>

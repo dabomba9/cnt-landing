@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-workspace/data-access';
@@ -7,7 +7,7 @@ import { PaymentMethodsService, IPaymentMethod, ToastService } from '@cnt-worksp
 @Component({
   selector: 'cnt-account-payments',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8">
       <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold block mb-1">Wallet</span>

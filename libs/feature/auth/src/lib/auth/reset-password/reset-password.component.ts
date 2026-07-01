@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
@@ -8,7 +8,7 @@ import { AuthService, SeoService, ToastService } from '@cnt-workspace/data-acces
 @Component({
   selector: 'cnt-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [FormsModule, RouterLink, NavbarComponent, FooterComponent],
   template: `
     <cnt-navbar></cnt-navbar>
     <main class="pt-24 md:pt-28 min-h-screen bg-cream bg-grid-subtle">

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { AuthService } from '@cnt-workspace/data-access';
 
@@ -9,7 +9,7 @@ import { AuthService } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-hosting-shortcut',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="rounded-2xl bg-white border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">
       <div class="flex items-start justify-between gap-3 mb-3">

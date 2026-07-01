@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent } from '@cnt-workspace/ui';
@@ -8,7 +8,7 @@ import { AuthService, SeoService, ToastService, FederatedProvider } from '@cnt-w
 @Component({
   selector: 'cnt-sign-in',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [FormsModule, RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {

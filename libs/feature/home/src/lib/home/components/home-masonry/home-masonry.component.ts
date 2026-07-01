@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
@@ -7,7 +7,7 @@ import { prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 @Component({
   selector: 'cnt-home-masonry',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './home-masonry.component.html',
   styleUrl: './home-masonry.component.scss'
 })

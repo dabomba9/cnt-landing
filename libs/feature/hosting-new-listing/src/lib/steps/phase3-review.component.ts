@@ -1,5 +1,5 @@
 import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import {
   IDraftListing, HostListingDraftService, ToastService,
@@ -16,7 +16,7 @@ import {
 @Component({
   selector: 'cnt-phase3-review',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div>
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">

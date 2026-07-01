@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent, FooterComponent, AccordionCardComponent } from '@cnt-workspace/ui';
@@ -94,7 +94,7 @@ const HELP_TOPICS: IHelpTopic[] = [
 @Component({
   selector: 'cnt-help-center',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, AccordionCardComponent],
+  imports: [FormsModule, RouterLink, NavbarComponent, FooterComponent, AccordionCardComponent],
   template: `
     <cnt-navbar></cnt-navbar>
 

@@ -1,12 +1,12 @@
 import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ViewChild, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 
 @Component({
   selector: 'cnt-mini-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="mini-map-wrap" [class.tiles-loaded]="tilesLoaded">
       <div class="mini-map-skeleton" aria-hidden="true"></div>

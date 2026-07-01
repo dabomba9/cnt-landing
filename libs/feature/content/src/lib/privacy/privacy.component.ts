@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
 import { FooterComponent } from '@cnt-workspace/ui';
@@ -10,7 +10,7 @@ import { gsap } from 'gsap';
 @Component({
   selector: 'cnt-privacy',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
+  imports: [RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './privacy.component.html',
   styleUrl: './privacy.component.scss',
 })

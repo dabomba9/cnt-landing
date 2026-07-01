@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IDraftListing, IHouseRules } from '@cnt-workspace/data-access';
@@ -27,7 +27,7 @@ const MAX_RULE_LENGTH = 120;
 @Component({
   selector: 'cnt-phase3-rules',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   template: `
     <div>
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">

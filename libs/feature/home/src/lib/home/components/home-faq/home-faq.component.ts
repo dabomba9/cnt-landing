@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MagneticBtnDirective, prefersReducedMotion, runWhenIdle } from '@cnt-workspace/ui';
 import { gsap } from 'gsap';
@@ -8,7 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 @Component({
   selector: 'cnt-home-faq',
   standalone: true,
-  imports: [CommonModule, RouterLink, MagneticBtnDirective],
+  imports: [RouterLink, MagneticBtnDirective],
   templateUrl: './home-faq.component.html',
   styleUrl: './home-faq.component.scss'
 })

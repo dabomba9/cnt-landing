@@ -2,7 +2,7 @@ import {
   Component, EventEmitter, HostListener, Inject, Input, OnChanges, Output,
   PLATFORM_ID, SimpleChanges,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 
 /**
@@ -13,7 +13,7 @@ import { FocusTrapDirective } from '@cnt-workspace/ui';
 @Component({
   selector: 'cnt-listing-photo-lightbox',
   standalone: true,
-  imports: [CommonModule, FocusTrapDirective],
+  imports: [FocusTrapDirective],
   templateUrl: './listing-photo-lightbox.component.html',
 })
 export class ListingPhotoLightboxComponent implements OnChanges {

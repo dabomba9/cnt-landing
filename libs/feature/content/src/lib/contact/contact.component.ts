@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '@cnt-workspace/ui';
@@ -13,7 +13,7 @@ type ContactReason = 'general' | 'guest-support' | 'host-support' | 'press-media
 @Component({
   selector: 'cnt-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
+  imports: [FormsModule, RouterLink, NavbarComponent, FooterComponent, MagneticBtnDirective],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })

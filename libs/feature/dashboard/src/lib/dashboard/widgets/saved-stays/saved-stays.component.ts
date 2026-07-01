@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { IListing } from '@cnt-workspace/data-access';
 import { ListingCardComponent } from '@cnt-workspace/ui';
@@ -7,7 +7,7 @@ import { ListingCardComponent } from '@cnt-workspace/ui';
 @Component({
   selector: 'cnt-saved-stays',
   standalone: true,
-  imports: [CommonModule, RouterLink, ListingCardComponent],
+  imports: [RouterLink, ListingCardComponent],
   template: `
     @if (savedListings.length === 0) {
       <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-10 md:p-14 text-center">

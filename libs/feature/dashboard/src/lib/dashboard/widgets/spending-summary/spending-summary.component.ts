@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IBooking } from '@cnt-workspace/models';
 import { MOCK_LISTINGS, Category, CATEGORY_META } from '@cnt-workspace/data-access';
 
@@ -8,7 +8,7 @@ interface ICategorySpend { category: Category; label: string; color: string; tot
 @Component({
   selector: 'cnt-dashboard-spending',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">
       <div class="flex items-baseline justify-between gap-3 mb-5">

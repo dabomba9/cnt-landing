@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FocusTrapDirective } from '@cnt-workspace/ui';
 import type { IAddOn } from '@cnt-workspace/data-access';
 
@@ -13,7 +13,7 @@ import type { IAddOn } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-addon-lightbox',
   standalone: true,
-  imports: [CommonModule, FocusTrapDirective],
+  imports: [FocusTrapDirective],
   template: `
     @if (open && addon) {
       <div class="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="addon-lb-title">

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IDraftListing, ToastService, downscalePhoto } from '@cnt-workspace/data-access';
@@ -15,7 +15,7 @@ const LOW_RES_THRESHOLD = 1000;
 @Component({
   selector: 'cnt-phase2-photos',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [FormsModule, DragDropModule],
   template: `
     <div>
       <h2 class="font-headline font-bold text-dark-text text-2xl md:text-3xl tracking-tight mb-2">

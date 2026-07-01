@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject,
   Input, OnChanges, OnDestroy, Output, PLATFORM_ID, SimpleChanges, ViewChild,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 import { ITripPlan, TripStopKind, IListing, IPoi } from '@cnt-workspace/data-access';
@@ -20,7 +20,7 @@ const KIND_STYLE: Record<TripStopKind | 'start' | 'end', { color: string; icon: 
 @Component({
   selector: 'cnt-trip-planner-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="tp-map-wrap" [class.tp-map--dropping]="pinDropMode">
       <div #mapEl class="tp-map-el"></div>

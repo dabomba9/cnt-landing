@@ -1,1149 +1,1135 @@
 <!-- JSON-LD Structured Data -->
 <script type="application/ld+json">
-{
+  {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://www.curbnturf.com/#organization",
-      "name": "CurbNTurf",
-      "url": "https://www.curbnturf.com",
-      "logo": "https://www.curbnturf.com/assets/images/logo.png",
-      "sameAs": [
-        "https://www.facebook.com/curbnturf",
-        "https://www.instagram.com/curbnturf",
-        "https://twitter.com/curbnturf"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer support",
-        "url": "https://www.curbnturf.com/support"
-      }
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://www.curbnturf.com/#website",
-      "url": "https://www.curbnturf.com",
-      "name": "CurbNTurf",
-      "publisher": { "@id": "https://www.curbnturf.com/#organization" },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.curbnturf.com/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-  ]
+  {
+  "@type": "Organization",
+  "@id": "https://www.curbnturf.com/#organization",
+  "name": "CurbNTurf",
+  "url": "https://www.curbnturf.com",
+  "logo": "https://www.curbnturf.com/assets/images/logo.png",
+  "sameAs": [
+  "https://www.facebook.com/curbnturf",
+  "https://www.instagram.com/curbnturf",
+  "https://twitter.com/curbnturf"
+  ],
+  "contactPoint": {
+  "@type": "ContactPoint",
+  "contactType": "customer support",
+  "url": "https://www.curbnturf.com/support"
+}
+},
+{
+"@type": "WebSite",
+"@id": "https://www.curbnturf.com/#website",
+"url": "https://www.curbnturf.com",
+"name": "CurbNTurf",
+"publisher": { "@id": "https://www.curbnturf.com/#organization" },
+"potentialAction": {
+"@type": "SearchAction",
+"target": "https://www.curbnturf.com/search?q={search_term_string}",
+"query-input": "required name=search_term_string"
+}
+}
+]
 }
 </script>
 
 <div class="page-wrap bg-background text-on-background font-body selection:bg-primary-fixed-dim">
 
 
-<div class="page-main">
+  <div class="page-main">
 
 
 
-  <cnt-navbar></cnt-navbar>
+    <cnt-navbar></cnt-navbar>
 
-  <!-- Unified Grid Wrapper for Body and Footer -->
-  <div class="bg-grid-subtle bg-cream">
-    <!-- Page Body -->
-    <div class="container-body !bg-transparent !pb-0">
-    <!-- Hero Section -->
-    <cnt-home-hero></cnt-home-hero>
+    <!-- Unified Grid Wrapper for Body and Footer -->
+    <div class="bg-grid-subtle bg-cream">
+      <!-- Page Body -->
+      <div class="container-body !bg-transparent !pb-0">
+        <!-- Hero Section -->
+        <cnt-home-hero></cnt-home-hero>
 
-    <!-- ================= Trust strip (P26/C) =================
-         Slim social-proof row directly below the hero — pulls the
-         trust signal that was buried at 60% scroll into the first
-         fold. Hidden at <sm to keep mobile clean. -->
-    <section class="hidden sm:block relative z-30 bg-cream/95 border-y border-dark-text/10 py-3 full-bleed">
-      <div class="max-w-[80rem] mx-auto px-4 md:px-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm font-body text-dark-text/80">
-        <span class="inline-flex items-center gap-2">
-          <span class="text-trinidad font-bold tracking-wider" aria-hidden="true">★★★★★</span>
-          <span><span class="font-bold">4.8</span> host rating</span>
-        </span>
-        <span class="text-dark-text/30" aria-hidden="true">·</span>
-        <span class="inline-flex items-center gap-2">
-          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">trending_up</span>
-          <span><span class="font-bold">1,000+</span> stays booked</span>
-        </span>
-        <span class="text-dark-text/30" aria-hidden="true">·</span>
-        <span class="inline-flex items-center gap-2">
-          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">verified</span>
-          <span>Verified hosts only</span>
-        </span>
-        <span class="text-dark-text/30" aria-hidden="true">·</span>
-        <span class="inline-flex items-center gap-2">
-          <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">payments</span>
-          <span>No membership fees</span>
-        </span>
-      </div>
-    </section>
-
-    <!-- ================= Network Text Section ================= -->
-    <section class="network-animated-section bg-jungle-green text-white py-32 md:py-64 relative z-20 flex flex-col items-center justify-center min-h-[90vh] overflow-hidden full-bleed">
-      <!-- GSAP Text element -->
-      <div class="network-text-container text-center max-w-5xl text-3xl md:text-5xl lg:text-[3.25rem] font-headline font-bold leading-[2]" style="will-change: transform, opacity;">
-        <span class="block">CurbNTurf connects RVers with unique stays — no subscription required.</span>
-        <span class="block">
-          <span class="category-pill inline-flex items-center bg-[#DE5260] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="agriculture">agriculture</span>farms</span>
-          <span class="category-pill inline-flex items-center bg-[#A541A1] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="wine_bar">wine_bar</span>wineries</span>
-          <span class="category-pill inline-flex items-center bg-[#E8A23D] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-1 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="sports_bar">sports_bar</span>breweries</span>
-        </span>
-        <span class="block">
-          <span class="category-pill inline-flex items-center bg-[#83C53C] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-3 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="golf_course">golf_course</span>golf courses</span>
-          <span class="category-pill inline-flex items-center bg-[#42B0AF] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="home_work">home_work</span>community hosts</span>
-        </span>
-        <span class="block">Pay as you go. Stay somewhere unforgettable.</span>
-      </div>
-    </section>
-
-    <!-- Massive Breathing Gap -->
-    <div class="full-bleed bg-jungle-green h-[50vh]"></div>
-      
-    <!-- ================= Horizontal Cards Section ================= -->
-    <section class="horizontal-cards-section bg-jungle-green text-white relative z-20 h-screen full-bleed flex items-center overflow-hidden">
-
-      <!-- Card Stack Intro Headline -->
-      <div class="card-stack-intro absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none">
-        <!-- Optional Pre-header if they want to keep "Where will you park next" -->
-        <p class="text-[#2DE889]/60 uppercase tracking-[0.2em] text-sm md:text-base font-bold mb-4 md:mb-8 font-headline">Where will you park next?</p>
-        
-        <h2 class="relative text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase" style="font-size: clamp(2rem, 7.5vw, 8rem);">
-          Park Somewhere<br>You'll Never Forget
-          
-          <!-- Accent Stickers simulating the MoMoney floating pixel art -->
-          <!-- Sticker 1 -->
-          <div class="absolute -left-[5%] md:-left-[10%] top-[40%] -translate-y-1/2 rotate-[-12deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
-            <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="park">park</span>
+        <!-- ================= Trust strip (P26/C) =================
+        Slim social-proof row directly below the hero — pulls the
+        trust signal that was buried at 60% scroll into the first
+        fold. Hidden at <sm to keep mobile clean. -->
+        <section class="hidden sm:block relative z-30 bg-cream/95 border-y border-dark-text/10 py-3 full-bleed">
+          <div class="max-w-[80rem] mx-auto px-4 md:px-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm font-body text-dark-text/80">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-trinidad font-bold tracking-wider" aria-hidden="true">★★★★★</span>
+              <span><span class="font-bold">4.8</span> host rating</span>
+            </span>
+            <span class="text-dark-text/30" aria-hidden="true">·</span>
+            <span class="inline-flex items-center gap-2">
+              <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">trending_up</span>
+              <span><span class="font-bold">1,000+</span> stays booked</span>
+            </span>
+            <span class="text-dark-text/30" aria-hidden="true">·</span>
+            <span class="inline-flex items-center gap-2">
+              <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">verified</span>
+              <span>Verified hosts only</span>
+            </span>
+            <span class="text-dark-text/30" aria-hidden="true">·</span>
+            <span class="inline-flex items-center gap-2">
+              <span class="material-symbols-outlined text-jungle-green text-base" aria-hidden="true">payments</span>
+              <span>No membership fees</span>
+            </span>
           </div>
-          
-          <!-- Sticker 2 -->
-          <div class="absolute -right-[2%] md:-right-[5%] bottom-[10%] rotate-[18deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
-            <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="rv_hookup">rv_hookup</span>
+        </section>
+
+        <!-- ================= Network Text Section ================= -->
+        <section class="network-animated-section bg-jungle-green text-white py-32 md:py-64 relative z-20 flex flex-col items-center justify-center min-h-[90vh] overflow-hidden full-bleed">
+          <!-- GSAP Text element -->
+          <div class="network-text-container text-center max-w-5xl text-3xl md:text-5xl lg:text-[3.25rem] font-headline font-bold leading-[2]" style="will-change: transform, opacity;">
+            <span class="block">CurbNTurf connects RVers with unique stays — no subscription required.</span>
+            <span class="block">
+              <span class="category-pill inline-flex items-center bg-[#DE5260] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="agriculture">agriculture</span>farms</span>
+              <span class="category-pill inline-flex items-center bg-[#A541A1] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="wine_bar">wine_bar</span>wineries</span>
+              <span class="category-pill inline-flex items-center bg-[#E8A23D] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-1 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="sports_bar">sports_bar</span>breweries</span>
+            </span>
+            <span class="block">
+              <span class="category-pill inline-flex items-center bg-[#83C53C] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform rotate-3 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="golf_course">golf_course</span>golf courses</span>
+              <span class="category-pill inline-flex items-center bg-[#42B0AF] text-white px-5 py-2 rounded-[1.5rem] shadow-lg transform -rotate-2 mx-2 align-middle"><span class="material-symbols-outlined mr-2 text-[0.8em]" data-icon="home_work">home_work</span>community hosts</span>
+            </span>
+            <span class="block">Pay as you go. Stay somewhere unforgettable.</span>
           </div>
-        </h2>
-      </div>
+        </section>
 
-      <!-- The Outro Reveal (Waiting beneath the scrolling cards) -->
-      <div class="mo-outro-reveal absolute inset-0 flex flex-col items-center justify-center z-20 opacity-0 pointer-events-none bg-jungle-green">
-        <h2 class="text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase mb-10" style="font-size: clamp(2rem, 7.5vw, 8rem);">
-          Plus More<br>(Lots More)
-        </h2>
-        
-        <!-- MoMoney Split Button -->
-        <div class="pointer-events-auto magnetic-btn group cursor-pointer inline-block">
-          <!-- Container expands gap on hover -->
-          <a href="#favorite-hosts" class="flex items-stretch gap-0 group-hover:gap-2 transition-all duration-300">
-            
-            <!-- Left Text Side -->
-            <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-l-[4px] group-hover:rounded-r-[4px] px-6 py-3 md:px-8 md:py-4 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase flex items-center shadow-2xl transition-all duration-300 origin-center">
-              Explore Our Listings
-            </div>
-            
-            <!-- Right Icon Side -->
-            <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-r-[4px] group-hover:rounded-l-[4px] px-4 py-3 md:px-5 md:py-4 border-l-2 border-dashed border-jungle-green/30 group-hover:border-l-transparent flex items-center justify-center shadow-2xl transition-all duration-300 origin-center">
-              <!-- Play / Triangle Icon -->
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
+        <!-- Massive Breathing Gap -->
+        <div class="full-bleed bg-jungle-green h-[50vh]"></div>
 
-          </a>
-        </div>
-      </div>
+        <!-- ================= Horizontal Cards Section ================= -->
+        <section class="horizontal-cards-section bg-jungle-green text-white relative z-20 h-screen full-bleed flex items-center overflow-hidden">
 
-      <!-- Exhibit Cards Wrap Foreground (GSAP Horizontal Scroll) -->
-      <div class="exhibit-list-wrap w-max pr-[20vw] flex items-center flex-nowrap gap-5 md:gap-12 will-change-transform z-30" style="transform: translateX(100vw);">
+          <!-- Card Stack Intro Headline -->
+          <div class="card-stack-intro absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+            <!-- Optional Pre-header if they want to keep "Where will you park next" -->
+            <p class="text-[#2DE889]/60 uppercase tracking-[0.2em] text-sm md:text-base font-bold mb-4 md:mb-8 font-headline">Where will you park next?</p>
 
-        <!-- Card 1 -->
-        <div class="exhibit-card-wrapper shrink-0 relative z-[60]" style="transform: rotate(-2deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/winery_category.webp" alt="Winery" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Sip & Sleep</h3>
+            <h2 class="relative text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase" style="font-size: clamp(2rem, 7.5vw, 8rem);">
+              Park Somewhere<br>You'll Never Forget
+
+              <!-- Accent Stickers simulating the MoMoney floating pixel art -->
+              <!-- Sticker 1 -->
+              <div class="absolute -left-[5%] md:-left-[10%] top-[40%] -translate-y-1/2 rotate-[-12deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
+                <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="park">park</span>
               </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Wake up among the vines. Enjoy exclusive tastings and a quiet night at top-tier wineries.</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- Card 2 -->
-        <div class="exhibit-card-wrapper shrink-0 mt-16 relative z-[50]" style="transform: rotate(3deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/farm_category.webp" alt="Farm Excursions" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Fresh from the Source</h3>
+              <!-- Sticker 2 -->
+              <div class="absolute -right-[2%] md:-right-[5%] bottom-[10%] rotate-[18deg] flex items-center justify-center w-16 h-16 md:w-24 md:h-24 bg-trinidad rounded-full ring-4 ring-[#1a2e21] shadow-2xl z-20">
+                <span class="material-symbols-outlined text-3xl md:text-5xl text-[#1a2e21]" data-icon="rv_hookup">rv_hookup</span>
               </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Experience farm life. Pick fresh produce and park beside peaceful pastures.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="exhibit-card-wrapper shrink-0 relative z-[40]" style="transform: rotate(-1.5deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/brewery_category.webp" alt="Breweries" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Craft Pints & Quiet Nights</h3>
-              </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Park outside local breweries and distilleries after a perfect evening of craft tasting.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="exhibit-card-wrapper shrink-0 mt-8 relative z-[30]" style="transform: rotate(2deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/golf_category.webp" alt="Golf Courses" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Tee Off & Tailgate</h3>
-              </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Park your rig right next to the green. Play a round and relax at your mobile clubhouse.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="exhibit-card-wrapper shrink-0 relative z-[20]" style="transform: rotate(-1deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/community_category.webp" alt="Community Hosts" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Meet the Locals</h3>
-              </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Stay with welcoming community hosts on private properties away from crowded RV parks.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="exhibit-card-wrapper shrink-0 mt-12 relative z-[10]" style="transform: rotate(2.5deg);">
-          <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
-            <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
-              <img src="assets/images/unique_category.webp" alt="Unique Stops" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 w-full p-5">
-                <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Off the Beaten Path</h3>
-              </div>
-            </div>
-            <div class="px-5 pt-4 pb-5">
-              <p class="text-dark-text text-sm leading-relaxed">Discover unique attractions, historical sites, and museums that offer exclusive overnight parking.</p>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-    </section>
-
-<!-- ================= Content Overlap Wrapper ================= -->
-<div class="content-overlap-wrap relative z-40 bg-cream bg-grid-subtle w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden" style="box-shadow: 0 -20px 40px rgba(0,0,0,0.05);">
-
-<!-- How It Works Section -->
-<section class="pt-28 md:pt-44 pb-60 md:pb-[19rem] relative z-50 border-y border-jungle-green/5">
-<div class="max-w-[90rem] mx-auto px-4 md:px-8">
-<div class="text-center mb-20">
-<span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The Journey</span>
-<h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">Three Steps to Your Next Adventure</h2>
-</div>
-<div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 gsap-how-works-wrap">
-  <!-- UI Thread Desktop (Horizontal S-Curve) -->
-  <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] hidden md:block" viewBox="0 0 100 100" preserveAspectRatio="none">
-    <defs>
-      <mask id="desktopJourneyMask">
-        <path class="journey-mask-path" d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
-      </mask>
-    </defs>
-    <!-- Tracing dashed path visible only where mask allows -->
-    <path d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#desktopJourneyMask)" vector-effect="non-scaling-stroke" />
-  </svg>
-
-  <!-- UI Thread Mobile (Vertical Weaving Path) -->
-  <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] md:hidden block" viewBox="0 0 100 100" preserveAspectRatio="none">
-    <defs>
-      <mask id="mobileJourneyMask">
-        <path class="journey-mask-path" d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
-      </mask>
-    </defs>
-    <path d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#mobileJourneyMask)" vector-effect="non-scaling-stroke" />
-  </svg>
-<!-- Card 1 — Search Your Stats -->
-<div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
-  <img src="assets/images/hiw_search.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">01</div>
-  <div class="relative z-10 w-14 h-14 rounded-2xl bg-trinidad/10 group-hover:bg-trinidad flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
-    <span class="material-symbols-outlined text-trinidad group-hover:text-white text-3xl transition-colors duration-500">tune</span>
-  </div>
-  <div class="relative z-10 mt-auto w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Search Your Stats</h4>
-    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Enter your rig's dimensions and your travel dates. We'll filter out the guesswork, showing you only the sites where you're guaranteed to fit.</p>
-  </div>
-</div>
-<!-- Card 2 — Book Your Spot -->
-<div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
-  <img src="assets/images/hiw_book.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">02</div>
-  <div class="relative z-10 w-14 h-14 rounded-2xl bg-jungle-green/10 group-hover:bg-jungle-green flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
-    <span class="material-symbols-outlined text-jungle-green group-hover:text-white text-3xl transition-colors duration-500">lock</span>
-  </div>
-  <div class="relative z-10 mt-auto w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Book Your Spot</h4>
-    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Message hosts directly to ask questions or hit "Book Now" for instant confirmation. Our secure platform keeps your payment and data protected.</p>
-  </div>
-</div>
-<!-- Card 3 — Park & Play -->
-<div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
-  <img src="assets/images/hiw_park.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
-  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
-  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">03</div>
-  <div class="relative z-10 w-14 h-14 rounded-2xl bg-[#F1B434]/15 group-hover:bg-[#F1B434] flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
-    <span class="material-symbols-outlined text-[#F1B434] group-hover:text-white text-3xl transition-colors duration-500">near_me</span>
-  </div>
-  <div class="relative z-10 mt-auto w-full">
-    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Park &amp; Play</h4>
-    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Receive exact GPS coordinates and check-in instructions. Whether it's a vineyard or a driveway, show up knowing your spot is waiting.</p>
-  </div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- ================= Network Scale Section ================= -->
-<section class="max-w-[90rem] mx-auto px-4 md:px-8 mb-24">
-  <div class="bg-[#F9F9F8] rounded-2xl py-16 md:py-24 px-6 md:px-12 flex flex-col items-center border border-dark-text/8">
-    <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Interactive Map</span>
-    <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
-    <p class="text-lg md:text-xl font-body text-muted-text leading-relaxed text-center mb-16 max-w-2xl">From remote alpaca farms to historic vineyards, drop a pin and say hello to hundreds of incredible local hosts.</p>
-    
-    <div class="w-full max-w-7xl relative rounded-[2rem] overflow-hidden shadow-2xl border border-dark-text/8 group cursor-pointer">
-      <!-- Live Leaflet preview rendering every catalog listing as a small
-           color-coded marker (same OSM tiles + palette as /search). -->
-      <div class="w-full md:aspect-[16/9] aspect-[4/3] relative">
-        <cnt-home-network-map class="block w-full h-full"></cnt-home-network-map>
-      </div>
-
-      <!-- Overlay Vignette to slightly pull focus to button -->
-      <div class="absolute inset-0 z-[800] bg-white/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>
-
-      <!-- Center Interactive Explore Button -->
-      <div class="absolute inset-0 z-[810] flex items-center justify-center pointer-events-none">
-        
-        <a routerLink="/search" [queryParams]="{ view: 'map' }" aria-label="Explore stays on the map"
-          class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl no-underline">
-          <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
-            <!-- Invisible structure pusher to perfectly fit dynamic text sizes over absolute bounds -->
-            <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
-            </div>
-
-            <div class="btn-3d-front bg-white text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
-            </div>
-            <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-              Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
-            </div>
-          </div>
-        </a>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-    <!-- ================= Favorite Hosts Grid ================= -->
-    <div>
-      <section id="favorite-hosts" class="py-28 md:py-44 px-4 md:px-8 max-w-[90rem] mx-auto scroll-mt-24">
-        <div class="text-center mb-20">
-        <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Featured Hosts</span>
-        <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-16 gsap-favorite-hosts-wrap">
-        
-        <!-- Card 1 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_hops.webp" alt="High Desert Hop Farm" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
-            </div>
-            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
-              <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">High Desert Hop Farm & Taphouse</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#E8A23D]">Brewery</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Bend, OR</span>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_vineyard.webp" alt="Valley View Vineyards" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="wine_bar">wine_bar</span>
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Valley View Estate Vineyards</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#A541A1]">Winery</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Walla Walla, WA</span>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_alpaca.webp" alt="Alpaca Ranch" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
-            </div>
-            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
-              <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Rustic Ridge Alpaca Ranch</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#DE5260]">Farm</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Bozeman, MT</span>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_farm.webp" alt="Heritage Farm" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Whispering Pines Heritage Farm</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#DE5260]">Farm</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Burlington, VT</span>
-          </div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_museum.webp" alt="Auto Museum" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
-            </div>
-            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
-              <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Vintage Auto & Aviation Museum</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#42B0AF]">Attraction</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Kalamazoo, MI</span>
-          </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_brewery.webp" alt="Riverfront Brewery" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Riverfront Barrel House & Gardens</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#E8A23D]">Brewery</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Fort Collins, CO</span>
-          </div>
-        </div>
-
-        <!-- Card 7 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_village.webp" alt="Pioneer Village" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
-            </div>
-            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
-              <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Pioneer Village Historical Site</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#42B0AF]">Attraction</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Williamsburg, VA</span>
-          </div>
-        </div>
-
-        <!-- Card 8 -->
-        <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
-          <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
-            <img src="assets/images/host_dairy.webp" alt="Organic Dairy" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
-               <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
-            </div>
-          </div>
-          <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Sunrise Creek Organic Dairy</h3>
-          <div class="text-sm mt-0.5">
-            <span class="font-bold text-[#DE5260]">Farm</span>
-            <span class="text-muted-text mx-1.5">•</span>
-            <span class="text-muted-text">Lancaster, PA</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-    </div>
-
-    <!-- ================= Stitch Redesign Sections ================= -->
-
-<!-- ================= Community Masonry Grid ================= -->
-<cnt-home-masonry></cnt-home-masonry>
-
-<!-- ================= Brand Video Section ================= -->
-<section class="full-bleed bg-jungle-green py-28 md:py-44 relative overflow-hidden">
-  <div class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-trinidad/10 rounded-full blur-[140px] pointer-events-none"></div>
-
-  <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
-
-    <!-- Header -->
-    <div class="text-center mb-12">
-      <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The CurbNTurf Experience</span>
-      <h2 class="font-headline font-bold text-white tracking-tight mb-5">This is what freedom looks like</h2>
-      <p class="text-white/60 text-lg md:text-xl font-body max-w-xl mx-auto">
-        Real places. Real hosts. Real adventures — all across America.
-      </p>
-    </div>
-
-    <!-- Video card -->
-    <div class="max-w-4xl mx-auto">
-      <div class="relative rounded-3xl overflow-hidden aspect-video cursor-pointer group shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
-           (click)="openVideo()">
-        <img src="https://img.youtube.com/vi/vuisyx-U944/maxresdefault.jpg"
-             alt="The CurbNTurf Experience"
-             loading="lazy" decoding="async"
-             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300"></div>
-        <!-- Play button -->
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-trinidad flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-[0_12px_40px_rgba(227,83,13,0.45)] ring-4 ring-white/20">
-            <svg viewBox="0 0 24 24" class="w-9 h-9 md:w-11 md:h-11 text-white" fill="currentColor" aria-hidden="true">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- Trust Signals Section (GSAP Color Shift Target) -->
-<section class="trust-dynamic-section full-bleed py-28 md:py-44 overflow-hidden relative bg-jungle-green" >
-  <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
-  <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-trinidad/10 rounded-full blur-[160px] pointer-events-none"></div>
-  <!-- We apply the GSAP color shift directly to this section's background and typography -->
-  <div class="max-w-[90rem] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10 cache-buster-4">
-    
-    <!-- Left Column (Typography & Badges) -->
-    <div class="lg:pr-8">
-      <span class="trust-label text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block ">
-        The Highest Standard
-      </span>
-      <h2 class="trust-heading font-headline font-bold text-white tracking-tight leading-tight mb-8">
-        Professional, safe, and outdoorsy
-      </h2>
-      <p class="trust-desc text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed max-w-xl ">
-        We believe freedom shouldn't come with compromise. CurbNTurf partners only with hosts who meet our rigorous standards for technical reliability and safety.
-      </p>
-
-      <!-- Glassmorphic Badges -->
-      <div class="flex flex-wrap gap-2 md:gap-4 mb-16">
-        <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
-          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="verified_user">verified_user</span>
-          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Verified Host</span>
-        </div>
-        <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
-          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="straighten">straighten</span>
-          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Rig-Compatible Guarantee</span>
-        </div>
-        <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
-          <span class="material-symbols-outlined text-trinidad text-sm" data-icon="lock">lock</span>
-          <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Secure Booking</span>
-        </div>
-      </div>
-
-      <!-- 3D CTA Button -->
-      <div class="btn-3d-wrap magnetic-btn">
-        <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
-          <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-            Learn About Our Model
-          </div>
-          <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-            Learn About Our Model
-          </div>
-          <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-            Learn About Our Model
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column (3D Carousel Physics) -->
-    <div class="relative w-full h-[600px] md:h-[700px] perspective-[1500px] overflow-hidden rounded-[2rem] px-4 py-8 pointer-events-none" style="-webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);">
-      <!-- Inner rotated envelope -->
-      <div class="w-full h-full transform-style-3d rotate-y-[-5deg] rotate-x-[5deg] scale-[1.05]">
-        <!-- Vertical Marquee Track -->
-        <div class="trust-marquee-track flex flex-col gap-6 w-full max-w-md ml-auto mr-auto transform-style-3d will-change-transform">
-          
-          <!-- Card Suite Alpha -->
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">Marcus Sterling</div><div class="text-xs text-white/80  trust-muted-text">Full-time Airstreamer</div>
-          </div>
-
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">Elena Rostova</div><div class="text-xs text-white/80  trust-muted-text">Digital Nomad</div>
-          </div>
-
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">David & Sarah Kim</div><div class="text-xs text-white/80  trust-muted-text">Retiree Explorers</div>
-          </div>
-
-          <!-- Card Suite Beta (Duplicate for smooth infinite scrolling) -->
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">Marcus Sterling</div><div class="text-xs text-white/80  trust-muted-text">Full-time Airstreamer</div>
-          </div>
-
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">Elena Rostova</div><div class="text-xs text-white/80  trust-muted-text">Digital Nomad</div>
-          </div>
-
-          <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
-            <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
-            <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
-            <div class="font-bold text-sm trust-card-text text-white ">David & Sarah Kim</div><div class="text-xs text-white/80  trust-muted-text">Retiree Explorers</div>
-          </div>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-
-  
-    <!-- ================= Trip Planner Promotion Section ================= -->
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10 relative">
-      <!-- Soft Trinidad glow behind the section, echoing the Trust section's lighting -->
-      <div class="absolute top-1/2 right-0 -translate-y-1/2 w-[700px] h-[700px] bg-trinidad/10 rounded-full blur-[180px] pointer-events-none"></div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center relative z-10">
-
-        <!-- Left: Aggressive Typography & Data -->
-        <div class="flex flex-col py-12 lg:py-0 order-2 lg:order-1">
-
-           <span class="inline-flex items-center gap-2 text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-5">
-             <span class="inline-block w-2 h-2 bg-[#F1B434]"></span>
-             Plan Your Adventure
-           </span>
-           <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
-             Map Your Whole Road Trip.
-           </h2>
-           <p class="text-white/80 text-lg md:text-xl font-body mb-8 leading-relaxed">
-             Sketch a route from your driveway to the redwoods — stops, dates, road-routed directions, fuel cost, and budget all live in one view. Plan it now, drive it free.
-           </p>
-
-           <!-- Capability chips — quick scan of what the planner gives you -->
-           <div class="flex flex-wrap gap-2 mb-12">
-             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
-               <span class="material-symbols-outlined text-[14px] text-[#F1B434]">route</span>Road-Routed
-             </span>
-             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
-               <span class="material-symbols-outlined text-[14px] text-[#F1B434]">payments</span>Live Budget
-             </span>
-             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
-               <span class="material-symbols-outlined text-[14px] text-[#F1B434]">local_gas_station</span>Fuel Estimate
-             </span>
-             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
-               <span class="material-symbols-outlined text-[14px] text-[#F1B434]">share</span>Shareable
-             </span>
-           </div>
-
-           <ul class="space-y-6 mb-12">
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="explore">explore</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Discover What's Along Your Route:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Private spots, boondocking, and POIs surface as you build the trip.</div>
-               </div>
-             </li>
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="calendar_today">calendar_today</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Plan Dates and Budget:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Pick check-in/out per stop — nights, cost, and fuel update in real time.</div>
-               </div>
-             </li>
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="directions">directions</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Turn-By-Turn Directions:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Road-routed legs with long-drive and tank-range guardrails to keep you safe.</div>
-               </div>
-             </li>
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="ios_share">ios_share</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Share or Print:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Send a link to your travel partner or print a paper itinerary for offline use.</div>
-               </div>
-             </li>
-           </ul>
-
-           <!-- Free micro-badge -->
-           <div class="inline-flex items-center gap-2 mb-4 text-white/70 text-[0.6rem] font-button font-bold uppercase tracking-[0.18em]">
-             <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F1B434]"></span>
-             Free with your CurbNTurf account
-           </div>
-
-           <!-- 3D Flip Button Component -->
-           <div>
-             <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
-               <a routerLink="/trip-planner" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
-                 <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   OPEN TRIP PLANNER
-                 </div>
-                 <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   OPEN TRIP PLANNER
-                 </div>
-                 <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   OPEN TRIP PLANNER
-                 </div>
-               </a>
-             </div>
-           </div>
-
-        </div>
-
-        <!-- Right: Stylized trip planner map mockup (inline SVG, mirrors the product UI) -->
-        <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square flex justify-center order-1 lg:order-2">
-          <!-- Soft outer frame with gradient depth -->
-          <div class="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-sm"></div>
-
-          <!-- Gold viewfinder corner ticks on the inner frame -->
-          <span class="absolute top-5 left-5 w-4 h-4 border-t-2 border-l-2 border-[#F1B434]/80 pointer-events-none"></span>
-          <span class="absolute top-5 right-5 w-4 h-4 border-t-2 border-r-2 border-[#F1B434]/80 pointer-events-none"></span>
-          <span class="absolute bottom-5 left-5 w-4 h-4 border-b-2 border-l-2 border-[#F1B434]/80 pointer-events-none"></span>
-          <span class="absolute bottom-5 right-5 w-4 h-4 border-b-2 border-r-2 border-[#F1B434]/80 pointer-events-none"></span>
-
-          <!-- Live Leaflet preview — same tiles, markers, and polyline the
-               user sees on /search and /trip-planner. Mounts lazily when the
-               section scrolls into view. -->
-          <div class="relative w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)] m-3 rounded-[1.75rem] overflow-hidden bg-[#f2efe9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-transform duration-700 hover:scale-[1.02] will-change-transform">
-            <cnt-home-trip-preview class="block w-full h-full"></cnt-home-trip-preview>
-          </div>
-          <!-- Legacy SVG mockup (kept commented for reference / fallback) -->
-          <ng-container *ngIf="false">
-            <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 w-full h-full" aria-hidden="true">
-              <defs>
-                <linearGradient id="cnt-tp-route" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#295d42"/>
-                  <stop offset="50%" stop-color="#e3530d"/>
-                  <stop offset="100%" stop-color="#9a3f0a"/>
-                </linearGradient>
-                <filter id="cnt-tp-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-opacity="0.35"/>
-                </filter>
-                <radialGradient id="cnt-tp-vignette" cx="0.5" cy="0.5" r="0.7">
-                  <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
-                  <stop offset="100%" stop-color="#000000" stop-opacity="0.18"/>
-                </radialGradient>
-              </defs>
-
-              <!-- OSM land base (#f2efe9) -->
-              <rect width="600" height="600" fill="#f2efe9"/>
-
-              <!-- Park / forest polygons (OSM pale green #c8e0a8) -->
-              <path d="M 0 0 L 200 0 Q 220 80 180 130 Q 130 170 60 140 Q 0 110 0 60 Z" fill="#c8e0a8" opacity="0.85"/>
-              <path d="M 420 460 Q 460 440 520 460 Q 580 500 600 540 L 600 600 L 380 600 Z" fill="#c8e0a8" opacity="0.85"/>
-              <ellipse cx="380" cy="180" rx="55" ry="36" fill="#c8e0a8" opacity="0.7"/>
-
-              <!-- Water — OSM light blue #a8d0e0 -->
-              <path d="M 0 380 Q 80 360 140 390 T 280 400 T 420 420 T 600 410 L 600 600 L 0 600 Z" fill="#a8d0e0"/>
-              <!-- River meandering across -->
-              <path d="M 0 410 Q 80 395 140 420 T 280 430 T 420 450 T 600 440" fill="none" stroke="#9bc5d8" stroke-width="2" opacity="0.6"/>
-              <!-- Small lake top-left -->
-              <ellipse cx="120" cy="220" rx="42" ry="26" fill="#a8d0e0"/>
-
-              <!-- Faint building footprints (OSM gray #d9d4cd) -->
-              <g fill="#d9d4cd" opacity="0.9">
-                <rect x="240" y="170" width="14" height="20" rx="1"/>
-                <rect x="258" y="172" width="10" height="18" rx="1"/>
-                <rect x="270" y="170" width="18" height="14" rx="1"/>
-                <rect x="246" y="194" width="22" height="12" rx="1"/>
-                <rect x="252" y="320" width="16" height="14" rx="1"/>
-                <rect x="272" y="318" width="12" height="20" rx="1"/>
-                <rect x="476" y="350" width="14" height="18" rx="1"/>
-                <rect x="494" y="354" width="20" height="14" rx="1"/>
-                <rect x="80" y="80" width="16" height="14" rx="1"/>
-                <rect x="100" y="82" width="14" height="14" rx="1"/>
-              </g>
-
-              <!-- Roads — Leaflet style: gray casing under white fill -->
-              <g>
-                <!-- Highway 1 (horizontal across) -->
-                <path d="M 0 280 Q 150 260 300 290 T 600 270" fill="none" stroke="#b9b3a8" stroke-width="9" stroke-linecap="round"/>
-                <path d="M 0 280 Q 150 260 300 290 T 600 270" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
-                <!-- Highway 2 (vertical-ish left) -->
-                <path d="M 120 0 Q 140 150 100 300 T 180 600" fill="none" stroke="#b9b3a8" stroke-width="8" stroke-linecap="round"/>
-                <path d="M 120 0 Q 140 150 100 300 T 180 600" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-                <!-- Highway 3 (vertical-ish right) -->
-                <path d="M 450 0 Q 430 200 480 380 T 520 600" fill="none" stroke="#b9b3a8" stroke-width="8" stroke-linecap="round"/>
-                <path d="M 450 0 Q 430 200 480 380 T 520 600" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-                <!-- Minor streets -->
-                <path d="M 200 100 L 380 100" fill="none" stroke="#cfcabf" stroke-width="3"/>
-                <path d="M 200 100 L 380 100" fill="none" stroke="#ffffff" stroke-width="2"/>
-                <path d="M 260 60 L 260 220" fill="none" stroke="#cfcabf" stroke-width="3"/>
-                <path d="M 260 60 L 260 220" fill="none" stroke="#ffffff" stroke-width="2"/>
-                <path d="M 220 340 L 380 340" fill="none" stroke="#cfcabf" stroke-width="3"/>
-                <path d="M 220 340 L 380 340" fill="none" stroke="#ffffff" stroke-width="2"/>
-              </g>
-
-              <!-- Background listing dots (private + boondocking + POI) -->
-              <g opacity="0.7">
-                <circle cx="80"  cy="120" r="4" fill="#e3530d"/>
-                <circle cx="210" cy="80"  r="4" fill="#3b6e3b"/>
-                <circle cx="340" cy="120" r="4" fill="#b3760e"/>
-                <circle cx="500" cy="100" r="4" fill="#e3530d"/>
-                <circle cx="540" cy="250" r="4" fill="#3b6e3b"/>
-                <circle cx="60"  cy="320" r="4" fill="#b3760e"/>
-                <circle cx="280" cy="500" r="4" fill="#3b6e3b"/>
-                <circle cx="430" cy="540" r="4" fill="#e3530d"/>
-                <circle cx="150" cy="540" r="4" fill="#b3760e"/>
-              </g>
-
-              <!-- ROUTE — halo, dark casing, then gradient stroke -->
-              <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
-                fill="none" stroke="#ffffff" stroke-width="14" opacity="0.45"
-                stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
-                fill="none" stroke="#000000" stroke-width="9" opacity="0.18"
-                stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
-                fill="none" stroke="url(#cnt-tp-route)" stroke-width="6"
-                stroke-linecap="round" stroke-linejoin="round"
-                filter="url(#cnt-tp-shadow)"/>
-
-              <!-- STOP 1 — start (jungle-green flag) with pulse -->
-              <g transform="translate(110 470)">
-                <circle r="22" fill="#295d42" opacity="0.4">
-                  <animate attributeName="r" values="22;38;22" dur="2.4s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.4;0;0.4" dur="2.4s" repeatCount="indefinite"/>
-                </circle>
-              </g>
-              <g transform="translate(110 470)" filter="url(#cnt-tp-shadow)">
-                <circle r="22" fill="#295d42"/>
-                <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
-                <path d="M -6 -9 L -6 9 M -6 -9 L 7 -5 L -1 0 L 7 5 L -6 5" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-
-              <!-- STOP 2 — middle (trinidad orange numbered) -->
-              <g transform="translate(320 290)" filter="url(#cnt-tp-shadow)">
-                <circle r="22" fill="#e3530d"/>
-                <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
-                <text x="0" y="6" text-anchor="middle" font-family="Familjen Grotesk, sans-serif" font-weight="800" font-size="18" fill="#ffffff">2</text>
-              </g>
-
-              <!-- STOP 3 — finish (jungle-green checkered flag) -->
-              <g transform="translate(500 140)" filter="url(#cnt-tp-shadow)">
-                <circle r="22" fill="#9a3f0a"/>
-                <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
-                <g transform="translate(-7 -8)" fill="#ffffff">
-                  <rect x="0" y="0" width="4" height="4"/>
-                  <rect x="8" y="0" width="4" height="4"/>
-                  <rect x="4" y="4" width="4" height="4"/>
-                  <rect x="12" y="4" width="4" height="4"/>
-                  <rect x="0" y="8" width="4" height="4"/>
-                  <rect x="8" y="8" width="4" height="4"/>
-                  <rect x="4" y="12" width="4" height="4"/>
-                  <rect x="12" y="12" width="4" height="4"/>
-                </g>
-              </g>
-
-              <!-- Mini leg labels along the route -->
-              <g font-family="Asap Condensed, sans-serif" font-weight="700" font-size="12" letter-spacing="1.5" fill="#222222" filter="url(#cnt-tp-shadow)">
-                <rect x="196" y="376" width="90" height="24" rx="12" fill="#ffffff"/>
-                <text x="241" y="392" text-anchor="middle">312 MI · 5H</text>
-                <rect x="394" y="214" width="98" height="24" rx="12" fill="#ffffff"/>
-                <text x="443" y="230" text-anchor="middle">300 MI · 4H 50M</text>
-              </g>
-
-              <!-- Compass rose top-right -->
-              <g transform="translate(548 52)" filter="url(#cnt-tp-shadow)">
-                <circle r="22" fill="#ffffff" opacity="0.95"/>
-                <path d="M 0 -14 L 5 0 L 0 14 L -5 0 Z" fill="#e3530d"/>
-                <path d="M 0 -14 L 5 0 L 0 0 Z" fill="#9a3f0a"/>
-                <text x="0" y="-18" text-anchor="middle" font-family="Asap Condensed, sans-serif" font-weight="800" font-size="9" letter-spacing="1.2" fill="#222222">N</text>
-              </g>
-
-              <!-- Scale bar bottom-right -->
-              <g transform="translate(440 560)" filter="url(#cnt-tp-shadow)">
-                <rect x="0" y="0" width="120" height="22" rx="11" fill="#ffffff" opacity="0.95"/>
-                <text x="14" y="15" font-family="Asap Condensed, sans-serif" font-weight="700" font-size="11" letter-spacing="1.2" fill="#222222">50 MI</text>
-                <line x1="52" y1="11" x2="108" y2="11" stroke="#222222" stroke-width="2"/>
-                <line x1="52" y1="7" x2="52" y2="15" stroke="#222222" stroke-width="2"/>
-                <line x1="80" y1="8" x2="80" y2="14" stroke="#222222" stroke-width="1.5"/>
-                <line x1="108" y1="7" x2="108" y2="15" stroke="#222222" stroke-width="2"/>
-              </g>
-
-              <!-- Vignette overlay for depth -->
-              <rect width="600" height="600" fill="url(#cnt-tp-vignette)" pointer-events="none"/>
-            </svg>
-          </ng-container>
-
-          <!-- Floating route badge (sits on the frame) -->
-          <div class="absolute -top-4 left-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-jungle-green border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur">
-            <span class="material-symbols-outlined text-[#F1B434] text-base" style="font-variation-settings: 'FILL' 1;">route</span>
-            <span class="text-white text-[0.65rem] font-button font-bold uppercase tracking-[0.14em]">3 stops · 612 mi</span>
-          </div>
-          <!-- Floating fuel/cost badge -->
-          <div class="absolute -bottom-4 right-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-jungle-green border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur">
-            <span class="material-symbols-outlined text-[#F1B434] text-base" style="font-variation-settings: 'FILL' 1;">payments</span>
-            <span class="text-white text-[0.65rem] font-button font-bold uppercase tracking-[0.14em]">$420 · 4 nights</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- ================= Room2Roam editorial rail (P26/A — repositioned P27/B) =================
-         Surfaces /articles editorial onto the home flow: 1 featured
-         article + 3 editor's picks. Deferred so the catalog (which
-         carries every article's body HTML) is not pulled into the
-         home eager bundle — it loads when the visitor scrolls down. -->
-    @defer (on viewport; prefetch on idle) {
-      <cnt-home-room2roam-rail></cnt-home-room2roam-rail>
-    } @placeholder (minimum 200ms) {
-      <div class="min-h-[40rem]" aria-hidden="true"></div>
-    }
-
-    <!-- ================= FAQ Section ================= -->
-    <cnt-home-faq></cnt-home-faq>
-
-
-    <!-- ================= Host Promotion Section ================= -->
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-        
-        <!-- Left: Pixelated Image Masking -->
-        <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square object-cover flex justify-center drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
-          <!-- 3-step 8-bit geometric block cutout via pure CSS Calc Polygon -->
-          <img src="assets/images/host_opportunity.webp" alt="Become a Host" width="640" height="640" loading="lazy"
-               class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 hover:scale-105 will-change-transform">
-        </div>
-
-        <!-- Right: Aggressive Typography & Data -->
-        <div class="flex flex-col py-12 lg:py-0">
-           
-           <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-5 block">Host Opportunity</span>
-           <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
-             Turn Your Land Into Income.
-           </h2>
-           <p class="text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed">
-             Whether you have a scenic vineyard, a quiet farm, or a spacious driveway, there’s an RVer looking for a spot like yours. Listing is 100% free, and you stay in total control.
-           </p>
-           
-           <ul class="space-y-6 mb-12">
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="payments">payments</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Earn Extra Cash:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Set your own nightly rates and keep more of what you earn.</div>
-               </div>
-             </li>
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="event_available">event_available</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">You’re the Boss:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">You choose the dates, the guests, and the rules.</div>
-               </div>
-             </li>
-             <li class="flex items-start gap-4">
-               <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="verified_user">verified_user</span>
-               <div>
-                 <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Secure & Simple:</div>
-                 <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">We handle the payments and identity verification for you.</div>
-               </div>
-             </li>
-           </ul>
-
-           <!-- Split Button Component -->
-           <!-- 3D Flip Button Component -->
-           <div>
-             <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block mt-4">
-               <a routerLink="/host" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
-                 <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   START HOSTING TODAY
-                 </div>
-                 <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   START HOSTING TODAY
-                 </div>
-                 <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
-                   START HOSTING TODAY
-                 </div>
-               </a>
-             </div>
-           </div>
-
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- ================= App Download Section ================= -->
-    <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
-      <div class="bg-cream rounded-[2rem] overflow-hidden gsap-app-download-wrap">
-        <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
-
-          <!-- Left Column: Phones Mockup -->
-          <div class="gsap-app-left opacity-0 transform translate-y-10 flex items-end justify-center pt-10 px-8 lg:px-16">
-            <div class="gsap-app-phones will-change-transform">
-              <img src="assets/images/phone-triptych.webp" alt="CurbNTurf Mobile App" loading="lazy" class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
-            </div>
-          </div>
-
-          <!-- Right Column: Copy & CTA -->
-          <div class="gsap-app-right opacity-0 transform translate-y-10 py-12 px-8 lg:px-16 lg:py-20">
-            <div class="w-12 h-[2px] bg-trinidad mb-6"></div>
-            <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Mobile Access</span>
-            <h2 class="font-headline font-bold !text-dark-text tracking-tight leading-tight mb-5">
-              Download the<br>CurbNTurf App
             </h2>
-            <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mb-10 max-w-sm">
-              Search listings, book sites, and navigate to your next adventure — all from the palm of your hand.
-            </p>
-            <div class="flex flex-row flex-wrap gap-4">
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
-                <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
-              </button>
-              <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
-                <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
-              </button>
+          </div>
+
+          <!-- The Outro Reveal (Waiting beneath the scrolling cards) -->
+          <div class="mo-outro-reveal absolute inset-0 flex flex-col items-center justify-center z-20 opacity-0 pointer-events-none bg-jungle-green">
+            <h2 class="text-center font-headline font-black text-[#2DE889] leading-[0.85] tracking-[-0.03em] uppercase mb-10" style="font-size: clamp(2rem, 7.5vw, 8rem);">
+              Plus More<br>(Lots More)
+            </h2>
+
+            <!-- MoMoney Split Button -->
+            <div class="pointer-events-auto magnetic-btn group cursor-pointer inline-block">
+              <!-- Container expands gap on hover -->
+              <a href="#favorite-hosts" class="flex items-stretch gap-0 group-hover:gap-2 transition-all duration-300">
+
+                <!-- Left Text Side -->
+                <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-l-[4px] group-hover:rounded-r-[4px] px-6 py-3 md:px-8 md:py-4 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase flex items-center shadow-2xl transition-all duration-300 origin-center">
+                  Explore Our Listings
+                </div>
+
+                <!-- Right Icon Side -->
+                <div class="bg-cream group-hover:bg-[#1f1b1a] text-jungle-green group-hover:text-white rounded-r-[4px] group-hover:rounded-l-[4px] px-4 py-3 md:px-5 md:py-4 border-l-2 border-dashed border-jungle-green/30 group-hover:border-l-transparent flex items-center justify-center shadow-2xl transition-all duration-300 origin-center">
+                  <!-- Play / Triangle Icon -->
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+
+              </a>
             </div>
           </div>
 
-        </div>
-      </div>
-    </div>
+          <!-- Exhibit Cards Wrap Foreground (GSAP Horizontal Scroll) -->
+          <div class="exhibit-list-wrap w-max pr-[20vw] flex items-center flex-nowrap gap-5 md:gap-12 will-change-transform z-30" style="transform: translateX(100vw);">
 
-    <!-- Divider -->
-    <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8 mt-24 md:mt-40">
-      <div class="border-t border-white/10"></div>
-    </div>
+            <!-- Card 1 -->
+            <div class="exhibit-card-wrapper shrink-0 relative z-[60]" style="transform: rotate(-2deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/winery_category.webp" alt="Winery" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Sip & Sleep</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Wake up among the vines. Enjoy exclusive tastings and a quiet night at top-tier wineries.</p>
+                </div>
+              </div>
+            </div>
 
-    <!-- CTA -->
-    <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-28 md:pb-44">
-      <div class="home-cta-inner text-center max-w-3xl mx-auto">
-        <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Start Your Adventure</span>
-        <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
-          Your next great stay<br>is out there.
-        </h2>
-        <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
-          Search thousands of unique RV spots on farms, vineyards, ranches, and more. No subscription. No guesswork. Just go.
-        </p>
-        <div class="flex flex-col items-center gap-4">
-          <p class="font-body text-white/40 text-sm flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
-            No membership required. Pay only when you book.
-          </p>
-          <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
-            <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
-              <div class="invisible px-12 py-5 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
-              <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
-              <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
+            <!-- Card 2 -->
+            <div class="exhibit-card-wrapper shrink-0 mt-16 relative z-[50]" style="transform: rotate(3deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/farm_category.webp" alt="Farm Excursions" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Fresh from the Source</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Experience farm life. Pick fresh produce and park beside peaceful pastures.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="exhibit-card-wrapper shrink-0 relative z-[40]" style="transform: rotate(-1.5deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/brewery_category.webp" alt="Breweries" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Craft Pints & Quiet Nights</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Park outside local breweries and distilleries after a perfect evening of craft tasting.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="exhibit-card-wrapper shrink-0 mt-8 relative z-[30]" style="transform: rotate(2deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/golf_category.webp" alt="Golf Courses" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Tee Off & Tailgate</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Park your rig right next to the green. Play a round and relax at your mobile clubhouse.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="exhibit-card-wrapper shrink-0 relative z-[20]" style="transform: rotate(-1deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/community_category.webp" alt="Community Hosts" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Meet the Locals</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Stay with welcoming community hosts on private properties away from crowded RV parks.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="exhibit-card-wrapper shrink-0 mt-12 relative z-[10]" style="transform: rotate(2.5deg);">
+              <div class="exhibit-card relative w-[220px] md:w-[340px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl bg-cream flex flex-col ring-[6px] ring-cream">
+                <div class="relative h-[240px] md:h-[380px] overflow-hidden shrink-0">
+                  <img src="assets/images/unique_category.webp" alt="Unique Stops" width="640" height="640" loading="lazy" class="exhibit-card-img w-full h-full object-cover origin-center transition-transform duration-700 scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-0 left-0 w-full p-5">
+                    <h3 class="text-lg md:text-xl font-headline font-bold text-white tracking-wide leading-snug">Off the Beaten Path</h3>
+                  </div>
+                </div>
+                <div class="px-5 pt-4 pb-5">
+                  <p class="text-dark-text text-sm leading-relaxed">Discover unique attractions, historical sites, and museums that offer exclusive overnight parking.</p>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </section>
+
+        <!-- ================= Content Overlap Wrapper ================= -->
+        <div class="content-overlap-wrap relative z-40 bg-cream bg-grid-subtle w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden" style="box-shadow: 0 -20px 40px rgba(0,0,0,0.05);">
+
+          <!-- How It Works Section -->
+          <section class="pt-28 md:pt-44 pb-60 md:pb-[19rem] relative z-50 border-y border-jungle-green/5">
+            <div class="max-w-[90rem] mx-auto px-4 md:px-8">
+              <div class="text-center mb-20">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The Journey</span>
+                <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight mb-4">Three Steps to Your Next Adventure</h2>
+              </div>
+              <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 gsap-how-works-wrap">
+                <!-- UI Thread Desktop (Horizontal S-Curve) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] hidden md:block" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <defs>
+                    <mask id="desktopJourneyMask">
+                      <path class="journey-mask-path" d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+                    </mask>
+                  </defs>
+                  <!-- Tracing dashed path visible only where mask allows -->
+                  <path d="M -10,30 C 30,30 30,60 50,60 C 70,60 70,90 110,90" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#desktopJourneyMask)" vector-effect="non-scaling-stroke" />
+                </svg>
+
+                <!-- UI Thread Mobile (Vertical Weaving Path) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-[-1] md:hidden block" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <defs>
+                    <mask id="mobileJourneyMask">
+                      <path class="journey-mask-path" d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" stroke="white" stroke-width="15" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+                    </mask>
+                  </defs>
+                  <path d="M 50,-10 C 50,20 10,20 10,33 C 10,48 90,48 90,66 C 90,82 50,82 50,110" fill="none" class="text-jungle-green/40" stroke="currentColor" stroke-width="3" stroke-dasharray="12 12" mask="url(#mobileJourneyMask)" vector-effect="non-scaling-stroke" />
+                </svg>
+                <!-- Card 1 — Search Your Stats -->
+                <div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left">
+                  <img src="assets/images/hiw_search.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+                  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">01</div>
+                  <div class="relative z-10 w-14 h-14 rounded-2xl bg-trinidad/10 group-hover:bg-trinidad flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+                    <span class="material-symbols-outlined text-trinidad group-hover:text-white text-3xl transition-colors duration-500">tune</span>
+                  </div>
+                  <div class="relative z-10 mt-auto w-full">
+                    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Search Your Stats</h4>
+                    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Enter your rig's dimensions and your travel dates. We'll filter out the guesswork, showing you only the sites where you're guaranteed to fit.</p>
+                  </div>
+                </div>
+                <!-- Card 2 — Book Your Spot -->
+                <div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-8">
+                  <img src="assets/images/hiw_book.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+                  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">02</div>
+                  <div class="relative z-10 w-14 h-14 rounded-2xl bg-jungle-green/10 group-hover:bg-jungle-green flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+                    <span class="material-symbols-outlined text-jungle-green group-hover:text-white text-3xl transition-colors duration-500">lock</span>
+                  </div>
+                  <div class="relative z-10 mt-auto w-full">
+                    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Book Your Spot</h4>
+                    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Message hosts directly to ask questions or hit "Book Now" for instant confirmation. Our secure platform keeps your payment and data protected.</p>
+                  </div>
+                </div>
+                <!-- Card 3 — Park & Play -->
+                <div class="relative flex flex-col items-start p-6 md:p-8 min-h-[300px] md:min-h-[550px] bg-white rounded-[2rem] border border-dark-text/8 shadow-[0_20px_40px_rgba(0,0,0,0.04)] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 gsap-how-step text-left md:translate-y-16">
+                  <img src="assets/images/hiw_park.webp" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out pointer-events-none z-0" alt="">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+                  <div class="absolute -right-4 top-4 text-[5rem] md:text-[7rem] lg:text-[14rem] font-headline font-black text-dark-text/[0.18] group-hover:text-white/20 select-none pointer-events-none leading-none z-10 transition-colors duration-700">03</div>
+                  <div class="relative z-10 w-14 h-14 rounded-2xl bg-[#F1B434]/15 group-hover:bg-[#F1B434] flex items-center justify-center mb-8 shrink-0 transition-colors duration-500">
+                    <span class="material-symbols-outlined text-[#F1B434] group-hover:text-white text-3xl transition-colors duration-500">near_me</span>
+                  </div>
+                  <div class="relative z-10 mt-auto w-full">
+                    <h4 class="text-2xl md:text-3xl font-headline font-bold text-dark-text group-hover:text-white mb-4 transition-colors duration-500">Park &amp; Play</h4>
+                    <p class="text-muted-text group-hover:text-white/80 text-lg font-body leading-relaxed transition-colors duration-500">Receive exact GPS coordinates and check-in instructions. Whether it's a vineyard or a driveway, show up knowing your spot is waiting.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================= Network Scale Section ================= -->
+          <section class="max-w-[90rem] mx-auto px-4 md:px-8 mb-24">
+            <div class="bg-[#F9F9F8] rounded-2xl py-16 md:py-24 px-6 md:px-12 flex flex-col items-center border border-dark-text/8">
+              <span class="text-jungle-green font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Interactive Map</span>
+              <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight text-center mb-4">Meet the CurbNTurf Community</h2>
+              <p class="text-lg md:text-xl font-body text-muted-text leading-relaxed text-center mb-16 max-w-2xl">From remote alpaca farms to historic vineyards, drop a pin and say hello to hundreds of incredible local hosts.</p>
+
+              <div class="w-full max-w-7xl relative rounded-[2rem] overflow-hidden shadow-2xl border border-dark-text/8 group cursor-pointer">
+                <!-- Live Leaflet preview rendering every catalog listing as a small
+                color-coded marker (same OSM tiles + palette as /search). -->
+                <div class="w-full md:aspect-[16/9] aspect-[4/3] relative">
+                  <cnt-home-network-map class="block w-full h-full"></cnt-home-network-map>
+                </div>
+
+                <!-- Overlay Vignette to slightly pull focus to button -->
+                <div class="absolute inset-0 z-[800] bg-white/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none"></div>
+
+                <!-- Center Interactive Explore Button -->
+                <div class="absolute inset-0 z-[810] flex items-center justify-center pointer-events-none">
+
+                  <a routerLink="/search" [queryParams]="{ view: 'map' }" aria-label="Explore stays on the map"
+                    class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl no-underline">
+                    <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                      <!-- Invisible structure pusher to perfectly fit dynamic text sizes over absolute bounds -->
+                      <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+                      </div>
+
+                      <div class="btn-3d-front bg-white text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+                      </div>
+                      <div class="btn-3d-back bg-jungle-green text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        Explore Map <span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+                      </div>
+                    </div>
+                  </a>
+
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================= Favorite Hosts Grid ================= -->
+          <div>
+            <section id="favorite-hosts" class="py-28 md:py-44 px-4 md:px-8 max-w-[90rem] mx-auto scroll-mt-24">
+              <div class="text-center mb-20">
+                <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block text-center">Featured Hosts</span>
+                <h2 class="font-headline font-bold text-dark-text tracking-tight leading-tight">Some of Our Favorite Hosts</h2>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-16 gsap-favorite-hosts-wrap">
+
+                <!-- Card 1 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_hops.webp" alt="High Desert Hop Farm" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+                      <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">High Desert Hop Farm & Taphouse</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#E8A23D]">Brewery</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Bend, OR</span>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_vineyard.webp" alt="Valley View Vineyards" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#A541A1] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="wine_bar">wine_bar</span>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Valley View Estate Vineyards</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#A541A1]">Winery</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Walla Walla, WA</span>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_alpaca.webp" alt="Alpaca Ranch" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+                      <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Rustic Ridge Alpaca Ranch</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#DE5260]">Farm</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Bozeman, MT</span>
+                  </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_farm.webp" alt="Heritage Farm" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Whispering Pines Heritage Farm</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#DE5260]">Farm</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Burlington, VT</span>
+                  </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_museum.webp" alt="Auto Museum" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+                      <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Vintage Auto & Aviation Museum</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#42B0AF]">Attraction</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Kalamazoo, MI</span>
+                  </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_brewery.webp" alt="Riverfront Brewery" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#E8A23D] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="sports_bar">sports_bar</span>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Riverfront Barrel House & Gardens</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#E8A23D]">Brewery</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Fort Collins, CO</span>
+                  </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_village.webp" alt="Pioneer Village" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#42B0AF] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="account_balance">account_balance</span>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-[0.7rem] font-bold px-2.5 py-1.5 rounded flex items-center gap-1.5 shadow-lg">
+                      <span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span> Instant Booking
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Pioneer Village Historical Site</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#42B0AF]">Attraction</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Williamsburg, VA</span>
+                  </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="group cursor-pointer flex flex-col gsap-favorite-host-card">
+                  <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative mb-4">
+                    <img src="assets/images/host_dairy.webp" alt="Organic Dairy" width="640" height="640" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute top-0 left-4 w-9 h-12 bg-[#DE5260] flex items-start justify-center pt-1.5 z-10" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
+                      <span class="material-symbols-outlined text-white text-[20px]" data-icon="agriculture">agriculture</span>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-bold text-dark-text leading-snug mb-1 group-hover:text-trinidad transition-colors line-clamp-2">Sunrise Creek Organic Dairy</h3>
+                  <div class="text-sm mt-0.5">
+                    <span class="font-bold text-[#DE5260]">Farm</span>
+                    <span class="text-muted-text mx-1.5">•</span>
+                    <span class="text-muted-text">Lancaster, PA</span>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          </div>
+
+          <!-- ================= Stitch Redesign Sections ================= -->
+
+          <!-- ================= Community Masonry Grid ================= -->
+          <cnt-home-masonry></cnt-home-masonry>
+
+          <!-- ================= Brand Video Section ================= -->
+          <section class="full-bleed bg-jungle-green py-28 md:py-44 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-trinidad/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8">
+
+              <!-- Header -->
+              <div class="text-center mb-12">
+                <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-4 block">The CurbNTurf Experience</span>
+                <h2 class="font-headline font-bold text-white tracking-tight mb-5">This is what freedom looks like</h2>
+                <p class="text-white/60 text-lg md:text-xl font-body max-w-xl mx-auto">
+                  Real places. Real hosts. Real adventures — all across America.
+                </p>
+              </div>
+
+              <!-- Video card -->
+              <div class="max-w-4xl mx-auto">
+                <div class="relative rounded-3xl overflow-hidden aspect-video cursor-pointer group shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
+                  (click)="openVideo()">
+                  <img src="https://img.youtube.com/vi/vuisyx-U944/maxresdefault.jpg"
+                    alt="The CurbNTurf Experience"
+                    loading="lazy" decoding="async"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                  <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300"></div>
+                  <!-- Play button -->
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-trinidad flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-[0_12px_40px_rgba(227,83,13,0.45)] ring-4 ring-white/20">
+                      <svg viewBox="0 0 24 24" class="w-9 h-9 md:w-11 md:h-11 text-white" fill="currentColor" aria-hidden="true">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Trust Signals Section (GSAP Color Shift Target) -->
+          <section class="trust-dynamic-section full-bleed py-28 md:py-44 overflow-hidden relative bg-jungle-green" >
+            <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 40px 40px;"></div>
+            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-trinidad/10 rounded-full blur-[160px] pointer-events-none"></div>
+            <!-- We apply the GSAP color shift directly to this section's background and typography -->
+            <div class="max-w-[90rem] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10 cache-buster-4">
+
+              <!-- Left Column (Typography & Badges) -->
+              <div class="lg:pr-8">
+                <span class="trust-label text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block ">
+                  The Highest Standard
+                </span>
+                <h2 class="trust-heading font-headline font-bold text-white tracking-tight leading-tight mb-8">
+                  Professional, safe, and outdoorsy
+                </h2>
+                <p class="trust-desc text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed max-w-xl ">
+                  We believe freedom shouldn't come with compromise. CurbNTurf partners only with hosts who meet our rigorous standards for technical reliability and safety.
+                </p>
+
+                <!-- Glassmorphic Badges -->
+                <div class="flex flex-wrap gap-2 md:gap-4 mb-16">
+                  <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
+                    <span class="material-symbols-outlined text-trinidad text-sm" data-icon="verified_user">verified_user</span>
+                    <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Verified Host</span>
+                  </div>
+                  <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
+                    <span class="material-symbols-outlined text-trinidad text-sm" data-icon="straighten">straighten</span>
+                    <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Rig-Compatible Guarantee</span>
+                  </div>
+                  <div class="trust-badge flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg">
+                    <span class="material-symbols-outlined text-trinidad text-sm" data-icon="lock">lock</span>
+                    <span class="text-[0.7rem] font-bold uppercase tracking-wider trust-badge-text text-white ">Secure Booking</span>
+                  </div>
+                </div>
+
+                <!-- 3D CTA Button -->
+                <div class="btn-3d-wrap magnetic-btn">
+                  <div class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                    <div class="invisible px-10 py-4 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                      Learn About Our Model
+                    </div>
+                    <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                      Learn About Our Model
+                    </div>
+                    <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                      Learn About Our Model
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column (3D Carousel Physics) -->
+              <div class="relative w-full h-[600px] md:h-[700px] perspective-[1500px] overflow-hidden rounded-[2rem] px-4 py-8 pointer-events-none" style="-webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);">
+                <!-- Inner rotated envelope -->
+                <div class="w-full h-full transform-style-3d rotate-y-[-5deg] rotate-x-[5deg] scale-[1.05]">
+                  <!-- Vertical Marquee Track -->
+                  <div class="trust-marquee-track flex flex-col gap-6 w-full max-w-md ml-auto mr-auto transform-style-3d will-change-transform">
+
+                    <!-- Card Suite Alpha -->
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">Marcus Sterling</div><div class="text-xs text-white/80  trust-muted-text">Full-time Airstreamer</div>
+                    </div>
+
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">Elena Rostova</div><div class="text-xs text-white/80  trust-muted-text">Digital Nomad</div>
+                    </div>
+
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">David & Sarah Kim</div><div class="text-xs text-white/80  trust-muted-text">Retiree Explorers</div>
+                    </div>
+
+                    <!-- Card Suite Beta (Duplicate for smooth infinite scrolling) -->
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"CurbNTurf completely changed how we travel. It's premium freedom."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">Marcus Sterling</div><div class="text-xs text-white/80  trust-muted-text">Full-time Airstreamer</div>
+                    </div>
+
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"The absolute easiest way to find guaranteed high-clearance properties."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">Elena Rostova</div><div class="text-xs text-white/80  trust-muted-text">Digital Nomad</div>
+                    </div>
+
+                    <div class="trust-card pointer-events-auto p-8 rounded-2xl bg-white/5 backdrop-blur-xl shadow-lg border ">
+                      <div class="flex gap-1 text-[#F1B434] mb-4 text-[1.1rem]"><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span><span class="material-symbols-outlined" class="icon-filled">star</span></div>
+                      <blockquote class="text-xl font-headline italic mb-6 trust-card-text text-white ">"We docked next to an active vineyard. Safest sleep we've had on the road."</blockquote>
+                      <div class="font-bold text-sm trust-card-text text-white ">David & Sarah Kim</div><div class="text-xs text-white/80  trust-muted-text">Retiree Explorers</div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- ================= Trip Planner Promotion Section ================= -->
+            <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10 relative">
+              <!-- Soft Trinidad glow behind the section, echoing the Trust section's lighting -->
+              <div class="absolute top-1/2 right-0 -translate-y-1/2 w-[700px] h-[700px] bg-trinidad/10 rounded-full blur-[180px] pointer-events-none"></div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center relative z-10">
+
+                <!-- Left: Aggressive Typography & Data -->
+                <div class="flex flex-col py-12 lg:py-0 order-2 lg:order-1">
+
+                  <span class="inline-flex items-center gap-2 text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-5">
+                    <span class="inline-block w-2 h-2 bg-[#F1B434]"></span>
+                    Plan Your Adventure
+                  </span>
+                  <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
+                    Map Your Whole Road Trip.
+                  </h2>
+                  <p class="text-white/80 text-lg md:text-xl font-body mb-8 leading-relaxed">
+                    Sketch a route from your driveway to the redwoods — stops, dates, road-routed directions, fuel cost, and budget all live in one view. Plan it now, drive it free.
+                  </p>
+
+                  <!-- Capability chips — quick scan of what the planner gives you -->
+                  <div class="flex flex-wrap gap-2 mb-12">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
+                      <span class="material-symbols-outlined text-[14px] text-[#F1B434]">route</span>Road-Routed
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
+                      <span class="material-symbols-outlined text-[14px] text-[#F1B434]">payments</span>Live Budget
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
+                      <span class="material-symbols-outlined text-[14px] text-[#F1B434]">local_gas_station</span>Fuel Estimate
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 text-white/85 text-[0.65rem] font-button font-bold uppercase tracking-[0.12em]">
+                      <span class="material-symbols-outlined text-[14px] text-[#F1B434]">share</span>Shareable
+                    </span>
+                  </div>
+
+                  <ul class="space-y-6 mb-12">
+                    <li class="flex items-start gap-4">
+                      <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="explore">explore</span>
+                      <div>
+                        <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Discover What's Along Your Route:</div>
+                        <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Private spots, boondocking, and POIs surface as you build the trip.</div>
+                      </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                      <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="calendar_today">calendar_today</span>
+                      <div>
+                        <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Plan Dates and Budget:</div>
+                        <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Pick check-in/out per stop — nights, cost, and fuel update in real time.</div>
+                      </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                      <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="directions">directions</span>
+                      <div>
+                        <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Turn-By-Turn Directions:</div>
+                        <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Road-routed legs with long-drive and tank-range guardrails to keep you safe.</div>
+                      </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                      <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="ios_share">ios_share</span>
+                      <div>
+                        <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Share or Print:</div>
+                        <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Send a link to your travel partner or print a paper itinerary for offline use.</div>
+                      </div>
+                    </li>
+                  </ul>
+
+                  <!-- Free micro-badge -->
+                  <div class="inline-flex items-center gap-2 mb-4 text-white/70 text-[0.6rem] font-button font-bold uppercase tracking-[0.18em]">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F1B434]"></span>
+                    Free with your CurbNTurf account
+                  </div>
+
+                  <!-- 3D Flip Button Component -->
+                  <div>
+                    <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+                      <a routerLink="/trip-planner" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                        <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                          OPEN TRIP PLANNER
+                        </div>
+                        <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                          OPEN TRIP PLANNER
+                        </div>
+                        <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                          OPEN TRIP PLANNER
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Right: Stylized trip planner map mockup (inline SVG, mirrors the product UI) -->
+                <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square flex justify-center order-1 lg:order-2">
+                  <!-- Soft outer frame with gradient depth -->
+                  <div class="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-sm"></div>
+
+                  <!-- Gold viewfinder corner ticks on the inner frame -->
+                  <span class="absolute top-5 left-5 w-4 h-4 border-t-2 border-l-2 border-[#F1B434]/80 pointer-events-none"></span>
+                  <span class="absolute top-5 right-5 w-4 h-4 border-t-2 border-r-2 border-[#F1B434]/80 pointer-events-none"></span>
+                  <span class="absolute bottom-5 left-5 w-4 h-4 border-b-2 border-l-2 border-[#F1B434]/80 pointer-events-none"></span>
+                  <span class="absolute bottom-5 right-5 w-4 h-4 border-b-2 border-r-2 border-[#F1B434]/80 pointer-events-none"></span>
+
+                  <!-- Live Leaflet preview — same tiles, markers, and polyline the
+                  user sees on /search and /trip-planner. Mounts lazily when the
+                  section scrolls into view. -->
+                  <div class="relative w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)] m-3 rounded-[1.75rem] overflow-hidden bg-[#f2efe9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-transform duration-700 hover:scale-[1.02] will-change-transform">
+                    <cnt-home-trip-preview class="block w-full h-full"></cnt-home-trip-preview>
+                  </div>
+                  <!-- Legacy SVG mockup (kept commented for reference / fallback) -->
+                  @if (false) {
+                    <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 w-full h-full" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="cnt-tp-route" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#295d42"/>
+                          <stop offset="50%" stop-color="#e3530d"/>
+                          <stop offset="100%" stop-color="#9a3f0a"/>
+                        </linearGradient>
+                        <filter id="cnt-tp-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                          <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-opacity="0.35"/>
+                        </filter>
+                        <radialGradient id="cnt-tp-vignette" cx="0.5" cy="0.5" r="0.7">
+                          <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+                          <stop offset="100%" stop-color="#000000" stop-opacity="0.18"/>
+                        </radialGradient>
+                      </defs>
+                      <!-- OSM land base (#f2efe9) -->
+                      <rect width="600" height="600" fill="#f2efe9"/>
+                      <!-- Park / forest polygons (OSM pale green #c8e0a8) -->
+                      <path d="M 0 0 L 200 0 Q 220 80 180 130 Q 130 170 60 140 Q 0 110 0 60 Z" fill="#c8e0a8" opacity="0.85"/>
+                      <path d="M 420 460 Q 460 440 520 460 Q 580 500 600 540 L 600 600 L 380 600 Z" fill="#c8e0a8" opacity="0.85"/>
+                      <ellipse cx="380" cy="180" rx="55" ry="36" fill="#c8e0a8" opacity="0.7"/>
+                      <!-- Water — OSM light blue #a8d0e0 -->
+                      <path d="M 0 380 Q 80 360 140 390 T 280 400 T 420 420 T 600 410 L 600 600 L 0 600 Z" fill="#a8d0e0"/>
+                      <!-- River meandering across -->
+                      <path d="M 0 410 Q 80 395 140 420 T 280 430 T 420 450 T 600 440" fill="none" stroke="#9bc5d8" stroke-width="2" opacity="0.6"/>
+                      <!-- Small lake top-left -->
+                      <ellipse cx="120" cy="220" rx="42" ry="26" fill="#a8d0e0"/>
+                      <!-- Faint building footprints (OSM gray #d9d4cd) -->
+                      <g fill="#d9d4cd" opacity="0.9">
+                        <rect x="240" y="170" width="14" height="20" rx="1"/>
+                        <rect x="258" y="172" width="10" height="18" rx="1"/>
+                        <rect x="270" y="170" width="18" height="14" rx="1"/>
+                        <rect x="246" y="194" width="22" height="12" rx="1"/>
+                        <rect x="252" y="320" width="16" height="14" rx="1"/>
+                        <rect x="272" y="318" width="12" height="20" rx="1"/>
+                        <rect x="476" y="350" width="14" height="18" rx="1"/>
+                        <rect x="494" y="354" width="20" height="14" rx="1"/>
+                        <rect x="80" y="80" width="16" height="14" rx="1"/>
+                        <rect x="100" y="82" width="14" height="14" rx="1"/>
+                      </g>
+                      <!-- Roads — Leaflet style: gray casing under white fill -->
+                      <g>
+                        <!-- Highway 1 (horizontal across) -->
+                        <path d="M 0 280 Q 150 260 300 290 T 600 270" fill="none" stroke="#b9b3a8" stroke-width="9" stroke-linecap="round"/>
+                        <path d="M 0 280 Q 150 260 300 290 T 600 270" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+                        <!-- Highway 2 (vertical-ish left) -->
+                        <path d="M 120 0 Q 140 150 100 300 T 180 600" fill="none" stroke="#b9b3a8" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 120 0 Q 140 150 100 300 T 180 600" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Highway 3 (vertical-ish right) -->
+                        <path d="M 450 0 Q 430 200 480 380 T 520 600" fill="none" stroke="#b9b3a8" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 450 0 Q 430 200 480 380 T 520 600" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Minor streets -->
+                        <path d="M 200 100 L 380 100" fill="none" stroke="#cfcabf" stroke-width="3"/>
+                        <path d="M 200 100 L 380 100" fill="none" stroke="#ffffff" stroke-width="2"/>
+                        <path d="M 260 60 L 260 220" fill="none" stroke="#cfcabf" stroke-width="3"/>
+                        <path d="M 260 60 L 260 220" fill="none" stroke="#ffffff" stroke-width="2"/>
+                        <path d="M 220 340 L 380 340" fill="none" stroke="#cfcabf" stroke-width="3"/>
+                        <path d="M 220 340 L 380 340" fill="none" stroke="#ffffff" stroke-width="2"/>
+                      </g>
+                      <!-- Background listing dots (private + boondocking + POI) -->
+                      <g opacity="0.7">
+                        <circle cx="80"  cy="120" r="4" fill="#e3530d"/>
+                        <circle cx="210" cy="80"  r="4" fill="#3b6e3b"/>
+                        <circle cx="340" cy="120" r="4" fill="#b3760e"/>
+                        <circle cx="500" cy="100" r="4" fill="#e3530d"/>
+                        <circle cx="540" cy="250" r="4" fill="#3b6e3b"/>
+                        <circle cx="60"  cy="320" r="4" fill="#b3760e"/>
+                        <circle cx="280" cy="500" r="4" fill="#3b6e3b"/>
+                        <circle cx="430" cy="540" r="4" fill="#e3530d"/>
+                        <circle cx="150" cy="540" r="4" fill="#b3760e"/>
+                      </g>
+                      <!-- ROUTE — halo, dark casing, then gradient stroke -->
+                      <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
+                        fill="none" stroke="#ffffff" stroke-width="14" opacity="0.45"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
+                        fill="none" stroke="#000000" stroke-width="9" opacity="0.18"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M 110 470 C 200 420, 240 320, 320 290 S 460 240, 500 140"
+                        fill="none" stroke="url(#cnt-tp-route)" stroke-width="6"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        filter="url(#cnt-tp-shadow)"/>
+                      <!-- STOP 1 — start (jungle-green flag) with pulse -->
+                      <g transform="translate(110 470)">
+                        <circle r="22" fill="#295d42" opacity="0.4">
+                          <animate attributeName="r" values="22;38;22" dur="2.4s" repeatCount="indefinite"/>
+                          <animate attributeName="opacity" values="0.4;0;0.4" dur="2.4s" repeatCount="indefinite"/>
+                        </circle>
+                      </g>
+                      <g transform="translate(110 470)" filter="url(#cnt-tp-shadow)">
+                        <circle r="22" fill="#295d42"/>
+                        <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <path d="M -6 -9 L -6 9 M -6 -9 L 7 -5 L -1 0 L 7 5 L -6 5" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </g>
+                      <!-- STOP 2 — middle (trinidad orange numbered) -->
+                      <g transform="translate(320 290)" filter="url(#cnt-tp-shadow)">
+                        <circle r="22" fill="#e3530d"/>
+                        <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <text x="0" y="6" text-anchor="middle" font-family="Familjen Grotesk, sans-serif" font-weight="800" font-size="18" fill="#ffffff">2</text>
+                      </g>
+                      <!-- STOP 3 — finish (jungle-green checkered flag) -->
+                      <g transform="translate(500 140)" filter="url(#cnt-tp-shadow)">
+                        <circle r="22" fill="#9a3f0a"/>
+                        <circle r="22" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <g transform="translate(-7 -8)" fill="#ffffff">
+                          <rect x="0" y="0" width="4" height="4"/>
+                          <rect x="8" y="0" width="4" height="4"/>
+                          <rect x="4" y="4" width="4" height="4"/>
+                          <rect x="12" y="4" width="4" height="4"/>
+                          <rect x="0" y="8" width="4" height="4"/>
+                          <rect x="8" y="8" width="4" height="4"/>
+                          <rect x="4" y="12" width="4" height="4"/>
+                          <rect x="12" y="12" width="4" height="4"/>
+                        </g>
+                      </g>
+                      <!-- Mini leg labels along the route -->
+                      <g font-family="Asap Condensed, sans-serif" font-weight="700" font-size="12" letter-spacing="1.5" fill="#222222" filter="url(#cnt-tp-shadow)">
+                        <rect x="196" y="376" width="90" height="24" rx="12" fill="#ffffff"/>
+                        <text x="241" y="392" text-anchor="middle">312 MI · 5H</text>
+                        <rect x="394" y="214" width="98" height="24" rx="12" fill="#ffffff"/>
+                        <text x="443" y="230" text-anchor="middle">300 MI · 4H 50M</text>
+                      </g>
+                      <!-- Compass rose top-right -->
+                      <g transform="translate(548 52)" filter="url(#cnt-tp-shadow)">
+                        <circle r="22" fill="#ffffff" opacity="0.95"/>
+                        <path d="M 0 -14 L 5 0 L 0 14 L -5 0 Z" fill="#e3530d"/>
+                        <path d="M 0 -14 L 5 0 L 0 0 Z" fill="#9a3f0a"/>
+                        <text x="0" y="-18" text-anchor="middle" font-family="Asap Condensed, sans-serif" font-weight="800" font-size="9" letter-spacing="1.2" fill="#222222">N</text>
+                      </g>
+                      <!-- Scale bar bottom-right -->
+                      <g transform="translate(440 560)" filter="url(#cnt-tp-shadow)">
+                        <rect x="0" y="0" width="120" height="22" rx="11" fill="#ffffff" opacity="0.95"/>
+                        <text x="14" y="15" font-family="Asap Condensed, sans-serif" font-weight="700" font-size="11" letter-spacing="1.2" fill="#222222">50 MI</text>
+                        <line x1="52" y1="11" x2="108" y2="11" stroke="#222222" stroke-width="2"/>
+                        <line x1="52" y1="7" x2="52" y2="15" stroke="#222222" stroke-width="2"/>
+                        <line x1="80" y1="8" x2="80" y2="14" stroke="#222222" stroke-width="1.5"/>
+                        <line x1="108" y1="7" x2="108" y2="15" stroke="#222222" stroke-width="2"/>
+                      </g>
+                      <!-- Vignette overlay for depth -->
+                      <rect width="600" height="600" fill="url(#cnt-tp-vignette)" pointer-events="none"/>
+                    </svg>
+                  }
+
+                  <!-- Floating route badge (sits on the frame) -->
+                  <div class="absolute -top-4 left-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-jungle-green border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur">
+                    <span class="material-symbols-outlined text-[#F1B434] text-base" style="font-variation-settings: 'FILL' 1;">route</span>
+                    <span class="text-white text-[0.65rem] font-button font-bold uppercase tracking-[0.14em]">3 stops · 612 mi</span>
+                  </div>
+                  <!-- Floating fuel/cost badge -->
+                  <div class="absolute -bottom-4 right-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-jungle-green border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur">
+                    <span class="material-symbols-outlined text-[#F1B434] text-base" style="font-variation-settings: 'FILL' 1;">payments</span>
+                    <span class="text-white text-[0.65rem] font-button font-bold uppercase tracking-[0.14em]">$420 · 4 nights</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <!-- ================= Room2Roam editorial rail (P26/A — repositioned P27/B) =================
+            Surfaces /articles editorial onto the home flow: 1 featured
+            article + 3 editor's picks. Deferred so the catalog (which
+            carries every article's body HTML) is not pulled into the
+            home eager bundle — it loads when the visitor scrolls down. -->
+            @defer (on viewport; prefetch on idle) {
+            <cnt-home-room2roam-rail></cnt-home-room2roam-rail>
+            } @placeholder (minimum 200ms) {
+            <div class="min-h-[40rem]" aria-hidden="true"></div>
+          }
+
+          <!-- ================= FAQ Section ================= -->
+          <cnt-home-faq></cnt-home-faq>
+
+
+          <!-- ================= Host Promotion Section ================= -->
+          <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+
+              <!-- Left: Pixelated Image Masking -->
+              <div class="relative w-full aspect-[4/5] md:aspect-[5/6] lg:aspect-square object-cover flex justify-center drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                <!-- 3-step 8-bit geometric block cutout via pure CSS Calc Polygon -->
+                <img src="assets/images/host_opportunity.webp" alt="Become a Host" width="640" height="640" loading="lazy"
+                  class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 hover:scale-105 will-change-transform">
+              </div>
+
+              <!-- Right: Aggressive Typography & Data -->
+              <div class="flex flex-col py-12 lg:py-0">
+
+                <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-5 block">Host Opportunity</span>
+                <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
+                  Turn Your Land Into Income.
+                </h2>
+                <p class="text-white/80 text-lg md:text-xl font-body mb-12 leading-relaxed">
+                  Whether you have a scenic vineyard, a quiet farm, or a spacious driveway, there’s an RVer looking for a spot like yours. Listing is 100% free, and you stay in total control.
+                </p>
+
+                <ul class="space-y-6 mb-12">
+                  <li class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="payments">payments</span>
+                    <div>
+                      <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Earn Extra Cash:</div>
+                      <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">Set your own nightly rates and keep more of what you earn.</div>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="event_available">event_available</span>
+                    <div>
+                      <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">You’re the Boss:</div>
+                      <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">You choose the dates, the guests, and the rules.</div>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-[#F1B434] mt-1 text-2xl md:text-3xl" data-icon="verified_user">verified_user</span>
+                    <div>
+                      <div class="font-headline font-bold text-white text-xl md:text-2xl mb-1">Secure & Simple:</div>
+                      <div class="text-white/80 text-lg md:text-xl font-body leading-relaxed">We handle the payments and identity verification for you.</div>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Split Button Component -->
+                <!-- 3D Flip Button Component -->
+                <div>
+                  <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block mt-4">
+                    <a routerLink="/host" class="btn-3d-inner rounded-full cursor-pointer" style="width: auto;">
+                      <div class="invisible px-10 py-4 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        START HOSTING TODAY
+                      </div>
+                      <div class="btn-3d-front bg-white !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        START HOSTING TODAY
+                      </div>
+                      <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">
+                        START HOSTING TODAY
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-</section>
 
 
-  <!-- ================= Locations Section ================= -->
-  <cnt-home-locations></cnt-home-locations>
+          <!-- ================= App Download Section ================= -->
+          <div class="max-w-[90rem] mx-auto px-4 md:px-8 mt-24 md:mt-40 pt-24 md:pt-40 border-t border-white/10">
+            <div class="bg-cream rounded-[2rem] overflow-hidden gsap-app-download-wrap">
+              <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
 
-  <curbnturf-footer></curbnturf-footer>
+                <!-- Left Column: Phones Mockup -->
+                <div class="gsap-app-left opacity-0 transform translate-y-10 flex items-end justify-center pt-10 px-8 lg:px-16">
+                  <div class="gsap-app-phones will-change-transform">
+                    <img src="assets/images/phone-triptych.webp" alt="CurbNTurf Mobile App" loading="lazy" class="w-full h-auto max-w-[420px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] object-contain">
+                  </div>
+                </div>
 
-    </div><!-- /content-overlap-wrap -->
+                <!-- Right Column: Copy & CTA -->
+                <div class="gsap-app-right opacity-0 transform translate-y-10 py-12 px-8 lg:px-16 lg:py-20">
+                  <div class="w-12 h-[2px] bg-trinidad mb-6"></div>
+                  <span class="text-trinidad font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Mobile Access</span>
+                  <h2 class="font-headline font-bold !text-dark-text tracking-tight leading-tight mb-5">
+                    Download the<br>CurbNTurf App
+                  </h2>
+                  <p class="text-muted-text text-lg md:text-xl font-body leading-relaxed mb-10 max-w-sm">
+                    Search listings, book sites, and navigate to your next adventure — all from the palm of your hand.
+                  </p>
+                  <div class="flex flex-row flex-wrap gap-4">
+                    <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                      <img src="assets/images/app-store-badge.svg" alt="Download on the App Store (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
+                    </button>
+                    <button type="button" title="Coming soon — launching with the app" aria-disabled="true" class="p-0 border-0 bg-black cursor-not-allowed transition-transform hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] !rounded-md inline-block">
+                      <img src="assets/images/google-play-badge.svg" alt="Get it on Google Play (coming soon)" class="h-12 w-auto border border-black/10 !rounded-md">
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="relative z-10 max-w-[56rem] mx-auto px-4 md:px-8 mt-24 md:mt-40">
+            <div class="border-t border-white/10"></div>
+          </div>
+
+          <!-- CTA -->
+          <div class="relative z-10 max-w-[90rem] mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-28 md:pb-44">
+            <div class="home-cta-inner text-center max-w-3xl mx-auto">
+              <span class="text-[#F1B434] font-label uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-6 block">Start Your Adventure</span>
+              <h2 class="font-headline font-bold text-white tracking-tight leading-tight mb-6">
+                Your next great stay<br>is out there.
+              </h2>
+              <p class="font-body text-white/60 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto">
+                Search thousands of unique RV spots on farms, vineyards, ranches, and more. No subscription. No guesswork. Just go.
+              </p>
+              <div class="flex flex-col items-center gap-4">
+                <p class="font-body text-white/40 text-sm flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[#2DE889] text-base">check_circle</span>
+                  No membership required. Pay only when you book.
+                </p>
+                <div class="btn-3d-wrap magnetic-btn pointer-events-auto rounded-full shadow-2xl inline-block">
+                  <div class="btn-3d-inner rounded-full cursor-pointer" style="width:auto;">
+                    <div class="invisible px-12 py-5 flex items-center justify-center gap-2 whitespace-nowrap font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
+                    <div class="btn-3d-front bg-cream !text-dark-text rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
+                    <div class="btn-3d-back bg-trinidad text-white rounded-full flex items-center justify-center gap-2 whitespace-nowrap absolute inset-0 font-button font-normal not-italic text-xs md:text-sm tracking-widest uppercase">Find Your Spot</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= Locations Section ================= -->
+        <cnt-home-locations></cnt-home-locations>
+
+        <curbnturf-footer></curbnturf-footer>
+
+      </div><!-- /content-overlap-wrap -->
     </div><!-- /container-body -->
 
   </div><!-- /bg-grid-subtle bg-cream -->
 
-  </div><!-- /page-main -->
+</div><!-- /page-main -->
 </div><!-- /page-wrap -->
 
 <!-- ================= Video Modal =================
-     Rendered OUTSIDE .content-overlap-wrap because that wrapper has
-     `transform: translateX(-50%)`, which would make a `position: fixed`
-     descendant resolve relative to the wrapper instead of the viewport. -->
+Rendered OUTSIDE .content-overlap-wrap because that wrapper has
+`transform: translateX(-50%)`, which would make a `position: fixed`
+descendant resolve relative to the wrapper instead of the viewport. -->
 @if (isVideoOpen) {
   <div class="fixed inset-0 z-[var(--z-modal)]" (click)="closeVideo()">
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,56rem)] aspect-video rounded-2xl overflow-hidden shadow-2xl"
-         (click)="$event.stopPropagation()">
+      (click)="$event.stopPropagation()">
       <iframe [src]="videoUrl" title="CurbNTurf brand video" class="absolute inset-0 w-full h-full" frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
       <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors z-10"
-              (click)="closeVideo()" aria-label="Close video">
+        (click)="closeVideo()" aria-label="Close video">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
       <!-- Visible fallback when the embed is blocked (corporate networks,
-           strict tracking-prevention modes). The link opens the canonical
-           YouTube watch URL in a new tab. -->
+      strict tracking-prevention modes). The link opens the canonical
+      YouTube watch URL in a new tab. -->
       <a [href]="brandVideoFallbackUrl" target="_blank" rel="noopener"
         class="absolute bottom-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 text-dark-text text-[0.6rem] uppercase tracking-[0.12em] font-button font-bold hover:bg-white transition-colors z-10">
         <span class="material-symbols-outlined text-sm">open_in_new</span>

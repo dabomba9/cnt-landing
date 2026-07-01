@@ -54,23 +54,24 @@ export class FocusTrapDirective implements AfterViewInit, OnDestroy {
   }
 
   @HostListener('keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent): void {
+  onEscape(event: Event): void {
     event.stopPropagation();
     this.escape.emit();
   }
 
   @HostListener('keydown.tab', ['$event'])
-  onTab(event: KeyboardEvent): void {
+  onTab(event: Event): void {
+    const kbd = event as KeyboardEvent;
     const focusables = this.getFocusables();
     if (focusables.length === 0) return;
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
     const active = document.activeElement;
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
+    if (kbd.shiftKey && active === first) {
+      kbd.preventDefault();
       last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
+    } else if (!kbd.shiftKey && active === last) {
+      kbd.preventDefault();
       first.focus();
     }
   }

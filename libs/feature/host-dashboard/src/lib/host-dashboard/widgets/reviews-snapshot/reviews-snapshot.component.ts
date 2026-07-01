@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { IPrivateListing, IReview, IUserReview, ReviewService, ToastService, getListingDetail } from '@cnt-workspace/data-access';
@@ -15,7 +15,7 @@ interface IRecentReview {
 @Component({
   selector: 'cnt-reviews-snapshot',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReviewCardComponent],
+  imports: [FormsModule, ReviewCardComponent],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">
       <div class="flex items-baseline justify-between gap-3 mb-5">

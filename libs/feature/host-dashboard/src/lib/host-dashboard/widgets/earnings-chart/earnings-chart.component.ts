@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IListing } from '@cnt-workspace/data-access';
 import { IBooking } from '@cnt-workspace/models';
 
@@ -14,7 +14,7 @@ interface IMonthBucket {
 @Component({
   selector: 'cnt-earnings-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7">
       <div class="flex items-baseline justify-between gap-3 mb-5">

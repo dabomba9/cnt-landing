@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { IMyRv, isMyRvSet, hasMyRvPhotos, rvTypeLabel } from '@cnt-workspace/data-access';
 
 @Component({
   selector: 'cnt-my-rv-summary',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-7 h-full flex flex-col">
       @if (isSet) {

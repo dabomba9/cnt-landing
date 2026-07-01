@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDatepickerModule, DateRange } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
@@ -11,7 +11,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 @Component({
   selector: 'cnt-hero-date-picker',
   standalone: true,
-  imports: [CommonModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [MatDatepickerModule, MatNativeDateModule],
   template: `
     <mat-calendar
       [selected]="matRange"

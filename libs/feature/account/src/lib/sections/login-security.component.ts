@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, ToastService } from '@cnt-workspace/data-access';
@@ -7,7 +7,7 @@ import { AuthService, ToastService } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-account-login-security',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   template: `
     <div class="bg-white rounded-2xl border border-dark-text/8 shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-6 md:p-8 space-y-6">
       <div>

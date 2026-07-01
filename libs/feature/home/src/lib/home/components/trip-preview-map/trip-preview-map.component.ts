@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy,
   PLATFORM_ID, ViewChild,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
 
@@ -32,7 +32,7 @@ const MARKER_STYLE = {
 @Component({
   selector: 'cnt-home-trip-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div #host class="tp-preview-wrap">

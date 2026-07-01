@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, PLATFORM_ID, ViewChild } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { TILE_URL, TILE_ATTRIBUTION } from '@cnt-workspace/ui';
@@ -13,7 +13,7 @@ import { IListing, CATEGORY_META } from '@cnt-workspace/data-access';
 @Component({
   selector: 'cnt-explore-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="explore-map-wrap" [class.tiles-loaded]="tilesLoaded">
       <div class="explore-map-skeleton" aria-hidden="true"></div>

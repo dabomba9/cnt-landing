@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 let panelSeq = 0;
 
 @Component({
   selector: 'cnt-accordion-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './accordion-card.component.html',
 })
 export class AccordionCardComponent {
