@@ -3,7 +3,6 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideIonicAngular } from '@ionic/angular/standalone';
 import { Amplify } from 'aws-amplify';
 import { environment } from '../environments/environment';
 import { initPublishedSnapshots, DateTriggerService } from '@cnt-workspace/data-access';
@@ -41,7 +40,6 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(),
     provideAnimationsAsync(),
-    provideIonicAngular({}),
     // Populate the published-snapshot IDB cache before any route resolves so
     // user-published listings hydrate consistently no matter where the user
     // lands first (search, listing detail, hosting, deep link, etc.).
