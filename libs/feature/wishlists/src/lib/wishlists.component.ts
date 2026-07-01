@@ -61,6 +61,24 @@ export class WishlistsComponent implements OnInit {
     this.hasRecentlyViewed = readRecentlyViewed(this.platformId).length > 0;
   }
 
+  /** P65 — Copy a /search?ids=… deep-link so the visitor can share
+   *  their wishlist. /search already hydrates pinnedIds from ?ids=
+   *  (search-results.component.ts:421-428), so recipients see a
+   *  filtered result grid matching this wishlist. */
+  copyShareLink(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.favoriteIds.size === 0) {
+      this.toasts.info('Add a stay to your wishlist first.');
+      return;
+    }
+    const idsParam = [...this.favoriteIds].join(',');
+    const url = `${window.location.origin}/search?ids=${idsParam}`;
+    navigator.clipboard?.writeText(url).then(
+      () => this.toasts.success('Wishlist link copied — paste to share.'),
+      () => this.toasts.info('Copy failed — select the URL manually.'),
+    );
+  }
+
   private hydrate(): void {
     this.favorites = readFavorites(this.platformId);
     // Only numeric ids (stays + boondocking) — POIs use string ids and don't appear in the listing card grid.
